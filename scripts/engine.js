@@ -30,7 +30,7 @@ class Engine {
 	};
 
 	addCircles (circles) {
-		$(circles).each(function(i, circle) {
+		circles.forEach(function(circle) {
 			this.addCircle(circle);
 		}.bind(this));
 	}

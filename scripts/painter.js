@@ -17,27 +17,25 @@ class Painter {
         this.color = (typeof options.color !== 'undefined') ? options.color : '#FFF';
         this.background = (typeof options.background !== 'undefined') ? options.background : '#050490';
 
-        this.canvasArea.css({
-            'background':this.background,
-            'width': this.width,
-            'height': this.height,
-        });
+        this.canvasArea.style.background = this.background;
+        this.canvasArea.style.width = this.width + 'px';
+        this.canvasArea.style.height = this.height + 'px';
 
-        this.canvas = $('<canvas id="main-canvas">');
-        this.canvasArea.append(this.canvas);
-        this.context = $(this.canvas)[0].getContext("2d");
+        this.canvas = document.createElement('canvas');
+        this.canvas.setAttribute('id', 'main-canvas');
+        this.canvasArea.appendChild(this.canvas);
+        this.context = this.canvas.getContext("2d");
 
-        this.guide = $('<canvas id="guide-canvas">');
-        this.canvasArea.append(this.guide);
-        this.guideContext = $(this.guide)[0].getContext("2d");
+        this.guide = document.createElement('canvas');
+        this.guide.setAttribute('id', 'guide-canvas');
+        this.canvasArea.appendChild(this.guide);
+        this.guideContext = this.guide.getContext("2d");
 
-        this.canvasArea.find('canvas').each(function(i, c) {
-            $(c).attr({
-                'height': this.canvasArea.height(),
-                'width': this.canvasArea.width(),
-            }).css({
-                'position': 'absolute',
-            });
+        this.canvasArea.querySelectorAll('canvas').forEach(function(c) {
+            console.log(this.canvasArea.style.height);
+            c.setAttribute('height', this.canvasArea.style.height);
+            c.setAttribute('width', this.canvasArea.style.width);
+            c.style.position = 'absolute';
         }.bind(this));
     }
 
@@ -93,10 +91,20 @@ class Painter {
     };
 
     showActions () {
-        let actionContainer = $('<div class="actions">');
-        let showGuides = $('<button class="show-guides">Guides</button>');
-        let paused = $('<button class="paused">Pause</button>');
-        let clear = $('<button class="clear">Clear</button>');
+        let actionContainer = document.createElement('div');
+        actionContainer.classList.add('actions');
+
+        let showGuides = document.createElement('button');
+        showGuides.classList.add('show-guides');
+        showGuides.textContent = 'Guides';
+
+        let paused = document.createElement('button');
+        paused.classList.add('paused');
+        paused.textContent = 'Pause';
+
+        let clear = document.createElement('button');
+        clear.classList.add('clear');
+        clear.textContent = 'Clear';
 
         if(this.engine.paused) {
             paused.innerHTML = 'play';
@@ -110,13 +118,13 @@ class Painter {
         this.canvasArea.prepend(actionContainer);
 
         // Toggle show guides state
-        showGuides.on('click', function(){
+        showGuides.addEventListener('click', function(){
             this.showGuide = this.showGuide === false;
             return;
         }.bind(this));
 
         // Toggle pause state
-        paused.on('click', function(e){
+        paused.addEventListener('click', function(e){
             this.engine.paused = this.engine.paused === false;
             if(this.engine.paused) {
                 e.target.innerHTML = 'Play';
@@ -127,7 +135,7 @@ class Painter {
         }.bind(this));
 
         // clear canvas
-        clear.on('click', function(){
+        clear.addEventListener('click', function(){
             this.clear();
             return;
         }.bind(this));
