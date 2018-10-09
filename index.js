@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     const painter = new Painter(engine, {
-        canvasArea: $('#canvas-area'),
+        canvasArea: document.querySelector('#canvas-area'),
         background: "#000",
         showGuide: true,
         draw: true,
