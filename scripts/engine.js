@@ -20,6 +20,7 @@ class Engine {
         circle.direction = (typeof circle.direction !== 'undefined') ? circle.direction: 'cw';
         circle.position = (typeof circle.position !== 'undefined') ? circle.position: 'inside';
         circle.radians = (typeof circle.radians !== 'undefined') ? circle.radians: Math.PI/2;
+        circle.pointOffset = (typeof circle.pointOffset !== 'undefined') ? circle.pointOffset: 0;
         circle.steps = (typeof circle.steps !== 'undefined') ? circle.steps: this.steps;
         circle.step = (circle.steps > 0) ? (360/circle.steps) * (Math.PI/180) : 0;
 
@@ -59,6 +60,9 @@ class Engine {
 
         circle.x1 = circle.x0 + (Math.cos(circle.radians) * circle.radius);
         circle.y1 = circle.y0 + (Math.sin(circle.radians) * circle.radius);
+
+        circle.x2 = circle.x0 + (Math.cos(circle.radians) * (circle.radius + circle.pointOffset));
+        circle.y2 = circle.y0 + (Math.sin(circle.radians) * (circle.radius + circle.pointOffset));
 
 		return circle;
 	};
@@ -155,6 +159,10 @@ class Engine {
         // New x1 & y1 to reflect change in radians
         circle.x1 = circle.x0 + (Math.cos(circle.radians) * circle.radius);
         circle.y1 = circle.y0 + (Math.sin(circle.radians) * circle.radius);
+
+        // New x2 & y2 to reflect change in radians
+        circle.x2 = circle.x0 + (Math.cos(circle.radians) * (circle.radius + circle.pointOffset));
+        circle.y2 = circle.y0 + (Math.sin(circle.radians) * (circle.radius + circle.pointOffset));
     }
 
     exportCircles () {
