@@ -73,6 +73,13 @@ class Painter {
         context.beginPath();
         context.arc(circle.x1, circle.y1, 3, 0, 2*Math.PI);
         context.fill();
+        context.beginPath();
+        context.moveTo(circle.x1,circle.y1);
+        context.lineTo(circle.x2, circle.y2);
+        context.stroke();
+        context.beginPath();
+        context.arc(circle.x2, circle.y2, 3, 0, 2*Math.PI);
+        context.fill();
     };
 
     drawPoint (circle) {
@@ -82,7 +89,7 @@ class Painter {
 
         context.fillStyle = color;
         context.beginPath();
-        context.arc(circle.x1, circle.y1, point, 0, 2*Math.PI);
+        context.arc(circle.x2, circle.y2, point, 0, 2*Math.PI);
         context.fill();
     };
 
