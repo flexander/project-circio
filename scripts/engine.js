@@ -165,11 +165,11 @@ class Engine {
         let circles = JSON.parse(atob(data));
         let indexedCircles = [];
 
-        circles.forEach(function(circle) {
+        circles.forEach(circle => {
             indexedCircles[circle.id] = circle;
         });
 
-        circles.forEach(function(circle) {
+        circles.forEach(circle => {
             if(typeof circle.parentId !== 'undefined') {
                 circle.parent = indexedCircles[circle.parentId];
             }
