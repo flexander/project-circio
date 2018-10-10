@@ -31,12 +31,12 @@ class Painter {
         this.canvasArea.appendChild(this.guide);
         this.guideContext = this.guide.getContext("2d");
 
-        this.canvasArea.querySelectorAll('canvas').forEach(function(c) {
+        this.canvasArea.querySelectorAll('canvas').forEach(c => {
             console.log(this.canvasArea.style.height);
             c.setAttribute('height', this.canvasArea.style.height);
             c.setAttribute('width', this.canvasArea.style.width);
             c.style.position = 'absolute';
-        }.bind(this));
+        });
     }
 
     drawCircle (circle) {
@@ -54,14 +54,14 @@ class Painter {
     drawCircles () {
         this.guideContext.clearRect(0,0,this.width, this.height);
 
-        this.engine.list.forEach(function(circle) {
+        this.engine.list.forEach(circle => {
             if(this.showGuide === true) {
                 this.drawCircle(circle);
             }
             if(this.draw === true && circle.draw === true) {
                 this.drawPoint(circle);
             }
-        }.bind(this));
+        });
     }
 
     drawRotation (circle) {
@@ -118,13 +118,13 @@ class Painter {
         this.canvasArea.prepend(actionContainer);
 
         // Toggle show guides state
-        showGuides.addEventListener('click', function(){
+        showGuides.addEventListener('click', () => {
             this.showGuide = this.showGuide === false;
             return;
-        }.bind(this));
+        });
 
         // Toggle pause state
-        paused.addEventListener('click', function(e){
+        paused.addEventListener('click', e => {
             this.engine.paused = this.engine.paused === false;
             if(this.engine.paused) {
                 e.target.innerHTML = 'Play';
@@ -132,12 +132,12 @@ class Painter {
                 e.target.innerHTML = 'Pause';
             }
             return;
-        }.bind(this));
+        });
 
         // clear canvas
-        clear.addEventListener('click', function(){
+        clear.addEventListener('click', () => {
             this.clear();
             return;
-        }.bind(this));
+        });
     }
 }
