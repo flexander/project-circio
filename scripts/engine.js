@@ -30,9 +30,9 @@ class Engine {
 	};
 
 	addCircles (circles) {
-		circles.forEach(function(circle) {
+		circles.forEach(circle => {
 			this.addCircle(circle);
-		}.bind(this));
+		});
 	}
 
 	initCircle (circle) {
@@ -165,11 +165,11 @@ class Engine {
         let circles = JSON.parse(atob(data));
         let indexedCircles = [];
 
-        circles.forEach(function(circle) {
+        circles.forEach(circle => {
             indexedCircles[circle.id] = circle;
         });
 
-        circles.forEach(function(circle) {
+        circles.forEach(circle => {
             if(typeof circle.parentId !== 'undefined') {
                 circle.parent = indexedCircles[circle.parentId];
             }
@@ -182,23 +182,23 @@ class Engine {
     }
 
 	run () {
-        this.list.forEach(function(circle) {
+        this.list.forEach(circle => {
             this.initCircle(circle);
-        }.bind(this));
+        });
 
-		setInterval(function() {
+		setInterval(() => {
 			if(this.paused === false) {
-				this.list.forEach(function(circle) {
+				this.list.forEach(circle => {
 					this.calculateCircle(circle);
-				}.bind(this));
+				});
 
-				this.callbacks.forEach(function(callback) {
+				this.callbacks.forEach(callback => {
                     if(typeof callback === 'function') {
                         callback.call(null, this);
                     }
-                }.bind(this));
+                });
 			}
-		}.bind(this),this.interval);
+		},this.interval);
 	};
 
 	pause () {
