@@ -19,7 +19,7 @@ class Engine {
         circle.parentId = (typeof circle.parent !== 'undefined') ? circle.parent.id: false;
         circle.direction = (typeof circle.direction !== 'undefined') ? circle.direction: 'cw';
         circle.position = (typeof circle.position !== 'undefined') ? circle.position: 'inside';
-        circle.radians = (typeof circle.radians !== 'undefined') ? circle.radians: Math.PI/2;
+        circle.radians = (typeof circle.radians !== 'undefined') ? circle.radians: 0;
         circle.pointOffset = (typeof circle.pointOffset !== 'undefined') ? circle.pointOffset: 0;
         circle.steps = (typeof circle.steps !== 'undefined') ? circle.steps: this.steps;
         circle.step = (circle.steps > 0) ? (360/circle.steps) * (Math.PI/180) : 0;
@@ -69,6 +69,7 @@ class Engine {
 
     calculateCircle (circle) {
         let arc;
+        let steps;
 	    let radiansNew;
         let radiansOld;
         let radiansChange;
@@ -87,7 +88,7 @@ class Engine {
                 // Absolute difference in rads
                 radiansChange = circle.parentSnapShot.radians - circle.parent.radians;
                 radiansNew = radiansOld - radiansChange;
-                circle.radians -= radiansChange;
+                circle.radians = circle.parent.radians;
 
                 if(circle.position === 'inside') {
                     radiusRelative = circle.parent.radius - circle.radius;
@@ -96,14 +97,16 @@ class Engine {
                 }
 
                 // Move circle with parent rotation
-                circle.x0 = circle.parent.x0 + (Math.cos(radiansNew) * radiusRelative);
-                circle.y0 = circle.parent.y0 + (Math.sin(radiansNew) * radiusRelative);
+                circle.x0 = circle.parent.x0 + (Math.cos(circle.parent.radians) * radiusRelative);
+                circle.y0 = circle.parent.y0 + (Math.sin(circle.parent.radians) * radiusRelative);
             }
             // If current circle needs to roll
             if(circle.step > 0) {
                 // Roll from current position
                 arc = circle.radius * circle.step;
-                radiansParent = arc / circle.parent.radius;
+                steps = circle.radians / circle.step;
+                radiansParent = (arc / circle.parent.radius) * steps;
+
 
                 // calc current radians relative to the parent circle
                 radiansCurrent = Math.atan2(
@@ -114,21 +117,21 @@ class Engine {
                 // Radians changed in one step
                 if (circle.direction === 'cw') {
                     if(circle.position === 'inside') {
-                        circle.radians += circle.step;
+                        circle.radians += (circle.step * steps);
                         circle.radians -= radiansParent;
                         radiansNew = radiansCurrent - radiansParent;
                     } else {
-                        circle.radians += circle.step;
+                        circle.radians += (circle.step * steps);
                         circle.radians += radiansParent;
                         radiansNew = radiansCurrent + radiansParent;
                     }
                 } else {
                     if(circle.position === 'inside') {
-                        circle.radians -= circle.step;
+                        circle.radians -= (circle.step * steps);
                         circle.radians += radiansParent;
                         radiansNew = radiansCurrent + radiansParent;
                     } else {
-                        circle.radians -= circle.step;
+                        circle.radians -= (circle.step * steps);
                         circle.radians -= radiansParent;
                         radiansNew = radiansCurrent - radiansParent;
                     }
@@ -139,8 +142,8 @@ class Engine {
                 } else {
                     radiusRelative = circle.parent.radius + circle.radius;
                 }
-                circle.x0 = circle.parent.x0 + (Math.cos(radiansNew) * radiusRelative);
-                circle.y0 = circle.parent.y0 + (Math.sin(radiansNew) * radiusRelative);
+                circle.x0 = circle.parent.x0 + (Math.cos(circle.parent.radians + radiansParent) * radiusRelative);
+                circle.y0 = circle.parent.y0 + (Math.sin(circle.parent.radians + radiansParent) * radiusRelative);
             }
             // Take new snap shot of parent
             circle.parentSnapShot = {
