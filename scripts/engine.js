@@ -49,14 +49,15 @@ class Engine {
             return stepCount;
         }.bind(circle);
 
-        circle.getParentRadians = function (totalParentRadians = 0) {
+        circle.getParentRadians = function () {
             if(typeof this.parent === 'undefined') {
-                return totalParentRadians;
+                return 0;
             }
 
-            totalParentRadians += this.parent.radians;
-
-            return this.parent.getParentRadians(totalParentRadians);
+            return Math.atan2(
+                (this.parent.y1 - this.parent.y0), // Delta Y
+                (this.parent.x1 - this.parent.x0) // Delta X
+            );
         }.bind(circle);
 
         this.list.push(circle);
