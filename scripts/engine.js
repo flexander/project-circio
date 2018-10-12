@@ -15,7 +15,7 @@ class Engine {
         this.paused = (typeof options.paused !== 'undefined') ? options.paused : false;
     }
 
-	addCircle (circle) {
+    addCircle (circle) {
         circle.x0 = (typeof circle.x0 !== 'undefined') ? circle.x0 : this.width / 2;
         circle.y0 = (typeof circle.y0 !== 'undefined') ? circle.y0 : this.height / 2;
         circle.parentId = (typeof circle.parent !== 'undefined') ? circle.parent.id: false;
@@ -43,31 +43,41 @@ class Engine {
 
         circle.getStepCount = function () {
             let stepCount = 0;
-
+            if(this.steps > 0) {
+                stepCount = this.radians / this.getStepRadian();
+            }
             return stepCount;
         }.bind(circle);
 
-		this.list.push(circle);
+        this.list.push(circle);
 
         circle.id = this.list.indexOf(circle);
-		return circle.id;
-	};
+        return circle.id;
+    };
 
-	addCircles (circles) {
-		circles.forEach(circle => {
-			this.addCircle(circle);
-		});
+    addCircles (circles) {
+        circles.forEach(circle => {
+            this.addCircle(circle);
+        });
 
-		return this;
-	}
+        return this;
+    }
 
     calculateCircle (circle) {
         let arc = circle.getArc();
         let stepRadian = circle.getStepRadian();
         let stepCount = circle.getStepCount();
         let arcToParentRadians = 0;
-	    let radiusRelative;
+        let parantRadians = 0;
+        let radiusRelative = 0;
+        let parentX0 = circle.x0;
+        let parentY0 = circle.y0;
+
         if(typeof circle.parent !== 'undefined') {
+            parantRadians = circle.parent.radians;
+            parentX0 = circle.parent.x0;
+            parentY0 = circle.parent.y0;
+
             // The distance from center to center of child and parent
             if(circle.position === 'inside') {
                 radiusRelative = circle.parent.radius - circle.radius;
@@ -77,9 +87,9 @@ class Engine {
 
             // Update rotation based on parent
             if (circle.parent.direction === 'cw') {
-                circle.radians += circle.parent.getStepRadian();
+                //circle.radians += circle.parent.getStepRadian();
             } else {
-                circle.radians -= circle.parent.getStepRadian();
+                //circle.radians -= circle.parent.getStepRadian();
             }
 
             // If current circle needs to roll
@@ -103,17 +113,18 @@ class Engine {
                     }
                 }
             }
-
-            circle.x0 = circle.parent.x0 + (Math.cos(circle.parent.radians + arcToParentRadians) * radiusRelative);
-            circle.y0 = circle.parent.y0 + (Math.sin(circle.parent.radians + arcToParentRadians) * radiusRelative);
         }
+
+        circle.x0 = parentX0 + (Math.cos(circle.radians + parantRadians) * radiusRelative);
+        circle.y0 = parentY0 + (Math.sin(circle.radians + parantRadians) * radiusRelative);
+
         // New x1 & y1 to reflect change in radians
-        circle.x1 = circle.x0 + (Math.cos(circle.radians) * circle.radius);
-        circle.y1 = circle.y0 + (Math.sin(circle.radians) * circle.radius);
+        circle.x1 = circle.x0 + (Math.cos(circle.radians + parantRadians) * circle.radius);
+        circle.y1 = circle.y0 + (Math.sin(circle.radians + parantRadians) * circle.radius);
 
         // New x2 & y2 to reflect change in radians
-        circle.x2 = circle.x0 + (Math.cos(circle.radians) * (circle.radius + circle.pointOffset));
-        circle.y2 = circle.y0 + (Math.sin(circle.radians) * (circle.radius + circle.pointOffset));
+        circle.x2 = circle.x0 + (Math.cos(circle.radians + parantRadians) * (circle.radius + circle.pointOffset));
+        circle.y2 = circle.y0 + (Math.sin(circle.radians + parantRadians) * (circle.radius + circle.pointOffset));
     }
 
     calculateCircles() {
@@ -156,28 +167,28 @@ class Engine {
         this.callbacks.push(callback);
     }
 
-	run () {
-		setInterval(() => {
-			if(this.paused === false) {
-				this.list.forEach(circle => {
-					this.calculateCircle(circle);
-					this.moveCircle(circle);
-				});
+    run () {
+        setInterval(() => {
+            if(this.paused === false) {
+                this.list.forEach(circle => {
+                    this.calculateCircle(circle);
+                    this.moveCircle(circle);
+                });
 
-				this.callbacks.forEach(callback => {
+                this.callbacks.forEach(callback => {
                     if(typeof callback === 'function') {
                         callback.call(null, this);
                     }
                 });
-			}
-		},this.interval);
-	};
+            }
+        },this.interval);
+    };
 
-	pause () {
-		this.paused = true;
-	}
+    pause () {
+        this.paused = true;
+    }
 
-	play () {
-		this.paused = false;
-	}
+    play () {
+        this.paused = false;
+    }
 }
