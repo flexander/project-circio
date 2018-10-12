@@ -61,37 +61,6 @@ class Engine {
 		return this;
 	}
 
-	/*initCircle (circle) {
-        let radiusRelative;
-
-        if(typeof circle.parent !== 'undefined') {
-            if(circle.position === 'inside') {
-                radiusRelative = circle.parent.radius - (circle.radius);
-            } else {
-                radiusRelative = circle.parent.radius + (circle.radius);
-            }
-            circle.x0 = circle.parent.x0 + (Math.cos(circle.parent.radians) * radiusRelative);
-            circle.y0 = circle.parent.y0 + (Math.sin(circle.parent.radians) * radiusRelative);
-            // Take a snapshot of parent position
-            circle.parentSnapShot = {
-                x0: circle.parent.x0,
-                y0: circle.parent.y0,
-                radians: circle.parent.radians
-            };
-        } else {
-            circle.x0 = (typeof circle.x0 !== 'undefined') ? circle.x0 : this.width / 2;
-            circle.y0 = (typeof circle.y0 !== 'undefined') ? circle.y0 : this.height / 2;
-        }
-
-        circle.x1 = circle.x0 + (Math.cos(circle.radians) * circle.radius);
-        circle.y1 = circle.y0 + (Math.sin(circle.radians) * circle.radius);
-
-        circle.x2 = circle.x0 + (Math.cos(circle.radians) * (circle.radius + circle.pointOffset));
-        circle.y2 = circle.y0 + (Math.sin(circle.radians) * (circle.radius + circle.pointOffset));
-
-		return circle;
-	};*/
-
     calculateCircle (circle) {
         let arc = circle.getArc();
         let stepRadian = circle.getStepRadian();
@@ -115,18 +84,18 @@ class Engine {
                 // Radians changed in one step
                 if (circle.direction === 'cw') {
                     if(circle.position === 'inside') {
-                        circle.radians += (stepRadian * circle.stepCount);
+                        circle.radians += (stepRadian * stepCount);
                         circle.radians -= arcToParentRadians;
                     } else {
-                        circle.radians += (circle.step * circle.stepCount);
+                        circle.radians += (circle.step * stepCount);
                         circle.radians += arcToParentRadians;
                     }
                 } else {
                     if(circle.position === 'inside') {
-                        circle.radians -= (circle.step * circle.stepCount);
+                        circle.radians -= (circle.step * stepCount);
                         circle.radians += arcToParentRadians;
                     } else {
-                        circle.radians -= (circle.step * circle.stepCount);
+                        circle.radians -= (circle.step * stepCount);
                         circle.radians -= arcToParentRadians;
                     }
                 }
