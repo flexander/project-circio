@@ -61,8 +61,8 @@ class Engine {
         }.bind(circle);
 
         this.list.push(circle);
-
         circle.id = this.list.indexOf(circle);
+
         return circle.id;
     };
 
@@ -86,33 +86,19 @@ class Engine {
         let parentY0 = circle.y0;
 
         if(typeof circle.parent !== 'undefined') {
-            arcToParentRadians = (distanceTravelled / circle.parent.radius);
             parentX0 = circle.parent.x0;
             parentY0 = circle.parent.y0;
+
+            arcToParentRadians = (distanceTravelled / circle.parent.radius);
+            if(circle.position === 'inside') {
+                arcToParentRadians *= -1;
+            }
 
             // The distance from center to center of child and parent
             if(circle.position === 'inside') {
                 radiusRelative = circle.parent.radius - circle.radius;
             } else {
                 radiusRelative = circle.parent.radius + circle.radius;
-            }
-
-            // If current circle needs to roll
-            if(circle.steps > 0) {
-                // Radians changed in one step
-                if (circle.direction === 'cw') {
-                    if(circle.position === 'inside') {
-                        //parantRadians -= arcToParentRadians;
-                    } else {
-                        //parantRadians += arcToParentRadians;
-                    }
-                } else {
-                    if(circle.position === 'inside') {
-                        //parantRadians += arcToParentRadians;
-                    } else {
-                        //parantRadians -= arcToParentRadians;
-                    }
-                }
             }
         }
 
