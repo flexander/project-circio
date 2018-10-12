@@ -18,28 +18,26 @@ document.addEventListener("DOMContentLoaded", function() {
     engine.addCallback(painter.drawCircles.bind(painter));
 
     A = {
-        radius: 40,
+        radius: 20,
         direction: 'cw',
-        steps: 2000,
+        //steps: 2000,
         y0: 150
     };
 
     B = {
         parent: A,
-        radius: 40,
+        radius: 20,
         position: 'outside',
         //direction: 'ccw',
-        //steps: 2000,
-        pointOffset: 20
+        steps: 2000,
     };
 
     C = {
         parent: B,
-        radius: 40,
+        radius: 20,
         position: 'outside',
         //direction: 'ccw',
         //steps: 2000,
-        pointOffset: 40
     }
 
     engine.addCircles([
