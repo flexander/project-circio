@@ -25,7 +25,7 @@ class Engine {
         circle.pointOffset = (typeof circle.pointOffset !== 'undefined') ? circle.pointOffset: 0;
         circle.steps = (typeof circle.steps !== 'undefined') ? circle.steps: this.steps;
 
-        circle.getStepRadian = function () {
+        circle.getStepRadians = function () {
             let stepRadian = 0;
             if(this.steps > 0) {
                 stepRadian = (360/this.steps) * (Math.PI/180);
@@ -36,7 +36,7 @@ class Engine {
         circle.getArc = function () {
             let arc = 0;
             if(this.steps > 0) {
-                arc = this.radius * this.getStepRadian();
+                arc = this.radius * this.getStepRadians();
             }
             return arc;
         }.bind(circle);
@@ -44,9 +44,19 @@ class Engine {
         circle.getStepCount = function () {
             let stepCount = 0;
             if(this.steps > 0) {
-                stepCount = this.radians / this.getStepRadian();
+                stepCount = this.radians / this.getStepRadians();
             }
             return stepCount;
+        }.bind(circle);
+
+        circle.getParentRadians = function (totalParentRadians = 0) {
+            if(typeof this.parent === 'undefined') {
+                return totalParentRadians;
+            }
+
+            totalParentRadians += this.parent.radians;
+
+            return this.parent.getParentRadians(totalParentRadians);
         }.bind(circle);
 
         this.list.push(circle);
@@ -65,18 +75,17 @@ class Engine {
 
     calculateCircle (circle) {
         let arc = circle.getArc();
-        let stepRadian = circle.getStepRadian();
+        let stepRadian = circle.getStepRadians();
         let stepCount = circle.getStepCount();
         let distanceTravelled = arc * stepCount;
         let arcToParentRadians = 0;
-        let parantRadians = 0;
+        let parantRadians = circle.getParentRadians();
         let radiusRelative = 0;
         let parentX0 = circle.x0;
         let parentY0 = circle.y0;
 
         if(typeof circle.parent !== 'undefined') {
             arcToParentRadians = (distanceTravelled / circle.parent.radius);
-            parantRadians = circle.parent.radians;
             parentX0 = circle.parent.x0;
             parentY0 = circle.parent.y0;
 
@@ -125,7 +134,7 @@ class Engine {
     }
 
     moveCircle(circle) {
-        let stepRadian = circle.getStepRadian();
+        let stepRadian = circle.getStepRadians();
 
         if(circle.direction === 'cw') {
             circle.radians += stepRadian;
