@@ -7,7 +7,7 @@ class Engine {
         // Milliseconds between each loop
         this.interval = 1;
         // Default number of steps in a circle
-        this.steps = 1000;
+        this.steps = 0;
         // Area dimensions
         this.height = (typeof options.height !== 'undefined') ? options.height : 700;
         this.width = (typeof options.width !== 'undefined') ? options.width : 700;
@@ -67,6 +67,7 @@ class Engine {
         let arc = circle.getArc();
         let stepRadian = circle.getStepRadian();
         let stepCount = circle.getStepCount();
+        let distanceTravelled = arc * stepCount;
         let arcToParentRadians = 0;
         let parantRadians = 0;
         let radiusRelative = 0;
@@ -74,6 +75,7 @@ class Engine {
         let parentY0 = circle.y0;
 
         if(typeof circle.parent !== 'undefined') {
+            arcToParentRadians = (distanceTravelled / circle.parent.radius);
             parantRadians = circle.parent.radians;
             parentX0 = circle.parent.x0;
             parentY0 = circle.parent.y0;
@@ -85,46 +87,35 @@ class Engine {
                 radiusRelative = circle.parent.radius + circle.radius;
             }
 
-            // Update rotation based on parent
-            if (circle.parent.direction === 'cw') {
-                //circle.radians += circle.parent.getStepRadian();
-            } else {
-                //circle.radians -= circle.parent.getStepRadian();
-            }
-
             // If current circle needs to roll
             if(circle.steps > 0) {
-                if(circle.stepCount > 0) {
-                    arcToParentRadians = (arc / circle.parent.radius) * stepCount;
-                }
-
                 // Radians changed in one step
                 if (circle.direction === 'cw') {
                     if(circle.position === 'inside') {
-                        circle.radians -= arcToParentRadians;
+                        //parantRadians -= arcToParentRadians;
                     } else {
-                        circle.radians += arcToParentRadians;
+                        //parantRadians += arcToParentRadians;
                     }
                 } else {
                     if(circle.position === 'inside') {
-                        circle.radians += arcToParentRadians;
+                        //parantRadians += arcToParentRadians;
                     } else {
-                        circle.radians -= arcToParentRadians;
+                        //parantRadians -= arcToParentRadians;
                     }
                 }
             }
         }
 
-        circle.x0 = parentX0 + (Math.cos(circle.radians + parantRadians) * radiusRelative);
-        circle.y0 = parentY0 + (Math.sin(circle.radians + parantRadians) * radiusRelative);
+        circle.x0 = parentX0 + (Math.cos(parantRadians + arcToParentRadians) * radiusRelative);
+        circle.y0 = parentY0 + (Math.sin(parantRadians + arcToParentRadians) * radiusRelative);
 
         // New x1 & y1 to reflect change in radians
-        circle.x1 = circle.x0 + (Math.cos(circle.radians + parantRadians) * circle.radius);
-        circle.y1 = circle.y0 + (Math.sin(circle.radians + parantRadians) * circle.radius);
+        circle.x1 = circle.x0 + (Math.cos(parantRadians + arcToParentRadians + circle.radians) * circle.radius);
+        circle.y1 = circle.y0 + (Math.sin(parantRadians + arcToParentRadians + circle.radians) * circle.radius);
 
         // New x2 & y2 to reflect change in radians
-        circle.x2 = circle.x0 + (Math.cos(circle.radians + parantRadians) * (circle.radius + circle.pointOffset));
-        circle.y2 = circle.y0 + (Math.sin(circle.radians + parantRadians) * (circle.radius + circle.pointOffset));
+        circle.x2 = circle.x0 + (Math.cos(parantRadians + arcToParentRadians + circle.radians) * (circle.radius + circle.pointOffset));
+        circle.y2 = circle.y0 + (Math.sin(parantRadians + arcToParentRadians + circle.radians) * (circle.radius + circle.pointOffset));
     }
 
     calculateCircles() {

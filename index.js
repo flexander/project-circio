@@ -18,9 +18,10 @@ document.addEventListener("DOMContentLoaded", function() {
     engine.addCallback(painter.drawCircles.bind(painter));
 
     A = {
-        radius: 80,
+        radius: 40,
         direction: 'cw',
-        //steps: 0,
+        steps: 2000,
+        y0: 150
     };
 
     B = {
@@ -28,12 +29,23 @@ document.addEventListener("DOMContentLoaded", function() {
         radius: 40,
         position: 'outside',
         //direction: 'ccw',
-        //steps: 0
+        //steps: 2000,
+        pointOffset: 20
+    };
+
+    C = {
+        parent: B,
+        radius: 40,
+        position: 'outside',
+        //direction: 'ccw',
+        //steps: 2000,
+        pointOffset: 40
     }
 
     engine.addCircles([
         A,
         B,
+        C,
     ]).calculateCircles();
 
     painter.drawCircles().showActions();
