@@ -62,6 +62,7 @@ class Painter {
                 this.drawPoint(circle);
             }
         });
+        return this;
     }
 
     drawRotation (circle) {

@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", function() {
         paused: false
     });
 
+    window.engine = engine;
+
     const painter = new Painter(engine, {
         canvasArea: document.querySelector('#canvas-area'),
         background: "#000",
@@ -16,32 +18,34 @@ document.addEventListener("DOMContentLoaded", function() {
     engine.addCallback(painter.drawCircles.bind(painter));
 
     A = {
-        radius: 80,
-        steps: 1000,
+        radius: 20,
+        direction: 'cw',
+        //steps: 2000,
+        y0: 150
     };
 
     B = {
         parent: A,
-        radius: 80,
+        radius: 20,
         position: 'outside',
-        steps: 900,
-        direction: 'ccw',
-    }
+        //direction: 'ccw',
+        steps: 2000,
+    };
 
     C = {
         parent: B,
-        radius: 40,
-        steps: 100,
-        draw: true,
-        color: 'red'
+        radius: 20,
+        position: 'outside',
+        //direction: 'ccw',
+        //steps: 2000,
     }
 
     engine.addCircles([
         A,
         B,
         C,
-    ]);
+    ]).calculateCircles();
 
-    painter.showActions();
+    painter.drawCircles().showActions();
     engine.run();
 });
