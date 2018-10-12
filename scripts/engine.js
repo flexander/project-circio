@@ -75,27 +75,30 @@ class Engine {
                 radiusRelative = circle.parent.radius + circle.radius;
             }
 
+            // Update rotation based on parent
+            if (circle.parent.direction === 'cw') {
+                circle.radians += circle.parent.getStepRadian();
+            } else {
+                circle.radians -= circle.parent.getStepRadian();
+            }
+
             // If current circle needs to roll
             if(circle.steps > 0) {
                 if(circle.stepCount > 0) {
-                    arcToParentRadians = (arc / circle.parent.radius) * circle.stepCount;
+                    arcToParentRadians = (arc / circle.parent.radius) * stepCount;
                 }
 
                 // Radians changed in one step
                 if (circle.direction === 'cw') {
                     if(circle.position === 'inside') {
-                        circle.radians += (stepRadian * stepCount);
                         circle.radians -= arcToParentRadians;
                     } else {
-                        circle.radians += (circle.step * stepCount);
                         circle.radians += arcToParentRadians;
                     }
                 } else {
                     if(circle.position === 'inside') {
-                        circle.radians -= (circle.step * stepCount);
                         circle.radians += arcToParentRadians;
                     } else {
-                        circle.radians -= (circle.step * stepCount);
                         circle.radians -= arcToParentRadians;
                     }
                 }
