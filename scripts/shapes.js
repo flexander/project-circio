@@ -72,4 +72,14 @@ export class Circle extends Shape {
             (this.parent.x1 - this.parent.x0) // Delta X
         );
     }
+
+    move () {
+        let stepRadian = this.getStepRadians();
+
+        if(this.direction === 'cw') {
+            this.radians += stepRadian;
+        } else {
+            this.radians -= stepRadian;
+        }
+    }
 }

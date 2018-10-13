@@ -86,16 +86,6 @@ export default class Engine {
         });
     }
 
-    moveCircle(circle) {
-        let stepRadian = circle.getStepRadians();
-
-        if(circle.direction === 'cw') {
-            circle.radians += stepRadian;
-        } else {
-            circle.radians -= stepRadian;
-        }
-    }
-
     exportCircles (encode = true) {
         let data = JSON.stringify(this.list);
         if(encode === true) {
@@ -130,7 +120,7 @@ export default class Engine {
             if(this.paused === false) {
                 this.list.forEach(circle => {
                     this.calculateCircle(circle);
-                    this.moveCircle(circle);
+                    circle.move();
                 });
 
                 this.callbacks.forEach(callback => {
