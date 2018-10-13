@@ -1,3 +1,5 @@
+import {Circle} from './shapes.js';
+
 export default class Engine {
     constructor (options) {
         // List of circles
@@ -16,49 +18,18 @@ export default class Engine {
     }
 
     addCircle (circle) {
-        circle.x0 = (typeof circle.x0 !== 'undefined') ? circle.x0 : this.width / 2;
-        circle.y0 = (typeof circle.y0 !== 'undefined') ? circle.y0 : this.height / 2;
-        circle.parentId = (typeof circle.parent !== 'undefined') ? circle.parent.id: false;
-        circle.direction = (typeof circle.direction !== 'undefined') ? circle.direction: 'cw';
-        circle.position = (typeof circle.position !== 'undefined') ? circle.position: 'inside';
-        circle.radians = (typeof circle.radians !== 'undefined') ? circle.radians: 0;
-        circle.pointOffset = (typeof circle.pointOffset !== 'undefined') ? circle.pointOffset: 0;
-        circle.steps = (typeof circle.steps !== 'undefined') ? circle.steps: this.steps;
-
-        circle.getStepRadians = function () {
-            let stepRadian = 0;
-            if(this.steps > 0) {
-                stepRadian = (360/this.steps) * (Math.PI/180);
+        if(!(circle instanceof Circle)) {
+            throw 'This object is not a circle';
+        }
+        // Center Root circles
+        if(typeof circle.parent === 'undefined') {
+            if(!Number.isInteger(circle.x0)) {
+                circle.x0 = this.width/2;
             }
-            return stepRadian;
-        }.bind(circle);
-
-        circle.getArc = function () {
-            let arc = 0;
-            if(this.steps > 0) {
-                arc = this.radius * this.getStepRadians();
+            if(!Number.isInteger(circle.y0)) {
+                circle.y0 = this.height/2;
             }
-            return arc;
-        }.bind(circle);
-
-        circle.getStepCount = function () {
-            let stepCount = 0;
-            if(this.steps > 0) {
-                stepCount = this.radians / this.getStepRadians();
-            }
-            return stepCount;
-        }.bind(circle);
-
-        circle.getParentRadians = function () {
-            if(typeof this.parent === 'undefined') {
-                return 0;
-            }
-
-            return Math.atan2(
-                (this.parent.y1 - this.parent.y0), // Delta Y
-                (this.parent.x1 - this.parent.x0) // Delta X
-            );
-        }.bind(circle);
+        }
 
         this.list.push(circle);
         circle.id = this.list.indexOf(circle);
