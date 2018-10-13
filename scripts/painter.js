@@ -13,13 +13,20 @@ export default class Painter {
         this.showGuide = options.showGuide;
         this.canvasArea = options.canvasArea;
 
+        this.brushes = [];
+
         this.draw = (typeof options.draw !== 'undefined') ? options.draw : true;
         this.color = (typeof options.color !== 'undefined') ? options.color : '#FFF';
-        this.background = (typeof options.background !== 'undefined') ? options.background : '#050490';
+        this.backgroundFill = (typeof options.backgroundFill !== 'undefined') ? options.backgroundFill : '#050490';
 
         this.canvasArea.style.background = this.background;
         this.canvasArea.style.width = this.width + 'px';
         this.canvasArea.style.height = this.height + 'px';
+
+        this.background = document.createElement('canvas');
+        this.background.setAttribute('id', 'background-canvas');
+        this.canvasArea.appendChild(this.background);
+        this.backgroundContext = this.background.getContext("2d");
 
         this.canvas = document.createElement('canvas');
         this.canvas.setAttribute('id', 'main-canvas');
@@ -36,6 +43,11 @@ export default class Painter {
             c.setAttribute('width', this.canvasArea.style.width);
             c.style.position = 'absolute';
         });
+
+        this.backgroundContext.beginPath();
+        this.backgroundContext.rect(0, 0, this.width, this.height);
+        this.backgroundContext.fillStyle = this.backgroundFill;
+        this.backgroundContext.fill();
     }
 
     drawCircle (circle) {
