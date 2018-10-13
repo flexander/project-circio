@@ -31,7 +31,6 @@ export class Circle extends Shape {
             position : (typeof options.position !== 'undefined') ? options.position: 'inside',
             steps : (typeof options.steps !== 'undefined') ? options.steps: 0,
             radians : (typeof options.radians !== 'undefined') ? options.radians: 0,
-            pointOffset : (typeof options.pointOffset !== 'undefined') ? options.pointOffset: 0,
         };
         Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
     }
