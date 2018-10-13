@@ -17,28 +17,26 @@ document.addEventListener("DOMContentLoaded", function() {
         draw: true,
     });
 
-    engine.addCallback(painter.drawCircles.bind(painter));
-
-    let A = {
+    const A = new Circio.Circle({
         radius: 100,
         direction: 'cw',
         steps: 2000,
-    };
+    });
 
-    let B = {
-        parent: A,
+    const B = new Circio.Circle({
         radius: 40,
         steps: 2000,
-    };
+        parent: A
+    });
 
-    let C = {
-        parent: B,
+    const C = new Circio.Circle({
         radius: 20,
         steps: 200,
         pointOffset: 30,
         draw: true,
-        color: '#0044ff'
-    }
+        color: '#0044ff',
+        parent: B
+    });
 
     engine.addCircles([
         A,
@@ -47,5 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
     ]).calculateCircles();
 
     painter.drawCircles().showActions();
+
+    engine.addCallback(painter.drawCircles.bind(painter));
     engine.run();
 });
