@@ -32,7 +32,6 @@ export default class Painter {
         this.guideContext = this.guide.getContext("2d");
 
         this.canvasArea.querySelectorAll('canvas').forEach(c => {
-            console.log(this.canvasArea.style.height);
             c.setAttribute('height', this.canvasArea.style.height);
             c.setAttribute('width', this.canvasArea.style.width);
             c.style.position = 'absolute';
