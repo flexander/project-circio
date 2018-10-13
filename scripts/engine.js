@@ -47,11 +47,10 @@ export default class Engine {
 
     calculateCircle (circle) {
         let arc = circle.getArc();
-        let stepRadian = circle.getStepRadians();
         let stepCount = circle.getStepCount();
         let distanceTravelled = arc * stepCount;
         let arcToParentRadians = 0;
-        let parantRadians = circle.getParentRadians();
+        let parentRadians = circle.getParentRadians();
         let radiusRelative = 0;
         let parentX0 = circle.x0;
         let parentY0 = circle.y0;
@@ -73,12 +72,12 @@ export default class Engine {
             }
         }
 
-        circle.x0 = parentX0 + (Math.cos(parantRadians + arcToParentRadians) * radiusRelative);
-        circle.y0 = parentY0 + (Math.sin(parantRadians + arcToParentRadians) * radiusRelative);
+        circle.x0 = parentX0 + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
+        circle.y0 = parentY0 + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
 
         // New x1 & y1 to reflect change in radians
-        circle.x1 = circle.x0 + (Math.cos(parantRadians + arcToParentRadians + circle.radians) * circle.radius);
-        circle.y1 = circle.y0 + (Math.sin(parantRadians + arcToParentRadians + circle.radians) * circle.radius);
+        circle.x1 = circle.x0 + (Math.cos(parentRadians + arcToParentRadians + circle.radians) * circle.radius);
+        circle.y1 = circle.y0 + (Math.sin(parentRadians + arcToParentRadians + circle.radians) * circle.radius);
     }
 
     calculateCircles() {
