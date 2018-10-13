@@ -17,6 +17,7 @@ export default class Painter {
 
         this.draw = (typeof options.draw !== 'undefined') ? options.draw : true;
         this.color = (typeof options.color !== 'undefined') ? options.color : '#FFF';
+        this.point = (typeof options.point !== 'undefined') ? options.point : 0.5;
         this.backgroundFill = (typeof options.backgroundFill !== 'undefined') ? options.backgroundFill : '#050490';
 
         this.canvasArea.style.background = this.background;
@@ -50,6 +51,20 @@ export default class Painter {
         this.backgroundContext.fill();
     }
 
+    addCircleBrush (circleId, options) {
+        let settings = {
+            color: (typeof options.color !== 'undefined') ? options.color : this.color,
+            point: (typeof options.point !== 'undefined') ? options.point : this.point,
+            offset: (typeof options.offset !== 'undefined') ? options.offset : 0,
+        };
+
+        if(typeof this.brushes[circleId] === 'undefined') {
+            this.brushes[circleId] = [];
+        }
+
+        this.brushes[circleId].push(settings);
+    }
+
     drawCircle (circle) {
         let context = this.guideContext;
         let color = (circle.color) ? circle.color: this.color;
@@ -59,7 +74,7 @@ export default class Painter {
         context.arc(circle.x0,circle.y0,circle.radius,0,2*Math.PI);
         context.stroke();
 
-        this.drawRotation(circle);
+        this.drawCircleRotation(circle);
     };
 
     drawCircles () {
@@ -76,7 +91,7 @@ export default class Painter {
         return this;
     }
 
-    drawRotation (circle) {
+    drawCircleRotation (circle) {
         let context = this.guideContext;
         let color = (circle.color) ? circle.color: this.color;
 
