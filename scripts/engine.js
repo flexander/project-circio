@@ -130,8 +130,13 @@ class Engine {
         }
     }
 
-    exportCircles () {
-        return btoa(JSON.stringify(this.list));
+    exportCircles (encode = true) {
+        let data = JSON.stringify(this.list);
+        if(encode === true) {
+            return btoa(data);
+        }
+
+        return data;
     }
 
     importCircles (data) {
