@@ -1,4 +1,4 @@
-class Painter {
+export default class Painter {
     constructor (engine, options) {
 
         if(typeof engine === "undefined") {
