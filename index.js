@@ -1,8 +1,8 @@
-import * as Circio from './scripts/circio.js';
+import {Engine, Painter, Circle} from './scripts/circio.js';
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    const engine = new Circio.Engine({
+    const engine = new Engine({
         width: 700,
         height: 700,
         paused: false
@@ -10,26 +10,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.engine = engine;
 
-    const painter = new Circio.Painter(engine, {
+    const painter = new Painter(engine, {
         canvasArea: document.querySelector('#canvas-area'),
         background: "#000",
         showGuide: true,
         draw: true,
     });
 
-    const A = new Circio.Circle({
+    const A = new Circle({
         radius: 100,
         direction: 'cw',
         steps: 2000,
     });
 
-    const B = new Circio.Circle({
+    const B = new Circle({
         radius: 40,
         steps: 2000,
         parent: A
     });
 
-    const C = new Circio.Circle({
+    const C = new Circle({
         radius: 20,
         steps: 200,
         draw: true,
