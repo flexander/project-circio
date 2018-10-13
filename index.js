@@ -1,6 +1,8 @@
+import * as Circio from './scripts/circio.js';
+
 document.addEventListener("DOMContentLoaded", function() {
 
-    const engine = new Engine({
+    const engine = new Circio.Engine({
         width: 700,
         height: 700,
         paused: false
@@ -8,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.engine = engine;
 
-    const painter = new Painter(engine, {
+    const painter = new Circio.Painter(engine, {
         canvasArea: document.querySelector('#canvas-area'),
         background: "#000",
         showGuide: true,
@@ -17,27 +19,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
     engine.addCallback(painter.drawCircles.bind(painter));
 
-    A = {
-        radius: 20,
+    let A = {
+        radius: 100,
         direction: 'cw',
-        //steps: 2000,
-        y0: 150
-    };
-
-    B = {
-        parent: A,
-        radius: 20,
-        position: 'outside',
-        //direction: 'ccw',
         steps: 2000,
     };
 
-    C = {
+    let B = {
+        parent: A,
+        radius: 40,
+        steps: 2000,
+    };
+
+    let C = {
         parent: B,
         radius: 20,
-        position: 'outside',
-        //direction: 'ccw',
-        //steps: 2000,
+        steps: 200,
+        pointOffset: 30,
+        draw: true,
+        color: '#0044ff'
     }
 
     engine.addCircles([
