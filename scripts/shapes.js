@@ -2,7 +2,7 @@ class Shape {
     constructor(options) {}
 
     setParent (parent) {
-        if(!(parent instanceof this)) {
+        if(!(parent instanceof Shape)) {
             throw 'This parent is not a shape';
         }
 
@@ -18,6 +18,10 @@ export class Circle extends Shape {
             throw 'A circle needs a radius';
         }
 
+        if(typeof options.parent !== 'undefined') {
+            this.setParent(options.parent);
+        }
+
         this.settings = {
             radius : options.radius,
             x0 : (typeof options.x0 !== 'undefined') ? options.x0 : false,
@@ -29,7 +33,6 @@ export class Circle extends Shape {
             radians : (typeof options.radians !== 'undefined') ? options.radians: 0,
             pointOffset : (typeof options.pointOffset !== 'undefined') ? options.pointOffset: 0,
         };
-
         Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
     }
 
@@ -38,6 +41,7 @@ export class Circle extends Shape {
         if(this.steps > 0) {
             stepRadian = (360/this.steps) * (Math.PI/180);
         }
+
         return stepRadian;
     }
 
@@ -46,6 +50,7 @@ export class Circle extends Shape {
         if(this.steps > 0) {
             arc = this.radius * this.getStepRadians();
         }
+
         return arc;
     }
 
@@ -54,6 +59,7 @@ export class Circle extends Shape {
         if(this.steps > 0) {
             stepCount = this.radians / this.getStepRadians();
         }
+
         return stepCount;
     }
 
