@@ -1,4 +1,4 @@
-class Engine {
+export default class Engine {
     constructor (options) {
         // List of circles
         this.list = [];
