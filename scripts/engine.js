@@ -79,10 +79,6 @@ export default class Engine {
         // New x1 & y1 to reflect change in radians
         circle.x1 = circle.x0 + (Math.cos(parantRadians + arcToParentRadians + circle.radians) * circle.radius);
         circle.y1 = circle.y0 + (Math.sin(parantRadians + arcToParentRadians + circle.radians) * circle.radius);
-
-        // New x2 & y2 to reflect change in radians
-        circle.x2 = circle.x0 + (Math.cos(parantRadians + arcToParentRadians + circle.radians) * (circle.radius + circle.pointOffset));
-        circle.y2 = circle.y0 + (Math.sin(parantRadians + arcToParentRadians + circle.radians) * (circle.radius + circle.pointOffset));
     }
 
     calculateCircles() {

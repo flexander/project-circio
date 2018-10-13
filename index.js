@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const C = new Circio.Circle({
         radius: 20,
         steps: 200,
-        pointOffset: 30,
         draw: true,
         color: '#0044ff',
         parent: B
