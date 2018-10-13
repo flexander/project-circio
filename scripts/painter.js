@@ -1,7 +1,7 @@
 export default class Painter {
     constructor (engine, options) {
 
-        if(typeof engine === "undefined") {
+        if (typeof engine === "undefined") {
             throw "Please create an engine";
         }
 
@@ -51,18 +51,17 @@ export default class Painter {
         this.backgroundContext.fill();
     }
 
-    addCircleBrush (circleId, options) {
+    addCircleBrush (circle, options) {
         let settings = {
             color: (typeof options.color !== 'undefined') ? options.color : this.color,
             point: (typeof options.point !== 'undefined') ? options.point : this.point,
             offset: (typeof options.offset !== 'undefined') ? options.offset : 0,
         };
 
-        if(typeof this.brushes[circleId] === 'undefined') {
-            this.brushes[circleId] = [];
+        if (typeof this.brushes[circle.id] === 'undefined') {
+            this.brushes[circle.id] = [];
         }
-
-        this.brushes[circleId].push(settings);
+        this.brushes[circle.id].push(settings);
     }
 
     drawCircle (circle) {
@@ -81,11 +80,12 @@ export default class Painter {
         this.guideContext.clearRect(0,0,this.width, this.height);
 
         this.engine.list.forEach(circle => {
-            if(this.showGuide === true) {
+            if (this.showGuide === true) {
                 this.drawCircle(circle);
             }
-            if(this.draw === true && circle.draw === true) {
-                this.drawPoint(circle);
+
+            if (typeof this.brushes[circle.id] !== 'undefined' && this.brushes[circle.id].length > 0) {
+                this.drawPoints(circle);
             }
         });
         return this;
@@ -102,15 +102,14 @@ export default class Painter {
         context.fill();
     };
 
-    drawPoint (circle) {
+    drawPoints (circle) {
         let context = this.context;
-        let color = (circle.color) ? circle.color: this.color;
-        let point = circle.point ? circle.point: '0.5';
-
-        context.fillStyle = color;
-        context.beginPath();
-        context.arc(circle.x2, circle.y2, point, 0, 2*Math.PI);
-        context.fill();
+        this.brushes[circle.id].forEach(brush => {
+            context.fillStyle = brush.color;
+            context.beginPath();
+            context.arc(circle.x1, circle.y1, brush.point, 0, 2*Math.PI);
+            context.fill();
+        });
     };
 
     clear () {
@@ -133,7 +132,7 @@ export default class Painter {
         clear.classList.add('clear');
         clear.textContent = 'Clear';
 
-        if(this.engine.paused) {
+        if (this.engine.paused) {
             paused.innerHTML = 'play';
         } else {
             paused.innerHTML = 'pause';
@@ -153,7 +152,7 @@ export default class Painter {
         // Toggle pause state
         paused.addEventListener('click', e => {
             this.engine.paused = this.engine.paused === false;
-            if(this.engine.paused) {
+            if (this.engine.paused) {
                 e.target.innerHTML = 'Play';
             } else {
                 e.target.innerHTML = 'Pause';
