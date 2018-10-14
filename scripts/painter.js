@@ -105,9 +105,14 @@ export default class Painter {
     drawPoints (circle) {
         let context = this.context;
         this.brushes[circle.id].forEach(brush => {
+            const radians = circle.getRadians();
+            const radius = circle.radius + brush.offset;
+            const x = circle.x0 + (Math.cos(radians) * radius);
+            const y = circle.y0 + (Math.sin(radians) * radius);
+
             context.fillStyle = brush.color;
             context.beginPath();
-            context.arc(circle.x1, circle.y1, brush.point, 0, 2*Math.PI);
+            context.arc(x, y, brush.point, 0, 2*Math.PI);
             context.fill();
         });
     };

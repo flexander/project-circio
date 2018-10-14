@@ -62,15 +62,19 @@ export class Circle extends Shape {
         return stepCount;
     }
 
+    getRadians () {
+        return Math.atan2(
+            (this.y1 - this.y0), // Delta Y
+            (this.x1 - this.x0) // Delta X
+        );
+    }
+
     getParentRadians () {
         if(typeof this.parent === 'undefined') {
             return 0;
         }
 
-        return Math.atan2(
-            (this.parent.y1 - this.parent.y0), // Delta Y
-            (this.parent.x1 - this.parent.x0) // Delta X
-        );
+        return this.parent.getRadians();
     }
 
     move () {
