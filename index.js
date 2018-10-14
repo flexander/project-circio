@@ -17,19 +17,22 @@ document.addEventListener("DOMContentLoaded", function() {
     const A = new Circle({
         radius: 100,
         direction: 'cw',
-        steps: 2000,
+        //steps: 2000,
     });
 
     const B = new Circle({
         radius: 40,
-        steps: 2000,
-        parent: A
+        steps: 4000,
+        parent: A,
+        position: 'outside',
     });
 
     const C = new Circle({
         radius: 20,
-        steps: 200,
-        parent: B
+        steps: 50,
+        parent: B,
+        //position: 'outside',
+        direction: 'ccw'
     });
 
     engine.addCircles([A, B, C]).calculateCircles();
@@ -39,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
     painter.addCircleBrush(C, {offset:50, color:'#99ff00'});
     painter.addCircleBrush(C, {offset:-50, color:'#f99f00'});
 
-    painter.drawCircles().showActions();
+    painter.showActions();
     engine.addCallback(painter.drawCircles.bind(painter));
     engine.run();
 });
