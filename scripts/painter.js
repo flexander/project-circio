@@ -120,7 +120,7 @@ export default class Painter {
                 guides.fill();
 
                 guides.beginPath();
-                guides.moveTo(circle.x0, circle.y0);
+                guides.moveTo(circle.x1, circle.y1);
                 guides.lineTo(x, y);
                 guides.stroke();
             }
