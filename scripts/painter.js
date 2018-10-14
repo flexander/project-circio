@@ -103,17 +103,29 @@ export default class Painter {
     };
 
     drawPoints (circle) {
-        let context = this.context;
+        let canvas = this.context;
+        let guides = this.guideContext;
         this.brushes[circle.id].forEach(brush => {
             const radians = circle.getRadians();
             const radius = circle.radius + brush.offset;
             const x = circle.x0 + (Math.cos(radians) * radius);
             const y = circle.y0 + (Math.sin(radians) * radius);
 
-            context.fillStyle = brush.color;
-            context.beginPath();
-            context.arc(x, y, brush.point, 0, 2*Math.PI);
-            context.fill();
+            canvas.fillStyle = brush.color;
+            guides.fillStyle = brush.color;
+
+            guides.beginPath();
+            guides.arc(x, y, 3, 0, 2*Math.PI);
+            guides.fill();
+
+            guides.beginPath();
+            guides.moveTo(circle.x0, circle.y0);
+            guides.lineTo(x, y);
+            guides.stroke();
+
+            canvas.beginPath();
+            canvas.arc(x, y, brush.point, 0, 2*Math.PI);
+            canvas.fill();
         });
     };
 
