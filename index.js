@@ -1,4 +1,4 @@
-import {Engine, Painter, Circle} from './scripts/circio.js';
+import {Engine, Painter, Controls, Circle} from './scripts/circio.js';
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", function() {
         backgroundFill: "#000",
         showGuide: true,
     });
+
+    const controls = window.controls = new Controls(engine, painter, {});
 
     const A = new Circle({
         radius: 100,
@@ -29,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const C = new Circle({
         radius: 20,
-        steps: 50,
+        steps: 500,
         parent: B,
         position: 'outside',
         direction: 'ccw'
@@ -42,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
     painter.addCircleBrush(C, {offset:-80, color:'#99ff00'});
     painter.addCircleBrush(C, {offset:-50, color:'#f99f00'});
 
-    painter.showActions();
+    controls.showActions();
     engine.addCallback(painter.drawCircles.bind(painter));
     engine.run();
 });
