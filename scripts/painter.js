@@ -1,7 +1,7 @@
 export default class Painter {
     constructor (engine, options) {
 
-        if(typeof engine === "undefined") {
+        if (typeof engine === "undefined") {
             throw "Please create an engine";
         }
 
@@ -13,13 +13,21 @@ export default class Painter {
         this.showGuide = options.showGuide;
         this.canvasArea = options.canvasArea;
 
+        this.brushes = [];
+
         this.draw = (typeof options.draw !== 'undefined') ? options.draw : true;
         this.color = (typeof options.color !== 'undefined') ? options.color : '#FFF';
-        this.background = (typeof options.background !== 'undefined') ? options.background : '#050490';
+        this.point = (typeof options.point !== 'undefined') ? options.point : 0.5;
+        this.backgroundFill = (typeof options.backgroundFill !== 'undefined') ? options.backgroundFill : '#050490';
 
         this.canvasArea.style.background = this.background;
         this.canvasArea.style.width = this.width + 'px';
         this.canvasArea.style.height = this.height + 'px';
+
+        this.background = document.createElement('canvas');
+        this.background.setAttribute('id', 'background-canvas');
+        this.canvasArea.appendChild(this.background);
+        this.backgroundContext = this.background.getContext("2d");
 
         this.canvas = document.createElement('canvas');
         this.canvas.setAttribute('id', 'main-canvas');
@@ -32,11 +40,28 @@ export default class Painter {
         this.guideContext = this.guide.getContext("2d");
 
         this.canvasArea.querySelectorAll('canvas').forEach(c => {
-            console.log(this.canvasArea.style.height);
             c.setAttribute('height', this.canvasArea.style.height);
             c.setAttribute('width', this.canvasArea.style.width);
             c.style.position = 'absolute';
         });
+
+        this.backgroundContext.beginPath();
+        this.backgroundContext.rect(0, 0, this.width, this.height);
+        this.backgroundContext.fillStyle = this.backgroundFill;
+        this.backgroundContext.fill();
+    }
+
+    addCircleBrush (circle, options) {
+        let settings = {
+            color: (typeof options.color !== 'undefined') ? options.color : this.color,
+            point: (typeof options.point !== 'undefined') ? options.point : this.point,
+            offset: (typeof options.offset !== 'undefined') ? options.offset : 0,
+        };
+
+        if (typeof this.brushes[circle.id] === 'undefined') {
+            this.brushes[circle.id] = [];
+        }
+        this.brushes[circle.id].push(settings);
     }
 
     drawCircle (circle) {
@@ -48,24 +73,25 @@ export default class Painter {
         context.arc(circle.x0,circle.y0,circle.radius,0,2*Math.PI);
         context.stroke();
 
-        this.drawRotation(circle);
+        this.drawCircleRotation(circle);
     };
 
     drawCircles () {
         this.guideContext.clearRect(0,0,this.width, this.height);
 
         this.engine.list.forEach(circle => {
-            if(this.showGuide === true) {
+            if (this.showGuide === true) {
                 this.drawCircle(circle);
             }
-            if(this.draw === true && circle.draw === true) {
-                this.drawPoint(circle);
+
+            if (typeof this.brushes[circle.id] !== 'undefined' && this.brushes[circle.id].length > 0) {
+                this.drawPoints(circle);
             }
         });
         return this;
     }
 
-    drawRotation (circle) {
+    drawCircleRotation (circle) {
         let context = this.guideContext;
         let color = (circle.color) ? circle.color: this.color;
 
@@ -76,15 +102,31 @@ export default class Painter {
         context.fill();
     };
 
-    drawPoint (circle) {
-        let context = this.context;
-        let color = (circle.color) ? circle.color: this.color;
-        let point = circle.point ? circle.point: '0.5';
+    drawPoints (circle) {
+        let canvas = this.context;
+        let guides = this.guideContext;
+        this.brushes[circle.id].forEach(brush => {
+            const radians = circle.getRadians();
+            const radius = circle.radius + brush.offset;
+            const x = circle.x0 + (Math.cos(radians) * radius);
+            const y = circle.y0 + (Math.sin(radians) * radius);
 
-        context.fillStyle = color;
-        context.beginPath();
-        context.arc(circle.x2, circle.y2, point, 0, 2*Math.PI);
-        context.fill();
+            canvas.fillStyle = brush.color;
+            guides.fillStyle = brush.color;
+
+            guides.beginPath();
+            guides.arc(x, y, 3, 0, 2*Math.PI);
+            guides.fill();
+
+            guides.beginPath();
+            guides.moveTo(circle.x0, circle.y0);
+            guides.lineTo(x, y);
+            guides.stroke();
+
+            canvas.beginPath();
+            canvas.arc(x, y, brush.point, 0, 2*Math.PI);
+            canvas.fill();
+        });
     };
 
     clear () {
@@ -107,7 +149,7 @@ export default class Painter {
         clear.classList.add('clear');
         clear.textContent = 'Clear';
 
-        if(this.engine.paused) {
+        if (this.engine.paused) {
             paused.innerHTML = 'play';
         } else {
             paused.innerHTML = 'pause';
@@ -127,7 +169,7 @@ export default class Painter {
         // Toggle pause state
         paused.addEventListener('click', e => {
             this.engine.paused = this.engine.paused === false;
-            if(this.engine.paused) {
+            if (this.engine.paused) {
                 e.target.innerHTML = 'Play';
             } else {
                 e.target.innerHTML = 'Pause';

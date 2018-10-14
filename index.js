@@ -2,19 +2,16 @@ import {Engine, Painter, Circle} from './scripts/circio.js';
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    const engine = new Engine({
+    const engine = window.engine = new Engine({
         width: 700,
         height: 700,
         paused: false
     });
 
-    window.engine = engine;
-
-    const painter = new Painter(engine, {
+    const painter = window.painter = new Painter(engine, {
         canvasArea: document.querySelector('#canvas-area'),
-        background: "#000",
+        backgroundFill: "#000",
         showGuide: true,
-        draw: true,
     });
 
     const A = new Circle({
@@ -32,19 +29,17 @@ document.addEventListener("DOMContentLoaded", function() {
     const C = new Circle({
         radius: 20,
         steps: 200,
-        draw: true,
-        color: '#0044ff',
         parent: B
     });
 
-    engine.addCircles([
-        A,
-        B,
-        C,
-    ]).calculateCircles();
+    engine.addCircles([A, B, C]).calculateCircles();
+
+    painter.addCircleBrush(C, {offset:10, color:'#0099ff'});
+    painter.addCircleBrush(C, {offset:-10, color:'#9900ff'});
+    painter.addCircleBrush(C, {offset:50, color:'#99ff00'});
+    painter.addCircleBrush(C, {offset:-50, color:'#f99f00'});
 
     painter.drawCircles().showActions();
-
     engine.addCallback(painter.drawCircles.bind(painter));
     engine.run();
 });
