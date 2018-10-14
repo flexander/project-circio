@@ -114,14 +114,16 @@ export default class Painter {
             canvas.fillStyle = brush.color;
             guides.fillStyle = brush.color;
 
-            guides.beginPath();
-            guides.arc(x, y, 3, 0, 2*Math.PI);
-            guides.fill();
+            if (this.showGuide === true) {
+                guides.beginPath();
+                guides.arc(x, y, 3, 0, 2 * Math.PI);
+                guides.fill();
 
-            guides.beginPath();
-            guides.moveTo(circle.x0, circle.y0);
-            guides.lineTo(x, y);
-            guides.stroke();
+                guides.beginPath();
+                guides.moveTo(circle.x0, circle.y0);
+                guides.lineTo(x, y);
+                guides.stroke();
+            }
 
             canvas.beginPath();
             canvas.arc(x, y, brush.point, 0, 2*Math.PI);
