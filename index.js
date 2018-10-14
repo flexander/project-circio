@@ -24,22 +24,22 @@ document.addEventListener("DOMContentLoaded", function() {
         radius: 40,
         steps: 4000,
         parent: A,
-        position: 'outside',
+        //position: 'outside',
     });
 
     const C = new Circle({
         radius: 20,
         steps: 50,
         parent: B,
-        //position: 'outside',
+        position: 'outside',
         direction: 'ccw'
     });
 
     engine.addCircles([A, B, C]).calculateCircles();
 
-    painter.addCircleBrush(C, {offset:10, color:'#0099ff'});
-    painter.addCircleBrush(C, {offset:-10, color:'#9900ff'});
-    painter.addCircleBrush(C, {offset:50, color:'#99ff00'});
+    painter.addCircleBrush(C, {offset:0, color:'#0099ff'});
+    painter.addCircleBrush(C, {offset:-110, color:'#9900ff'});
+    painter.addCircleBrush(C, {offset:-80, color:'#99ff00'});
     painter.addCircleBrush(C, {offset:-50, color:'#f99f00'});
 
     painter.showActions();
