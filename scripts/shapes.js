@@ -14,7 +14,7 @@ export class Circle extends Shape {
     constructor (options) {
         super(options);
 
-        if(!Number.isInteger(options.radius)) {
+        if(isNaN(options.radius)) {
             throw 'A circle needs a radius';
         }
 
