@@ -117,20 +117,24 @@ export default class Engine {
 
     run () {
         setInterval(() => {
-            if(this.paused === false) {
-                this.list.forEach(circle => {
-                    this.calculateCircle(circle);
-                    circle.move();
-                });
-
-                this.callbacks.forEach(callback => {
-                    if(typeof callback === 'function') {
-                        callback.call(null, this);
-                    }
-                });
-            }
+            this.runOnce();
         },this.interval);
     };
+
+    runOnce() {
+        if (this.paused === false) {
+            this.list.forEach(circle => {
+                this.calculateCircle(circle);
+                circle.move();
+            });
+
+            this.callbacks.forEach(callback => {
+                if (typeof callback === 'function') {
+                    callback.call(null, this);
+                }
+            });
+        }
+    }
 
     pause () {
         this.paused = true;
