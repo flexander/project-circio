@@ -56,12 +56,13 @@ export default class Painter {
             color: (typeof options.color !== 'undefined') ? options.color : this.color,
             point: (typeof options.point !== 'undefined') ? options.point : this.point,
             offset: (typeof options.offset !== 'undefined') ? options.offset : 0,
+            link: (typeof options.link !== 'undefined') ? options.link : false,
         };
 
         if (typeof this.brushes[circle.id] === 'undefined') {
             this.brushes[circle.id] = [];
         }
-        this.brushes[circle.id].push(settings);
+        this.brushes[circle.id].push(Object.assign({lastPoint: false}, JSON.parse(JSON.stringify(settings))));
     }
 
     drawCircle (circle) {
@@ -112,6 +113,7 @@ export default class Painter {
             const y = circle.y0 + (Math.sin(radians) * radius);
 
             canvas.fillStyle = brush.color;
+            canvas.strokeStyle = brush.color;
             guides.fillStyle = brush.color;
 
             if (this.showGuide === true) {
@@ -125,11 +127,29 @@ export default class Painter {
                 guides.stroke();
             }
 
-            canvas.beginPath();
-            canvas.arc(x, y, brush.point, 0, 2*Math.PI);
-            canvas.fill();
+            if(brush.link === true && brush.lastPoint !== false) {
+                canvas.beginPath();
+                canvas.moveTo(brush.lastPoint.x, brush.lastPoint.y);
+                canvas.lineTo(x, y);
+                canvas.stroke();
+            } else {
+                canvas.beginPath();
+                canvas.arc(x, y, brush.point, 0, 2*Math.PI);
+                canvas.fill();
+            }
+
+            brush.lastPoint = {x:x, y:y};
         });
     };
+
+    getRandomColor() {
+        let letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
 
     clear () {
         this.context.clearRect(0,0,this.width, this.height);
