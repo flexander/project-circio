@@ -16,7 +16,7 @@ export default class Controls {
 
     showActions () {
         let actionContainer = document.createElement('div');
-        actionContainer.classList.add('actions');
+        actionContainer.classList.add('module', 'actions');
 
         let showGuides = document.createElement('button');
         showGuides.classList.add('show-guides');
@@ -49,8 +49,6 @@ export default class Controls {
             } else {
 
             }
-
-            return;
         });
 
         // Toggle pause state
@@ -61,39 +59,50 @@ export default class Controls {
             } else {
                 e.target.innerHTML = 'Pause';
             }
-            return;
         });
 
         // clear canvas
         clear.addEventListener('click', () => {
             this.painter.clear();
-            return;
         });
 
         return this;
     }
 
     showControls() {
-
-        let controlContainer = document.createElement('div');
-        controlContainer.classList.add('circle-controls');
+        let controlsContainer = document.createElement('div');
+        controlsContainer.classList.add('module', 'controls');
 
         this.engine.list.forEach(circle => {
             let circleControls = document.createElement('div');
-            circleControls.classList.add('circle-control');
+            circleControls.classList.add('circle-controls');
             circleControls.setAttribute('data-circle-id', circle.id);
 
+            let controlHead = document.createElement('div');
+            controlHead.classList.add('section-head');
+            controlHead.innerHTML = "Circle #"+circle.id;
+
+            let controlBody = document.createElement('div');
+            controlBody.classList.add('section-body');
+
             let circleSteps = this.createControl('steps','number',{
-                legend:'circle #'+circle.id,
                 value:circle.steps,
             });
-            circleControls.append(circleSteps);
 
-            controlContainer.append(circleControls);
+            let radiusSteps = this.createControl('radius','number',{
+                legend:'circle #'+circle.id,
+                value:circle.radius,
+            });
+
+            circleControls.append(controlHead);
+            controlBody.append(circleSteps);
+            controlBody.append(radiusSteps);
+            circleControls.append(controlBody);
+
+            controlsContainer.append(circleControls);
 
             circleControls.addEventListener('input', function(event) {
                 const target = event.target;
-                const circleId = this.dataset.circleId;
                 if(!target.classList.contains('input')) {
                     return;
                 }
@@ -103,13 +112,13 @@ export default class Controls {
             });
         });
 
-        this.controlLocation.append(controlContainer);
+        this.controlLocation.append(controlsContainer);
 
         return this;
     }
 
     createControl(name, type = 'text', options = {}) {
-        let container = document.createElement('fieldset');
+        let container = document.createElement('div');
         let label = document.createElement('label');
         let input = document.createElement('input');
 
@@ -121,12 +130,6 @@ export default class Controls {
 
         if(typeof options.value !== 'undefined') {
             input.value = options.value;
-        }
-
-        if(typeof options.legend !== 'undefined') {
-            let legend = document.createElement('legend');
-            legend.innerHTML = options.legend;
-            container.append(legend);
         }
 
         container.append(label);
