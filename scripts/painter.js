@@ -114,10 +114,9 @@ export default class Painter {
             const y1 = circle.y0 + (Math.sin(radians) * circle.radius);
             const x = x1 + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
             const y = y1 + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
+            const color = (brush.color === 'random') ? this.getRandomColor(): brush.color;
 
-            canvas.fillStyle = brush.color;
-            canvas.strokeStyle = brush.color;
-            guides.fillStyle = brush.color;
+            guides.fillStyle = color;
 
             if (this.showGuide === true) {
                 guides.beginPath();
@@ -131,11 +130,13 @@ export default class Painter {
             }
 
             if(brush.link === true && brush.lastPoint !== false) {
+                canvas.strokeStyle = color;
                 canvas.beginPath();
                 canvas.moveTo(brush.lastPoint.x, brush.lastPoint.y);
                 canvas.lineTo(x, y);
                 canvas.stroke();
             } else {
+                canvas.fillStyle = color;
                 canvas.beginPath();
                 canvas.arc(x, y, brush.point, 0, 2*Math.PI);
                 canvas.fill();
