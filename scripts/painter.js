@@ -109,7 +109,6 @@ export default class Painter {
         let guides = this.guideContext;
         this.brushes[circle.id].forEach(brush => {
             const radians = circle.getRadians();
-            const radius = circle.radius + brush.offset;
             const x1 = circle.x0 + (Math.cos(radians) * circle.radius);
             const y1 = circle.y0 + (Math.sin(radians) * circle.radius);
             const x = x1 + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
