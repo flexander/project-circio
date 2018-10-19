@@ -56,6 +56,7 @@ export default class Painter {
             color: (typeof options.color !== 'undefined') ? options.color : this.color,
             point: (typeof options.point !== 'undefined') ? options.point : this.point,
             offset: (typeof options.offset !== 'undefined') ? options.offset : 0,
+            degrees: (typeof options.degrees !== 'undefined') ? options.degrees : 0,
             link: (typeof options.link !== 'undefined') ? options.link : false,
         };
 
@@ -109,8 +110,10 @@ export default class Painter {
         this.brushes[circle.id].forEach(brush => {
             const radians = circle.getRadians();
             const radius = circle.radius + brush.offset;
-            const x = circle.x0 + (Math.cos(radians) * radius);
-            const y = circle.y0 + (Math.sin(radians) * radius);
+            const x1 = circle.x0 + (Math.cos(radians) * circle.radius);
+            const y1 = circle.y0 + (Math.sin(radians) * circle.radius);
+            const x = x1 + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
+            const y = y1 + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
 
             canvas.fillStyle = brush.color;
             canvas.strokeStyle = brush.color;
