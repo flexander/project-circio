@@ -44,6 +44,12 @@ export default class Controls {
         // Toggle show guides state
         showGuides.addEventListener('click', () => {
             this.painter.showGuide = this.painter.showGuide === false;
+            if(this.painter.showGuide === true) {
+                this.painter.drawCircles();
+            } else {
+
+            }
+
             return;
         });
 
@@ -84,6 +90,17 @@ export default class Controls {
             circleControls.append(circleSteps);
 
             controlContainer.append(circleControls);
+
+            circleControls.addEventListener('input', function(event) {
+                const target = event.target;
+                const circleId = this.dataset.circleId;
+                if(!target.classList.contains('input')) {
+                    return;
+                }
+                const name = target.name;
+                const value = target.value;
+                circle[name] = value;
+            });
         });
 
         this.controlLocation.append(controlContainer);
@@ -100,6 +117,7 @@ export default class Controls {
         label.innerHTML = name;
         input.type = type;
         input.name = name;
+        input.classList.add('input');
 
         if(typeof options.value !== 'undefined') {
             input.value = options.value;
