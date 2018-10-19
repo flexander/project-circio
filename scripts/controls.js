@@ -70,33 +70,37 @@ export default class Controls {
     }
 
     showControls() {
-        let controlsContainer = document.createElement('div');
+        const controlsContainer = document.createElement('div');
         controlsContainer.classList.add('module', 'controls');
 
         this.engine.list.forEach(circle => {
-            let circleControls = document.createElement('div');
+            const circleControls = document.createElement('div');
             circleControls.classList.add('circle-controls');
             circleControls.setAttribute('data-circle-id', circle.id);
 
-            let controlHead = document.createElement('div');
+            const controlHead = document.createElement('div');
             controlHead.classList.add('section-head');
             controlHead.innerHTML = "Circle #"+circle.id;
 
-            let controlBody = document.createElement('div');
+            const controlBody = document.createElement('div');
             controlBody.classList.add('section-body');
 
-            let circleSteps = this.createControl('steps','number',{
+            const circleSteps = this.createControl('steps','number',{
                 value:circle.steps,
             });
 
-            let radiusSteps = this.createControl('radius','number',{
-                legend:'circle #'+circle.id,
+            const radiusSteps = this.createControl('radius','number',{
                 value:circle.radius,
+            });
+
+            const fixed = this.createControl('fixed','boolean',{
+                value: circle.fixed,
             });
 
             circleControls.append(controlHead);
             controlBody.append(circleSteps);
             controlBody.append(radiusSteps);
+            controlBody.append(fixed);
             circleControls.append(controlBody);
 
             controlsContainer.append(circleControls);
@@ -107,8 +111,18 @@ export default class Controls {
                     return;
                 }
                 const name = target.name;
-                const value = target.value;
-                circle[name] = value;
+
+                switch(target.type) {
+                    case 'number':
+                        const value = target.value;
+                        circle[name] = value;
+                        break;
+                    case 'checkbox':
+                        circle[name] = target.checked;
+                        console.log(circle);
+                        break;
+                }
+
             });
         });
 
@@ -117,20 +131,36 @@ export default class Controls {
         return this;
     }
 
-    createControl(name, type = 'text', options = {}) {
-        let container = document.createElement('div');
-        let label = document.createElement('label');
-        let input = document.createElement('input');
+    createControl(name, type, options = {}) {
+        const container = document.createElement('div');
+        const label = document.createElement('label');
+        let input;
 
         container.classList.add('control', "control-"+name);
         label.innerHTML = name;
-        input.type = type;
-        input.name = name;
-        input.classList.add('input');
 
-        if(typeof options.value !== 'undefined') {
-            input.value = options.value;
+        switch(type) {
+            case 'number':
+                input =  document.createElement('input');
+                input.type = 'number';
+                input.name = name;
+                if(typeof options.value !== 'undefined') {
+                    input.value = options.value;
+                }
+                break;
+            case 'boolean':
+                input =  document.createElement('input');
+                input.type = 'checkbox';
+                input.name = name;
+                input.value = true;
+                if(typeof options.value !== 'undefined' && options.value === true) {
+                    input.checked = true;
+                }
+                break;
+            default:
+                return '';
         }
+        input.classList.add('input');
 
         container.append(label);
         container.append(input);
