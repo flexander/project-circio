@@ -31,6 +31,7 @@ export class Circle extends Shape {
             position : (typeof options.position !== 'undefined') ? options.position: 'inside',
             steps : (typeof options.steps !== 'undefined') ? options.steps: 0,
             radians : (typeof options.radians !== 'undefined') ? options.radians: 0,
+            fixed : (typeof options.fixed !== 'undefined') ? options.fixed: true,
         };
         Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
     }
@@ -70,7 +71,7 @@ export class Circle extends Shape {
     }
 
     getParentRadians () {
-        if(typeof this.parent === 'undefined') {
+        if(typeof this.parent === 'undefined' || this.fixed === false) {
             return 0;
         }
 
