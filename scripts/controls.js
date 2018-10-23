@@ -69,13 +69,43 @@ export default class Controls {
         return this;
     }
 
-    showControls() {
-        const controlsContainer = document.createElement('div');
-        controlsContainer.classList.add('module', 'controls');
+    engineControls() {
+        const controlEngineContainer = document.createElement('div');
+        controlEngineContainer.classList.add('control-engine');
+
+        const controlHead = document.createElement('div');
+        controlHead.classList.add('section-head');
+        controlHead.innerHTML = "Engine";
+
+        const controlBody = document.createElement('div');
+        controlBody.classList.add('section-body');
+
+        const interval = this.createControl('interval', 'number', {
+            value: this.engine.interval,
+            target: this.engine,
+        });
+
+        const backgroundFill = this.createControl('backgroundFill', 'colour', {
+            value: this.painter.backgroundFill,
+            target: this.painter
+        });
+
+        controlBody.append(interval);
+        controlBody.append(backgroundFill);
+
+        controlEngineContainer.append(controlHead);
+        controlEngineContainer.append(controlBody);
+
+        return controlEngineContainer;
+    }
+
+    shapeControls() {
+        const controlShapesContainer = document.createElement('div');
+        controlShapesContainer.classList.add('control-shapes');
 
         this.engine.list.forEach(circle => {
             const circleControls = document.createElement('div');
-            circleControls.classList.add('circle-controls');
+            circleControls.classList.add('control-cirlce');
             circleControls.setAttribute('data-circle-id', circle.id);
 
             const controlHead = document.createElement('div');
@@ -103,7 +133,7 @@ export default class Controls {
             controlBody.append(fixed);
             circleControls.append(controlBody);
 
-            controlsContainer.append(circleControls);
+            controlShapesContainer.append(circleControls);
 
             circleControls.addEventListener('input', function(event) {
                 const target = event.target;
@@ -114,17 +144,27 @@ export default class Controls {
 
                 switch(target.type) {
                     case 'number':
-                        const value = target.value;
-                        circle[name] = value;
+                        circle[name] = target.value;
                         break;
                     case 'checkbox':
                         circle[name] = target.checked;
-                        console.log(circle);
                         break;
                 }
-
             });
         });
+
+        return controlShapesContainer;
+    }
+
+    showControls() {
+        const controlsContainer = document.createElement('div');
+        const engineControls = this.engineControls();
+        const shapeControls = this.shapeControls();
+
+        controlsContainer.classList.add('module', 'controls');
+
+        controlsContainer.append(engineControls);
+        controlsContainer.append(shapeControls);
 
         this.controlLocation.append(controlsContainer);
 
@@ -157,14 +197,41 @@ export default class Controls {
                     input.checked = true;
                 }
                 break;
+            case 'colour':
+                input =  document.createElement('input');
+                input.type = 'colour';
+                input.name = name;
+                if(typeof options.value !== 'undefined') {
+                    input.value = options.value;
+                }
+                break;
             default:
                 return '';
         }
         input.classList.add('input');
 
+        if(typeof options.target !== 'undefined') {
+            this.addEvent(input, options.target);
+        }
+
         container.append(label);
         container.append(input);
 
         return container;
+    }
+
+    addEvent(trigger, target) {
+        trigger.addEventListener('input', function(event) {
+            const name = trigger.name;
+console.log(target);
+            switch(trigger.type) {
+                case 'number':
+                    target[name] = trigger.value;
+                    break;
+                case 'checkbox':
+                    target[name] = trigger.checked;
+                    break;
+            }
+        });
     }
 }
