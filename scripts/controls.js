@@ -76,8 +76,6 @@ export default class Controls {
             for(let i = 0; i<1000; i++) {
                 this.engine.runOnce()
             }
-
-            return;
         });
 
         return this;
@@ -119,7 +117,7 @@ export default class Controls {
 
         this.engine.list.forEach(circle => {
             const circleControls = document.createElement('div');
-            circleControls.classList.add('control-cirlce', 'control-group');
+            circleControls.classList.add('control-circle', 'control-group');
             circleControls.setAttribute('data-circle-id', circle.id);
 
             const controlHead = document.createElement('div');
@@ -141,10 +139,16 @@ export default class Controls {
                 value: circle.fixed,
             });
 
+            let brushControls = '';
+            if(typeof this.painter.brushes[circle.id] !== 'undefined') {
+                brushControls = this.brushControls(circle);
+            }
+
             circleControls.append(controlHead);
             controlBody.append(circleSteps);
             controlBody.append(radiusSteps);
             controlBody.append(fixed);
+            controlBody.append(brushControls);
             circleControls.append(controlBody);
 
             controlShapesContainer.append(circleControls);
@@ -168,6 +172,53 @@ export default class Controls {
         });
 
         return controlShapesContainer;
+    }
+
+    brushControls(circle) {
+        const brushesControls = document.createElement('div');
+        brushesControls.classList.add('control-brushes', 'control-group');
+
+        const brushesHead = document.createElement('div');
+        brushesHead.classList.add('section-head');
+        brushesHead.innerHTML = "Brushes";
+
+        const brushesBody = document.createElement('div');
+        brushesBody.classList.add('section-body');
+
+        this.painter.brushes[circle.id].forEach(brush => {
+            const brushControls = document.createElement('div');
+            brushControls.classList.add('control-brush', 'control-group');
+
+            const controlHead = document.createElement('div');
+            controlHead.classList.add('section-head');
+            controlHead.innerHTML = "Brush";
+
+            const controlBody = document.createElement('div');
+            controlBody.classList.add('section-body');
+
+            const brushColor = this.createControl('color', 'color', {
+                value: brush.color,
+                target: brush
+            });
+
+            const brushOffset = this.createControl('offset', 'number', {
+                value: brush.offset,
+                target: brush
+            });
+
+            controlBody.append(brushColor);
+            controlBody.append(brushOffset);
+
+            brushControls.append(controlHead);
+            brushControls.append(controlBody);
+
+            brushesBody.append(brushControls);
+        });
+
+        brushesControls.append(brushesHead);
+        brushesControls.append(brushesBody);
+
+        return brushesControls;
     }
 
     showControls() {
@@ -197,6 +248,14 @@ export default class Controls {
             case 'number':
                 input =  document.createElement('input');
                 input.type = 'number';
+                input.name = name;
+                if(typeof options.value !== 'undefined') {
+                    input.value = options.value;
+                }
+                break;
+            case 'text':
+                input =  document.createElement('input');
+                input.type = 'text';
                 input.name = name;
                 if(typeof options.value !== 'undefined') {
                     input.value = options.value;
@@ -240,6 +299,7 @@ export default class Controls {
             switch(trigger.type) {
                 case 'number':
                 case 'color':
+                case 'text':
                     target[name] = trigger.value;
                     break;
                 case 'checkbox':

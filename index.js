@@ -47,7 +47,8 @@ const F = new Circle({
 
 engine.addCircles([A, D, E, F]).calculateCircles();
 
-painter.addCircleBrush(F, {offset:30, degrees: 0, color: 'rgba(255,40,2,0.2)', link: true});
+painter.addCircleBrush(F, {offset:0, degrees: 0, color: 'rgba(255,30,0,0.2)', link: true});
+painter.addCircleBrush(F, {offset:30, degrees: 0, color: 'rgba(0,55,22,0.2)', link: true});
 //painter.addCircleBrush(E, {offset:30, degrees: 0, color: '#007799', link: false});
 
 controls.showActions().showControls();
