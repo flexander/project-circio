@@ -237,7 +237,6 @@ export default class Controls {
     addEvent(trigger, target) {
         trigger.addEventListener('input', function(event) {
             const name = trigger.name;
-console.log(target);
             switch(trigger.type) {
                 case 'number':
                 case 'color':
@@ -247,6 +246,7 @@ console.log(target);
                     target[name] = trigger.checked;
                     break;
             }
+
             return;
         });
     }
