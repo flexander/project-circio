@@ -116,24 +116,25 @@ export default class Engine {
     }
 
     run () {
-        setInterval(() => {
-            this.runOnce();
+        setTimeout(() => {
+            if (this.paused === false) {
+                this.runOnce();
+            }
+            this.run();
         },this.interval);
     };
 
     runOnce() {
-        if (this.paused === false) {
-            this.list.forEach(circle => {
-                this.calculateCircle(circle);
-                circle.move();
-            });
+        this.list.forEach(circle => {
+            this.calculateCircle(circle);
+            circle.move();
+        });
 
-            this.callbacks.forEach(callback => {
-                if (typeof callback === 'function') {
-                    callback.call(null, this);
-                }
-            });
-        }
+        this.callbacks.forEach(callback => {
+            if (typeof callback === 'function') {
+                callback.call(null, this);
+            }
+        });
     }
 
     pause () {
