@@ -29,6 +29,10 @@ export default class Controls {
         clear.classList.add('clear');
         clear.textContent = 'Clear';
 
+        let stepThousand = document.createElement('button');
+        stepThousand.classList.add('stepThousand');
+        stepThousand.textContent = 'Step 1000';
+
         if (this.engine.paused) {
             paused.innerHTML = 'play';
         } else {
@@ -38,6 +42,7 @@ export default class Controls {
         actionContainer.append(showGuides);
         actionContainer.append(paused);
         actionContainer.append(clear);
+        actionContainer.append(stepThousand);
         this.location.prepend(actionContainer);
 
         // Toggle show guides state
@@ -60,6 +65,15 @@ export default class Controls {
         // clear canvas
         clear.addEventListener('click', () => {
             this.painter.clear();
+            return;
+        });
+
+        // clear canvas
+        stepThousand.addEventListener('click', () => {
+            for(let i = 0; i<1000; i++) {
+                this.engine.runOnce()
+            }
+
             return;
         });
     }
