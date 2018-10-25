@@ -20,7 +20,6 @@ export default class Painter {
         this.point = (typeof options.point !== 'undefined') ? options.point : 0.5;
         this.backgroundFill = (typeof options.backgroundFill !== 'undefined') ? options.backgroundFill : '#050490';
 
-        this.canvasArea.style.background = this.background;
         this.canvasArea.style.width = this.width + 'px';
         this.canvasArea.style.height = this.height + 'px';
 
@@ -45,6 +44,12 @@ export default class Painter {
             c.style.position = 'absolute';
         });
 
+        this.canvasArea.classList.add('module', 'painter');
+
+        this.fillBackground();
+    }
+
+    fillBackground() {
         this.backgroundContext.beginPath();
         this.backgroundContext.rect(0, 0, this.width, this.height);
         this.backgroundContext.fillStyle = this.backgroundFill;
@@ -79,6 +84,7 @@ export default class Painter {
     };
 
     drawCircles () {
+        this.fillBackground();
         this.guideContext.clearRect(0,0,this.width, this.height);
 
         this.engine.list.forEach(circle => {
