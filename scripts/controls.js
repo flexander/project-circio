@@ -12,6 +12,14 @@ export default class Controls {
         this.painter = painter;
         this.actionLocation = (typeof options.actionLocation !== 'undefined') ? options.actionLocation: document.querySelector('#circio');
         this.controlLocation = (typeof options.controlLocation !== 'undefined') ? options.controlLocation: document.querySelector('#circio');
+
+        this.controlsConfig = {
+            'brushControls': {
+                color: {
+                    type: 'text'
+                }
+            }
+        };
     }
 
     showActions () {
@@ -99,10 +107,17 @@ export default class Controls {
 
         const backgroundFill = this.createControl('backgroundFill', 'color', {
             value: this.painter.backgroundFill,
-            target: this.painter
+            target: this.painter,
+            callback: this.painter.fillBackground.bind(this.painter)
+        });
+
+        const color = this.createControl('color', 'color', {
+            value: this.painter.color,
+            target: this.painter,
         });
 
         controlBody.append(interval);
+        controlBody.append(color);
         controlBody.append(backgroundFill);
 
         controlEngineContainer.append(controlHead);
@@ -196,7 +211,7 @@ export default class Controls {
             const controlBody = document.createElement('div');
             controlBody.classList.add('section-body');
 
-            const brushColor = this.createControl('color', 'color', {
+            const brushColor = this.createControl('color', this.controlsConfig.brushControls.color.type, {
                 value: brush.color,
                 target: brush
             });
@@ -284,7 +299,7 @@ export default class Controls {
         input.classList.add('input');
 
         if(typeof options.target !== 'undefined') {
-            this.addEvent(input, options.target);
+            this.addEvent(input, options.target, options.callback);
         }
 
         container.append(label);
@@ -293,7 +308,7 @@ export default class Controls {
         return container;
     }
 
-    addEvent(trigger, target) {
+    addEvent(trigger, target, callback) {
         trigger.addEventListener('input', function(event) {
             const name = trigger.name;
             switch(trigger.type) {
@@ -306,8 +321,9 @@ export default class Controls {
                     target[name] = trigger.checked;
                     break;
             }
-
-            return;
+            if (typeof callback === 'function') {
+                callback.call(null, this);
+            }
         });
     }
 }
