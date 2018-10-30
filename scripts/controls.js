@@ -144,14 +144,17 @@ export default class Controls {
 
             const circleSteps = this.createControl('steps','number',{
                 value:circle.steps,
+                target: circle,
             });
 
             const radiusSteps = this.createControl('radius','number',{
                 value:circle.radius,
+                target: circle,
             });
 
             const fixed = this.createControl('fixed','boolean',{
                 value: circle.fixed,
+                target: circle,
             });
 
             let brushControls = '';
@@ -167,23 +170,6 @@ export default class Controls {
             circleControls.append(controlBody);
 
             controlShapesContainer.append(circleControls);
-
-            circleControls.addEventListener('input', function(event) {
-                const target = event.target;
-                if(!target.classList.contains('input')) {
-                    return;
-                }
-                const name = target.name;
-
-                switch(target.type) {
-                    case 'number':
-                        circle[name] = parseInt(target.value);
-                        break;
-                    case 'checkbox':
-                        circle[name] = target.checked;
-                        break;
-                }
-            });
         });
 
         return controlShapesContainer;
