@@ -177,7 +177,7 @@ export default class Controls {
 
                 switch(target.type) {
                     case 'number':
-                        circle[name] = target.value;
+                        circle[name] = parseInt(target.value);
                         break;
                     case 'checkbox':
                         circle[name] = target.checked;
@@ -313,6 +313,8 @@ export default class Controls {
             const name = trigger.name;
             switch(trigger.type) {
                 case 'number':
+                    target[name] = parseInt(trigger.value);
+                    break;
                 case 'color':
                 case 'text':
                     target[name] = trigger.value;

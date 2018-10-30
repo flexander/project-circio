@@ -7,7 +7,7 @@ export default class Engine {
         // List of callbacks
         this.callbacks= [];
         // Milliseconds between each loop
-        this.interval = 1;
+        this.interval = (typeof options.interval !== 'undefined') ? options.interval : 1;
         // Default number of steps in a circle
         this.steps = 0;
         // Area dimensions
