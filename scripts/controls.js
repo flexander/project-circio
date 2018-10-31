@@ -130,17 +130,26 @@ export default class Controls {
         const controlShapesContainer = document.createElement('div');
         controlShapesContainer.classList.add('control-shapes', 'control-group');
 
+        const controlHead = document.createElement('div');
+        controlHead.classList.add('section-head');
+        controlHead.innerHTML = "Circles";
+
+        const controlBody = document.createElement('div');
+        controlBody.classList.add('section-body');
+
+        controlShapesContainer.append(controlHead);
+
         this.engine.list.forEach(circle => {
             const circleControls = document.createElement('div');
             circleControls.classList.add('control-circle', 'control-group');
             circleControls.setAttribute('data-circle-id', circle.id);
 
-            const controlHead = document.createElement('div');
-            controlHead.classList.add('section-head');
-            controlHead.innerHTML = "Circle #"+circle.id;
+            const circleHead = document.createElement('div');
+            circleHead.classList.add('section-head');
+            circleHead.innerHTML = "Circle #"+circle.id;
 
-            const controlBody = document.createElement('div');
-            controlBody.classList.add('section-body');
+            const circleBody = document.createElement('div');
+            circleBody.classList.add('section-body');
 
             const circleSteps = this.createControl('steps','number',{
                 value:circle.steps,
@@ -162,15 +171,17 @@ export default class Controls {
                 brushControls = this.brushControls(circle);
             }
 
-            circleControls.append(controlHead);
-            controlBody.append(circleSteps);
-            controlBody.append(radiusSteps);
-            controlBody.append(fixed);
-            controlBody.append(brushControls);
-            circleControls.append(controlBody);
+            circleControls.append(circleHead);
+            circleBody.append(circleSteps);
+            circleBody.append(radiusSteps);
+            circleBody.append(fixed);
+            circleBody.append(brushControls);
+            circleControls.append(circleBody);
 
-            controlShapesContainer.append(circleControls);
+            controlBody.append(circleControls);
         });
+
+        controlShapesContainer.append(controlBody);
 
         return controlShapesContainer;
     }
