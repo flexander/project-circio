@@ -207,8 +207,14 @@ export default class Controls {
                 target: brush
             });
 
+            const brushDegrees = this.createControl('degrees', 'number', {
+                value: brush.degrees,
+                target: brush
+            });
+
             controlBody.append(brushColor);
             controlBody.append(brushOffset);
+            controlBody.append(brushDegrees);
 
             brushControls.append(controlHead);
             brushControls.append(controlBody);
