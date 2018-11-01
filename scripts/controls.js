@@ -12,14 +12,6 @@ export default class Controls {
         this.painter = painter;
         this.actionLocation = (typeof options.actionLocation !== 'undefined') ? options.actionLocation: document.querySelector('#circio');
         this.controlLocation = (typeof options.controlLocation !== 'undefined') ? options.controlLocation: document.querySelector('#circio');
-
-        this.controlsConfig = {
-            'brushControls': {
-                color: {
-                    type: 'text'
-                }
-            }
-        };
     }
 
     showActions () {
@@ -79,7 +71,7 @@ export default class Controls {
             this.painter.clear();
         });
 
-        // clear canvas
+        // Step 1000 steps
         stepThousand.addEventListener('click', () => {
             for(let i = 0; i<1000; i++) {
                 this.engine.runOnce()
@@ -208,7 +200,7 @@ export default class Controls {
             const controlBody = document.createElement('div');
             controlBody.classList.add('section-body');
 
-            const brushColor = this.createControl('color', this.controlsConfig.brushControls.color.type, {
+            const brushColor = this.createControl('color', 'text', {
                 value: brush.color,
                 target: brush
             });
