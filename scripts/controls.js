@@ -215,9 +215,15 @@ export default class Controls {
                 target: brush
             });
 
+            const brushLink = this.createControl('link', 'boolean', {
+                value: brush.link,
+                target: brush
+            });
+
             controlBody.append(brushColor);
             controlBody.append(brushOffset);
             controlBody.append(brushDegrees);
+            controlBody.append(brushLink);
 
             brushControls.append(controlHead);
             brushControls.append(controlBody);
