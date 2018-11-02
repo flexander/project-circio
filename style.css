@@ -3,7 +3,7 @@
 }
 
 .control-group {
-    border-left: 20px solid #444;
+    border-left: 10px solid #444;
     border-bottom: 1px solid #444;
 }
 
@@ -12,4 +12,12 @@
     padding: 5px 10px;
     width: 120px;
     display: inline-block;
+}
+
+.control input[type=text] {
+    width: 120px;
+}
+
+.control input[type=number] {
+    width: 120px;
 }
