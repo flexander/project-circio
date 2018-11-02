@@ -7,9 +7,9 @@ export default class Engine {
         // List of callbacks
         this.callbacks= [];
         // Milliseconds between each loop
-        this.interval = 1;
+        this.interval = (typeof options.interval !== 'undefined') ? options.interval : 1;
         // Default number of steps in a circle
-        this.steps = 0;
+        this.steps = (typeof options.steps !== 'undefined') ? options.steps : 0;
         // Area dimensions
         this.height = (typeof options.height !== 'undefined') ? options.height : 700;
         this.width = (typeof options.width !== 'undefined') ? options.width : 700;
@@ -29,6 +29,11 @@ export default class Engine {
             if(!Number.isInteger(circle.y0)) {
                 circle.y0 = this.height/2;
             }
+        }
+
+        // Default steps
+        if(circle.steps === false) {
+            circle.steps = this.steps;
         }
 
         this.list.push(circle);
@@ -116,10 +121,11 @@ export default class Engine {
     }
 
     run () {
-        setInterval(() => {
+        setTimeout(() => {
             if (this.paused === false) {
                 this.runOnce();
             }
+            this.run();
         },this.interval);
     };
 

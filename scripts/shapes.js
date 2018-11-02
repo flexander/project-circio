@@ -29,7 +29,7 @@ export class Circle extends Shape {
             parentId : (typeof options.parent !== 'undefined') ? options.parent.id: false,
             direction : (typeof options.direction !== 'undefined') ? options.direction: 'cw',
             position : (typeof options.position !== 'undefined') ? options.position: 'inside',
-            steps : (typeof options.steps !== 'undefined') ? options.steps: 0,
+            steps : (typeof options.steps !== 'undefined') ? options.steps: false,
             radians : (typeof options.radians !== 'undefined') ? options.radians: 0,
             fixed : (typeof options.fixed !== 'undefined') ? options.fixed: true,
         };

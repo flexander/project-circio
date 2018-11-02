@@ -7,39 +7,51 @@ const engine = window.engine = new Engine({
 });
 
 const painter = window.painter = new Painter(engine, {
-    canvasArea: document.querySelector('#canvas-area'),
-    backgroundFill: "#000",
+    canvasArea: document.querySelector('#circio .painter'),
+    backgroundFill: "#fff444",
     showGuide: true,
+    color: '#000',
 });
 
-const controls = window.controls = new Controls(engine, painter, {});
+const controls = window.controls = new Controls(engine, painter, {
+    'actionLocation': document.querySelector('#circio .controls'),
+    'controlLocation': document.querySelector('#circio .controls'),
+});
 
 const A = new Circle({
-    radius: 100,
+    radius: 90,
     direction: 'cw',
-    //steps: 2000,
 });
 
-const B = new Circle({
-    radius: 40,
+const D = new Circle({
+    radius: 60,
     steps: 4000,
     parent: A,
-    //position: 'outside',
-});
-
-const C = new Circle({
-    radius: 20,
-    steps: 500,
-    parent: B,
     position: 'outside',
-    direction: 'ccw'
 });
 
-engine.addCircles([A, B, C]).calculateCircles();
+const E = new Circle({
+    radius: 30,
+    steps: 1000,
+    parent: D,
+    position: 'outside',
+    direction: 'ccw',
+    fixed: false,
+});
 
-painter.addCircleBrush(C, {offset:-50, color:'#f99f00'});
+const F = new Circle({
+    parent: E,
+    radius: 15,
+    steps:2
+});
 
-controls.showActions();
+engine.addCircles([A, D, E, F]).calculateCircles();
+
+painter.addCircleBrush(F, {offset:0, degrees: 0, color: 'rgba(255,30,0,0.2)', link: true});
+painter.addCircleBrush(F, {offset:30, degrees: 0, color: 'rgba(0,55,22,0.2)', link: true});
+//painter.addCircleBrush(E, {offset:30, degrees: 0, color: '#007799', link: false});
+
+controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));
 engine.run();
 

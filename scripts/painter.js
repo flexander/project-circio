@@ -20,7 +20,6 @@ export default class Painter {
         this.point = (typeof options.point !== 'undefined') ? options.point : 0.5;
         this.backgroundFill = (typeof options.backgroundFill !== 'undefined') ? options.backgroundFill : '#050490';
 
-        this.canvasArea.style.background = this.background;
         this.canvasArea.style.width = this.width + 'px';
         this.canvasArea.style.height = this.height + 'px';
 
@@ -45,9 +44,15 @@ export default class Painter {
             c.style.position = 'absolute';
         });
 
+        this.canvasArea.classList.add('module', 'painter');
+
+        this.fillBackground();
+    }
+
+    fillBackground() {
         this.backgroundContext.beginPath();
         this.backgroundContext.rect(0, 0, this.width, this.height);
-        this.backgroundContext.fillStyle = this.backgroundFill;
+        this.backgroundContext.fillStyle = this.getColor(this.backgroundFill);
         this.backgroundContext.fill();
     }
 
@@ -79,6 +84,7 @@ export default class Painter {
     };
 
     drawCircles () {
+        this.fillBackground();
         this.guideContext.clearRect(0,0,this.width, this.height);
 
         this.engine.list.forEach(circle => {
@@ -95,7 +101,7 @@ export default class Painter {
 
     drawCircleRotation (circle) {
         let context = this.guideContext;
-        let color = (circle.color) ? circle.color: this.color;
+        let color = this.getColor((circle.color) ? circle.color: this.color);
 
         context.fillStyle = color;
         context.strokeStyle = color;
@@ -109,12 +115,11 @@ export default class Painter {
         let guides = this.guideContext;
         this.brushes[circle.id].forEach(brush => {
             const radians = circle.getRadians();
-            const radius = circle.radius + brush.offset;
             const x1 = circle.x0 + (Math.cos(radians) * circle.radius);
             const y1 = circle.y0 + (Math.sin(radians) * circle.radius);
             const x = x1 + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
             const y = y1 + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
-            const color = (brush.color === 'random') ? this.getRandomColor(): brush.color;
+            const color = this.getColor(brush.color);
 
             guides.fillStyle = color;
 
@@ -145,6 +150,17 @@ export default class Painter {
             brush.lastPoint = {x:x, y:y};
         });
     };
+
+    getColor(color) {
+        switch (color) {
+            case 'random':
+                return this.getRandomColor();
+                break;
+            default:
+                return color;
+                break;
+        }
+    }
 
     getRandomColor() {
         let letters = '0123456789ABCDEF';
