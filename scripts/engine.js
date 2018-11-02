@@ -65,15 +65,15 @@ export default class Engine {
             parentY0 = circle.parent.y0;
 
             arcToParentRadians = (distanceTravelled / circle.parent.radius);
-            if(circle.position === 'inside') {
+            if(circle.outside === false) {
                 arcToParentRadians *= -1;
             }
 
             // The distance from center to center of child and parent
-            if(circle.position === 'inside') {
-                radiusRelative = circle.parent.radius - circle.radius;
-            } else {
+            if(circle.outside === true) {
                 radiusRelative = circle.parent.radius + circle.radius;
+            } else {
+                radiusRelative = circle.parent.radius - circle.radius;
             }
         }
 
