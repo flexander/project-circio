@@ -83,7 +83,7 @@ export default class Controls {
 
     engineControls() {
         const controlEngineContainer = document.createElement('div');
-        controlEngineContainer.classList.add('control-engine','control-group');
+        controlEngineContainer.classList.add('control-engine', 'control-group');
 
         const controlHead = document.createElement('div');
         controlHead.classList.add('section-head');
@@ -143,17 +143,27 @@ export default class Controls {
             const circleBody = document.createElement('div');
             circleBody.classList.add('section-body');
 
-            const circleSteps = this.createControl('steps','number',{
+            const circleSteps = this.createControl('steps', 'number',{
                 value:circle.steps,
                 target: circle,
             });
 
-            const radiusSteps = this.createControl('radius','number',{
+            const radiusSteps = this.createControl('radius', 'number',{
                 value:circle.radius,
                 target: circle,
             });
 
-            const fixed = this.createControl('fixed','boolean',{
+            const outside = this.createControl('outside', 'boolean',{
+                value: circle.outside,
+                target: circle,
+            });
+
+            const clockwise = this.createControl('clockwise', 'boolean',{
+                value: circle.clockwise,
+                target: circle,
+            });
+
+            const fixed = this.createControl('fixed', 'boolean',{
                 value: circle.fixed,
                 target: circle,
             });
@@ -166,6 +176,8 @@ export default class Controls {
             circleControls.append(circleHead);
             circleBody.append(circleSteps);
             circleBody.append(radiusSteps);
+            circleBody.append(outside);
+            circleBody.append(clockwise);
             circleBody.append(fixed);
             circleBody.append(brushControls);
             circleControls.append(circleBody);
