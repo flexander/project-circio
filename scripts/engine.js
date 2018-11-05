@@ -92,7 +92,14 @@ export default class Engine {
     }
 
     exportCircles (encode = true) {
-        let data = JSON.stringify(this.list);
+        let data = this.list.map(shape => {
+            const keys = Object.keys(shape.settings);
+            return keys.map(setting => {
+                return {[setting]: shape[setting]};
+            });
+        });
+
+        data = JSON.stringify(data);
         if(encode === true) {
             return btoa(data);
         }
