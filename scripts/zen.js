@@ -8,7 +8,7 @@ export default class Zen {
         const childSteps = child.steps;
         const minSteps = Math.min(parentSteps, childSteps);
         const maxSteps = Math.max(parentSteps, childSteps);
-        const ratioSteps = maxSteps/ minSteps;
+        const ratioSteps = maxSteps / minSteps;
 
         const childSignOutside = child.outside === true ? 1: -1;
         const childSignClockwise = child.clockwise === true ? 1: -1;
@@ -26,12 +26,14 @@ export default class Zen {
 
         const childStepRelativePathDistance = childStepPathDistance + parentStepChildDistance;
 
-        const rollingSteps = (childStepRelativePathDistance !== 0) ? Math.round(childPathDistance / childStepRelativePathDistance) : 0;
+        const rollingSteps = (childStepRelativePathDistance !== 0) ? childPathDistance / childStepRelativePathDistance : 0;
         const rotationSteps = ratioSteps * minSteps;
 
         const zenSteps = this.lcm_two_numbers(rollingSteps, rotationSteps);
 
         const results = {
+            childPathDistance: childPathDistance,
+            childStepPathDistance: childStepPathDistance,
             childStepRelativePathDistance: childStepRelativePathDistance,
             ratioSteps: ratioSteps,
             parentSteps: parent.steps,
@@ -47,15 +49,10 @@ export default class Zen {
     }
 
     gcd_two_numbers(x, y) {
-        x = Math.abs(x);
-        y = Math.abs(y);
-        while(y) {
-            var t = y;
-            y = x % y;
-            x = t;
-        }
-        return x;
-    }
+        if (!y) return x;
+
+        return this.gcd_two_numbers(y, x % y);
+    };
 
     lcm_two_numbers(x, y) {
         if ((typeof x !== 'number') || (typeof y !== 'number'))
