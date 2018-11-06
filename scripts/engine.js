@@ -15,6 +15,7 @@ export default class Engine {
         this.width = (typeof options.width !== 'undefined') ? options.width : 700;
         // Engine paused state
         this.paused = (typeof options.paused !== 'undefined') ? options.paused : false;
+        this.steps = 0;
     }
 
     addCircle (circle) {
@@ -147,6 +148,7 @@ export default class Engine {
                 callback.call(null, this);
             }
         });
+        this.steps += 1;
     }
 
     pause () {

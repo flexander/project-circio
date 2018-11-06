@@ -4,6 +4,12 @@ export default class Zen {
     }
 
     compare(parent, child) {
+        const parentSteps = parent.steps;
+        const childSteps = child.steps;
+        const minSteps = Math.min(parentSteps, childSteps);
+        const maxSteps = Math.max(parentSteps, childSteps);
+        const ratioSteps = maxSteps/ minSteps;
+
         const childSignOutside = child.outside === true ? 1: -1;
         const childSignClockwise = child.clockwise === true ? 1: -1;
         const childSignRoll = childSignOutside * childSignClockwise;
@@ -20,21 +26,40 @@ export default class Zen {
 
         const childStepRelativePathDistance = childStepPathDistance + parentStepChildDistance;
 
-        const completeSteps = childPathDistance / childStepRelativePathDistance;
+        const rollingSteps = (childStepRelativePathDistance !== 0) ? Math.round(childPathDistance / childStepRelativePathDistance) : 0;
+        const rotationSteps = ratioSteps * minSteps;
+
+        const zenSteps = this.lcm_two_numbers(rollingSteps, rotationSteps);
 
         const results = {
-            childPathRadius,
-            childPathDistance,
-            childStepDistance,
-            childStepParentRadians,
-            childStepPathDistance,
-            parentStepChildDistance,
-            childStepRelativePathDistance,
-            completeSteps,
+            childStepRelativePathDistance: childStepRelativePathDistance,
+            ratioSteps: ratioSteps,
+            parentSteps: parent.steps,
+            childSteps: child.steps,
+            rollingSteps: rollingSteps,
+            rotationSteps: rotationSteps,
+            zenSteps: zenSteps,
         };
 
 
 
         return results;
+    }
+
+    gcd_two_numbers(x, y) {
+        x = Math.abs(x);
+        y = Math.abs(y);
+        while(y) {
+            var t = y;
+            y = x % y;
+            x = t;
+        }
+        return x;
+    }
+
+    lcm_two_numbers(x, y) {
+        if ((typeof x !== 'number') || (typeof y !== 'number'))
+            return false;
+        return (!x || !y) ? 0 : Math.abs((x * y) / this.gcd_two_numbers(x, y));
     }
 }
