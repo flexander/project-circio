@@ -34,8 +34,9 @@ export default class Zen {
         }
 
         const rotationSteps = ratioSteps * minSteps;
+        const stepsLCM = this.lcm_two_numbers(rollingSteps, rotationSteps);
 
-        const zenSteps = this.lcm_two_numbers(rollingSteps, rotationSteps);
+        const zenSteps = stepsLCM;
 
         const results = {
             childPathDistance: childPathDistance,
