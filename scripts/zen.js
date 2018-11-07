@@ -1,6 +1,7 @@
+import math from 'mathjs';
+
 export default class Zen {
     constructor() {
-
     }
 
     compare(parent, child) {
@@ -26,7 +27,7 @@ export default class Zen {
 
         const childStepRelativePathDistance = childStepPathDistance + parentStepChildDistance;
 
-        const rollingSteps = (childStepRelativePathDistance !== 0) ? childPathDistance / childStepRelativePathDistance : 0;
+        const rollingSteps = (childStepRelativePathDistance !== 0) ? math.fraction(childPathDistance / childStepRelativePathDistance) : 0;
         const rotationSteps = ratioSteps * minSteps;
 
         const zenSteps = this.lcm_two_numbers(rollingSteps, rotationSteps);
