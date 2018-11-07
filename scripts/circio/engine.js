@@ -137,6 +137,12 @@ export default class Engine {
         },this.interval);
     };
 
+    step (steps = 1) {
+        for(let i = 0; i < steps; i++) {
+            this.runOnce();
+        }
+    }
+
     runOnce() {
         this.list.forEach(circle => {
             this.calculateCircle(circle);
