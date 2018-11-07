@@ -143,7 +143,7 @@ export default class Engine {
         }
     }
 
-    runOnce() {
+    runOnce () {
         this.list.forEach(circle => {
             this.calculateCircle(circle);
             circle.move();
