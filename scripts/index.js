@@ -18,7 +18,7 @@ const controls = window.controls = new Controls(engine, painter, {
     'controlLocation': document.querySelector('#circio .controls'),
 });
 
-const zen = window.zen = new Zen();
+const zen = window.zen = new Zen(engine);
 
 const A = new Circle({
     radius: 60,

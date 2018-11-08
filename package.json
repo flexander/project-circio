@@ -7,6 +7,6 @@
     "webpack-cli": "^3.1.2"
   },
   "scripts": {
-    "build": "webpack scripts/index.js -o index.js"
+    "build": "webpack scripts/index.js -o public/js/index.js"
   }
 }
