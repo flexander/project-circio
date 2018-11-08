@@ -10,7 +10,7 @@ export default class Zen {
     }
 
     compare (parentId, childId) {
-        if(Number.isNaN(parentId) || Number.isNaN(childId)) {
+        if(isNaN(parentId) || isNaN(childId)) {
             return false;
         }
 
@@ -42,12 +42,19 @@ export default class Zen {
         const parentStepChildDistance = parent.getStepRadians() * childPathRadius * parentSignClockwise;
         const childStepRelativePathDistance = childStepPathDistance + parentStepChildDistance;
 
-        // Calculate the minimum number of steps to complete a pattern
+        // Calculate the steps for one roll around parent circumference
         let rollingSteps = 0;
         if(childStepRelativePathDistance !== 0) {
             rollingSteps = math.fraction(childPathDistance / childStepRelativePathDistance);
             rollingSteps = math.number(rollingSteps.d * rollingSteps.n);
         }
+
+        // Calculate total radians after one complete roll
+        const parentRadiansAfterRoll = (parent.getStepRadians() * rollingSteps) * parentSignClockwise;
+        const childRadiansAfterRoll = (child.getStepRadians() * rollingSteps) * childSignClockwise;
+        const RollingRadiansAfterRoll = (childStepParentRadians * rollingSteps) * childSignRoll;
+        const totalRollRadians = math.add(parentRadiansAfterRoll, childRadiansAfterRoll, RollingRadiansAfterRoll);
+
         const rotationSteps = ratioSteps * minSteps;
         const stepsLCM = this.LCM(rollingSteps, rotationSteps);
         const zenSteps = stepsLCM;
@@ -64,6 +71,7 @@ export default class Zen {
             rollingSteps: rollingSteps,
             rotationSteps: rotationSteps,
             zenSteps: zenSteps,
+            totalRollRadians: totalRollRadians,
         };
 
         return results;

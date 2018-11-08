@@ -3,7 +3,7 @@ import {Engine, Painter, Controls, Circle, Zen} from './circio/circio.js';
 const engine = window.engine = new Engine({
     width: 700,
     height: 700,
-    paused: false
+    paused: true
 });
 
 const painter = window.painter = new Painter(engine, {

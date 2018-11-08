@@ -51,6 +51,12 @@ export default class Engine {
         return this;
     }
 
+    resetCircles () {
+        this.list.forEach(circle => {
+            circle.radians = circle.settings.radians;
+        });
+    }
+
     calculateCircle (circle) {
         let arc = circle.getArc();
         let stepCount = circle.getStepCount();
