@@ -33,18 +33,9 @@ const B = new Circle({
     //position: 'outside',
 });
 
-const C = new Circle({
-    radius: 20,
-    steps: 500,
-    parent: B,
-    position: 'outside',
-    direction: 'ccw'
-});
-
 engine.addCircles([A, B]).calculateCircles();
 
 painter.addCircleBrush(B, {color:'#719cf9'});
-//painter.addCircleBrush(C, {offset:-50, color:'#f99f00'});
 
 controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));

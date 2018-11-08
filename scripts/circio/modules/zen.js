@@ -37,7 +37,7 @@ export default class Zen {
 
         // Calculations based on the child rotating a single step
         const childStepDistance = child.getArc();
-        const childStepParentRadians = (childStepDistance / parent.radius);
+        const childStepParentRadians = math.fraction(childStepDistance / parent.radius);
         const childStepPathDistance = childStepParentRadians * childPathRadius * childSignRoll;
         const parentStepChildDistance = parent.getStepRadians() * childPathRadius * parentSignClockwise;
         const childStepRelativePathDistance = childStepPathDistance + parentStepChildDistance;
@@ -46,7 +46,7 @@ export default class Zen {
         let rollingSteps = 0;
         if(childStepRelativePathDistance !== 0) {
             rollingSteps = math.fraction(childPathDistance / childStepRelativePathDistance);
-            rollingSteps = math.number(rollingSteps.d * rollingSteps.n);
+            //rollingSteps = math.number(rollingSteps.d * rollingSteps.n);
         }
 
         // Calculate total radians after one complete roll
@@ -54,6 +54,7 @@ export default class Zen {
         const childRadiansAfterRoll = (child.getStepRadians() * rollingSteps) * childSignClockwise;
         const RollingRadiansAfterRoll = (childStepParentRadians * rollingSteps) * childSignRoll;
         const totalRollRadians = math.add(parentRadiansAfterRoll, childRadiansAfterRoll, RollingRadiansAfterRoll);
+        const totalRoll = math.divide(totalRollRadians, (2*math.PI));
 
         const rotationSteps = ratioSteps * minSteps;
         const stepsLCM = this.LCM(rollingSteps, rotationSteps);
@@ -62,16 +63,8 @@ export default class Zen {
         //TODO: work out if child has rotated back to original position
 
         const results = {
-            childPathDistance: childPathDistance,
-            childStepPathDistance: childStepPathDistance,
-            childStepRelativePathDistance: childStepRelativePathDistance,
-            ratioSteps: ratioSteps,
-            parentSteps: parent.steps,
-            childSteps: child.steps,
-            rollingSteps: rollingSteps,
-            rotationSteps: rotationSteps,
-            zenSteps: zenSteps,
-            totalRollRadians: totalRollRadians,
+            rollingSteps,
+            totalRoll,
         };
 
         return results;
