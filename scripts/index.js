@@ -24,18 +24,33 @@ const A = new Circle({
     radius: 60,
     direction: 'cw',
     steps: 500,
+    radians: Math.PI/2
 });
 
 const B = new Circle({
-    radius: 20,
+    radius: 40,
     steps: 500,
     parent: A,
-    //position: 'outside',
+    outside: true,
 });
 
-engine.addCircles([A, B]).calculateCircles();
+const C = new Circle({
+    radius: 20,
+    steps: 500,
+    parent: B,
 
-painter.addCircleBrush(B, {color:'#719cf9'});
+});
+
+const D = new Circle({
+    radius: 20,
+    steps: 500,
+    parent: C,
+
+});
+
+engine.addCircles([A, B, C, D]).calculateCircles();
+
+painter.addCircleBrush(D, {color:'#719cf9'});
 
 controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));

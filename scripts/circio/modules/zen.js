@@ -46,7 +46,6 @@ export default class Zen {
         let rollingSteps = 0;
         if(childStepRelativePathDistance !== 0) {
             rollingSteps = math.fraction(childPathDistance / childStepRelativePathDistance);
-            //rollingSteps = math.number(rollingSteps.d * rollingSteps.n);
         }
 
         // Calculate total radians after one complete roll
@@ -57,27 +56,13 @@ export default class Zen {
         const totalRoll = math.divide(totalRollRadians, (2*math.PI));
 
         const rotationSteps = ratioSteps * minSteps;
-        const stepsLCM = this.LCM(rollingSteps, rotationSteps);
-        const zenSteps = stepsLCM;
-
-        //TODO: work out if child has rotated back to original position
 
         const results = {
             rollingSteps,
             totalRoll,
+            rotationSteps,
         };
 
         return results;
-    }
-
-    // greatestCommonDenominator
-    GCD (x, y) {
-        if (!y) return x;
-        return this.LCM(y, x % y);
-    };
-
-    //largest common multiple
-    LCM (x, y) {
-        return (!x || !y) ? 0 : Math.abs((x * y) / this.GCD(x, y));
     }
 }
