@@ -1,4 +1,4 @@
-import {Circle} from './shapes.js';
+import Circle from 'circio-shapes';
 
 export default class Engine {
     constructor (options) {
