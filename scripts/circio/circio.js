@@ -1,4 +1,4 @@
-import Engine from './modules/engine.js';
+import Engine from 'circio-engine';
 import Painter from './modules/painter.js';
 import Controls from './modules/controls.js';
 import Circle from 'circio-shapes';
