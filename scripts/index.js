@@ -1,4 +1,4 @@
-import {Engine, Painter, Controls, Zen, Circle} from './circio/circio.js';
+import {Engine, Painter, Controls, Zen, Circle} from './circio.js';
 
 const engine = window.engine = new Engine({
     width: 700,
