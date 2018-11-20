@@ -1,9 +1,9 @@
-import {Engine, Painter, Controls, Circle} from './scripts/circio.js';
+import {Engine, Painter, Controls, Zen, Circle} from './circio/circio.js';
 
 const engine = window.engine = new Engine({
     width: 700,
     height: 700,
-    paused: false
+    paused: true
 });
 
 const painter = window.painter = new Painter(engine, {
@@ -18,30 +18,39 @@ const controls = window.controls = new Controls(engine, painter, {
     'controlLocation': document.querySelector('#circio .controls'),
 });
 
+const zen = window.zen = new Zen(engine);
+
 const A = new Circle({
-    radius: 100,
+    radius: 60,
     direction: 'cw',
-    //steps: 2000,
+    steps: 500,
+    radians: Math.PI/2
 });
 
 const B = new Circle({
     radius: 40,
-    steps: 4000,
+    steps: 500,
     parent: A,
-    //position: 'outside',
+    outside: true,
 });
 
 const C = new Circle({
     radius: 20,
     steps: 500,
     parent: B,
-    position: 'outside',
-    direction: 'ccw'
+
 });
 
-engine.addCircles([A, B, C]).calculateCircles();
+const D = new Circle({
+    radius: 20,
+    steps: 500,
+    parent: C,
 
-painter.addCircleBrush(C, {offset:-50, color:'#f99f00'});
+});
+
+engine.addCircles([A, B, C, D]).calculateCircles();
+
+painter.addCircleBrush(D, {color:'#719cf9'});
 
 controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));

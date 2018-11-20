@@ -1,4 +1,4 @@
-import {Circle} from './shapes.js';
+import Circle from 'circio-shapes';
 
 export default class Engine {
     constructor (options) {
@@ -15,6 +15,7 @@ export default class Engine {
         this.width = (typeof options.width !== 'undefined') ? options.width : 700;
         // Engine paused state
         this.paused = (typeof options.paused !== 'undefined') ? options.paused : false;
+        this.steps = 0;
     }
 
     addCircle (circle) {
@@ -48,6 +49,12 @@ export default class Engine {
         });
 
         return this;
+    }
+
+    resetCircles () {
+        this.list.forEach(circle => {
+            circle.radians = circle.settings.radians;
+        });
     }
 
     calculateCircle (circle) {
@@ -136,7 +143,13 @@ export default class Engine {
         },this.interval);
     };
 
-    runOnce() {
+    step (steps = 1) {
+        for(let i = 0; i < steps; i++) {
+            this.runOnce();
+        }
+    }
+
+    runOnce () {
         this.list.forEach(circle => {
             this.calculateCircle(circle);
             circle.move();
@@ -147,6 +160,7 @@ export default class Engine {
                 callback.call(null, this);
             }
         });
+        this.steps += 1;
     }
 
     pause () {

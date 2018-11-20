@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "circio-controls": "^1.0.0",
+    "circio-engine": "^1.0.0",
+    "circio-painter": "^1.0.0",
+    "circio-shapes": "^1.0.0",
+    "circio-zen": "^1.0.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2"
+  },
+  "scripts": {
+    "dev": "webpack scripts/index.js -o public/js/index.js --mode=development",
+    "build": "webpack scripts/index.js -o public/js/index.js --mode=production"
+  }
+}
