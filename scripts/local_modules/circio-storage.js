@@ -5,24 +5,26 @@ export default class Storage {
     }
 
     export(encode = true) {
-        const data = {};
+        let data = {};
+        let image = false;
 
         if(this.engine !== false) {
             data.engineData = this.engine.export(false);
         }
 
         if(this.painter !== false) {
+            image = this.painter.exportImage();
             data.painterData = this.painter.export(false);
         }
 
         if(encode === true) {
-            return btoa(JSON.stringify(data));
+            data = btoa(JSON.stringify(data));
         }
 
-        return data;
+        return {data: data, image: image};
     }
 
     store(data) {
-        
+
     }
 }
