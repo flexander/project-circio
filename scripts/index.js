@@ -20,6 +20,8 @@ const controls = window.controls = new Controls(engine, painter, {
 
 const zen = window.zen = new Zen(engine);
 
+const sorage = window.storage = new Storage(engine, painter);
+
 const A = new Circle({
     radius: 60,
     steps: 4,
@@ -52,9 +54,9 @@ const D = new Circle({
 
 engine.addCircles([A, B, C, D]).calculateCircles();
 
-painter.addCircleBrush(D, {color:'rgba(80,201,12,0.1)', link: true});
+//painter.addCircleBrush(C, {color:'rgba(80,201,12,0.1)', link: true});
+painter.addCircleBrush(D, {color:'rgba(255,255,255,0.1)', link: true});
 
 controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));
 engine.run();
-
