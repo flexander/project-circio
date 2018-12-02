@@ -17,14 +17,16 @@ export default class Storage {
             data.painterData = this.painter.export(false);
         }
 
+        data.image = image;
+
         if(encode === true) {
             data = btoa(JSON.stringify(data));
         }
 
-        return {data: data, image: image};
+        return data;
     }
 
-    store(data) {
+    store() {
 
     }
 }
