@@ -26,7 +26,17 @@ export default class Storage {
         return data;
     }
 
-    store() {
+    import(data, decode = true) {
+        if(decode === true) {
+            data = atob(data);
+        }
 
+        const importData = JSON.parse(data);
+
+        if(this.engine !== false) {
+            this.engine.import(importData.engineData);
+        }
+
+        return data;
     }
 }
