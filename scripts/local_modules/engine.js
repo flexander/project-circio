@@ -1,27 +1,25 @@
-import Circle from 'circio-shapes';
-
 export default class Engine {
     constructor (options) {
         // List of circles
         this.list = [];
         // List of callbacks
         this.callbacks= [];
-        // Milliseconds between each loop
-        this.interval = (typeof options.interval !== 'undefined') ? options.interval : 1;
-        // Default number of steps in a circle
-        this.steps = (typeof options.steps !== 'undefined') ? options.steps : 0;
-        // Area dimensions
-        this.height = (typeof options.height !== 'undefined') ? options.height : 700;
-        this.width = (typeof options.width !== 'undefined') ? options.width : 700;
-        // Engine paused state
-        this.paused = (typeof options.paused !== 'undefined') ? options.paused : false;
-        this.steps = 0;
+
+        this.settings = {
+            // Milliseconds between each loop
+            interval: (typeof options.interval !== 'undefined') ? options.interval : 1,
+            // Default number of steps in a circle
+            steps: (typeof options.steps !== 'undefined') ? options.steps : 0,
+            // Area dimensions
+            height: (typeof options.height !== 'undefined') ? options.height : 700,
+            width: (typeof options.width !== 'undefined') ? options.width : 700,
+            // Engine paused state
+            paused: (typeof options.paused !== 'undefined') ? options.paused : false
+        };
+        Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
     }
 
     addCircle (circle) {
-        if(!(circle instanceof Circle)) {
-            throw 'This object is not a circle';
-        }
         // Center Root circles
         if(typeof circle.parent === 'undefined') {
             if(!Number.isInteger(circle.x0)) {
@@ -92,42 +90,82 @@ export default class Engine {
         circle.y1 = circle.y0 + (Math.sin(parentRadians + arcToParentRadians + circle.radians) * circle.radius);
     }
 
-    calculateCircles() {
+    calculateCircles () {
         this.list.forEach(circle => {
             this.calculateCircle(circle);
         });
     }
 
-    exportCircles (encode = true) {
+    exportList (encode = true) {
         let data = this.list.map(shape => {
             const keys = Object.keys(shape.settings);
-            return keys.map(setting => {
-                return {[setting]: shape[setting]};
-            });
+            return keys.reduce(function(data, setting) {
+                data[setting] = shape[setting];
+
+                return data;
+            }, {});
         });
 
-        data = JSON.stringify(data);
         if(encode === true) {
-            return btoa(data);
+            return btoa(JSON.stringify(data));
         }
 
         return data;
     }
 
-    importCircles (data) {
-        let circles = JSON.parse(atob(data));
-        let indexedCircles = [];
+    exportEngine (encode = true) {
+        const keys = Object.keys(this.settings);
+        let data = keys.reduce(function(data, setting) {
+            data[setting] = this[setting];
 
-        circles.forEach(circle => {
-            indexedCircles[circle.id] = circle;
+            return data;
+        }.bind(this), {});
+
+        if(encode === true) {
+            return btoa(JSON.stringify(data));
+        }
+
+        return data;
+    }
+
+    export (encode = true) {
+        let data = {};
+        const engineData = this.exportEngine(false);
+        const listData = this.exportList(false);
+
+        data.engine = engineData;
+        data.list = listData;
+
+        if(encode === true) {
+            return btoa(JSON.stringify(data));
+        }
+
+        return data;
+    }
+
+    import (data) {
+        this.importEngine(data.engine);
+        this.importList(data.list);
+    }
+
+    importList (shapes) {
+        let indexedShapes = [];
+
+        shapes.forEach(shape => {
+            indexedShapes[shape.id] = shape;
         });
 
-        circles.forEach(circle => {
-            if(typeof circle.parentId !== 'undefined') {
-                circle.parent = indexedCircles[circle.parentId];
+        shapes.forEach(shape => {
+            if(typeof shape.parentId !== 'undefined') {
+                shape.parent = indexedShapes[shape.parentId];
             }
         });
-        this.addCircles(circles);
+        console.log(shapes);
+        this.addCircles(shapes);
+    }
+
+    importEngine (data) {
+
     }
 
     addCallback (callback) {

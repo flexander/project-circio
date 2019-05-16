@@ -10,7 +10,7 @@ class Shape {
     }
 }
 
-export class Circle extends Shape {
+export default class Circle extends Shape {
     constructor (options) {
         super(options);
 

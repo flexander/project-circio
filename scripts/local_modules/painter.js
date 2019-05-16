@@ -15,11 +15,6 @@ export default class Painter {
 
         this.brushes = [];
 
-        this.draw = (typeof options.draw !== 'undefined') ? options.draw : true;
-        this.color = (typeof options.color !== 'undefined') ? options.color : '#FFF';
-        this.point = (typeof options.point !== 'undefined') ? options.point : 0.5;
-        this.backgroundFill = (typeof options.backgroundFill !== 'undefined') ? options.backgroundFill : '#050490';
-
         this.canvasArea.style.width = this.width + 'px';
         this.canvasArea.style.height = this.height + 'px';
 
@@ -38,6 +33,14 @@ export default class Painter {
         this.canvasArea.appendChild(this.guide);
         this.guideContext = this.guide.getContext("2d");
 
+        this.settings = {
+            draw: (typeof options.draw !== 'undefined') ? options.draw : true,
+            color: (typeof options.color !== 'undefined') ? options.color : '#FFF',
+            point: (typeof options.point !== 'undefined') ? options.point : 0.5,
+            backgroundFill: (typeof options.backgroundFill !== 'undefined') ? options.backgroundFill : '#050490'
+        };
+        Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
+
         this.canvasArea.querySelectorAll('canvas').forEach(c => {
             c.setAttribute('height', this.canvasArea.style.height);
             c.setAttribute('width', this.canvasArea.style.width);
@@ -49,26 +52,27 @@ export default class Painter {
         this.fillBackground();
     }
 
-    fillBackground() {
-        this.backgroundContext.beginPath();
-        this.backgroundContext.rect(0, 0, this.width, this.height);
-        this.backgroundContext.fillStyle = this.getColor(this.backgroundFill);
-        this.backgroundContext.fill();
+    fillBackground () {
+        this.clearBackgroud();
+        if(this.backgroundFill !== '') {
+            this.backgroundContext.beginPath();
+            this.backgroundContext.rect(0, 0, this.width, this.height);
+            this.backgroundContext.fillStyle = this.getColor(this.backgroundFill);
+            this.backgroundContext.fill();
+        }
+    }
+
+    clearBackgroud () {
+        this.backgroundContext.clearRect(0, 0, this.width, this.height);
     }
 
     addCircleBrush (circle, options) {
-        let settings = {
-            color: (typeof options.color !== 'undefined') ? options.color : this.color,
-            point: (typeof options.point !== 'undefined') ? options.point : this.point,
-            offset: (typeof options.offset !== 'undefined') ? options.offset : 0,
-            degrees: (typeof options.degrees !== 'undefined') ? options.degrees : 0,
-            link: (typeof options.link !== 'undefined') ? options.link : false,
-        };
-
         if (typeof this.brushes[circle.id] === 'undefined') {
             this.brushes[circle.id] = [];
         }
-        this.brushes[circle.id].push(Object.assign({lastPoint: false}, JSON.parse(JSON.stringify(settings))));
+
+        const brush = new Brush(this, options);
+        this.brushes[circle.id].push(brush);
     }
 
     drawCircle (circle) {
@@ -151,7 +155,7 @@ export default class Painter {
         });
     };
 
-    getColor(color) {
+    getColor (color) {
         switch (color) {
             case 'random':
                 return this.getRandomColor();
@@ -162,7 +166,7 @@ export default class Painter {
         }
     }
 
-    getRandomColor() {
+    getRandomColor () {
         let letters = '0123456789ABCDEF';
         let color = '#';
         for (let i = 0; i < 6; i++) {
@@ -174,4 +178,98 @@ export default class Painter {
     clear () {
         this.context.clearRect(0,0,this.width, this.height);
     };
+
+    exportPainter (encode = true) {
+        const keys = Object.keys(this.settings);
+        let data = keys.reduce(function(data, setting) {
+            data[setting] = this[setting];
+
+            return data;
+        }.bind(this), {});
+
+        if(encode === true) {
+            return btoa(JSON.stringify(data));
+        }
+
+        return data;
+    }
+
+    exportBrushes (encode = true) {
+        let data = [];
+        this.brushes.forEach(function(brushes, shapeId){
+            if(!Array.isArray(brushes)) {
+                return;
+            }
+
+            data[shapeId] = brushes.map(brush => {
+                return brush.export(false);
+            });
+        });
+
+        if(encode === true) {
+            return btoa(JSON.stringify(data));
+        }
+
+        return data;
+    }
+
+    exportImage () {
+        const offscreen = document.createElement('canvas');
+        offscreen.setAttribute('height', this.canvasArea.style.height);
+        offscreen.setAttribute('width', this.canvasArea.style.width);
+
+        const offscreenContext = offscreen.getContext("2d");
+
+        offscreenContext.drawImage(this.background,0,0);
+        offscreenContext.drawImage(this.canvas,0,0);
+        const image = offscreen.toDataURL("image/png");
+
+        return image;
+    }
+
+    export (encode = true) {
+        let data = {};
+        const painterData = this.exportPainter(false);
+        const brushesData = this.exportBrushes(false);
+
+        data.painter = painterData;
+        data.brushes = brushesData;
+
+        if(encode === true) {
+            return btoa(JSON.stringify(data));
+        }
+
+        return data;
+    }
+}
+
+class Brush {
+    constructor (painter, options) {
+        this.lastPoint = false;
+
+        this.settings = {
+            color: (typeof options.color !== 'undefined') ? options.color : painter.color,
+            point: (typeof options.point !== 'undefined') ? options.point : painter.point,
+            offset: (typeof options.offset !== 'undefined') ? options.offset : 0,
+            degrees: (typeof options.degrees !== 'undefined') ? options.degrees : 0,
+            link: (typeof options.link !== 'undefined') ? options.link : false,
+        };
+
+        Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
+    }
+
+    export (encode = true) {
+        const keys = Object.keys(this.settings);
+        let data = keys.reduce(function(data, setting) {
+            data[setting] = this[setting];
+
+            return data;
+        }.bind(this), {});
+
+        if(encode === true) {
+            return btoa(JSON.stringify(data));
+        }
+
+        return data;
+    }
 }
