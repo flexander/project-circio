@@ -24,7 +24,7 @@ const sorage = window.storage = new Storage(engine, painter);
 
 const A = new Circle({
     radius: 60,
-    steps: 4,
+    steps: 500,
     radians: Math.PI/2,
     clockwise: false,
 });
@@ -49,13 +49,15 @@ const D = new Circle({
     radius: 20,
     steps: 500,
     parent: C,
+    outside: true,
 
 });
 
 engine.addCircles([A, B, C, D]).calculateCircles();
 
-//painter.addCircleBrush(C, {color:'rgba(80,201,12,0.1)', link: true});
-painter.addCircleBrush(D, {color:'rgba(255,255,255,0.1)', link: true});
+painter.addCircleBrush(D, {color:'#88e6ff', offset: 10});
+//painter.addCircleBrush(D, {color:'#98ff9a', offset: 0});
+//painter.addCircleBrush(D, {color:'#ff98eb', offset: -10});
 
 controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));
