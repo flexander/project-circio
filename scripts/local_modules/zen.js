@@ -11,7 +11,15 @@ export default class Zen {
 
     compare (parentId, childId) {
         if(isNaN(parentId) || isNaN(childId)) {
-            return false;
+            throw "Please provide a parent and child ID";
+        }
+
+        if(typeof this.engine.list[parentId] === "undefined") {
+            throw "Parent not found";
+        }
+
+        if(typeof this.engine.list[childId] === "undefined") {
+            throw "Child not found";
         }
 
         // Pair of circles
