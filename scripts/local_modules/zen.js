@@ -57,12 +57,11 @@ export default class Zen {
         }
 
         // Calculate total radians after one complete roll
-        const parentRadiansAfterRoll = (parent.getStepRadians() * rollingSteps) * parentSignClockwise;
-        const childRadiansAfterRoll = (child.getStepRadians() * rollingSteps) * childSignClockwise;
-        const RollingRadiansAfterRoll = (childStepParentRadians * rollingSteps) * childSignRoll;
+        const parentRadiansAfterRoll = math.multiply(math.multiply(parent.getStepRadians(), rollingSteps),parentSignClockwise);
+        const childRadiansAfterRoll = math.multiply(math.multiply(child.getStepRadians(), rollingSteps),childSignClockwise);
+        const RollingRadiansAfterRoll = math.multiply(math.multiply(childStepParentRadians, rollingSteps), childSignRoll);
         const totalRollRadians = math.add(parentRadiansAfterRoll, childRadiansAfterRoll, RollingRadiansAfterRoll);
-        const totalRoll = math.divide(totalRollRadians, (2*math.PI));
-
+        const totalRoll = math.divide(totalRollRadians, math.fraction(math.multiply(2, math.PI)));
         const rotationSteps = ratioSteps * minSteps;
 
         const results = {
