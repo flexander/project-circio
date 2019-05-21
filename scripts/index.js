@@ -42,7 +42,6 @@ const C = new Circle({
     parent: B,
     outside: true,
     clockwise: false,
-
 });
 
 const D = new Circle({
@@ -50,14 +49,27 @@ const D = new Circle({
     steps: 500,
     parent: C,
     outside: true,
-
 });
 
-engine.addCircles([A, B, C, D]).calculateCircles();
+const E = new Circle({
+    radius: 20,
+    steps: 500,
+    parent: D,
+    outside: true,
+    clockwise: false,
+});
 
+engine.addCircles([A, B, C, D, E]).calculateCircles();
+
+painter.addCircleBrush(C, {color:'#ff98eb', offset: -10});
+painter.addCircleBrush(C, {color:'#ff98eb', offset: 0});
+painter.addCircleBrush(C, {color:'#ff98eb', offset: 10});
+painter.addCircleBrush(D, {color:'#88e6ff', offset: -10});
+painter.addCircleBrush(D, {color:'#88e6ff', offset: 0});
 painter.addCircleBrush(D, {color:'#88e6ff', offset: 10});
-//painter.addCircleBrush(D, {color:'#98ff9a', offset: 0});
-//painter.addCircleBrush(D, {color:'#ff98eb', offset: -10});
+painter.addCircleBrush(E, {color:'#98ff9a', offset: -10});
+painter.addCircleBrush(E, {color:'#98ff9a', offset: 0});
+painter.addCircleBrush(E, {color:'#98ff9a', offset: 10});
 
 controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));
