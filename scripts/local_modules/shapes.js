@@ -43,8 +43,10 @@ export default class Circle extends Shape {
         if(this.steps > 0) {
             stepRadian = math.multiply(
                 math.fraction(360, this.steps),
-                math.fraction(math.PI, 180)
+                math.fraction(math.pi, 180)
             );
+
+            stepRadian = math.fraction(math.pi, this.steps);
         }
 
         return stepRadian;
