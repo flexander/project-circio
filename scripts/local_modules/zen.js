@@ -62,12 +62,12 @@ export default class Zen {
         const RollingRadiansAfterRoll = math.multiply(childStepParentRadians, rollingSteps, childSignRoll);
         const totalRollRadians = math.add(parentRadiansAfterRoll, childRadiansAfterRoll, RollingRadiansAfterRoll);
         const totalRoll = math.divide(totalRollRadians, math.fraction(math.multiply(2, math.pi)));
-        const rotationSteps = math.multiply(ratioSteps, minSteps);
+        //const rotationSteps = math.multiply(ratioSteps, minSteps);
         const totalRollSimple = math.number(totalRoll);
 
         const results = {
             rollingSteps,
-            rotationSteps,
+            //rotationSteps,
             totalRoll,
             totalRollSimple,
         };

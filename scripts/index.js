@@ -67,9 +67,9 @@ engine.addCircles([A, B, C, D, E]).calculateCircles();
 painter.addCircleBrush(D, {color:'#88e6ff', offset: -10});
 painter.addCircleBrush(D, {color:'#88e6ff', offset: 0});
 painter.addCircleBrush(D, {color:'#88e6ff', offset: 10});
-// painter.addCircleBrush(E, {color:'#98ff9a', offset: -10});
-// painter.addCircleBrush(E, {color:'#98ff9a', offset: 0});
-// painter.addCircleBrush(E, {color:'#98ff9a', offset: 10});
+painter.addCircleBrush(E, {color:'#98ff9a', offset: -10});
+painter.addCircleBrush(E, {color:'#98ff9a', offset: 0});
+painter.addCircleBrush(E, {color:'#98ff9a', offset: 10});
 
 controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));
