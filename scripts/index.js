@@ -3,7 +3,8 @@ import {Engine, Painter, Controls, Zen, Circle, Storage} from './circio.js';
 const engine = window.engine = new Engine({
     width: 700,
     height: 700,
-    paused: false
+    paused: false,
+    interval: 100
 });
 
 const painter = window.painter = new Painter(engine, {
@@ -61,15 +62,16 @@ const E = new Circle({
 
 engine.addCircles([A, B, C, D, E]).calculateCircles();
 
+painter.addCircleBrush(E, {color:'#ff98eb', offset: 0});
 // painter.addCircleBrush(C, {color:'#ff98eb', offset: -10});
 // painter.addCircleBrush(C, {color:'#ff98eb', offset: 0});
 // painter.addCircleBrush(C, {color:'#ff98eb', offset: 10});
-painter.addCircleBrush(D, {color:'#88e6ff', offset: -10});
-painter.addCircleBrush(D, {color:'#88e6ff', offset: 0});
-painter.addCircleBrush(D, {color:'#88e6ff', offset: 10});
-painter.addCircleBrush(E, {color:'#98ff9a', offset: -10});
-painter.addCircleBrush(E, {color:'#98ff9a', offset: 0});
-painter.addCircleBrush(E, {color:'#98ff9a', offset: 10});
+// painter.addCircleBrush(D, {color:'#88e6ff', offset: -10});
+// painter.addCircleBrush(D, {color:'#88e6ff', offset: 0});
+// painter.addCircleBrush(D, {color:'#88e6ff', offset: 10});
+// painter.addCircleBrush(E, {color:'#98ff9a', offset: -10});
+// painter.addCircleBrush(E, {color:'#98ff9a', offset: 0});
+// painter.addCircleBrush(E, {color:'#98ff9a', offset: 10});
 
 controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));

@@ -1,3 +1,5 @@
+import Circle from './shapes';
+
 export default class Engine {
     constructor (options) {
         // List of circles
@@ -152,16 +154,16 @@ export default class Engine {
         let indexedShapes = [];
 
         shapes.forEach(shape => {
-            indexedShapes[shape.id] = shape;
+            indexedShapes[shape.id] = new Circle({...shape});
         });
 
         shapes.forEach(shape => {
             if(typeof shape.parentId !== 'undefined') {
-                shape.parent = indexedShapes[shape.parentId];
+                indexedShapes.parent = indexedShapes[shape.parentId];
             }
         });
-        console.log(shapes);
-        this.addCircles(shapes);
+        this.list = [];
+        this.addCircles(indexedShapes);
     }
 
     importEngine (data) {
