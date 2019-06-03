@@ -62,7 +62,7 @@ const E = new Circle({
 
 engine.addCircles([A, B, C, D, E]).calculateCircles();
 
-painter.addCircleBrush(E, {color:'#ff98eb', offset: 0});
+painter.addCircleBrush(D, {color:'#ff98eb', offset: 0});
 // painter.addCircleBrush(C, {color:'#ff98eb', offset: -10});
 // painter.addCircleBrush(C, {color:'#ff98eb', offset: 0});
 // painter.addCircleBrush(C, {color:'#ff98eb', offset: 10});

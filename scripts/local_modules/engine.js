@@ -99,20 +99,20 @@ export default class Engine {
     }
 
     exportList (encode = true) {
-        let data = this.list.map(shape => {
+        let listData = this.list.map(shape => {
             const keys = Object.keys(shape.settings);
-            return keys.reduce(function(data, setting) {
+            return {id: shape.id, ...keys.reduce(function(data, setting) {
                 data[setting] = shape[setting];
 
                 return data;
-            }, {});
+            }, {})};
         });
 
         if(encode === true) {
-            return btoa(JSON.stringify(data));
+            return btoa(JSON.stringify(listData));
         }
 
-        return data;
+        return listData;
     }
 
     exportEngine (encode = true) {
