@@ -39,4 +39,31 @@ export default class Storage {
 
         return data;
     }
+
+    store(name) {
+        if(typeof name !== 'string') {
+            throw 'Provide a valid name';
+        }
+
+        const key = `store.${name}`;
+        const data = this.export();
+        window.localStorage.setItem(key, data);
+
+        return key;
+    }
+
+    load(name) {
+        if(typeof name !== 'string') {
+            throw 'Provide a valid name';
+        }
+
+        const key = `store.${name}`;
+        const data = window.localStorage.getItem(key);
+
+        if (data === null) {
+            throw 'No data found';
+        }
+
+        this.import(data);
+    }
 }

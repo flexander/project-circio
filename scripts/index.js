@@ -4,7 +4,7 @@ const engine = window.engine = new Engine({
     width: 700,
     height: 700,
     paused: false,
-    interval: 100
+    interval: 1
 });
 
 const painter = window.painter = new Painter(engine, {
@@ -63,7 +63,7 @@ const F = new Circle({
     clockwise: false,
 });
 
-engine.addCircles([A, B, C, D, E, F]).calculateCircles();
+engine.addCircles([A, B, C, D]).calculateCircles();
 
 painter.addCircleBrush(D, {color:'#ff98eb', offset: 0});
 // painter.addCircleBrush(C, {color:'#ff98eb', offset: -10});
