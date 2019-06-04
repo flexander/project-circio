@@ -53,7 +53,7 @@ export default class Painter {
     }
 
     fillBackground () {
-        this.clearBackgroud();
+        this.clearBackground();
         if(this.backgroundFill !== '') {
             this.backgroundContext.beginPath();
             this.backgroundContext.rect(0, 0, this.width, this.height);
@@ -62,7 +62,7 @@ export default class Painter {
         }
     }
 
-    clearBackgroud () {
+    clearBackground () {
         this.backgroundContext.clearRect(0, 0, this.width, this.height);
     }
 
