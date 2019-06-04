@@ -20,10 +20,6 @@ export default class Circle extends Shape {
             throw 'A circle needs a radius';
         }
 
-        if(typeof options.parent !== 'undefined') {
-            this.setParent(options.parent);
-        }
-
         this.radians = 0;
 
         this.settings = {

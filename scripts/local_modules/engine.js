@@ -26,7 +26,7 @@ export default class Engine {
             throw 'This is not a circle';
         }
 
-        // Center Root circles
+        // Center root circle
         if(this.list.length === 0) {
             if(!Number.isInteger(circle.x0)) {
                 circle.x0 = this.width/2;
@@ -36,7 +36,7 @@ export default class Engine {
             }
         // Assign parent circle
         } else {
-            circle.parent = this.list[this.list.length - 1];
+            circle.setParent(this.list[this.list.length - 1]);
         }
 
         // Default steps
