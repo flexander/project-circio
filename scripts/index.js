@@ -33,14 +33,12 @@ const A = new Circle({
 const B = new Circle({
     radius: 40,
     steps: 556,
-    parent: A,
     outside: true,
 });
 
 const C = new Circle({
     radius: 20,
     steps: 500,
-    parent: B,
     outside: true,
     clockwise: false,
 });
@@ -48,19 +46,24 @@ const C = new Circle({
 const D = new Circle({
     radius: 20,
     steps: 500,
-    parent: C,
     outside: true,
 });
 
 const E = new Circle({
     radius: 20,
     steps: 500,
-    parent: D,
     outside: true,
     clockwise: false,
 });
 
-engine.addCircles([A, B, C, D, E]).calculateCircles();
+const F = new Circle({
+    radius: 20,
+    steps: 500,
+    outside: true,
+    clockwise: false,
+});
+
+engine.addCircles([A, B, C, D, E, F]).calculateCircles();
 
 painter.addCircleBrush(D, {color:'#ff98eb', offset: 0});
 // painter.addCircleBrush(C, {color:'#ff98eb', offset: -10});

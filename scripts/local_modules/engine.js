@@ -22,14 +22,21 @@ export default class Engine {
     }
 
     addCircle (circle) {
+        if(!(circle instanceof Circle)) {
+            throw 'This is not a circle';
+        }
+
         // Center Root circles
-        if(typeof circle.parent === 'undefined') {
+        if(this.list.length === 0) {
             if(!Number.isInteger(circle.x0)) {
                 circle.x0 = this.width/2;
             }
             if(!Number.isInteger(circle.y0)) {
                 circle.y0 = this.height/2;
             }
+        // Assign parent circle
+        } else {
+            circle.parent = this.list[this.list.length - 1];
         }
 
         // Default steps
@@ -53,7 +60,7 @@ export default class Engine {
 
     resetCircles () {
         this.list.forEach(circle => {
-            circle.radians = circle.settings.radians;
+            circle.radians = 0;
         });
     }
 
