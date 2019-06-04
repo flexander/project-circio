@@ -66,4 +66,13 @@ export default class Storage {
 
         this.import(data);
     }
+
+    list() {
+        let keys = Object.keys(localStorage);
+        keys = keys.filter(key => {
+            return key.startsWith('store.');
+        });
+
+        return keys;
+    }
 }
