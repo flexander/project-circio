@@ -1,7 +1,8 @@
 export default class Storage {
-    constructor(engine = false, painter = false, options) {
+    constructor(engine = false, painter = false, controls = false) {
         this.engine = engine;
         this.painter = painter;
+        this.controls = controls;
     }
 
     export(encode = true) {
@@ -65,6 +66,13 @@ export default class Storage {
         }
 
         this.import(data);
+
+        if(this.controls !== false) {
+            this.controls.controlLocation.innerHTML = "";
+            this.controls.showActions();
+            this.controls.showControls();
+        }
+
     }
 
     list() {
