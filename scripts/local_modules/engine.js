@@ -1,3 +1,5 @@
+import Circle from './shapes';
+
 export default class Engine {
     constructor (options) {
         // List of circles
@@ -20,14 +22,21 @@ export default class Engine {
     }
 
     addCircle (circle) {
-        // Center Root circles
-        if(typeof circle.parent === 'undefined') {
+        if(!(circle instanceof Circle)) {
+            throw 'This is not a circle';
+        }
+
+        // Center root circle
+        if(this.list.length === 0) {
             if(!Number.isInteger(circle.x0)) {
                 circle.x0 = this.width/2;
             }
             if(!Number.isInteger(circle.y0)) {
                 circle.y0 = this.height/2;
             }
+        // Assign parent circle
+        } else {
+            circle.setParent(this.list[this.list.length - 1]);
         }
 
         // Default steps
@@ -51,7 +60,7 @@ export default class Engine {
 
     resetCircles () {
         this.list.forEach(circle => {
-            circle.radians = circle.settings.radians;
+            circle.radians = 0;
         });
     }
 
@@ -97,20 +106,20 @@ export default class Engine {
     }
 
     exportList (encode = true) {
-        let data = this.list.map(shape => {
+        let listData = this.list.map(shape => {
             const keys = Object.keys(shape.settings);
-            return keys.reduce(function(data, setting) {
+            return {id: shape.id, ...keys.reduce(function(data, setting) {
                 data[setting] = shape[setting];
 
                 return data;
-            }, {});
+            }, {})};
         });
 
         if(encode === true) {
-            return btoa(JSON.stringify(data));
+            return btoa(JSON.stringify(listData));
         }
 
-        return data;
+        return listData;
     }
 
     exportEngine (encode = true) {
@@ -152,16 +161,16 @@ export default class Engine {
         let indexedShapes = [];
 
         shapes.forEach(shape => {
-            indexedShapes[shape.id] = shape;
+            indexedShapes[shape.id] = new Circle({...shape});
         });
 
         shapes.forEach(shape => {
             if(typeof shape.parentId !== 'undefined') {
-                shape.parent = indexedShapes[shape.parentId];
+                indexedShapes.parent = indexedShapes[shape.parentId];
             }
         });
-        console.log(shapes);
-        this.addCircles(shapes);
+        this.list = [];
+        this.addCircles(indexedShapes);
     }
 
     importEngine (data) {
