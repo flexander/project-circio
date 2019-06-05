@@ -11,7 +11,15 @@ export default class Zen {
 
     compare (parentId, childId) {
         if(isNaN(parentId) || isNaN(childId)) {
-            return false;
+            throw "Please provide a parent and child ID";
+        }
+
+        if(typeof this.engine.list[parentId] === "undefined") {
+            throw "Parent not found";
+        }
+
+        if(typeof this.engine.list[childId] === "undefined") {
+            throw "Child not found";
         }
 
         // Pair of circles
@@ -32,15 +40,15 @@ export default class Zen {
         const parentSignClockwise = parent.clockwise === true ? 1: -1;
 
         // The center point of the child has a path around parent
-        const childPathRadius = parent.radius + (child.radius * childSignOutside);
-        const childPathDistance = 2*Math.PI*childPathRadius;
+        const childPathRadius = math.add(parent.radius, math.multiply(child.radius, childSignOutside));
+        const childPathDistance = math.multiply(2, math.pi, childPathRadius);
 
         // Calculations based on the child rotating a single step
         const childStepDistance = child.getArc();
         const childStepParentRadians = math.fraction(childStepDistance / parent.radius);
-        const childStepPathDistance = childStepParentRadians * childPathRadius * childSignRoll;
-        const parentStepChildDistance = parent.getStepRadians() * childPathRadius * parentSignClockwise;
-        const childStepRelativePathDistance = childStepPathDistance + parentStepChildDistance;
+        const childStepPathDistance = math.multiply(childStepParentRadians, childPathRadius, childSignRoll);
+        const parentStepChildDistance = math.multiply(parent.getStepRadians(), childPathRadius, parentSignClockwise);
+        const childStepRelativePathDistance = math.add(childStepPathDistance, parentStepChildDistance);
 
         // Calculate the steps for one roll around parent circumference
         let rollingSteps = 0;
@@ -49,18 +57,19 @@ export default class Zen {
         }
 
         // Calculate total radians after one complete roll
-        const parentRadiansAfterRoll = (parent.getStepRadians() * rollingSteps) * parentSignClockwise;
-        const childRadiansAfterRoll = (child.getStepRadians() * rollingSteps) * childSignClockwise;
-        const RollingRadiansAfterRoll = (childStepParentRadians * rollingSteps) * childSignRoll;
+        const parentRadiansAfterRoll = math.multiply(parent.getStepRadians(), rollingSteps, parentSignClockwise);
+        const childRadiansAfterRoll = math.multiply(child.getStepRadians(), rollingSteps, childSignClockwise);
+        const RollingRadiansAfterRoll = math.multiply(childStepParentRadians, rollingSteps, childSignRoll);
         const totalRollRadians = math.add(parentRadiansAfterRoll, childRadiansAfterRoll, RollingRadiansAfterRoll);
-        const totalRoll = math.divide(totalRollRadians, (2*math.PI));
-
-        const rotationSteps = ratioSteps * minSteps;
+        const totalRoll = math.divide(totalRollRadians, math.fraction(math.multiply(2, math.pi)));
+        //const rotationSteps = math.multiply(ratioSteps, minSteps);
+        const totalRollSimple = math.number(totalRoll);
 
         const results = {
             rollingSteps,
+            //rotationSteps,
             totalRoll,
-            rotationSteps,
+            totalRollSimple,
         };
 
         return results;

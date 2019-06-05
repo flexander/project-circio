@@ -1,3 +1,5 @@
+import math from 'mathjs';
+
 class Shape {
     constructor(options) {}
 
@@ -18,19 +20,13 @@ export default class Circle extends Shape {
             throw 'A circle needs a radius';
         }
 
-        if(typeof options.parent !== 'undefined') {
-            this.setParent(options.parent);
-        }
+        this.radians = 0;
 
         this.settings = {
             radius : options.radius,
-            x0 : (typeof options.x0 !== 'undefined') ? options.x0 : false,
-            y0 : (typeof options.y0 !== 'undefined') ? options.y0 : false,
-            parentId : (typeof options.parent !== 'undefined') ? options.parent.id: false,
             clockwise : (typeof options.clockwise !== 'undefined') ? options.clockwise: true,
             outside : (typeof options.outside !== 'undefined') ? options.outside: false,
             steps : (typeof options.steps !== 'undefined') ? options.steps: false,
-            radians : (typeof options.radians !== 'undefined') ? options.radians: 0,
             fixed : (typeof options.fixed !== 'undefined') ? options.fixed: true,
         };
         Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
@@ -39,7 +35,7 @@ export default class Circle extends Shape {
     getStepRadians () {
         let stepRadian = 0;
         if(this.steps > 0) {
-            stepRadian = (360/this.steps) * (Math.PI/180);
+            stepRadian = math.fraction(math.multiply(math.pi, 2), this.steps);
         }
 
         return stepRadian;
@@ -48,7 +44,10 @@ export default class Circle extends Shape {
     getArc () {
         let arc = 0;
         if(this.steps > 0) {
-            arc = this.radius * this.getStepRadians();
+            arc = math.multiply(
+                this.radius,
+                this.getStepRadians()
+            );
         }
 
         return arc;
@@ -57,7 +56,7 @@ export default class Circle extends Shape {
     getStepCount () {
         let stepCount = 0;
         if(this.steps > 0) {
-            stepCount = this.radians / this.getStepRadians();
+            stepCount = this.radians/ this.getStepRadians();
         }
 
         return stepCount;

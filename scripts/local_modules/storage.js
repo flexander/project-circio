@@ -1,7 +1,8 @@
 export default class Storage {
-    constructor(engine = false, painter = false, options) {
+    constructor(engine = false, painter = false, controls = false) {
         this.engine = engine;
         this.painter = painter;
+        this.controls = controls;
     }
 
     export(encode = true) {
@@ -38,5 +39,48 @@ export default class Storage {
         }
 
         return data;
+    }
+
+    store(name) {
+        if(typeof name !== 'string') {
+            throw 'Provide a valid name';
+        }
+
+        const key = `store.${name}`;
+        const data = this.export();
+        window.localStorage.setItem(key, data);
+
+        return key;
+    }
+
+    load(name) {
+        if(typeof name !== 'string') {
+            throw 'Provide a valid name';
+        }
+
+        const key = `store.${name}`;
+        const data = window.localStorage.getItem(key);
+
+        if (data === null) {
+            throw 'No data found';
+        }
+
+        this.import(data);
+
+        if(this.controls !== false) {
+            this.controls.controlLocation.innerHTML = "";
+            this.controls.showActions();
+            this.controls.showControls();
+        }
+
+    }
+
+    list() {
+        let keys = Object.keys(localStorage);
+        keys = keys.filter(key => {
+            return key.startsWith('store.');
+        });
+
+        return keys;
     }
 }
