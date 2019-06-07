@@ -14,11 +14,8 @@ export default class Storage {
         }
 
         if(this.painter !== false) {
-            image = this.painter.exportImage();
             data.painterData = this.painter.export(false);
         }
-
-        data.image = image;
 
         if(encode === true) {
             data = btoa(JSON.stringify(data));
@@ -38,7 +35,9 @@ export default class Storage {
             this.engine.import(importData.engineData);
         }
 
-        return data;
+        if(this.painter !== false) {
+            this.painter.import(importData.painterData);
+        }
     }
 
     store(name) {
