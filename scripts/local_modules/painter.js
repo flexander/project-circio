@@ -241,6 +241,27 @@ export default class Painter {
 
         return data;
     }
+
+    import (data) {
+        this.importPainter(data.painter);
+        this.importBrushes(data.brushes);
+    }
+
+    importPainter (painterData) {
+        Object.assign(this, painterData);
+    }
+
+    importBrushes (circleBrushesData) {
+        this.brushes = [];
+        circleBrushesData.forEach(function(brushesData, circleId) {
+            if (Array.isArray(brushesData)) {
+                brushesData.forEach(brushOptions => {
+                    const circle = this.engine.list[circleId];
+                    this.addCircleBrush(circle, brushOptions);
+                });
+            }
+        }, this);
+    }
 }
 
 class Brush {

@@ -1,8 +1,8 @@
 import {Engine, Painter, Controls, Zen, Circle, Storage} from './circio.js';
 
 const engine = window.engine = new Engine({
-    width: 700,
-    height: 700,
+    width: 900,
+    height: 900,
     paused: false,
     interval: 1
 });
@@ -63,9 +63,9 @@ const F = new Circle({
     clockwise: false,
 });
 
-engine.addCircles([A, B, C, D]).calculateCircles();
+engine.addCircles([A, B, C]).calculateCircles();
 
-painter.addCircleBrush(D, {color:'#ff98eb', offset: 0});
+painter.addCircleBrush(C, {color:'#ff98eb', offset: 0});
 
 controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));
