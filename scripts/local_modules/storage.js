@@ -5,7 +5,7 @@ export default class Storage {
         this.controls = controls;
     }
 
-    export(encode = true) {
+    export(encode = false) {
         let data = {};
         let image = false;
 
@@ -24,7 +24,7 @@ export default class Storage {
         return data;
     }
 
-    import(data, decode = true) {
+    import(data, decode = false) {
         if(decode === true) {
             data = atob(data);
         }
@@ -52,7 +52,7 @@ export default class Storage {
         }
 
         const key = `store.${name}`;
-        const data = this.export();
+        const data = JSON.stringify(this.export());
         window.localStorage.setItem(key, data);
 
         return key;
@@ -80,5 +80,10 @@ export default class Storage {
         });
 
         return keys;
+    }
+
+    get(name) {
+        const key = `store.${name}`;
+        return window.localStorage.getItem(key);
     }
 }

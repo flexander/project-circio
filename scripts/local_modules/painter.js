@@ -37,7 +37,7 @@ export default class Painter {
             draw: (typeof options.draw !== 'undefined') ? options.draw : true,
             color: (typeof options.color !== 'undefined') ? options.color : '#FFF',
             point: (typeof options.point !== 'undefined') ? options.point : 0.5,
-            backgroundFill: (typeof options.backgroundFill !== 'undefined') ? options.backgroundFill : '#050490'
+            backgroundFill: (typeof options.backgroundFill !== 'undefined') ? options.backgroundFill : '#1b5eec'
         };
         Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
 
@@ -179,7 +179,7 @@ export default class Painter {
         this.context.clearRect(0,0,this.width, this.height);
     };
 
-    exportPainter (encode = true) {
+    exportPainter (encode = false) {
         const keys = Object.keys(this.settings);
         let data = keys.reduce(function(data, setting) {
             data[setting] = this[setting];
@@ -194,7 +194,7 @@ export default class Painter {
         return data;
     }
 
-    exportBrushes (encode = true) {
+    exportBrushes (encode = false) {
         let data = [];
         this.brushes.forEach(function(brushes, shapeId){
             if(!Array.isArray(brushes)) {
@@ -202,7 +202,7 @@ export default class Painter {
             }
 
             data[shapeId] = brushes.map(brush => {
-                return brush.export(false);
+                return brush.export();
             });
         });
 
@@ -222,15 +222,13 @@ export default class Painter {
 
         offscreenContext.drawImage(this.background,0,0);
         offscreenContext.drawImage(this.canvas,0,0);
-        const image = offscreen.toDataURL("image/png");
-
-        return image;
+        return offscreen.toDataURL("image/png");
     }
 
-    export (encode = true) {
+    export (encode = false) {
         let data = {};
-        const painterData = this.exportPainter(false);
-        const brushesData = this.exportBrushes(false);
+        const painterData = this.exportPainter();
+        const brushesData = this.exportBrushes();
 
         data.painter = painterData;
         data.brushes = brushesData;
@@ -279,7 +277,7 @@ class Brush {
         Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
     }
 
-    export (encode = true) {
+    export (encode = false) {
         const keys = Object.keys(this.settings);
         let data = keys.reduce(function(data, setting) {
             data[setting] = this[setting];

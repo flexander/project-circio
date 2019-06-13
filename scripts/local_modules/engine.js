@@ -105,7 +105,7 @@ export default class Engine {
         });
     }
 
-    exportList (encode = true) {
+    exportList (encode = false) {
         let listData = this.list.map(shape => {
             const keys = Object.keys(shape.settings);
             return {id: shape.id, ...keys.reduce(function(data, setting) {
@@ -122,7 +122,7 @@ export default class Engine {
         return listData;
     }
 
-    exportEngine (encode = true) {
+    exportEngine (encode = false) {
         const keys = Object.keys(this.settings);
         let data = keys.reduce(function(data, setting) {
             data[setting] = this[setting];
@@ -137,10 +137,10 @@ export default class Engine {
         return data;
     }
 
-    export (encode = true) {
+    export (encode = false) {
         let data = {};
-        const engineData = this.exportEngine(false);
-        const listData = this.exportList(false);
+        const engineData = this.exportEngine();
+        const listData = this.exportList();
 
         data.engine = engineData;
         data.list = listData;
@@ -174,7 +174,7 @@ export default class Engine {
     }
 
     importEngine (data) {
-
+        // TODO: finish engine import
     }
 
     addCallback (callback) {
