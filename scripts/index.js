@@ -1,4 +1,4 @@
-import {Engine, Painter, Controls, Zen, Circle, Storage} from './circio.js';
+import {Engine, Painter, Controls, Zen, Circle, Storage, Blueprints} from './circio.js';
 
 const engine = window.engine = new Engine({
     width: 900,
@@ -22,6 +22,8 @@ const controls = window.controls = new Controls(engine, painter, {
 const zen = window.zen = new Zen(engine);
 
 const sorage = window.storage = new Storage(engine, painter, controls);
+
+const blueprints = window.blueprints = new Blueprints(storage);
 
 const A = new Circle({
     radius: 60,
