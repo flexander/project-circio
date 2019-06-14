@@ -5,7 +5,7 @@ export default class Storage {
         this.controls = controls;
     }
 
-    export(encode = true) {
+    export(encode = false) {
         let data = {};
         let image = false;
 
@@ -14,11 +14,8 @@ export default class Storage {
         }
 
         if(this.painter !== false) {
-            image = this.painter.exportImage();
             data.painterData = this.painter.export(false);
         }
-
-        data.image = image;
 
         if(encode === true) {
             data = btoa(JSON.stringify(data));
@@ -27,7 +24,7 @@ export default class Storage {
         return data;
     }
 
-    import(data, decode = true) {
+    import(data, decode = false) {
         if(decode === true) {
             data = atob(data);
         }
@@ -38,7 +35,15 @@ export default class Storage {
             this.engine.import(importData.engineData);
         }
 
-        return data;
+        if(this.painter !== false) {
+            this.painter.import(importData.painterData);
+        }
+
+        if(this.controls !== false) {
+            this.controls.controlLocation.innerHTML = "";
+            this.controls.showActions();
+            this.controls.showControls();
+        }
     }
 
     store(name) {
@@ -47,7 +52,7 @@ export default class Storage {
         }
 
         const key = `store.${name}`;
-        const data = this.export();
+        const data = JSON.stringify(this.export());
         window.localStorage.setItem(key, data);
 
         return key;
@@ -66,13 +71,6 @@ export default class Storage {
         }
 
         this.import(data);
-
-        if(this.controls !== false) {
-            this.controls.controlLocation.innerHTML = "";
-            this.controls.showActions();
-            this.controls.showControls();
-        }
-
     }
 
     list() {
@@ -82,5 +80,10 @@ export default class Storage {
         });
 
         return keys;
+    }
+
+    get(name) {
+        const key = `store.${name}`;
+        return window.localStorage.getItem(key);
     }
 }

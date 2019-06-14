@@ -9,7 +9,7 @@
     "webpack-cli": "^3.1.2"
   },
   "scripts": {
-    "dev": "webpack scripts/index.js -o public/js/index.js --mode=development",
-    "build": "webpack scripts/index.js -o public/js/index.js --mode=production"
+    "dev": "webpack scripts/circio-2D.js -o public/js/circio-2D.js --mode=development",
+    "build": "webpack scripts/circio-2D.js -o public/js/circio-2D.js --mode=production"
   }
 }
