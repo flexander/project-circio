@@ -1,4 +1,9 @@
-import {Engine, Painter, Controls, Zen, Circle, Storage, Blueprints} from './circio.js';
+import Engine from './local_modules/engine';
+import Painter from './local_modules/painter';
+import Controls from './local_modules/controls';
+import Zen from './local_modules/zen';
+import Storage from './local_modules/storage';
+import Blueprints from './local_modules/blueprints';
 
 const engine = window.engine = new Engine({
     width: 900,
@@ -20,55 +25,11 @@ const controls = window.controls = new Controls(engine, painter, {
 });
 
 const zen = window.zen = new Zen(engine);
-
 const sorage = window.storage = new Storage(engine, painter, controls);
-
 const blueprints = window.blueprints = new Blueprints(storage);
-
-const A = new Circle({
-    radius: 60,
-    steps: 556,
-    radians: Math.PI/2,
-    clockwise: false,
-});
-
-const B = new Circle({
-    radius: 40,
-    steps: 556,
-    outside: true,
-});
-
-const C = new Circle({
-    radius: 20,
-    steps: 500,
-    outside: true,
-    clockwise: false,
-});
-
-const D = new Circle({
-    radius: 20,
-    steps: 500,
-    outside: true,
-});
-
-const E = new Circle({
-    radius: 20,
-    steps: 500,
-    outside: true,
-    clockwise: false,
-});
-
-const F = new Circle({
-    radius: 20,
-    steps: 500,
-    outside: true,
-    clockwise: false,
-});
-
-engine.addCircles([A, B, C]).calculateCircles();
-
-painter.addCircleBrush(C, {color:'#ff98eb', offset: 0});
 
 controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));
 engine.run();
+
+blueprints.load('threeCircles');
