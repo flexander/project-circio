@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Default background colour has changes to a blueprint blue 
 - The encode parameter in export functions defaults to false 
 
+### Fixed
+
+- Fixes bug when clearing canvas with the linked brush flag set to true
+
 ## [0.2.0]
 ### Added
 

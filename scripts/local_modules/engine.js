@@ -61,6 +61,9 @@ export default class Engine {
     resetCircles () {
         this.list.forEach(circle => {
             circle.radians = 0;
+            this.calculateCircle(circle);
+            circle.previousX1 = circle.x1;
+            circle.previousY1 = circle.y1;
         });
     }
 
@@ -95,6 +98,8 @@ export default class Engine {
         circle.y0 = parentY0 + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
 
         // New x1 & y1 to reflect change in radians
+        circle.previousX1 = circle.x1;
+        circle.previousY1 = circle.y1;
         circle.x1 = circle.x0 + (Math.cos(parentRadians + arcToParentRadians + circle.radians) * circle.radius);
         circle.y1 = circle.y0 + (Math.sin(parentRadians + arcToParentRadians + circle.radians) * circle.radius);
     }

@@ -119,10 +119,10 @@ export default class Painter {
         let guides = this.guideContext;
         this.brushes[circle.id].forEach(brush => {
             const radians = circle.getRadians();
-            const x1 = circle.x0 + (Math.cos(radians) * circle.radius);
-            const y1 = circle.y0 + (Math.sin(radians) * circle.radius);
-            const x = x1 + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
-            const y = y1 + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
+            const x = circle.x1 + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
+            const y = circle.y1 + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
+            const previousX = circle.previousX1 + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
+            const previousY = circle.previousY1 + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
             const color = this.getColor(brush.color);
 
             guides.fillStyle = color;
@@ -138,10 +138,10 @@ export default class Painter {
                 guides.stroke();
             }
 
-            if(brush.link === true && brush.lastPoint !== false) {
+            if(brush.link === true) {
                 canvas.strokeStyle = color;
                 canvas.beginPath();
-                canvas.moveTo(brush.lastPoint.x, brush.lastPoint.y);
+                canvas.moveTo(previousX, previousY);
                 canvas.lineTo(x, y);
                 canvas.stroke();
             } else {
@@ -264,8 +264,6 @@ export default class Painter {
 
 class Brush {
     constructor (painter, options) {
-        this.lastPoint = false;
-
         this.settings = {
             color: (typeof options.color !== 'undefined') ? options.color : painter.color,
             point: (typeof options.point !== 'undefined') ? options.point : painter.point,
