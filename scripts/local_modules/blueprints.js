@@ -61,6 +61,72 @@ export default class Blueprints {
                 ]
             }
         };
+
+        this.fourCircles = {
+            "engineData": {
+                "engine": {
+                    "interval": 1,
+                    "height": 900,
+                    "width": 900,
+                },
+                "list": [
+                    {
+                        "id": 0,
+                        "radius": 120,
+                        "clockwise": false,
+                        "outside": false,
+                        "steps": 500,
+                        "fixed": true
+                    },
+                    {
+                        "id": 1,
+                        "radius": 60,
+                        "clockwise": true,
+                        "outside": true,
+                        "steps": 500,
+                        "fixed": true
+                    },
+                    {
+                        "id": 2,
+                        "radius": 30,
+                        "clockwise": false,
+                        "outside": true,
+                        "steps": 500,
+                        "fixed": true
+                    },
+                    {
+                        "id": 3,
+                        "radius": 15,
+                        "clockwise": true,
+                        "outside": true,
+                        "steps": 500,
+                        "fixed": true
+                    }
+                ]
+            },
+            "painterData": {
+                "painter": {
+                    "draw": true,
+                    "color": "#ffffff",
+                    "point": 0.5,
+                    "backgroundFill": "#1b5eec"
+                },
+                "brushes": [
+                    null,
+                    null,
+                    null,
+                    [
+                        {
+                            "color": "#FFF",
+                            "point": 0.5,
+                            "offset": 0,
+                            "degrees": 0,
+                            "link": false
+                        }
+                    ]
+                ]
+            }
+        };
     }
 
     load (name) {

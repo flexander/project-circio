@@ -32,4 +32,4 @@ controls.showActions().showControls();
 engine.addCallback(painter.drawCircles.bind(painter));
 engine.run();
 
-blueprints.load('threeCircles');
+blueprints.load('fourCircles');
