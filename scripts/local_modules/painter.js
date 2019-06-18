@@ -143,6 +143,7 @@ export default class Painter {
                 canvas.beginPath();
                 canvas.moveTo(previousX, previousY);
                 canvas.lineTo(x, y);
+                canvas.lineWidth = brush.point;
                 canvas.stroke();
             } else {
                 canvas.fillStyle = color;

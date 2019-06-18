@@ -233,10 +233,17 @@ export default class Controls {
                 target: brush
             });
 
+            const brushPoint = this.createControl('point', 'number', {
+                value: brush.point,
+                target: brush,
+                step: 0.5,
+            });
+
             controlBody.append(brushColor);
             controlBody.append(brushOffset);
             controlBody.append(brushDegrees);
             controlBody.append(brushLink);
+            controlBody.append(brushPoint);
 
             brushControls.append(controlHead);
             brushControls.append(controlBody);
@@ -280,6 +287,9 @@ export default class Controls {
                 input.name = name;
                 if(typeof options.value !== 'undefined') {
                     input.value = options.value;
+                }
+                if(typeof options.step !== 'undefined') {
+                    input.setAttribute('step', options.step);
                 }
                 break;
             case 'text':
