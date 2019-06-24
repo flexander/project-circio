@@ -75,7 +75,7 @@ export default class Blueprints {
                         "radius": 120,
                         "clockwise": false,
                         "outside": false,
-                        "steps": 500,
+                        "steps": 1000,
                         "fixed": true
                     },
                     {
@@ -91,7 +91,7 @@ export default class Blueprints {
                         "radius": 30,
                         "clockwise": false,
                         "outside": true,
-                        "steps": 500,
+                        "steps": 250,
                         "fixed": true
                     },
                     {
@@ -99,7 +99,7 @@ export default class Blueprints {
                         "radius": 15,
                         "clockwise": true,
                         "outside": true,
-                        "steps": 500,
+                        "steps": 125,
                         "fixed": true
                     }
                 ]
