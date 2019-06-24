@@ -26,8 +26,9 @@ export default class Circle extends Shape {
             radius : options.radius,
             clockwise : (typeof options.clockwise !== 'undefined') ? options.clockwise: true,
             outside : (typeof options.outside !== 'undefined') ? options.outside: false,
-            steps : (typeof options.steps !== 'undefined') ? options.steps: false,
+            steps : (typeof options.steps !== 'undefined') ? options.steps: 0,
             fixed : (typeof options.fixed !== 'undefined') ? options.fixed: true,
+            stepMod : (typeof options.stepMod !== 'undefined') ? options.stepMod: 0,
         };
         Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
     }
