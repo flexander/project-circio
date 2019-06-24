@@ -205,7 +205,9 @@ export default class Engine {
     runOnce () {
         this.list.forEach(circle => {
             this.calculateCircle(circle);
-            circle.move();
+            if (circle.stepMod === 0 || this.steps % circle.stepMod === 0) {
+                circle.move();
+            }
         });
 
         this.callbacks.forEach(callback => {

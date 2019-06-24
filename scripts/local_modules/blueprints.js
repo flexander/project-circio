@@ -76,7 +76,8 @@ export default class Blueprints {
                         "clockwise": false,
                         "outside": false,
                         "steps": 1000,
-                        "fixed": true
+                        "fixed": true,
+                        "stepMod": 100,
                     },
                     {
                         "id": 1,
