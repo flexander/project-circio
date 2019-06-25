@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adds four circle blueprint
 - Adds brush size control
+- Adds modulo attribute to circles
 
 ## [1.0.0]
 ### Added
