@@ -6,12 +6,12 @@ export default class Engine {
         this.list = [];
         // List of callbacks
         this.callbacks= [];
+        //
+        this.steps = 0;
 
         this.settings = {
             // Milliseconds between each loop
             interval: (typeof options.interval !== 'undefined') ? options.interval : 1,
-            // Default number of steps in a circle
-            steps: (typeof options.steps !== 'undefined') ? options.steps : 0,
             // Area dimensions
             height: (typeof options.height !== 'undefined') ? options.height : 700,
             width: (typeof options.width !== 'undefined') ? options.width : 700,
@@ -58,7 +58,8 @@ export default class Engine {
         return this;
     }
 
-    resetCircles () {
+    reset () {
+        this.steps = 0;
         this.list.forEach(circle => {
             circle.radians = 0;
             this.calculateCircle(circle);
@@ -204,7 +205,9 @@ export default class Engine {
     runOnce () {
         this.list.forEach(circle => {
             this.calculateCircle(circle);
-            circle.move();
+            if (circle.stepMod === 0 || this.steps % circle.stepMod === 0) {
+                circle.move();
+            }
         });
 
         this.callbacks.forEach(callback => {

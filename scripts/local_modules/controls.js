@@ -69,7 +69,7 @@ export default class Controls {
         // clear canvas
         clear.addEventListener('click', () => {
             this.painter.clear();
-            this.engine.resetCircles();
+            this.engine.reset();
         });
 
         // Step 1000 steps
