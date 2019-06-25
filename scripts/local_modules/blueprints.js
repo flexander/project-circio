@@ -77,7 +77,6 @@ export default class Blueprints {
                         "outside": false,
                         "steps": 1000,
                         "fixed": true,
-                        "stepMod": 100,
                     },
                     {
                         "id": 1,
@@ -85,7 +84,7 @@ export default class Blueprints {
                         "clockwise": true,
                         "outside": true,
                         "steps": 500,
-                        "fixed": true
+                        "fixed": true,
                     },
                     {
                         "id": 2,
@@ -93,7 +92,7 @@ export default class Blueprints {
                         "clockwise": false,
                         "outside": true,
                         "steps": 250,
-                        "fixed": true
+                        "fixed": true,
                     },
                     {
                         "id": 3,
