@@ -69,7 +69,7 @@ export default class Controls {
         // clear canvas
         clear.addEventListener('click', () => {
             this.painter.clear();
-            this.engine.resetCircles();
+            this.engine.reset();
         });
 
         // Step 1000 steps
@@ -169,6 +169,11 @@ export default class Controls {
                 target: circle,
             });
 
+            const stepMod = this.createControl('stepMod', 'number',{
+                value: circle.stepMod,
+                target: circle,
+            });
+
             let brushControls = '';
             if(typeof this.painter.brushes[circle.id] !== 'undefined') {
                 brushControls = this.brushControls(circle);
@@ -177,6 +182,7 @@ export default class Controls {
             circleControls.append(circleHead);
             circleBody.append(circleSteps);
             circleBody.append(radiusSteps);
+            circleBody.append(stepMod);
             circleBody.append(outside);
             circleBody.append(clockwise);
             circleBody.append(fixed);
@@ -233,10 +239,17 @@ export default class Controls {
                 target: brush
             });
 
+            const brushPoint = this.createControl('point', 'number', {
+                value: brush.point,
+                target: brush,
+                step: 0.5,
+            });
+
             controlBody.append(brushColor);
             controlBody.append(brushOffset);
             controlBody.append(brushDegrees);
             controlBody.append(brushLink);
+            controlBody.append(brushPoint);
 
             brushControls.append(controlHead);
             brushControls.append(controlBody);
@@ -280,6 +293,9 @@ export default class Controls {
                 input.name = name;
                 if(typeof options.value !== 'undefined') {
                     input.value = options.value;
+                }
+                if(typeof options.step !== 'undefined') {
+                    input.setAttribute('step', options.step);
                 }
                 break;
             case 'text':

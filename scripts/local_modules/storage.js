@@ -73,6 +73,23 @@ export default class Storage {
         this.import(data);
     }
 
+    loadIndex(index) {
+        if(typeof index !== 'number') {
+            throw 'Provide a valid index';
+        }
+        const list = this.list();
+        const key = list[index];
+        const data = window.localStorage.getItem(key);
+
+        if (data === null) {
+            throw 'No data found';
+        }
+
+        this.import(data);
+
+        return key;
+    }
+
     list() {
         let keys = Object.keys(localStorage);
         keys = keys.filter(key => {
