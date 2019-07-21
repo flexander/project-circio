@@ -169,6 +169,11 @@ export default class Controls {
                 target: circle,
             });
 
+            const stepMod = this.createControl('stepMod', 'number',{
+                value: circle.stepMod,
+                target: circle,
+            });
+
             let brushControls = '';
             if(typeof this.painter.brushes[circle.id] !== 'undefined') {
                 brushControls = this.brushControls(circle);
@@ -177,6 +182,7 @@ export default class Controls {
             circleControls.append(circleHead);
             circleBody.append(circleSteps);
             circleBody.append(radiusSteps);
+            circleBody.append(stepMod);
             circleBody.append(outside);
             circleBody.append(clockwise);
             circleBody.append(fixed);
