@@ -1,15 +1,14 @@
-import Engine from './local_modules/engine';
-import Painter from './local_modules/painter';
-import Controls from './local_modules/controls';
-import Zen from './local_modules/zen';
-import Storage from './local_modules/storage';
-import Blueprints from './local_modules/blueprints';
+import Engine from '../modules/engine';
+import Painter from '../modules/painter';
+import Controls from '../modules/controls';
+import Storage from '../modules/storage';
+import Blueprints from '../modules/blueprints';
 
 const engine = window.engine = new Engine({
     width: 900,
     height: 900,
     paused: false,
-    interval: 1
+    interval: 2
 });
 
 const painter = window.painter = new Painter(engine, {
@@ -24,8 +23,7 @@ const controls = window.controls = new Controls(engine, painter, {
     'controlLocation': document.querySelector('#circio .controls'),
 });
 
-const zen = window.zen = new Zen(engine);
-const sorage = window.storage = new Storage(engine, painter, controls);
+const storage = window.storage = new Storage(engine, painter, controls);
 const blueprints = window.blueprints = new Blueprints(storage);
 
 controls.showActions().showControls();
