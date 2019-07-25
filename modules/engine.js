@@ -13,8 +13,8 @@ export default class Engine {
             // Milliseconds between each loop
             interval: (typeof options.interval !== 'undefined') ? options.interval : 1,
             // Area dimensions
-            height: (typeof options.height !== 'undefined') ? options.height : 700,
-            width: (typeof options.width !== 'undefined') ? options.width : 700,
+            height: (typeof options.height !== 'undefined') ? options.height : window.innerHeight,
+            width: (typeof options.width !== 'undefined') ? options.width : window.innerHeight,
             // Engine paused state
             paused: (typeof options.paused !== 'undefined') ? options.paused : false
         };

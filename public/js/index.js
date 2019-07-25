@@ -71,9 +71,7 @@ function () {
     this.fourCircles = {
       "engineData": {
         "engine": {
-          "interval": 1,
-          "height": 900,
-          "width": 900
+          "interval": 1
         },
         "list": [{
           "id": 0,
@@ -558,8 +556,8 @@ function () {
       // Milliseconds between each loop
       interval: typeof options.interval !== 'undefined' ? options.interval : 1,
       // Area dimensions
-      height: typeof options.height !== 'undefined' ? options.height : 700,
-      width: typeof options.width !== 'undefined' ? options.width : 700,
+      height: typeof options.height !== 'undefined' ? options.height : window.innerHeight,
+      width: typeof options.width !== 'undefined' ? options.width : window.innerHeight,
       // Engine paused state
       paused: typeof options.paused !== 'undefined' ? options.paused : false
     };
@@ -842,18 +840,22 @@ function () {
     this.brushes = [];
     this.canvasArea.style.width = this.width + 'px';
     this.canvasArea.style.height = this.height + 'px';
+    this.scale = 0.5;
     this.background = document.createElement('canvas');
     this.background.setAttribute('id', 'background-canvas');
     this.canvasArea.appendChild(this.background);
     this.backgroundContext = this.background.getContext("2d");
+    this.backgroundContext.scale(this.scale, this.scale);
     this.canvas = document.createElement('canvas');
     this.canvas.setAttribute('id', 'main-canvas');
     this.canvasArea.appendChild(this.canvas);
     this.context = this.canvas.getContext("2d");
+    this.context.scale(this.scale, this.scale);
     this.guide = document.createElement('canvas');
     this.guide.setAttribute('id', 'guide-canvas');
     this.canvasArea.appendChild(this.guide);
     this.guideContext = this.guide.getContext("2d");
+    this.guideContext.scale(this.scale, this.scale);
     this.settings = {
       draw: typeof options.draw !== 'undefined' ? options.draw : true,
       color: typeof options.color !== 'undefined' ? options.color : '#FFF',
@@ -61416,8 +61418,6 @@ var _blueprints = _interopRequireDefault(require("../modules/blueprints"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var engine = window.engine = new _engine["default"]({
-  width: 900,
-  height: 900,
   paused: false,
   interval: 2
 });
@@ -61428,8 +61428,8 @@ var painter = window.painter = new _painter["default"](engine, {
   color: '#ffffff'
 });
 var controls = window.controls = new _controls["default"](engine, painter, {
-  'actionLocation': document.querySelector('#circio .controls'),
-  'controlLocation': document.querySelector('#circio .controls')
+  'actionLocation': document.querySelector('#circio .controls-container'),
+  'controlLocation': document.querySelector('#circio .controls-container')
 });
 var storage = window.storage = new _storage["default"](engine, painter, controls);
 var blueprints = window.blueprints = new _blueprints["default"](storage);

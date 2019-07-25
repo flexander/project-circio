@@ -1,5 +1,25 @@
+body {
+    margin: 0;
+}
+
 #circio {
     display: flex;
+}
+
+.controls-container {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.controls-container .controls {
+    padding-top: 30px;
+}
+
+.controls-container .actions {
+    position: fixed;
 }
 
 .control-group {

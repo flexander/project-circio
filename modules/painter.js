@@ -18,20 +18,25 @@ export default class Painter {
         this.canvasArea.style.width = this.width + 'px';
         this.canvasArea.style.height = this.height + 'px';
 
+        this.scale = 5;
+
         this.background = document.createElement('canvas');
         this.background.setAttribute('id', 'background-canvas');
         this.canvasArea.appendChild(this.background);
         this.backgroundContext = this.background.getContext("2d");
+        this.backgroundContext.scale(this.scale, this.scale);
 
         this.canvas = document.createElement('canvas');
         this.canvas.setAttribute('id', 'main-canvas');
         this.canvasArea.appendChild(this.canvas);
         this.context = this.canvas.getContext("2d");
+        this.context.scale(this.scale, this.scale);
 
         this.guide = document.createElement('canvas');
         this.guide.setAttribute('id', 'guide-canvas');
         this.canvasArea.appendChild(this.guide);
         this.guideContext = this.guide.getContext("2d");
+        this.guideContext.scale(this.scale, this.scale);
 
         this.settings = {
             draw: (typeof options.draw !== 'undefined') ? options.draw : true,

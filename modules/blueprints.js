@@ -66,8 +66,6 @@ export default class Blueprints {
             "engineData": {
                 "engine": {
                     "interval": 1,
-                    "height": 900,
-                    "width": 900,
                 },
                 "list": [
                     {
