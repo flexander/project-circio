@@ -61419,7 +61419,7 @@ var engine = window.engine = new _engine["default"]({
   width: 900,
   height: 900,
   paused: false,
-  interval: 1
+  interval: 2
 });
 var painter = window.painter = new _painter["default"](engine, {
   canvasArea: document.querySelector('#circio .painter'),

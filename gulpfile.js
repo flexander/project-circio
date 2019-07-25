@@ -4,8 +4,6 @@ var babelify   = require('babelify'),
     browserify = require('browserify'),
     buffer     = require('vinyl-buffer'),
     gulp       = require('gulp'),
-    gutil      = require('gulp-util'),
-    merge      = require('merge'),
     rename     = require('gulp-rename'),
     source     = require('vinyl-source-stream');
 

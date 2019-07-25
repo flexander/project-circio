@@ -8,7 +8,7 @@ const engine = window.engine = new Engine({
     width: 900,
     height: 900,
     paused: false,
-    interval: 1
+    interval: 2
 });
 
 const painter = window.painter = new Painter(engine, {
