@@ -1,19 +1,37 @@
 'use strict';
 
-var gulp = require('gulp');
-var babel = require('gulp-babel');
-var browserify = require('gulp-browserify');
+var babelify   = require('babelify'),
+    browserify = require('browserify'),
+    buffer     = require('vinyl-buffer'),
+    gulp       = require('gulp'),
+    gutil      = require('gulp-util'),
+    merge      = require('merge'),
+    rename     = require('gulp-rename'),
+    source     = require('vinyl-source-stream');
+
+var config = {
+    js: {
+        src: './scripts/index.js',
+        outputDir: './public/js/',
+        outputFile: 'index.js'
+    },
+};
+
+function bundle (bundler) {
+
+    return bundler
+        .bundle()
+        .pipe(source(config.js.src))
+        .pipe(buffer())
+        .pipe(rename(config.js.outputFile))
+
+        .pipe(gulp.dest(config.js.outputDir));
+}
 
 
-gulp.task('js', function() {
-    return gulp.src('scripts/*.js', { sourcemaps: true })
-        .pipe(gulp.dest('public/js', { sourcemaps: true }));
-});
+gulp.task('bundle', function () {
+    var bundler = browserify(config.js.src)
+        .transform(babelify, { presets : ["@babel/preset-env"] });
 
-gulp.task('scripts', function() {
-    return gulp.src(
-        ['scripts/fourCircles.js'])
-        .pipe(babel({presets: ["@babel/preset-env"]}))
-        .pipe(browserify())
-        .pipe(gulp.dest('public/js'))
-});
+    return bundle(bundler);
+})
