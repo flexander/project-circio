@@ -7851,7 +7851,7 @@ module.exports = function (str) {
 };
 },{}],10:[function(require,module,exports){
 /**
- * @license Fraction.js v4.0.12 09/09/2015
+ * @license Fraction.js v4.0.10 09/09/2015
  * http://www.xarg.org/2014/03/rational-numbers-in-javascript/
  *
  * Copyright (c) 2015, Robert Eisele (robert@xarg.org)
@@ -31205,7 +31205,7 @@ function factory(type, config, load, typed) {
   /**
    * Compute the sign of a value. The sign of a value x is:
    *
-   * -  1 when x > 0
+   * -  1 when x > 1
    * - -1 when x < 0
    * -  0 when x == 0
    *
@@ -41495,9 +41495,9 @@ function factory(type, config, load, typed) {
   var smaller = load(require('../relational/smaller'));
   var improveErrorMessage = load(require('./utils/improveErrorMessage'));
   /**
-   * Compute the minimum value of a matrix or a  list of values.
-   * In case of a multi dimensional array, the minimum of the flattened array
-   * will be calculated. When `dim` is provided, the minimum over the selected
+   * Compute the maximum value of a matrix or a  list of values.
+   * In case of a multi dimensional array, the maximum of the flattened array
+   * will be calculated. When `dim` is provided, the maximum over the selected
    * dimension will be calculated. Parameter `dim` is zero-based.
    *
    * Syntax:
@@ -41511,7 +41511,7 @@ function factory(type, config, load, typed) {
    *     math.min(2, 1, 4, 3)                  // returns 1
    *     math.min([2, 1, 4, 3])                // returns 1
    *
-   *     // minimum over a specified dimension (zero-based)
+   *     // maximum over a specified dimension (zero-based)
    *     math.min([[2, 5], [4, 3], [1, 7]], 0) // returns [1, 3]
    *     math.min([[2, 5], [4, 3], [1, 7]], 1) // returns [2, 3, 1]
    *

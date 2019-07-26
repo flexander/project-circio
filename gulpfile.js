@@ -15,7 +15,10 @@ var config = {
     },
 };
 
-function bundle (bundler) {
+function scripts () {
+
+    let bundler = browserify(config.js.src)
+        .transform(babelify, { presets : ["@babel/preset-env"] });
 
     return bundler
         .bundle()
@@ -26,10 +29,5 @@ function bundle (bundler) {
         .pipe(gulp.dest(config.js.outputDir));
 }
 
-
-gulp.task('bundle', function () {
-    var bundler = browserify(config.js.src)
-        .transform(babelify, { presets : ["@babel/preset-env"] });
-
-    return bundle(bundler);
-})
+exports.scripts = scripts;
+exports.default = gulp.series(scripts);
