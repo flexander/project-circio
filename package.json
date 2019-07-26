@@ -17,6 +17,7 @@
     "buffer": "^5.2.1",
     "gulp": "^4.0.2",
     "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
     "merge": "^1.2.1",
     "source": "^0.0.3",
     "vinyl-buffer": "^1.0.1",
