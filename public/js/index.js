@@ -26,8 +26,8 @@ function () {
       "engineData": {
         "engine": {
           "interval": 1,
-          "height": 900,
-          "width": 900
+          "height": 1080,
+          "width": 1080
         },
         "list": [{
           "id": 0,
@@ -71,7 +71,9 @@ function () {
     this.fourCircles = {
       "engineData": {
         "engine": {
-          "interval": 1
+          "interval": 1,
+          "height": 1080,
+          "width": 1080
         },
         "list": [{
           "id": 0,
@@ -833,29 +835,29 @@ function () {
 
 
     this.engine = engine;
-    this.width = this.engine.width;
-    this.height = this.engine.height;
+    this.width = 1080;
+    this.height = 1080;
     this.showGuide = options.showGuide;
     this.canvasArea = options.canvasArea;
     this.brushes = [];
     this.canvasArea.style.width = this.width + 'px';
     this.canvasArea.style.height = this.height + 'px';
-    this.scale = 0.5;
+    this.scale = window.innerHeight / this.height;
     this.background = document.createElement('canvas');
     this.background.setAttribute('id', 'background-canvas');
     this.canvasArea.appendChild(this.background);
     this.backgroundContext = this.background.getContext("2d");
-    this.backgroundContext.scale(this.scale, this.scale);
     this.canvas = document.createElement('canvas');
     this.canvas.setAttribute('id', 'main-canvas');
     this.canvasArea.appendChild(this.canvas);
     this.context = this.canvas.getContext("2d");
-    this.context.scale(this.scale, this.scale);
     this.guide = document.createElement('canvas');
     this.guide.setAttribute('id', 'guide-canvas');
     this.canvasArea.appendChild(this.guide);
     this.guideContext = this.guide.getContext("2d");
-    this.guideContext.scale(this.scale, this.scale);
+    this.canvasArea.style.transformOrigin = '0 0'; //scale from top left
+
+    this.canvasArea.style.transform = 'scale(' + this.scale + ')';
     this.settings = {
       draw: typeof options.draw !== 'undefined' ? options.draw : true,
       color: typeof options.color !== 'undefined' ? options.color : '#FFF',
@@ -61419,7 +61421,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 var engine = window.engine = new _engine["default"]({
   paused: false,
-  interval: 2
+  interval: 2,
+  height: 1080,
+  width: 1080
 });
 var painter = window.painter = new _painter["default"](engine, {
   canvasArea: document.querySelector('#circio .painter'),

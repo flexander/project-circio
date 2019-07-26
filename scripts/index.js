@@ -6,7 +6,9 @@ import Blueprints from '../modules/blueprints';
 
 const engine = window.engine = new Engine({
     paused: false,
-    interval: 2
+    interval: 2,
+    height: 1080,
+    width: 1080,
 });
 
 const painter = window.painter = new Painter(engine, {

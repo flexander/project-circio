@@ -9,8 +9,8 @@ export default class Blueprints {
             "engineData": {
                 "engine": {
                     "interval": 1,
-                    "height": 900,
-                    "width": 900,
+                    "height": 1080,
+                    "width": 1080,
                 },
                 "list": [
                     {
@@ -66,6 +66,8 @@ export default class Blueprints {
             "engineData": {
                 "engine": {
                     "interval": 1,
+                    "height": 1080,
+                    "width": 1080,
                 },
                 "list": [
                     {
