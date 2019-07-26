@@ -39,4 +39,4 @@ function styles () {
 
 exports.scripts = scripts;
 exports.styles = styles;
-exports.default = gulp.series(scripts);
+exports.default = gulp.series(scripts, styles);
