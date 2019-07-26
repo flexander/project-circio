@@ -26,8 +26,8 @@ function () {
       "engineData": {
         "engine": {
           "interval": 1,
-          "height": 900,
-          "width": 900
+          "height": 1080,
+          "width": 1080
         },
         "list": [{
           "id": 0,
@@ -72,8 +72,8 @@ function () {
       "engineData": {
         "engine": {
           "interval": 1,
-          "height": 900,
-          "width": 900
+          "height": 1080,
+          "width": 1080
         },
         "list": [{
           "id": 0,
@@ -118,6 +118,45 @@ function () {
           "offset": 0,
           "degrees": 0,
           "link": false
+        }]]
+      }
+    };
+    this.sixCircles = {
+      "engineData": {
+        "engine": {
+          "height": 1080,
+          "width": 1080
+        },
+        "list": [{
+          id: 0,
+          "radius": 10,
+          steps: 1000
+        }, {
+          id: 1,
+          "radius": 20,
+          steps: 1000
+        }, {
+          id: 2,
+          "radius": 30,
+          steps: 1000
+        }, {
+          id: 3,
+          "radius": 40,
+          steps: 1000
+        }, {
+          id: 4,
+          "radius": 50,
+          steps: 1000
+        }, {
+          id: 5,
+          "radius": 60,
+          steps: 1000
+        }]
+      },
+      "painterData": {
+        "brushes": [null, null, null, null, null, [{
+          "color": "#FFF",
+          "point": 0.5
         }]]
       }
     };
@@ -558,8 +597,8 @@ function () {
       // Milliseconds between each loop
       interval: typeof options.interval !== 'undefined' ? options.interval : 1,
       // Area dimensions
-      height: typeof options.height !== 'undefined' ? options.height : 700,
-      width: typeof options.width !== 'undefined' ? options.width : 700,
+      height: typeof options.height !== 'undefined' ? options.height : window.innerHeight,
+      width: typeof options.width !== 'undefined' ? options.width : window.innerHeight,
       // Engine paused state
       paused: typeof options.paused !== 'undefined' ? options.paused : false
     };
@@ -835,13 +874,14 @@ function () {
 
 
     this.engine = engine;
-    this.width = this.engine.width;
-    this.height = this.engine.height;
+    this.width = 1080;
+    this.height = 1080;
     this.showGuide = options.showGuide;
     this.canvasArea = options.canvasArea;
     this.brushes = [];
     this.canvasArea.style.width = this.width + 'px';
     this.canvasArea.style.height = this.height + 'px';
+    this.scale = window.innerHeight / this.height;
     this.background = document.createElement('canvas');
     this.background.setAttribute('id', 'background-canvas');
     this.canvasArea.appendChild(this.background);
@@ -854,6 +894,9 @@ function () {
     this.guide.setAttribute('id', 'guide-canvas');
     this.canvasArea.appendChild(this.guide);
     this.guideContext = this.guide.getContext("2d");
+    this.canvasArea.style.transformOrigin = '0 0'; //scale from top left
+
+    this.canvasArea.style.transform = 'scale(' + this.scale + ')';
     this.settings = {
       draw: typeof options.draw !== 'undefined' ? options.draw : true,
       color: typeof options.color !== 'undefined' ? options.color : '#FFF',
@@ -61416,10 +61459,10 @@ var _blueprints = _interopRequireDefault(require("../modules/blueprints"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var engine = window.engine = new _engine["default"]({
-  width: 900,
-  height: 900,
   paused: false,
-  interval: 2
+  interval: 2,
+  height: 1080,
+  width: 1080
 });
 var painter = window.painter = new _painter["default"](engine, {
   canvasArea: document.querySelector('#circio .painter'),
@@ -61428,8 +61471,8 @@ var painter = window.painter = new _painter["default"](engine, {
   color: '#ffffff'
 });
 var controls = window.controls = new _controls["default"](engine, painter, {
-  'actionLocation': document.querySelector('#circio .controls'),
-  'controlLocation': document.querySelector('#circio .controls')
+  'actionLocation': document.querySelector('#circio .controls-container'),
+  'controlLocation': document.querySelector('#circio .controls-container')
 });
 var storage = window.storage = new _storage["default"](engine, painter, controls);
 var blueprints = window.blueprints = new _blueprints["default"](storage);

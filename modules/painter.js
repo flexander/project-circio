@@ -7,8 +7,8 @@ export default class Painter {
 
         // Engine
         this.engine = engine;
-        this.width = this.engine.width;
-        this.height = this.engine.height;
+        this.width = 1080;
+        this.height = 1080;
 
         this.showGuide = options.showGuide;
         this.canvasArea = options.canvasArea;
@@ -17,6 +17,7 @@ export default class Painter {
 
         this.canvasArea.style.width = this.width + 'px';
         this.canvasArea.style.height = this.height + 'px';
+        this.scale = window.innerHeight / this.height;
 
         this.background = document.createElement('canvas');
         this.background.setAttribute('id', 'background-canvas');
@@ -32,6 +33,9 @@ export default class Painter {
         this.guide.setAttribute('id', 'guide-canvas');
         this.canvasArea.appendChild(this.guide);
         this.guideContext = this.guide.getContext("2d");
+
+        this.canvasArea.style.transformOrigin = '0 0'; //scale from top left
+        this.canvasArea.style.transform = 'scale(' + this.scale + ')';
 
         this.settings = {
             draw: (typeof options.draw !== 'undefined') ? options.draw : true,

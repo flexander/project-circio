@@ -5,10 +5,10 @@ import Storage from '../modules/storage';
 import Blueprints from '../modules/blueprints';
 
 const engine = window.engine = new Engine({
-    width: 900,
-    height: 900,
     paused: false,
-    interval: 2
+    interval: 2,
+    height: 1080,
+    width: 1080,
 });
 
 const painter = window.painter = new Painter(engine, {
@@ -19,8 +19,8 @@ const painter = window.painter = new Painter(engine, {
 });
 
 const controls = window.controls = new Controls(engine, painter, {
-    'actionLocation': document.querySelector('#circio .controls'),
-    'controlLocation': document.querySelector('#circio .controls'),
+    'actionLocation': document.querySelector('#circio .controls-container'),
+    'controlLocation': document.querySelector('#circio .controls-container'),
 });
 
 const storage = window.storage = new Storage(engine, painter, controls);
