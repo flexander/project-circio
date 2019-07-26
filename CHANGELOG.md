@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [develop]
 ### Changed
 - Replaces webpack
+- Implements sass
+- Allows scaling down a large canvas
 
 ## [1.1.0]
 ### Added
