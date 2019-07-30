@@ -232,10 +232,10 @@ export default class Painter {
 
     exportPathAsSaveable () {
         const win = window.open();
-        win.document.write('<iframe src="' + this.canvas.toDataURL('image/png')  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100vh;" allowfullscreen></iframe>');
+        win.document.write('<iframe src="' + this.canvas.toDataURL('image/png')  + '" frameborder="0" style="background:#f1f1f1; border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100vh;" allowfullscreen></iframe>');
     }
 
-    exportIamgeAsSaveable () {
+    exportImageAsSaveable () {
         const win = window.open();
         win.document.write('<iframe src="' + this.exportImageAsDataURL()  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100vh;" allowfullscreen></iframe>');
     }
