@@ -9,8 +9,8 @@ export default class Blueprints {
             "engineData": {
                 "engine": {
                     "interval": 1,
-                    "height": 900,
-                    "width": 900,
+                    "height": 1080,
+                    "width": 1080,
                 },
                 "list": [
                     {
@@ -66,8 +66,8 @@ export default class Blueprints {
             "engineData": {
                 "engine": {
                     "interval": 1,
-                    "height": 900,
-                    "width": 900,
+                    "height": 1080,
+                    "width": 1080,
                 },
                 "list": [
                     {
@@ -122,6 +122,63 @@ export default class Blueprints {
                             "offset": 0,
                             "degrees": 0,
                             "link": false
+                        }
+                    ]
+                ]
+            }
+        };
+
+        this.sixCircles = {
+            "engineData": {
+                "engine": {
+                    "height": 1080,
+                    "width": 1080,
+                },
+                "list": [
+                    {
+                        id: 0,
+                        "radius": 10,
+                        steps: 1000,
+                    },
+                    {
+                        id: 1,
+                        "radius": 20,
+                        steps: 1000,
+                    },
+                    {
+                        id: 2,
+                        "radius": 30,
+                        steps: 1000,
+                    },
+                    {
+                        id: 3,
+                        "radius": 40,
+                        steps: 1000,
+                    },
+                    {
+                        id: 4,
+                        "radius": 50,
+                        steps: 1000,
+                    },
+                    {
+                        id: 5,
+                        "radius": 60,
+                        steps: 1000,
+                    },
+
+                ]
+            },
+            "painterData": {
+                "brushes": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    [
+                        {
+                            "color": "#FFF",
+                            "point": 0.5,
                         }
                     ]
                 ]

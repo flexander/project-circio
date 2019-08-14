@@ -7,8 +7,8 @@ export default class Painter {
 
         // Engine
         this.engine = engine;
-        this.width = this.engine.width;
-        this.height = this.engine.height;
+        this.width = 1080;
+        this.height = 1080;
 
         this.showGuide = options.showGuide;
         this.canvasArea = options.canvasArea;
@@ -17,6 +17,7 @@ export default class Painter {
 
         this.canvasArea.style.width = this.width + 'px';
         this.canvasArea.style.height = this.height + 'px';
+        this.scale = window.innerHeight / this.height;
 
         this.background = document.createElement('canvas');
         this.background.setAttribute('id', 'background-canvas');
@@ -32,6 +33,9 @@ export default class Painter {
         this.guide.setAttribute('id', 'guide-canvas');
         this.canvasArea.appendChild(this.guide);
         this.guideContext = this.guide.getContext("2d");
+
+        this.canvasArea.style.transformOrigin = '0 0'; //scale from top left
+        this.canvasArea.style.transform = 'scale(' + this.scale + ')';
 
         this.settings = {
             draw: (typeof options.draw !== 'undefined') ? options.draw : true,
@@ -214,7 +218,7 @@ export default class Painter {
         return data;
     }
 
-    exportImage () {
+    exportImageAsDataURL () {
         const offscreen = document.createElement('canvas');
         offscreen.setAttribute('height', this.canvasArea.style.height);
         offscreen.setAttribute('width', this.canvasArea.style.width);
@@ -224,6 +228,16 @@ export default class Painter {
         offscreenContext.drawImage(this.background,0,0);
         offscreenContext.drawImage(this.canvas,0,0);
         return offscreen.toDataURL("image/png");
+    }
+
+    exportPathAsSaveable () {
+        const win = window.open();
+        win.document.write('<iframe src="' + this.canvas.toDataURL('image/png')  + '" frameborder="0" style="background:#f1f1f1; border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100vh;" allowfullscreen></iframe>');
+    }
+
+    exportImageAsSaveable () {
+        const win = window.open();
+        win.document.write('<iframe src="' + this.exportImageAsDataURL()  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100vh;" allowfullscreen></iframe>');
     }
 
     export (encode = false) {

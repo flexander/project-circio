@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+#circio {
+    display: flex;
+}
+
+.controls-container {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+
+    .controls {
+        padding-top: 30px;
+    }
+
+    .actions {
+        position: fixed;
+    }
+}
+
+.control-group {
+    border-left: 10px solid #444;
+    border-bottom: 1px solid #444;
+}
+
+.control {
+    label {
+        font-size: 12px;
+        padding: 5px 10px;
+        width: 120px;
+        display: inline-block;
+    }
+
+    input[type=text] {
+        width: 120px;
+    }
+
+    input[type=number] {
+        width: 120px;
+    }
+}
