@@ -1,6 +1,6 @@
-import Circle from './shapes';
+const Circle = require('./shapes');
 
-export default class Engine {
+class Engine {
     constructor (options) {
         // List of circles
         this.list = [];
@@ -226,3 +226,5 @@ export default class Engine {
         this.paused = false;
     }
 }
+
+module.exports = Engine;
