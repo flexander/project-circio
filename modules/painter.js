@@ -218,7 +218,7 @@ export default class Painter {
         return data;
     }
 
-    exportImage () {
+    exportImageAsDataURL () {
         const offscreen = document.createElement('canvas');
         offscreen.setAttribute('height', this.canvasArea.style.height);
         offscreen.setAttribute('width', this.canvasArea.style.width);
@@ -228,6 +228,16 @@ export default class Painter {
         offscreenContext.drawImage(this.background,0,0);
         offscreenContext.drawImage(this.canvas,0,0);
         return offscreen.toDataURL("image/png");
+    }
+
+    exportPathAsSaveable () {
+        const win = window.open();
+        win.document.write('<iframe src="' + this.canvas.toDataURL('image/png')  + '" frameborder="0" style="background:#f1f1f1; border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100vh;" allowfullscreen></iframe>');
+    }
+
+    exportImageAsSaveable () {
+        const win = window.open();
+        win.document.write('<iframe src="' + this.exportImageAsDataURL()  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100vh;" allowfullscreen></iframe>');
     }
 
     export (encode = false) {
