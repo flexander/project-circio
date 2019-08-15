@@ -31,12 +31,17 @@ engine.addCallback(painter.drawCircles.bind(painter));
 
 const steps = args['steps'] !== undefined ? args['steps']: 1000;
 const frames = args['frames'] !== undefined ? args['frames']: 1;
+const project = args['project'] !== undefined ? args['project']: Date.now();
+const dir = __dirname + '/../output/' + project;
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
 
 for (let f = 0; f < frames; f++) {
     painter.fillBackground();
-    let fileName = 'frame-'+ f.toString().padStart(frames.toString().length, '0') +'.png';
-    const out = fs.createWriteStream(__dirname + '/../output/'+fileName);
-    console.log(fileName);
+    let fileName = '/frame-'+ f.toString().padStart((frames.toString().length-1) , '0') +'.png';
+    const out = fs.createWriteStream(__dirname + '/../output/' + project + fileName);
+    console.log(project + fileName);
 
     for (let s = 0; s < steps; s++) {
         engine.runOnce();
