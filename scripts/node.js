@@ -1,7 +1,7 @@
 const Engine = require('../modules/engine');
 const Painter = require('../modules/node-painter');
 const { createCanvas, loadImage } = require('canvas');
-
+const args = require('minimist')(process.argv.slice(2));
 const fs = require('fs');
 
 const canvas = createCanvas(1080, 1080);
@@ -17,21 +17,22 @@ const engine = new Engine({
 });
 
 const painter = new Painter(engine, {
-    backgroundFill: "#000000",
+    backgroundFill: "#1b374c",
     showGuide: true,
     color: '#ffffff',
     canvas: canvas,
 });
 
 engine.import(data.engineData);
-
 painter.import(data.painterData);
 
 engine.addCallback(painter.drawCircles.bind(painter));
 
-const out = fs.createWriteStream(__dirname + '/test.png');
+const out = fs.createWriteStream(__dirname + '/../output/test.png');
 
-for (let i = 0; i < 1000; i++) {
+const steps = args['steps'] !== undefined ? args['steps']: 1000;
+
+for (let i = 0; i < steps; i++) {
     engine.runOnce();
 }
 

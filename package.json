@@ -4,6 +4,7 @@
   "dependencies": {
     "canvas": "^2.6.0",
     "mathjs": "^5.2.3",
+    "minimist": "^1.2.0",
     "webpack-dev-server": "^3.8.0"
   },
   "devDependencies": {
