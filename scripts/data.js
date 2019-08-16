@@ -66,3 +66,20 @@ const painterData = {"painter":{"backgroundFill":"#1b5eec"},
         null,
         [{"color":"#FFFFFF30","point":0.5,"offset":100,"degrees":0,"link":true}]
     ]};
+
+// home : 3000
+
+const engineData = {"engine":{"height":1080,"width":1080},
+    "list":[
+        {"id":0,"radius":200,"clockwise":false,"outside":false,"steps":6,"fixed":true,"stepMod":0},
+        {"id":1,"radius":5,"clockwise":true,"outside":true,"steps":0,"fixed":true,"stepMod":0},
+        {"id":2,"radius":100,"clockwise":false,"outside":false,"steps":5000,"fixed":false,"stepMod":0},
+        {"id":3,"radius":50,"clockwise":true,"outside":false,"steps":2,"fixed":false,"stepMod":0}
+    ]};
+const painterData = {"painter":{"backgroundFill":"#3f3f57"},
+    "brushes":[
+        null,
+        null,
+        null,
+        [{"color":"rgba(28,255,40,0.19)","point":0.5,"offset":100,"degrees":0,"link":true}]
+    ]};

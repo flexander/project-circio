@@ -19,17 +19,17 @@ const painter = new Painter(engine, {
 
 const engineData = {"engine":{"height":1080,"width":1080},
     "list":[
-        {"id":0,"radius":200,"clockwise":false,"outside":false,"steps":1000,"fixed":true,"stepMod":0},
+        {"id":0,"radius":200,"clockwise":false,"outside":false,"steps":6,"fixed":true,"stepMod":0},
         {"id":1,"radius":5,"clockwise":true,"outside":true,"steps":0,"fixed":true,"stepMod":0},
-        {"id":2,"radius":100,"clockwise":false,"outside":false,"steps":10000,"fixed":true,"stepMod":0},
-        {"id":3,"radius":50,"clockwise":true,"outside":false,"steps":2,"fixed":true,"stepMod":0}
+        {"id":2,"radius":100,"clockwise":false,"outside":false,"steps":5000,"fixed":false,"stepMod":0},
+        {"id":3,"radius":50,"clockwise":true,"outside":false,"steps":2,"fixed":false,"stepMod":0}
     ]};
-const painterData = {"painter":{"backgroundFill":"#1b5eec"},
+const painterData = {"painter":{"backgroundFill":"#3f3f57"},
     "brushes":[
         null,
         null,
         null,
-        [{"color":"#FFFFFF30","point":0.5,"offset":100,"degrees":0,"link":true}]
+        [{"color":"rgba(28,255,40,0.19)","point":0.5,"offset":100,"degrees":0,"link":true}]
     ]};
 
 engine.import(engineData);
@@ -53,7 +53,7 @@ for (let f = startFrame; f <= endFrame; f++) {
     painter.fillBackground();
     engine.reset();
 
-    //painter.brushes[3][0].degrees = f;
+    painter.brushes[3][0].degrees = f;
 
     if(f <= (2 * offset)) {
         painter.brushes[3][0].offset = (-1 * offset) + f;
