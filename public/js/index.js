@@ -560,15 +560,6 @@ exports["default"] = Controls;
 },{}],3:[function(require,module,exports){
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _shapes = _interopRequireDefault(require("./shapes"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -580,6 +571,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Circle = require('./shapes');
 
 var Engine =
 /*#__PURE__*/
@@ -608,7 +601,7 @@ function () {
   _createClass(Engine, [{
     key: "addCircle",
     value: function addCircle(circle) {
-      if (!(circle instanceof _shapes["default"])) {
+      if (!(circle instanceof Circle)) {
         throw 'This is not a circle';
       } // Center root circle
 
@@ -769,7 +762,7 @@ function () {
     value: function importList(shapes) {
       var indexedShapes = [];
       shapes.forEach(function (shape) {
-        indexedShapes[shape.id] = new _shapes["default"](_objectSpread({}, shape));
+        indexedShapes[shape.id] = new Circle(_objectSpread({}, shape));
       });
       shapes.forEach(function (shape) {
         if (typeof shape.parentId !== 'undefined') {
@@ -844,7 +837,7 @@ function () {
   return Engine;
 }();
 
-exports["default"] = Engine;
+module.exports = Engine;
 
 },{"./shapes":5}],4:[function(require,module,exports){
 "use strict";
@@ -1208,15 +1201,6 @@ function () {
 },{}],5:[function(require,module,exports){
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports["default"] = void 0;
-
-var _mathjs = _interopRequireDefault(require("mathjs"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
@@ -1234,6 +1218,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var math = require('mathjs');
 
 var Shape =
 /*#__PURE__*/
@@ -1291,7 +1277,7 @@ function (_Shape) {
       var stepRadian = 0;
 
       if (this.steps > 0) {
-        stepRadian = _mathjs["default"].fraction(_mathjs["default"].multiply(_mathjs["default"].pi, 2), this.steps);
+        stepRadian = math.fraction(math.multiply(math.pi, 2), this.steps);
       }
 
       return stepRadian;
@@ -1302,7 +1288,7 @@ function (_Shape) {
       var arc = 0;
 
       if (this.steps > 0) {
-        arc = _mathjs["default"].multiply(this.radius, this.getStepRadians());
+        arc = math.multiply(this.radius, this.getStepRadians());
       }
 
       return arc;
@@ -1350,7 +1336,7 @@ function (_Shape) {
   return Circle;
 }(Shape);
 
-exports["default"] = Circle;
+module.exports = Circle;
 
 },{"mathjs":12}],6:[function(require,module,exports){
 "use strict";
@@ -7863,7 +7849,7 @@ module.exports = function (str) {
 };
 },{}],10:[function(require,module,exports){
 /**
- * @license Fraction.js v4.0.10 09/09/2015
+ * @license Fraction.js v4.0.12 09/09/2015
  * http://www.xarg.org/2014/03/rational-numbers-in-javascript/
  *
  * Copyright (c) 2015, Robert Eisele (robert@xarg.org)
@@ -31217,7 +31203,7 @@ function factory(type, config, load, typed) {
   /**
    * Compute the sign of a value. The sign of a value x is:
    *
-   * -  1 when x > 1
+   * -  1 when x > 0
    * - -1 when x < 0
    * -  0 when x == 0
    *
@@ -41507,9 +41493,9 @@ function factory(type, config, load, typed) {
   var smaller = load(require('../relational/smaller'));
   var improveErrorMessage = load(require('./utils/improveErrorMessage'));
   /**
-   * Compute the maximum value of a matrix or a  list of values.
-   * In case of a multi dimensional array, the maximum of the flattened array
-   * will be calculated. When `dim` is provided, the maximum over the selected
+   * Compute the minimum value of a matrix or a  list of values.
+   * In case of a multi dimensional array, the minimum of the flattened array
+   * will be calculated. When `dim` is provided, the minimum over the selected
    * dimension will be calculated. Parameter `dim` is zero-based.
    *
    * Syntax:
@@ -41523,7 +41509,7 @@ function factory(type, config, load, typed) {
    *     math.min(2, 1, 4, 3)                  // returns 1
    *     math.min([2, 1, 4, 3])                // returns 1
    *
-   *     // maximum over a specified dimension (zero-based)
+   *     // minimum over a specified dimension (zero-based)
    *     math.min([[2, 5], [4, 3], [1, 7]], 0) // returns [1, 3]
    *     math.min([[2, 5], [4, 3], [1, 7]], 1) // returns [2, 3, 1]
    *
