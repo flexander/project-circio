@@ -29,6 +29,7 @@ class Circle extends Shape {
             steps : (typeof options.steps !== 'undefined') ? options.steps: 0,
             fixed : (typeof options.fixed !== 'undefined') ? options.fixed: true,
             stepMod : (typeof options.stepMod !== 'undefined') ? options.stepMod: 0,
+            radians : (typeof options.radians !== 'undefined') ? options.radians: 0,
         };
         Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
     }

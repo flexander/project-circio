@@ -645,7 +645,7 @@ function () {
 
       this.steps = 0;
       this.list.forEach(function (circle) {
-        circle.radians = 0;
+        circle.radians = circle.settings.radians;
 
         _this2.calculateCircle(circle);
 
@@ -1265,7 +1265,8 @@ function (_Shape) {
       outside: typeof options.outside !== 'undefined' ? options.outside : false,
       steps: typeof options.steps !== 'undefined' ? options.steps : 0,
       fixed: typeof options.fixed !== 'undefined' ? options.fixed : true,
-      stepMod: typeof options.stepMod !== 'undefined' ? options.stepMod : 0
+      stepMod: typeof options.stepMod !== 'undefined' ? options.stepMod : 0,
+      radians: typeof options.radians !== 'undefined' ? options.radians : 0
     };
     Object.assign(_assertThisInitialized(_this), JSON.parse(JSON.stringify(_this.settings)));
     return _this;

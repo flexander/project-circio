@@ -61,7 +61,7 @@ class Engine {
     reset () {
         this.steps = 0;
         this.list.forEach(circle => {
-            circle.radians = 0;
+            circle.radians = circle.settings.radians;
             this.calculateCircle(circle);
             circle.previousX1 = circle.x1;
             circle.previousY1 = circle.y1;
