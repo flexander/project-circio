@@ -5,20 +5,20 @@ interface Position {
     y: number;
 }
 
-interface Circ {
+interface CircInterface {
     width: number;
     height: number;
     backgroundFill: string;
     stepsToComplete: number;
-    circles: Circle[];
-    state: CircState;
+    circles: CircleInterface[];
+    state: CircStateInterface;
 }
 
-interface CircState {
+interface CircStateInterface {
     totalSteps: number;
 }
 
-interface Shape {
+interface ShapeInterface {
     id: number;
     steps: number;
     outside: boolean;
@@ -26,22 +26,22 @@ interface Shape {
     clockwise: boolean;
     stepMod: number;
     startAngle: number;
-    brushes: Brush[];
-    state: ShapeState;
+    brushes: BrushInterface[];
+    state: ShapeStateInterface;
 }
 
-interface ShapeState {
+interface ShapeStateInterface {
     totalAngle: number;
-    centre: Position;
-    drawPoint: Position;
+    centre: PositionInterface;
+    drawPoint: PositionInterface;
     getAngle(): number;
 }
 
-interface Circle extends Shape {
+interface CircleInterface extends ShapeInterface {
     radius: number;
 }
 
-interface Brush {
+interface BrushInterface {
     draw: boolean;
     color: string;
     point: number;
@@ -52,9 +52,9 @@ interface Brush {
 
 /** Engine **/
 
-interface Engine {
-    import(circ: Circ): void;
-    export(): Circ;
+interface EngineInterface {
+    import(circ: CircInterface): void;
+    export(): CircInterface;
 
     addCallback(callback: CallableFunction): void
     pause(): void;
@@ -67,10 +67,10 @@ interface Engine {
 
 /** Paint **/
 
-interface Painter {
+interface PainterInterface {
     constructor(canvasContext: CanvasRenderingContext2D): void;
 
-    draw(circ: Circ): void;
+    draw(circ: CircInterface): void;
     clear(): void;
     exportImageAsDataURL(): string;
 }
