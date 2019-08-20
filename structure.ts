@@ -18,17 +18,20 @@ interface CircState {
     totalSteps: number;
 }
 
-interface Circle {
+interface Shape {
     id: number;
-    radius: number;
     steps: number;
     outside: boolean;
     fixed: boolean;
     clockwise: boolean;
     stepMod: number;
     startAngle: number;
-    state: CircleState;
     brushes: Brush[];
+}
+
+interface Circle extends Shape {
+    radius: number;
+    state: CircleState;
 }
 
 interface CircleState {
