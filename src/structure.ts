@@ -28,12 +28,19 @@ interface ShapeInterface {
     startAngle: number;
     brushes: BrushInterface[];
     state: ShapeStateInterface;
+
+    calculate(parentCircle: ShapeInterface|null): void;
+    reset(): void;
 }
 
 interface ShapeStateInterface {
     totalAngle: number;
     centre: PositionInterface;
     drawPoint: PositionInterface;
+    stepCount: number;
+    initialState: ShapeStateInterface;
+    previousState: ShapeStateInterface;
+
     getAngle(): number;
 }
 
@@ -58,8 +65,8 @@ interface EngineInterface {
 
     addCallback(callback: CallableFunction): void
     pause(): void;
-    play(): void
-    stepBy(count: number): void
+    play(count: number|null): void
+    stepFast(count: number): void
     step(): void;
     reset(): void
 }
@@ -75,11 +82,11 @@ interface PainterInterface {
     exportImageAsDataURL(): string;
 }
 
-interface CirclePainter extends Painter {}
-interface GuidePainter extends Painter {
-    hide(): void;
-    show(): void;
-}
+// interface CirclePainterInterface extends PainterInterface {}
+// interface GuidePainterInterface extends PainterInterface {
+//     hide(): void;
+//     show(): void;
+// }
 
 
 /** Store
@@ -92,10 +99,10 @@ interface GuidePainter extends Painter {
 **/
 
 interface CircStore {
-    get(name: string): Circ
-    getIndex(index: number): Circ
-    list(): Circ[];
-    store(name: string, circ: Circ): void;
+    get(name: string): CircInterface
+    getIndex(index: number): CircInterface
+    list(): CircInterface[];
+    store(name: string, circ: CircInterface): void;
 }
 
 interface BluePrints extends CircStore {}
@@ -108,14 +115,14 @@ interface BluePrints extends CircStore {}
 
 /** Load & Run Example **/
 
-const circPainter = new CirclePainter();
-const guidePainter = new GuidePainter();
-const engine = new Engine();
-const store = new LocalStorage();
-const circ = store.get('circ');
-
-engine.import(circ);
-engine.addCallback(circ => circPainter.draw(circ));
-engine.addCallback(circ => guidePainter.draw(circ));
-engine.run();
+// const circPainter = new CirclePainter();
+// const guidePainter = new GuidePainter();
+// const engine = new Engine();
+// const store = new LocalStorage();
+// const circ = store.get('circ');
+//
+// engine.import(circ);
+// engine.addCallback(circ => circPainter.draw(circ));
+// engine.addCallback(circ => guidePainter.draw(circ));
+// engine.run();
 
