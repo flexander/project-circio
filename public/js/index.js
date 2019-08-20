@@ -160,6 +160,41 @@ function () {
         }]]
       }
     };
+    this.fiveCircles = {
+      "engineData": {
+        "engine": {
+          "height": 1080,
+          "width": 1080
+        },
+        "list": [{
+          id: 0,
+          "radius": 10,
+          steps: 1000
+        }, {
+          id: 1,
+          "radius": 20,
+          steps: 1000
+        }, {
+          id: 2,
+          "radius": 30,
+          steps: 1000
+        }, {
+          id: 3,
+          "radius": 40,
+          steps: 1000
+        }, {
+          id: 4,
+          "radius": 50,
+          steps: 1000
+        }]
+      },
+      "painterData": {
+        "brushes": [null, null, null, null, [{
+          "color": "#FFF",
+          "point": 0.5
+        }]]
+      }
+    };
     this.sixCircles = {
       "engineData": {
         "engine": {
