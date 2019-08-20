@@ -27,18 +27,18 @@ interface Shape {
     stepMod: number;
     startAngle: number;
     brushes: Brush[];
+    state: ShapeState;
 }
 
-interface Circle extends Shape {
-    radius: number;
-    state: CircleState;
-}
-
-interface CircleState {
+interface ShapeState {
     totalAngle: number;
     centre: Position;
     drawPoint: Position;
     getAngle(): number;
+}
+
+interface Circle extends Shape {
+    radius: number;
 }
 
 interface Brush {
