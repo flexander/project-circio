@@ -59,8 +59,8 @@ interface EngineInterface {
     addCallback(callback: CallableFunction): void
     pause(): void;
     play(): void
-    step(count: number): void
-    stepOnce(): void;
+    stepBy(count: number): void
+    step(): void;
     reset(): void
 }
 
