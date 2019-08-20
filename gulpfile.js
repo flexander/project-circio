@@ -7,6 +7,8 @@ let babelify   = require('babelify'),
     rename     = require('gulp-rename'),
     source     = require('vinyl-source-stream'),
     sass       = require('gulp-sass');
+var ts = require('gulp-typescript');
+var tsProject = ts.createProject('tsconfig.json');
 
 let config = {
     js: {
@@ -22,13 +24,15 @@ let config = {
 };
 
 function scripts () {
-    return browserify(config.js.src)
-        .transform(babelify, { presets : ["@babel/preset-env"] })
-        .bundle()
-        .pipe(source(config.js.src))
-        .pipe(buffer())
-        .pipe(rename(config.js.outputFile))
-        .pipe(gulp.dest(config.js.outputDir));
+    return tsProject.src()
+        .pipe(tsProject())
+        .js.pipe(gulp.dest('public/js/'));
+}
+
+function styles () {
+    return gulp.src(config.css.src)
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest(config.css.outputDir));
 }
 
 function styles () {
