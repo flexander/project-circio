@@ -10,7 +10,7 @@ interface CircInterface {
     height: number;
     backgroundFill: string;
     stepsToComplete: number;
-    circles: CircleInterface[];
+    shapes: ShapeInterface[];
     state: CircStateInterface;
 }
 
