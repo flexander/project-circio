@@ -43,7 +43,7 @@ const endFrame = args['end'] !== undefined ? args['end']: 1;
 const name = args['name'] !== undefined ? args['name']: Date.now();
 const offset = 180;
 
-const dir = __dirname + '/../output/' + project;
+const dir = __dirname + '/../output/' + name;
 if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
 }
@@ -61,7 +61,7 @@ for (let f = startFrame; f <= endFrame; f++) {
         painter.brushes[3][0].offset = offset - (f - (2 * offset));
     }
 
-    let fileName = project + '/frame-'+ f.toString().padStart(10 , '0') +'.png';
+    let fileName = name + '/frame-'+ f.toString().padStart(10 , '0') +'.png';
     draw(fileName, engine);
 }
 
