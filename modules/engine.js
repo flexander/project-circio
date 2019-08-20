@@ -1,6 +1,6 @@
-import Circle from './shapes';
+const Circle = require('./shapes');
 
-export default class Engine {
+class Engine {
     constructor (options) {
         // List of circles
         this.list = [];
@@ -61,7 +61,7 @@ export default class Engine {
     reset () {
         this.steps = 0;
         this.list.forEach(circle => {
-            circle.radians = 0;
+            circle.radians = circle.settings.radians;
             this.calculateCircle(circle);
             circle.previousX1 = circle.x1;
             circle.previousY1 = circle.y1;
@@ -226,3 +226,5 @@ export default class Engine {
         this.paused = false;
     }
 }
+
+module.exports = Engine;

@@ -5,6 +5,54 @@ export default class Blueprints {
             throw "Please create an engine";
         }
 
+        this.twoCircles = {
+            "engineData": {
+                "engine": {
+                    "interval": 1,
+                    "height": 1080,
+                    "width": 1080,
+                },
+                "list": [
+                    {
+                        "id": 0,
+                        "radius": 300,
+                        "clockwise": false,
+                        "outside": false,
+                        "steps": 500,
+                        "fixed": true
+                    },
+                    {
+                        "id": 1,
+                        "radius": 100,
+                        "clockwise": true,
+                        "outside": true,
+                        "steps": 500,
+                        "fixed": true
+                    }
+                ]
+            },
+            "painterData": {
+                "painter": {
+                    "draw": true,
+                    "color": "#ffffff",
+                    "point": 0.5,
+                    "backgroundFill": "#1b5eec"
+                },
+                "brushes": [
+                    null,
+                    [
+                        {
+                            "color": "#FFF",
+                            "point": 0.5,
+                            "offset": 0,
+                            "degrees": 0,
+                            "link": false
+                        }
+                    ]
+                ]
+            }
+        };
+
         this.threeCircles = {
             "engineData": {
                 "engine": {

@@ -1,4 +1,4 @@
-import math from 'mathjs';
+const math = require('mathjs');
 
 class Shape {
     constructor(options) {}
@@ -12,7 +12,7 @@ class Shape {
     }
 }
 
-export default class Circle extends Shape {
+class Circle extends Shape {
     constructor (options) {
         super(options);
 
@@ -29,6 +29,7 @@ export default class Circle extends Shape {
             steps : (typeof options.steps !== 'undefined') ? options.steps: 0,
             fixed : (typeof options.fixed !== 'undefined') ? options.fixed: true,
             stepMod : (typeof options.stepMod !== 'undefined') ? options.stepMod: 0,
+            radians : (typeof options.radians !== 'undefined') ? options.radians: 0,
         };
         Object.assign(this, JSON.parse(JSON.stringify(this.settings)));
     }
@@ -88,3 +89,5 @@ export default class Circle extends Shape {
         }
     }
 }
+
+module.exports = Circle;
