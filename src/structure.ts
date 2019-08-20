@@ -1,6 +1,6 @@
 /** Data **/
 
-interface Position {
+interface PositionInterface {
     x: number;
     y: number;
 }
