@@ -1,7 +1,7 @@
 import '../structure';
 import {BrushInterface, CircleInterface, PositionInterface, ShapeStateInterface} from "../structure";
 
-export default class Circle implements CircleInterface {
+class Circle implements CircleInterface {
     brushes: BrushInterface[] = [];
     clockwise: boolean;
     fixed: boolean;
@@ -110,4 +110,11 @@ class CircleCenterPosition implements PositionInterface {
 class CircleDrawPosition implements PositionInterface {
     x: number;
     y: number;
+}
+
+export {
+    Circle,
+    CircleState,
+    CircleCenterPosition,
+    CircleDrawPosition,
 }
