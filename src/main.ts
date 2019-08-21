@@ -41,9 +41,8 @@ canvasArea.querySelectorAll('canvas').forEach(c => {
 const backgroundContext = background.getContext("2d");
 backgroundContext.beginPath();
 backgroundContext.rect(0, 0, circ.width, circ.height);
-backgroundContext.fillStyle = '#000000';
+backgroundContext.fillStyle = circ.backgroundFill;
 backgroundContext.fill();
-
 
 const engine = new Engine();
 const painter = new Painter(canvasContext);
