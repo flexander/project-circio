@@ -43,9 +43,9 @@ backgroundContext.fill();
 const engine = new Engine();
 const painter = new Painter(canvasContext);
 const guidePainter = new GuidePainter(guideContext);
+
 engine.import(circ);
 engine.addCallback(circ => painter.draw(circ));
 engine.addCallback(circ => guidePainter.draw(circ));
-
 engine.play();
 
