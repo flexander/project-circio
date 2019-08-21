@@ -1,6 +1,6 @@
 import {BrushInterface} from "../structure";
 
-export default class DotBrush implements BrushInterface {
+export default class Brush implements BrushInterface {
     color: string;
     degrees: number;
     draw: boolean;
