@@ -4,9 +4,13 @@ export default class Engine implements EngineInterface {
     protected steps: number = 0;
     protected interval: number = 1;
     protected paused: boolean;
-    protected callbacks: Array<Function>;
+    protected callbacks: Array<Function> = [];
     protected circ: CircInterface;
     protected stepsToRun: number = 0;
+
+    constructor() {
+        this.run();
+    }
 
     public addCallback(callback: Function): void {
         this.callbacks.push(callback);

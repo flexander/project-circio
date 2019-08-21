@@ -94,8 +94,8 @@ class CircleState implements ShapeStateInterface {
 }
 
 class CircleCenterPosition implements PositionInterface {
-    x: number;
-    y: number;
+    x: number = 0;
+    y: number = 0;
 }
 
 class CircleDrawPosition implements PositionInterface {

@@ -75,18 +75,18 @@ interface EngineInterface {
 /** Paint **/
 
 interface PainterInterface {
-    constructor(canvasContext: CanvasRenderingContext2D): void;
+    constructor(canvasContext: CanvasRenderingContext2D);
 
     draw(circ: CircInterface): void;
     clear(): void;
     exportImageAsDataURL(): string;
 }
 
-// interface CirclePainterInterface extends PainterInterface {}
-// interface GuidePainterInterface extends PainterInterface {
-//     hide(): void;
-//     show(): void;
-// }
+interface CirclePainterInterface extends PainterInterface {}
+interface GuidePainterInterface extends PainterInterface {
+    hide(): void;
+    show(): void;
+}
 
 
 /** Store
@@ -119,6 +119,8 @@ export {
     EngineInterface,
     PainterInterface,
     CircStoreInterface,
+    CirclePainterInterface,
+    GuidePainterInterface,
 }
 
 

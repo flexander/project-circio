@@ -5,6 +5,6 @@ export default class Circ implements CircInterface {
     width: number;
     backgroundFill: string;
     stepsToComplete: number;
-    shapes: ShapeInterface[];
+    shapes: ShapeInterface[] = [];
     state: CircStateInterface;
 }

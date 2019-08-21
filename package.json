@@ -5,6 +5,7 @@
     "canvas": "^2.6.0",
     "gulp-typescript": "^5.0.1",
     "minimist": "^1.2.0",
+    "tsify": "^4.0.1",
     "typescript": "^3.5.3",
     "webpack-dev-server": "^3.8.0"
   },
