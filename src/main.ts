@@ -1,46 +1,15 @@
 import Circ from './modules/circ';
 import Engine from './modules/engine';
-import Circle from './modules/circle';
+import {Circle} from './modules/circle';
 import Painter from "./modules/painter";
 import Brush from "./modules/brushes";
 import GuidePainter from "./modules/guidePainter";
+import LocalStorage from "./modules/storeLocal";
+import {BlueprintStore} from "./modules/storeBlueprint";
 
-const circle0 = new Circle();
-circle0.steps = 1000;
-circle0.outside = true;
-circle0.fixed = true;
-circle0.clockwise = true;
-circle0.stepMod = 1;
-circle0.startAngle = 0;
-circle0.radius = 100;
-circle0.state.centre.x = 1080/2;
-circle0.state.centre.y = 1080/2;
+const storage = new BlueprintStore();
 
-const circle1 = new Circle();
-circle1.steps = 500;
-circle1.outside = true;
-circle1.fixed = true;
-circle1.clockwise = true;
-circle1.stepMod = 1;
-circle1.startAngle = 0;
-circle1.radius = 100;
-
-const circle1Brush = new Brush();
-circle1Brush.color = '#FFFFFF';
-circle1Brush.degrees = 0;
-circle1Brush.link = false;
-circle1Brush.offset = 0;
-circle1Brush.point = 1;
-
-circle1.brushes.push(circle1Brush);
-
-const circ = new Circ();
-circ.width = 1080;
-circ.height = 1080;
-circ.backgroundFill = '#000000';
-circ.shapes.push(circle0);
-circ.shapes.push(circle1);
-
+const circ = storage.get('threeCircles');
 
 const canvasArea = document.querySelector('#circio .painter');
 canvasArea.style.transformOrigin = '0 0'; //scale from top left
@@ -76,7 +45,6 @@ backgroundContext.fillStyle = '#000000';
 backgroundContext.fill();
 
 
-
 const engine = new Engine();
 const painter = new Painter(canvasContext);
 const guidePainter = new GuidePainter(guideContext);
@@ -85,3 +53,4 @@ engine.addCallback(circ => painter.draw(circ));
 engine.addCallback(circ => guidePainter.draw(circ));
 
 engine.play();
+
