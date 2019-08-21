@@ -45,6 +45,11 @@ export default class Serializer implements SerializerInterface {
     }
 
     protected makeClass(className: string) {
+
+        if (typeof this.classes[className] === 'undefined') {
+            throw `Unknown class ${className}`;
+        }
+
         return new this.classes[className]();
     }
 
