@@ -1,13 +1,14 @@
 #!/bin/bash
 
 echo 'enter a project name'
-
 read NAME
 
 echo 'enter the number of steps to complete a frame'
-
 read STEPS
+
+trap 'kill %1; kill %2' SIGINT
 
 node scripts/node.js --name=$NAME --start=0 --end=320 --steps=$STEPS &
 node scripts/node.js --name=$NAME --start=321 --end=520 --steps=$STEPS &
 node scripts/node.js --name=$NAME --start=521 --end=720 --steps=$STEPS &
+wait
