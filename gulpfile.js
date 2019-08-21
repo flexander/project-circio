@@ -14,3 +14,7 @@ gulp.task('build:ts', function () {
         .pipe(buffer())
         .pipe(gulp.dest('./public/js'));
 });
+
+gulp.task('default', function() {
+    gulp.watch(['src/*.ts', 'src/**/*.ts'], gulp.series('build:ts'));
+});
