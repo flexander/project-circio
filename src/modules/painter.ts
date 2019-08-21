@@ -11,6 +11,9 @@ export default class Painter implements CirclePainterInterface {
     }
 
     draw(circ: CircInterface): void {
+        circ.shapes[0].state.centre.x = (circ.width/2);
+        circ.shapes[0].state.centre.y = (circ.height/2);
+
         circ.shapes.forEach((circle:CircleInterface) => {
             if (circle.brushes.length === 0) {
                 return;

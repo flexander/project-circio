@@ -40,8 +40,6 @@ export class BlueprintStore implements CircStoreInterface {
         circle0.stepMod = 1;
         circle0.startAngle = 0;
         circle0.radius = 300;
-        circle0.state.centre.x = 1080/2;
-        circle0.state.centre.y = 1080/2;
 
         const circle1 = new Circle();
         circle1.steps = 500;
@@ -81,8 +79,6 @@ export class BlueprintStore implements CircStoreInterface {
         circle0.stepMod = 1;
         circle0.startAngle = 0;
         circle0.radius = 100;
-        circle0.state.centre.x = 1080/2;
-        circle0.state.centre.y = 1080/2;
 
         const circle1 = new Circle();
         circle1.steps = 500;
@@ -132,8 +128,6 @@ export class BlueprintStore implements CircStoreInterface {
         circle0.stepMod = 1;
         circle0.startAngle = 0;
         circle0.radius = 120;
-        circle0.state.centre.x = 1080/2;
-        circle0.state.centre.y = 1080/2;
 
         const circle1 = new Circle();
         circle1.steps = 500;
