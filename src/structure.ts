@@ -98,14 +98,14 @@ interface PainterInterface {
  *
 **/
 
-interface CircStore {
+interface CircStoreInterface {
     get(name: string): CircInterface
     getIndex(index: number): CircInterface
     list(): CircInterface[];
     store(name: string, circ: CircInterface): void;
 }
 
-interface BluePrints extends CircStore {}
+// interface BluePrints extends CircStoreInterface {}
 
 
 export {
