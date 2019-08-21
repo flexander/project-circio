@@ -43,8 +43,9 @@ export default class Circle implements CircleInterface {
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
         this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
 
+        this.savePreviousState();
+
         // New x1 & y1 to reflect change in radians
-        this.state.previousState = this.state;
         this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
         this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
 
@@ -53,6 +54,14 @@ export default class Circle implements CircleInterface {
         } else {
             this.state.totalAngle -= this.getStepRadians();
         }
+    }
+
+    protected savePreviousState() {
+        // Don't save nested states as this prevents serialisation
+        const previousState = Object.create(this.state);
+        previousState.previousState = null;
+
+        this.state.previousState = previousState;
     }
 
     protected getArc () {
@@ -80,7 +89,7 @@ export default class Circle implements CircleInterface {
 class CircleState implements ShapeStateInterface {
     centre: PositionInterface = new CircleCenterPosition();
     drawPoint: PositionInterface = new CircleDrawPosition();
-    initialState: ShapeStateInterface = this;
+    initialState: ShapeStateInterface = Object.create(this);
     previousState: ShapeStateInterface = null;
     stepCount: number = 0;
     totalAngle: number = 0;
