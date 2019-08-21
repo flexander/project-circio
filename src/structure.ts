@@ -107,6 +107,12 @@ interface CircStoreInterface {
 
 // interface BluePrints extends CircStoreInterface {}
 
+/** Util **/
+interface SerializerInterface {
+    serialize(circ: CircInterface): string;
+    unserialize(circJson: string): CircInterface;
+}
+
 
 export {
     PositionInterface,
@@ -121,6 +127,7 @@ export {
     CircStoreInterface,
     CirclePainterInterface,
     GuidePainterInterface,
+    SerializerInterface,
 }
 
 
