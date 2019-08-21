@@ -108,7 +108,18 @@ interface CircStore {
 interface BluePrints extends CircStore {}
 
 
-
+export {
+    PositionInterface,
+    CircInterface,
+    CircStateInterface,
+    ShapeInterface,
+    ShapeStateInterface,
+    CircleInterface,
+    BrushInterface,
+    EngineInterface,
+    PainterInterface,
+    CircStoreInterface,
+}
 
 
 
