@@ -1,15 +1,15 @@
-import math from 'mathjs';
 import '../structure';
+import {BrushInterface, CircleInterface, PositionInterface, ShapeStateInterface} from "../structure";
 
-class Circle implements CircleInterface {
-    brushes: BrushInterface[];
+export default class Circle implements CircleInterface {
+    brushes: BrushInterface[] = [];
     clockwise: boolean;
     fixed: boolean;
     id: number;
     outside: boolean;
     radius: number;
     startAngle: number;
-    state: ShapeStateInterface;
+    state: ShapeStateInterface = new CircleState();
     stepMod: number;
     steps: number;
 
@@ -55,25 +55,18 @@ class Circle implements CircleInterface {
         }
     }
 
-    public getAngle(): number {
-        return Math.atan2(
-            (this.state.drawPoint.y - this.state.centre.y), // Delta Y
-            (this.state.drawPoint.x - this.state.centre.x) // Delta X
-        );
-    }
-
     protected getArc () {
         if (this.steps === 0) {
             return 0;
         }
 
-        return math.multiply(this.radius, this.getStepRadians());
+        return this.radius*this.getStepRadians();
     }
 
     protected getStepRadians () {
         let stepRadian = 0;
         if(this.steps > 0) {
-            stepRadian = math.fraction(math.multiply(math.pi, 2), this.steps);
+            stepRadian = (Math.PI*2)/this.steps;
         }
 
         return stepRadian;
@@ -82,5 +75,30 @@ class Circle implements CircleInterface {
     reset(): void {
         this.state = this.state.initialState;
     }
+}
 
+class CircleState implements ShapeStateInterface {
+    centre: PositionInterface = new CircleCenterPosition();
+    drawPoint: PositionInterface = new CircleDrawPosition();
+    initialState: ShapeStateInterface = this;
+    previousState: ShapeStateInterface = null;
+    stepCount: number = 0;
+    totalAngle: number = 0;
+
+    public getAngle(): number {
+        return Math.atan2(
+            (this.drawPoint.y - this.centre.y), // Delta Y
+            (this.drawPoint.x - this.centre.x) // Delta X
+        );
+    }
+}
+
+class CircleCenterPosition implements PositionInterface {
+    x: number;
+    y: number;
+}
+
+class CircleDrawPosition implements PositionInterface {
+    x: number;
+    y: number;
 }

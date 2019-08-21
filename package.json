@@ -4,7 +4,6 @@
   "dependencies": {
     "canvas": "^2.6.0",
     "gulp-typescript": "^5.0.1",
-    "mathjs": "^5.2.3",
     "minimist": "^1.2.0",
     "typescript": "^3.5.3",
     "webpack-dev-server": "^3.8.0"
@@ -15,7 +14,6 @@
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
-    "@types/mathjs": "^6.0.1",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "babelify": "^10.0.0",

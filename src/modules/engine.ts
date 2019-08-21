@@ -1,5 +1,4 @@
-
-import '../structure';
+import {CircInterface, EngineInterface, ShapeInterface} from "../structure";
 
 export default class Engine implements EngineInterface {
     protected steps: number = 0;

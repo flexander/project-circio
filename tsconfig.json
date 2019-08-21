@@ -1,0 +1,10 @@
+{
+  "files": [
+    "src/*"
+  ],
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "target": "es6",
+    "esModuleInterop": true
+  }
+}
