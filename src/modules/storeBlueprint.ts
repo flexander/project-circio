@@ -94,13 +94,13 @@ export class BlueprintStore implements CircStoreInterface {
         circle1.radius = 50;
 
         const circle2 = new Circle();
-        circle1.steps = 500;
-        circle1.outside = true;
-        circle1.fixed = true;
-        circle1.clockwise = false;
-        circle1.stepMod = 1;
-        circle1.startAngle = 0;
-        circle1.radius = 25;
+        circle2.steps = 500;
+        circle2.outside = true;
+        circle2.fixed = true;
+        circle2.clockwise = false;
+        circle2.stepMod = 1;
+        circle2.startAngle = 0;
+        circle2.radius = 25;
 
         const circle2Brush = new Brush();
         circle2Brush.color = '#FFFFFF';
@@ -145,22 +145,22 @@ export class BlueprintStore implements CircStoreInterface {
         circle1.radius = 60;
 
         const circle2 = new Circle();
-        circle1.steps = 250;
-        circle1.outside = true;
-        circle1.fixed = true;
-        circle1.clockwise = false;
-        circle1.stepMod = 1;
-        circle1.startAngle = 0;
-        circle1.radius = 30;
+        circle2.steps = 250;
+        circle2.outside = true;
+        circle2.fixed = true;
+        circle2.clockwise = false;
+        circle2.stepMod = 1;
+        circle2.startAngle = 0;
+        circle2.radius = 30;
 
         const circle3 = new Circle();
-        circle1.steps = 125;
-        circle1.outside = true;
-        circle1.fixed = true;
-        circle1.clockwise = true;
-        circle1.stepMod = 1;
-        circle1.startAngle = 0;
-        circle1.radius = 15;
+        circle3.steps = 125;
+        circle3.outside = true;
+        circle3.fixed = true;
+        circle3.clockwise = true;
+        circle3.stepMod = 1;
+        circle3.startAngle = 0;
+        circle3.radius = 15;
 
         const circle3Brush = new Brush();
         circle3Brush.color = '#FFFFFF';
@@ -169,7 +169,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle3Brush.offset = 0;
         circle3Brush.point = 0.5;
 
-        circle2.brushes.push(circle3Brush);
+        circle3.brushes.push(circle3Brush);
 
         circ.shapes.push(circle0);
         circ.shapes.push(circle1);
