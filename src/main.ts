@@ -1,10 +1,6 @@
-import Circ from './modules/circ';
 import Engine from './modules/engine';
-import {Circle} from './modules/circle';
 import Painter from "./modules/painter";
-import Brush from "./modules/brushes";
 import GuidePainter from "./modules/guidePainter";
-import LocalStorage from "./modules/storeLocal";
 import {BlueprintStore} from "./modules/storeBlueprint";
 
 const storage = new BlueprintStore();
