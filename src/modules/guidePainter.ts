@@ -1,7 +1,8 @@
-import {BrushInterface, CircInterface, CircleInterface, GuidePainterInterface} from "../structure";
+import {BrushInterface, CircInterface, CircleInterface, GuidePainterInterface, PositionInterface} from "../structure";
 
 export default class GuidePainter implements GuidePainterInterface {
     protected canvasContext: CanvasRenderingContext2D;
+    protected canvasCenter: PositionInterface = new CanvasCenter();
     protected visible: boolean;
     protected guideColor = '#FFF';
     
@@ -18,10 +19,24 @@ export default class GuidePainter implements GuidePainterInterface {
     }
 
     public clear(): void {
-        this.canvasContext.clearRect(0, 0, 10000, 10000);
+        this.canvasContext.clearRect(-this.canvasContext.canvas.width/2, -this.canvasContext.canvas.height/2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
+    }
+
+    protected centerCanvas(circ: CircInterface) {
+        if (this.canvasCenter.x !== (circ.width/2)) {
+            this.canvasContext.translate(-this.canvasCenter.x, 0);
+            this.canvasContext.translate((circ.width/2), 0);
+            this.canvasCenter.x = (circ.width/2);
+        }
+        if (this.canvasCenter.y !== (circ.height/2)) {
+            this.canvasContext.translate(0,-this.canvasCenter.y);
+            this.canvasContext.translate(0,(circ.height/2));
+            this.canvasCenter.y = (circ.height/2);
+        }
     }
 
     public draw(circ: CircInterface): void {
+        this.centerCanvas(circ);
         this.clear();
 
         if (this.visible === false) {
@@ -72,4 +87,9 @@ export default class GuidePainter implements GuidePainterInterface {
         this.canvasContext.fill();
     }
 
+}
+
+class CanvasCenter implements PositionInterface {
+    x: number = 0;
+    y: number = 0;
 }

@@ -1,7 +1,8 @@
-import {CircInterface, CircleInterface, CirclePainterInterface} from "../structure";
+import {CircInterface, CircleInterface, CirclePainterInterface, PositionInterface} from "../structure";
 
 export default class Painter implements CirclePainterInterface {
     protected canvasContext: CanvasRenderingContext2D;
+    protected canvasCenter: PositionInterface = new CanvasCenter();
     
     constructor(canvasContext: CanvasRenderingContext2D) {
         this.canvasContext = canvasContext;
@@ -11,8 +12,7 @@ export default class Painter implements CirclePainterInterface {
     }
 
     draw(circ: CircInterface): void {
-        circ.shapes[0].state.centre.x = (circ.width/2);
-        circ.shapes[0].state.centre.y = (circ.height/2);
+        this.centerCanvas(circ);
 
         circ.shapes.forEach((circle:CircleInterface) => {
             if (circle.brushes.length === 0) {
@@ -21,6 +21,19 @@ export default class Painter implements CirclePainterInterface {
             
             this.drawPoints(circle);
         })
+    }
+
+    protected centerCanvas(circ: CircInterface) {
+        if (this.canvasCenter.x !== (circ.width/2)) {
+            this.canvasContext.translate(-this.canvasCenter.x, 0);
+            this.canvasContext.translate((circ.width/2), 0);
+            this.canvasCenter.x = (circ.width/2);
+        }
+        if (this.canvasCenter.y !== (circ.height/2)) {
+            this.canvasContext.translate(0,-this.canvasCenter.y);
+            this.canvasContext.translate(0,(circ.height/2));
+            this.canvasCenter.y = (circ.height/2);
+        }
     }
 
     exportImageAsDataURL(): string {
@@ -53,4 +66,9 @@ export default class Painter implements CirclePainterInterface {
         });
     };
 
+}
+
+class CanvasCenter implements PositionInterface {
+    x: number = 0;
+    y: number = 0;
 }
