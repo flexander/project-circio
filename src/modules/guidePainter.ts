@@ -3,6 +3,7 @@ import {BrushInterface, CircInterface, CircleInterface, GuidePainterInterface} f
 export default class GuidePainter implements GuidePainterInterface {
     protected canvasContext: CanvasRenderingContext2D;
     protected visible: boolean;
+    protected guideColor = '#FFF';
     
     constructor(canvasContext: CanvasRenderingContext2D) {
         this.canvasContext = canvasContext;
@@ -38,9 +39,8 @@ export default class GuidePainter implements GuidePainterInterface {
 
 
     protected drawCircle (circle: CircleInterface): void {
-        const color = '#FFF';
 
-        this.canvasContext.strokeStyle = color;
+        this.canvasContext.strokeStyle = this.guideColor;
         this.canvasContext.beginPath();
         this.canvasContext.arc(circle.state.centre.x,circle.state.centre.y,circle.radius,0,2*Math.PI);
         this.canvasContext.stroke();
@@ -50,21 +50,18 @@ export default class GuidePainter implements GuidePainterInterface {
     }
 
     protected drawRotationIndicator (circle: CircleInterface): void {
-        const color = '#FFF';
-
-        this.canvasContext.fillStyle = color;
+        this.canvasContext.fillStyle = this.guideColor;
         this.canvasContext.beginPath();
         this.canvasContext.arc(circle.state.drawPoint.x, circle.state.drawPoint.y, 4, 0, 2*Math.PI);
         this.canvasContext.fill();
     }
 
     protected drawBrushPoint(circle: CircleInterface, brush: BrushInterface): void {
-        const color = '#FFF';
         const brushPointX = circle.state.drawPoint.x + (Math.cos(circle.state.getAngle() + (brush.degrees * (Math.PI/180))) * brush.offset);
         const brushPointY = circle.state.drawPoint.y + (Math.sin(circle.state.getAngle() + (brush.degrees * (Math.PI/180))) * brush.offset);
 
         this.canvasContext.beginPath();
-        this.canvasContext.strokeStyle = color;
+        this.canvasContext.strokeStyle = this.guideColor;
         this.canvasContext.moveTo(circle.state.drawPoint.x, circle.state.drawPoint.y);
         this.canvasContext.lineTo(brushPointX, brushPointY);
         this.canvasContext.stroke();
