@@ -111,6 +111,28 @@ interface SerializerInterface {
     unserialize(circJson: string): CircInterface;
 }
 
+/** Controls **/
+interface ControlPanelInterface {
+    addControl(control: ControlInterface): void;
+    render(): DocumentFragment;
+}
+
+interface ControlInterface {
+    render(): DocumentFragment;
+}
+
+interface CircControlInterface extends ControlInterface {}
+
+interface ShapeControlInterface extends ControlInterface {}
+
+interface EngineControlInterface extends ControlInterface {
+    addCircControl(circControl: CircControlInterface): void;
+}
+interface CircleControlInterface extends ShapeControlInterface {
+    addBrushControl(brush: BrushControlInterface): void;
+}
+interface BrushControlInterface extends ControlInterface {}
+
 
 export {
     PositionInterface,
@@ -126,6 +148,13 @@ export {
     CirclePainterInterface,
     GuidePainterInterface,
     SerializerInterface,
+    ControlPanelInterface,
+    ControlInterface,
+    ShapeControlInterface,
+    EngineControlInterface,
+    CircleControlInterface,
+    BrushControlInterface,
+    CircControlInterface,
 }
 
 

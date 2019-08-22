@@ -2,6 +2,7 @@ import Engine from './modules/engine';
 import Painter from "./modules/painter";
 import GuidePainter from "./modules/guidePainter";
 import {BlueprintStore} from "./modules/storeBlueprint";
+import {CircControl, CircleControl, ControlPanel, EngineControl} from "./modules/controls";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
@@ -34,3 +35,11 @@ engine.addCallback(circ => painter.draw(circ));
 engine.addCallback(circ => guidePainter.draw(circ));
 engine.play();
 
+const controlPanel = new ControlPanel();
+const engineControl = new EngineControl(engine);
+const circControl = new CircControl(circ);
+
+controlPanel.addControl(engineControl);
+engineControl.addCircControl(circControl);
+
+document.querySelector('.controls-container').appendChild(controlPanel.render());
