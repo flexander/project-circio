@@ -6,9 +6,14 @@ read NAME
 echo 'enter the number of steps to complete a frame'
 read STEPS
 
+echo 'enter the number of required frames'
+read FRAMES
+
+BATCH=$(($FRAMES/3))
+
 trap 'kill %1; kill %2' SIGINT
 
-node scripts/node.js --name=$NAME --start=0 --end=320 --steps=$STEPS &
-node scripts/node.js --name=$NAME --start=321 --end=520 --steps=$STEPS &
-node scripts/node.js --name=$NAME --start=521 --end=720 --steps=$STEPS &
+node scripts/node.js --name=$NAME --start=0 --end=$BATCH --steps=$STEPS &
+node scripts/node.js --name=$NAME --start=$(($BATCH+1)) --end=$((2*$BATCH)) --steps=$STEPS &
+node scripts/node.js --name=$NAME --start=$((2*$BATCH+1))  --end=$FRAMES --steps=$STEPS &
 wait
