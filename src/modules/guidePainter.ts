@@ -8,19 +8,19 @@ export default class GuidePainter implements GuidePainterInterface {
         this.canvasContext = canvasContext;
     }
 
-    hide(): void {
+    public hide(): void {
         this.visible = false;
     }
 
-    show(): void {
+    public show(): void {
         this.visible = true;
     }
-    
-    clear(): void {
+
+    public clear(): void {
         this.canvasContext.clearRect(0, 0, 10000, 10000);
     }
 
-    draw(circ: CircInterface): void {
+    public draw(circ: CircInterface): void {
         this.clear();
 
         if (this.visible === false) {
@@ -32,12 +32,12 @@ export default class GuidePainter implements GuidePainterInterface {
         })
     }
 
-    exportImageAsDataURL(): string {
+    public exportImageAsDataURL(): string {
         return "";
     }
 
 
-    drawCircle (circle: CircleInterface) {
+    protected drawCircle (circle: CircleInterface): void {
         const color = '#FFF';
 
         this.canvasContext.strokeStyle = color;
@@ -47,17 +47,16 @@ export default class GuidePainter implements GuidePainterInterface {
 
         this.drawRotationIndicator(circle);
         circle.brushes.forEach((brush: BrushInterface) => this.drawBrushPoint(circle, brush));
-    };
+    }
 
-    drawRotationIndicator (circle: CircleInterface) {
+    protected drawRotationIndicator (circle: CircleInterface): void {
         const color = '#FFF';
 
         this.canvasContext.fillStyle = color;
-        this.canvasContext.strokeStyle = color;
         this.canvasContext.beginPath();
         this.canvasContext.arc(circle.state.drawPoint.x, circle.state.drawPoint.y, 4, 0, 2*Math.PI);
         this.canvasContext.fill();
-    };
+    }
 
     protected drawBrushPoint(circle: CircleInterface, brush: BrushInterface): void {
         const color = '#FFF';
@@ -65,6 +64,7 @@ export default class GuidePainter implements GuidePainterInterface {
         const brushPointY = circle.state.drawPoint.y + (Math.sin(circle.state.getAngle() + (brush.degrees * (Math.PI/180))) * brush.offset);
 
         this.canvasContext.strokeStyle = color;
+        this.canvasContext.fillStyle = color;
         this.canvasContext.beginPath();
         this.canvasContext.moveTo(circle.state.drawPoint.x, circle.state.drawPoint.y);
         this.canvasContext.lineTo(brushPointX, brushPointY);
