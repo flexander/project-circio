@@ -75,8 +75,6 @@ interface EngineInterface {
 /** Paint **/
 
 interface PainterInterface {
-    constructor(canvasContext: CanvasRenderingContext2D);
-
     draw(circ: CircInterface): void;
     clear(): void;
     exportImageAsDataURL(): string;
