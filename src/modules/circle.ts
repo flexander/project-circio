@@ -14,6 +14,8 @@ class Circle implements CircleInterface {
     steps: number;
 
     calculate(parentCircle: CircleInterface|null): void {
+        this.savePreviousState();
+
         let arc = this.getArc();
         let stepCount = this.state.stepCount;
         let distanceTravelled = arc * stepCount;
@@ -43,8 +45,6 @@ class Circle implements CircleInterface {
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
         this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
 
-        this.savePreviousState();
-
         // New x1 & y1 to reflect change in radians
         this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
         this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
@@ -58,8 +58,12 @@ class Circle implements CircleInterface {
 
     protected savePreviousState() {
         // Don't save nested states as this prevents serialisation
-        const previousState = Object.create(this.state);
-        previousState.previousState = null;
+        const previousState = new CircleState();
+        previousState.drawPoint = Object.assign({},this.state.drawPoint);
+        previousState.centre = Object.assign({},this.state.centre);
+        previousState.initialState = Object.assign({},this.state.initialState);
+        previousState.totalAngle = this.state.totalAngle;
+        previousState.stepCount = this.state.stepCount;
 
         this.state.previousState = previousState;
     }
