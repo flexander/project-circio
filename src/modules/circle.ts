@@ -57,7 +57,6 @@ class Circle implements CircleInterface {
     }
 
     protected savePreviousState() {
-        // Don't save nested states as this prevents serialisation
         const previousState = new CircleState();
         previousState.drawPoint = Object.assign({},this.state.drawPoint);
         previousState.centre = Object.assign({},this.state.centre);
