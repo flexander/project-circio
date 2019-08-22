@@ -63,12 +63,14 @@ export default class GuidePainter implements GuidePainterInterface {
         const brushPointX = circle.state.drawPoint.x + (Math.cos(circle.state.getAngle() + (brush.degrees * (Math.PI/180))) * brush.offset);
         const brushPointY = circle.state.drawPoint.y + (Math.sin(circle.state.getAngle() + (brush.degrees * (Math.PI/180))) * brush.offset);
 
-        this.canvasContext.strokeStyle = color;
-        this.canvasContext.fillStyle = color;
         this.canvasContext.beginPath();
+        this.canvasContext.strokeStyle = color;
         this.canvasContext.moveTo(circle.state.drawPoint.x, circle.state.drawPoint.y);
         this.canvasContext.lineTo(brushPointX, brushPointY);
         this.canvasContext.stroke();
+
+        this.canvasContext.beginPath();
+        this.canvasContext.fillStyle = brush.color;
         this.canvasContext.arc(brushPointX, brushPointY, 4, 0, 2*Math.PI);
         this.canvasContext.fill();
     }
