@@ -97,7 +97,7 @@ class CircleControl implements CircleControlInterface {
 
         const html = `
         <div class="control-circle control-group">
-            <div class="section-head">Circle #0</div>
+            <div class="section-head">Circle</div>
             <div class="section-body">
                 <div class="control">
                     <label>steps</label>
@@ -127,7 +127,19 @@ class CircleControl implements CircleControlInterface {
         </div>
         `;
 
-        return document.createRange().createContextualFragment(html);
+        const documentFragment = document.createRange().createContextualFragment(html);
+
+        documentFragment.querySelector('input[name="steps"]').addEventListener('keyup', e => {
+            this.circle.steps = e.target.value;
+        });
+        documentFragment.querySelector('input[name="radius"]').addEventListener('keyup', e => {
+            this.circle.radius = e.target.value;
+        });
+        documentFragment.querySelector('input[name="stepMod"]').addEventListener('keyup', e => {
+            this.circle.stepMod = e.target.value;
+        });
+
+        return documentFragment;
     }
 
 }
