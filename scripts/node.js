@@ -27,8 +27,8 @@ const painter = new Painter(engine, {
     canvas: canvas,
 });
 
-const data = redprints.biolum;
-
+// Data
+const data = redprints.spiro;
 engine.import(data.engineData);
 painter.import(data.painterData);
 
@@ -50,8 +50,12 @@ for (let f = startFrame; f <= endFrame; f++) {
     painter.fillBackground();
     engine.reset();
 
-    //painter.brushes[3][0].degrees = f;
-    painter.brushes[2][0].offset = brushOffset(offset, f);
+    painter.brushes[1][0].degrees = painter.brushes[1][0].degrees + f;
+    painter.brushes[1][1].degrees = painter.brushes[1][0].degrees + f;
+    painter.brushes[1][2].degrees = painter.brushes[1][0].degrees + f;
+
+    //painter.brushes[3][0].offset = brushOffset(offset, f);
+    //painter.brushes[3][0].offset = brushOffset(offset, f);
     //engine.list[3].radians = ((2 * Math.PI) / 720) * f;
 
     let fileName = name + '/frame-'+ f.toString().padStart(10 , '0') +'.png';
