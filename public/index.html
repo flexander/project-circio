@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Project Circio</title>
     <link href="./css/index.css" rel="stylesheet">
-  </head>
-  <body>
-    <div id="circio">
-      <div class="painter">
-      </div>
-      <div class="controls-container"></div>
+</head>
+<body>
+<div id="circio">
+    <div class="painter">
+        <canvas id="background-canvas" style="position: absolute;"></canvas>
+        <canvas id="main-canvas" style="position: absolute;"></canvas>
+        <canvas id="guide-canvas" style="position: absolute;"></canvas>
     </div>
-    <script src="./js/bundle.js" type="module"></script>
-  </body>
+    <div class="controls-container"></div>
+</div>
+<script src="./js/bundle.js" type="module"></script>
+</body>
 </html>
