@@ -85,7 +85,7 @@ class EngineControl implements EngineControlInterface {
             this.engine.play(remainingSteps);
         });
 
-        engineFragment.querySelector('input[name="interval"]').addEventListener('change', e => {
+        engineFragment.querySelector('input[name="interval"]').addEventListener('input', e => {
             this.engine.setStepInterval(parseInt(e.target.value));
         });
 
@@ -218,22 +218,22 @@ class CircleControl implements CircleControlInterface {
 
         const documentFragment = document.createRange().createContextualFragment(html);
 
-        documentFragment.querySelector('input[name="steps"]').addEventListener('keyup', e => {
+        documentFragment.querySelector('input[name="steps"]').addEventListener('input', e => {
             this.circle.steps = parseInt(e.target.value);
         });
-        documentFragment.querySelector('input[name="radius"]').addEventListener('keyup', e => {
+        documentFragment.querySelector('input[name="radius"]').addEventListener('input', e => {
             this.circle.radius = parseInt(e.target.value);
         });
-        documentFragment.querySelector('input[name="stepMod"]').addEventListener('keyup', e => {
+        documentFragment.querySelector('input[name="stepMod"]').addEventListener('input', e => {
             this.circle.stepMod = parseInt(e.target.value);
         });
-        documentFragment.querySelector('input[name="outside"]').addEventListener('change', e => {
+        documentFragment.querySelector('input[name="outside"]').addEventListener('input', e => {
             this.circle.outside = e.target.checked === true;
         });
-        documentFragment.querySelector('input[name="clockwise"]').addEventListener('change', e => {
+        documentFragment.querySelector('input[name="clockwise"]').addEventListener('input', e => {
             this.circle.clockwise = e.target.checked === true;
         });
-        documentFragment.querySelector('input[name="fixed"]').addEventListener('change', e => {
+        documentFragment.querySelector('input[name="fixed"]').addEventListener('input', e => {
             this.circle.fixed = e.target.checked === true;
         });
 
@@ -285,19 +285,19 @@ class BrushControl implements BrushControlInterface {
 
         const brushFragment = document.createRange().createContextualFragment(html);
 
-        brushFragment.querySelector('input[name="color"]').addEventListener('change', e => {
+        brushFragment.querySelector('input[name="color"]').addEventListener('input', e => {
             this.brush.color = e.target.value;
         });
-        brushFragment.querySelector('input[name="offset"]').addEventListener('change', e => {
+        brushFragment.querySelector('input[name="offset"]').addEventListener('input', e => {
             this.brush.offset = e.target.value;
         });
-        brushFragment.querySelector('input[name="degrees"]').addEventListener('change', e => {
+        brushFragment.querySelector('input[name="degrees"]').addEventListener('input', e => {
             this.brush.degrees = e.target.value;
         });
-        brushFragment.querySelector('input[name="point"]').addEventListener('change', e => {
+        brushFragment.querySelector('input[name="point"]').addEventListener('input', e => {
             this.brush.point = e.target.value;
         });
-        brushFragment.querySelector('input[name="link"]').addEventListener('click', e => {
+        brushFragment.querySelector('input[name="link"]').addEventListener('input', e => {
             this.brush.link = e.target.checked === true;
         });
 
