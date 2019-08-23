@@ -27,7 +27,7 @@ export default class Engine implements EngineInterface {
         this.stepsToRun = 0;
     }
 
-    public play(count: number|null = null): void {
+    public play(count?: number|null): void {
         this.stepsToRun = typeof count === 'number' ? count:Infinity;
     }
 
