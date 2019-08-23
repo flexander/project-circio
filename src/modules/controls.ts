@@ -58,11 +58,7 @@ class EngineControl implements EngineControlInterface {
                 </div>
                 <div class="control control-interval">
                     <label>interval</label>
-                    <input type="number" name="interval" class="input">
-                </div>
-                <div class="control control-color">
-                    <label>color</label>
-                    <input type="color" name="color" class="input">
+                    <input type="number" name="interval" class="input" value="${this.engine.getStepInterval()}">
                 </div>
                 <div class="control control-backgroundFill">
                     <label>backgroundFill</label>
@@ -87,6 +83,10 @@ class EngineControl implements EngineControlInterface {
             this.engine.pause();
             this.engine.stepFast(1000);
             this.engine.play(remainingSteps);
+        });
+
+        engineFragment.querySelector('input[name="interval"]').addEventListener('change', e => {
+            this.engine.setStepInterval(parseInt(e.target.value));
         });
 
         engineFragment.append(this.circControl.render());
