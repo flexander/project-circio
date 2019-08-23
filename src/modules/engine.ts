@@ -85,4 +85,11 @@ export default class Engine implements EngineInterface {
         );
     }
 
+    getStepInterval(): number {
+        return this.interval;
+    }
+
+    setStepInterval(milliseconds: number): void {
+        this.interval = milliseconds;
+    }
 }

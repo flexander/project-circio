@@ -71,6 +71,8 @@ interface EngineInterface {
     reset(): void
     isPlaying(): boolean;
     getRemainingStepsToRun(): number;
+    setStepInterval(milliseconds: number): void;
+    getStepInterval(): number;
 }
 
 
