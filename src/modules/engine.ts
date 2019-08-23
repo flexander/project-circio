@@ -39,7 +39,7 @@ export default class Engine implements EngineInterface {
     public stepFast(count: number): void {
         this.pause();
 
-        for (let step = 0; step<=count; step++) {
+        for (let step = 0; step<count; step++) {
             this.step()
         }
     }
