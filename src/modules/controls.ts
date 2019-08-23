@@ -1,5 +1,5 @@
 import {
-    BrushControlInterface,
+    BrushControlInterface, BrushInterface,
     CircControlInterface,
     CircInterface,
     CircleControlInterface,
@@ -169,6 +169,10 @@ class CircleControl implements CircleControlInterface {
 
     constructor(circle: CircleInterface) {
         this.circle = circle;
+
+        this.circle.brushes.forEach((brush: BrushInterface) => {
+            this.addBrushControl(new BrushControl(brush));
+        });
     }
 
     public addBrushControl(brushControl: BrushControlInterface): void {
@@ -233,7 +237,71 @@ class CircleControl implements CircleControlInterface {
             this.circle.fixed = e.target.checked === true;
         });
 
+        this.brushControls.forEach((brushControl: BrushControlInterface) => {
+            documentFragment.append(brushControl.render());
+        });
+
         return documentFragment;
+    }
+
+}
+
+class BrushControl implements BrushControlInterface {
+    protected brush: BrushInterface;
+
+    constructor(brush: BrushInterface) {
+        this.brush = brush;
+    }
+
+    render(): DocumentFragment {
+        const linkChecked = (this.brush.link === true) ? 'checked':'';
+
+        const html = `
+        <div class="control-brush control-group">
+            <div class="section-head">Brush</div>
+            <div class="section-body">
+                <div class="control control-color">
+                    <label>color</label>
+                    <input type="text" name="color" class="input" value="${this.brush.color}">
+                </div>
+                <div class="control control-offset">
+                    <label>offset</label>
+                    <input type="number" name="offset" class="input" value="${this.brush.offset}">
+                </div>
+                <div class="control control-degrees">
+                    <label>degrees</label>
+                    <input type="number" name="degrees" class="input" value="${this.brush.degrees}">
+                </div>
+                <div class="control control-link">
+                    <label>link</label>
+                    <input type="checkbox" name="link" value="true" class="input" ${linkChecked}>
+                </div>
+                <div class="control control-point">
+                    <label>point</label>
+                    <input type="number" name="point" step="0.5" class="input" value="${this.brush.point}">
+                </div>
+            </div>
+        </div>`;
+
+        const brushFragment = document.createRange().createContextualFragment(html);
+
+        brushFragment.querySelector('input[name="color"]').addEventListener('change', e => {
+            this.brush.color = e.target.value;
+        });
+        brushFragment.querySelector('input[name="offset"]').addEventListener('change', e => {
+            this.brush.offset = e.target.value;
+        });
+        brushFragment.querySelector('input[name="degrees"]').addEventListener('change', e => {
+            this.brush.degrees = e.target.value;
+        });
+        brushFragment.querySelector('input[name="point"]').addEventListener('change', e => {
+            this.brush.point = e.target.value;
+        });
+        brushFragment.querySelector('input[name="link"]').addEventListener('click', e => {
+            this.brush.link = e.target.checked === true;
+        });
+
+        return brushFragment;
     }
 
 }
