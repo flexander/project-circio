@@ -69,6 +69,7 @@ interface EngineInterface {
     stepFast(count: number): void
     step(): void;
     reset(): void
+    isPlaying(): boolean;
 }
 
 

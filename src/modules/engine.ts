@@ -3,7 +3,6 @@ import {CircInterface, EngineInterface, ShapeInterface} from "../structure";
 export default class Engine implements EngineInterface {
     protected steps: number = 0;
     protected interval: number = 1;
-    protected paused: boolean;
     protected callbacks: Array<Function> = [];
     protected circ: CircInterface;
     protected stepsToRun: number = 0;
@@ -30,6 +29,10 @@ export default class Engine implements EngineInterface {
 
     public play(count: number|null = null): void {
         this.stepsToRun = typeof count === 'number' ? count:Infinity;
+    }
+
+    public isPlaying(): boolean {
+        return this.stepsToRun > 0;
     }
 
     public reset(): void {
