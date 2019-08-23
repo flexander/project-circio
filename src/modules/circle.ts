@@ -13,6 +13,11 @@ class Circle implements CircleInterface {
     stepMod: number;
     steps: number;
 
+
+    constructor() {
+        this.saveInitialState();
+    }
+
     calculate(parentCircle: CircleInterface|null): void {
         this.savePreviousState();
 
@@ -65,6 +70,17 @@ class Circle implements CircleInterface {
         previousState.stepCount = this.state.stepCount;
 
         this.state.previousState = previousState;
+    }
+
+    protected saveInitialState() {
+        const initialState = new CircleState();
+        initialState.drawPoint = Object.assign({},this.state.drawPoint);
+        initialState.centre = Object.assign({},this.state.centre);
+        initialState.initialState = Object.assign({},this.state.initialState);
+        initialState.totalAngle = this.state.totalAngle;
+        initialState.stepCount = this.state.stepCount;
+
+        this.state.initialState = initialState;
     }
 
     protected getArc () {

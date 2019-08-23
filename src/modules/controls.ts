@@ -1,9 +1,16 @@
 import {
-    BrushControlInterface, CircControlInterface, CircInterface,
+    BrushControlInterface,
+    CircControlInterface,
+    CircInterface,
     CircleControlInterface,
     CircleInterface,
     ControlInterface,
-    ControlPanelInterface, EngineControlInterface, EngineInterface, ShapeControlInterface, ShapeInterface
+    ControlPanelInterface,
+    EngineControlInterface,
+    EngineInterface,
+    GuidePainterInterface,
+    ShapeControlInterface,
+    ShapeInterface
 } from "../structure";
 import {Circle} from "./circle";
 
@@ -40,7 +47,85 @@ class EngineControl implements EngineControlInterface {
     }
 
     public render(): DocumentFragment {
-        return this.circControl.render();
+
+        const html = `
+        <div class="control-engine control-group">
+            <div class="section-head">Engine</div>
+            <div class="section-body">
+                <div class="control">
+                    <button class="paused">Play</button>
+                    <button class="stepThousand">Step 1000</button>
+                </div>
+                <div class="control control-interval">
+                    <label>interval</label>
+                    <input type="number" name="interval" class="input">
+                </div>
+                <div class="control control-color">
+                    <label>color</label>
+                    <input type="color" name="color" class="input">
+                </div>
+                <div class="control control-backgroundFill">
+                    <label>backgroundFill</label>
+                    <input type="color" name="backgroundFill" class="input">
+                </div>
+            </div>
+        </div>`;
+
+        const engineFragment = document.createRange().createContextualFragment(html);
+
+        engineFragment.querySelector('button.paused').addEventListener('click', e => {
+            if (this.engine.isPlaying()) {
+                this.engine.pause();
+            } else {
+                this.engine.play();
+            }
+        });
+
+        engineFragment.querySelector('button.stepThousand').addEventListener('click', e => {
+            const remainingSteps = this.engine.getRemainingStepsToRun();
+
+            this.engine.pause();
+            this.engine.stepFast(1000);
+            this.engine.play(remainingSteps);
+        });
+
+        engineFragment.append(this.circControl.render());
+
+        return engineFragment;
+    }
+
+}
+
+class GuidePainterControl implements ControlInterface {
+    protected guidePainter: GuidePainterInterface;
+
+    constructor(guide: GuidePainterInterface) {
+        this.guidePainter = guide;
+    }
+
+    public render(): DocumentFragment {
+
+        const html = `
+        <div class="control-engine control-group">
+            <div class="section-head">Guides</div>
+            <div class="section-body">
+                <div class="control">
+                    <button class="show">Show</button>
+                </div>
+            </div>
+        </div>`;
+
+        const painterFragment = document.createRange().createContextualFragment(html);
+
+        painterFragment.querySelector('button.show').addEventListener('click', e => {
+            if (this.guidePainter.isVisible()) {
+                this.guidePainter.hide();
+            } else {
+                this.guidePainter.show();
+            }
+        });
+
+        return painterFragment;
     }
 
 }
@@ -130,13 +215,22 @@ class CircleControl implements CircleControlInterface {
         const documentFragment = document.createRange().createContextualFragment(html);
 
         documentFragment.querySelector('input[name="steps"]').addEventListener('keyup', e => {
-            this.circle.steps = e.target.value;
+            this.circle.steps = parseInt(e.target.value);
         });
         documentFragment.querySelector('input[name="radius"]').addEventListener('keyup', e => {
-            this.circle.radius = e.target.value;
+            this.circle.radius = parseInt(e.target.value);
         });
         documentFragment.querySelector('input[name="stepMod"]').addEventListener('keyup', e => {
-            this.circle.stepMod = e.target.value;
+            this.circle.stepMod = parseInt(e.target.value);
+        });
+        documentFragment.querySelector('input[name="outside"]').addEventListener('change', e => {
+            this.circle.outside = e.target.checked === true;
+        });
+        documentFragment.querySelector('input[name="clockwise"]').addEventListener('change', e => {
+            this.circle.clockwise = e.target.checked === true;
+        });
+        documentFragment.querySelector('input[name="fixed"]').addEventListener('change', e => {
+            this.circle.fixed = e.target.checked === true;
         });
 
         return documentFragment;
@@ -149,4 +243,5 @@ export {
     EngineControl,
     CircControl,
     CircleControl,
+    GuidePainterControl,
 }
