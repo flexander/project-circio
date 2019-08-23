@@ -35,6 +35,10 @@ export default class Engine implements EngineInterface {
         return this.stepsToRun > 0;
     }
 
+    public getRemainingStepsToRun(): number {
+        return this.stepsToRun;
+    }
+
     public reset(): void {
         this.circ.shapes.forEach(shape => shape.reset());
     }

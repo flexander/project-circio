@@ -70,6 +70,7 @@ interface EngineInterface {
     step(): void;
     reset(): void
     isPlaying(): boolean;
+    getRemainingStepsToRun(): number;
 }
 
 
