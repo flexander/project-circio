@@ -1,19 +1,31 @@
 #!/bin/bash
+FULL_PATH=$(realpath $0)
+DIR_PATH=$(dirname $FULL_PATH)
 
 echo 'enter a project name'
 read NAME
 
-echo 'enter the number of steps to complete a frame'
+echo 'Enter an action (DRAW/animate)'
+read ACTION
+
+echo 'enter the number of steps to complete the image'
 read STEPS
 
-echo 'enter the number of required frames'
-read FRAMES
+if [ $ACTION = "animate" ]
+then
+  echo 'enter the number of required frames'
+  read FRAMES
+else
+  FRAMES=0;
+fi
 
 BATCH=$(($FRAMES/3))
 
+mkdir -p "$DIR_PATH/../output/$NAME"
+
 trap 'kill %1; kill %2' SIGINT
 
-node scripts/node.js --name=$NAME --start=0 --end=$BATCH --steps=$STEPS &
-node scripts/node.js --name=$NAME --start=$(($BATCH+1)) --end=$((2*$BATCH)) --steps=$STEPS &
-node scripts/node.js --name=$NAME --start=$((2*$BATCH+1))  --end=$FRAMES --steps=$STEPS &
+node $DIR_PATH/node.js --name=$NAME --action=$ACTION --start=0 --end=$BATCH --steps=$STEPS &
+node $DIR_PATH/node.js --name=$NAME --action=$ACTION --start=$(($BATCH+1)) --end=$((2*$BATCH)) --steps=$STEPS &
+node $DIR_PATH/node.js --name=$NAME --action=$ACTION --start=$((2*$BATCH+1))  --end=$FRAMES --steps=$STEPS &
 wait
