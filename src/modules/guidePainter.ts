@@ -3,7 +3,7 @@ import {BrushInterface, CircInterface, CircleInterface, GuidePainterInterface, P
 export default class GuidePainter implements GuidePainterInterface {
     protected canvasContext: CanvasRenderingContext2D;
     protected canvasCenter: PositionInterface = new CanvasCenter();
-    protected visible: boolean;
+    protected visible: boolean = true;
     protected guideColor = '#FFF';
     
     constructor(canvasContext: CanvasRenderingContext2D) {
@@ -16,6 +16,10 @@ export default class GuidePainter implements GuidePainterInterface {
 
     public show(): void {
         this.visible = true;
+    }
+
+    public isVisible(): boolean {
+        return this.visible === true;
     }
 
     public clear(): void {

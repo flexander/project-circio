@@ -84,6 +84,7 @@ interface CirclePainterInterface extends PainterInterface {}
 interface GuidePainterInterface extends PainterInterface {
     hide(): void;
     show(): void;
+    isVisible(): boolean;
 }
 
 
