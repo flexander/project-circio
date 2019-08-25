@@ -138,6 +138,7 @@ interface CircleControlInterface extends ShapeControlInterface {
     addBrushControl(brush: BrushControlInterface): void;
 }
 interface BrushControlInterface extends ControlInterface {}
+interface BackgroundControlInterface extends ControlInterface {}
 
 
 export {
@@ -162,6 +163,7 @@ export {
     CircleControlInterface,
     BrushControlInterface,
     CircControlInterface,
+    BackgroundControlInterface,
 }
 
 

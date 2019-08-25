@@ -1,4 +1,5 @@
 import {
+    BackgroundControlInterface,
     BrushControlInterface, BrushInterface,
     CircControlInterface,
     CircInterface,
@@ -17,19 +18,31 @@ import {Circle} from "./circle";
 
 class ControlPanel implements ControlPanelInterface {
     protected controls: ControlInterface[] = [];
+    protected name: string;
+
+    constructor(name: string) {
+        this.name = name;
+    }
 
     public addControl(control: ControlInterface): void {
         this.controls.push(control);
     }
 
     public render(): DocumentFragment {
-        const fragment = document.createDocumentFragment();
+        const wrapperHtml = `
+        <div class="control-group">
+            <div class="section-head">${this.name}</div>
+            <div class="section-body"></div>
+        </div>`;
+
+        const controlPanelFragment = document.createRange().createContextualFragment(wrapperHtml);
+        const controlPanelBodyEl = controlPanelFragment.querySelector('.section-body');
 
         this.controls.forEach((control: ControlInterface) => {
-            fragment.appendChild(control.render());
+            controlPanelBodyEl.appendChild(control.render());
         });
 
-        return fragment;
+        return controlPanelFragment;
     }
 
 }
@@ -129,9 +142,13 @@ class GuidePainterControl implements ControlInterface {
 class CircControl implements CircControlInterface {
     protected circ: CircInterface;
     protected shapeControls: ShapeControlInterface[] = [];
+    protected panel: ControlPanelInterface;
 
     constructor(circ: CircInterface) {
         this.circ = circ;
+        this.panel = new ControlPanel('Circ');
+
+        this.panel.addControl(new BackgroundControl(this.circ));
 
         this.circ.shapes
             .forEach((shape: ShapeInterface) => {
@@ -143,32 +160,12 @@ class CircControl implements CircControlInterface {
                     throw `Unable to render shape: ` + typeof shape;
                 }
 
-                this.shapeControls.push(shapeControl)
+                this.panel.addControl(shapeControl)
             });
     }
 
     public render(): DocumentFragment {
-        const fragment = document.createDocumentFragment();
-
-        const backgroundControlHtml = `
-            <div class="control control-backgroundFill">
-                <label>backgroundFill</label>
-                <input type="color" name="backgroundFill" class="input">
-            </div>`;
-        const backgroundControlFragment = document.createRange().createContextualFragment(backgroundControlHtml);
-
-        backgroundControlFragment.querySelector('input[name="backgroundFill"]').addEventListener('input', e => {
-            this.circ.backgroundFill = e.target.value;
-        });
-
-        fragment.appendChild(backgroundControlFragment);
-
-        this.shapeControls
-            .forEach((shapeControl: ShapeControlInterface) => {
-                fragment.appendChild(shapeControl.render());
-            });
-
-        return fragment;
+        return this.panel.render();
     }
 }
 
@@ -311,6 +308,33 @@ class BrushControl implements BrushControlInterface {
         });
 
         return brushFragment;
+    }
+
+}
+
+class BackgroundControl implements BackgroundControlInterface {
+    protected circ: CircInterface;
+
+    constructor(circ: CircInterface) {
+        this.circ = circ;
+    }
+
+    render(): DocumentFragment {
+
+        const fragment = document.createDocumentFragment();
+
+        const backgroundControlHtml = `
+            <div class="control control-backgroundFill">
+                <label>backgroundFill</label>
+                <input type="color" name="backgroundFill" class="input">
+            </div>`;
+        const backgroundControlFragment = document.createRange().createContextualFragment(backgroundControlHtml);
+
+        backgroundControlFragment.querySelector('input[name="backgroundFill"]').addEventListener('input', e => {
+            this.circ.backgroundFill = e.target.value;
+        });
+
+        return backgroundControlFragment;
     }
 
 }
