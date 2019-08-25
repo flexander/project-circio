@@ -320,9 +320,6 @@ class BackgroundControl implements BackgroundControlInterface {
     }
 
     render(): DocumentFragment {
-
-        const fragment = document.createDocumentFragment();
-
         const backgroundControlHtml = `
             <div class="control control-backgroundFill">
                 <label>backgroundFill</label>
