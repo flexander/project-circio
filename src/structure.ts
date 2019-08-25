@@ -90,6 +90,7 @@ interface GuidePainterInterface extends PainterInterface {
     show(): void;
     isVisible(): boolean;
 }
+interface BackgroundPainterInterface extends PainterInterface {}
 
 
 /** Store
@@ -152,6 +153,7 @@ export {
     CircStoreInterface,
     CirclePainterInterface,
     GuidePainterInterface,
+    BackgroundPainterInterface,
     SerializerInterface,
     ControlPanelInterface,
     ControlInterface,

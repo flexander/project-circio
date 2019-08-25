@@ -3,6 +3,7 @@ import Painter from "./modules/painter";
 import GuidePainter from "./modules/guidePainter";
 import {BlueprintStore} from "./modules/storeBlueprint";
 import {CircControl, CircleControl, ControlPanel, EngineControl, GuidePainterControl} from "./modules/controls";
+import BackgroundPainter from "./modules/backgroundPainter";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
@@ -21,18 +22,15 @@ canvasArea.querySelectorAll('canvas').forEach(c => {
     c.setAttribute('width', canvasArea.style.width);
 });
 
-
-const backgroundCanvasContext = backgroundCanvasElement.getContext("2d");
-backgroundCanvasContext.fillStyle = circ.backgroundFill;
-backgroundCanvasContext.fillRect(0, 0, circ.width, circ.height);
-
 const engine = new Engine();
 const painter = new Painter(mainCanvasElement.getContext("2d"));
 const guidePainter = new GuidePainter(guideCanvasElement.getContext("2d"));
+const backgroundPainter = new BackgroundPainter(backgroundCanvasElement.getContext("2d"));
 
 engine.import(circ);
 engine.addCallback(circ => painter.draw(circ));
 engine.addCallback(circ => guidePainter.draw(circ));
+engine.addCallback(circ => backgroundPainter.draw(circ));
 engine.play();
 
 const controlPanel = new ControlPanel();
