@@ -9,6 +9,7 @@ export default class Painter implements CirclePainterInterface {
     }
     
     clear(): void {
+        this.canvasContext.clearRect(-this.canvasContext.canvas.width/2, -this.canvasContext.canvas.height/2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
     }
 
     draw(circ: CircInterface): void {
