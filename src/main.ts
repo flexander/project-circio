@@ -2,7 +2,14 @@ import Engine from './modules/engine';
 import Painter from "./modules/painter";
 import GuidePainter from "./modules/guidePainter";
 import {BlueprintStore} from "./modules/storeBlueprint";
-import {CircControl, CircleControl, ControlPanel, EngineControl, GuidePainterControl} from "./modules/controls";
+import {
+    CircControl,
+    CircleControl,
+    ControlPanel,
+    EngineControl,
+    GuidePainterControl,
+    PainterControl
+} from "./modules/controls";
 import BackgroundPainter from "./modules/backgroundPainter";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
@@ -33,13 +40,20 @@ engine.addCallback(circ => guidePainter.draw(circ));
 engine.addCallback(circ => backgroundPainter.draw(circ));
 engine.play();
 
-const controlPanel = new ControlPanel('Circ Name');
+const controlPanel = new ControlPanel('Engine');
 const engineControl = new EngineControl(engine);
 const circControl = new CircControl(circ);
 const guidePainterControl = new GuidePainterControl(guidePainter);
+const painterControl = new PainterControl(painter);
 
 controlPanel.addControl(guidePainterControl);
 controlPanel.addControl(engineControl);
 engineControl.addCircControl(circControl);
 
-document.querySelector('.controls-container').appendChild(controlPanel.render());
+const quickControls = new ControlPanel();
+quickControls.addControls(guidePainterControl.getQuickControls());
+quickControls.addControls(engineControl.getQuickControls());
+quickControls.addControls(painterControl.getQuickControls());
+
+document.querySelector('.controls-container .actions').appendChild(quickControls.render());
+document.querySelector('.controls-container .controls').appendChild(controlPanel.render());

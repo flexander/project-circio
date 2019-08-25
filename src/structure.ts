@@ -127,6 +127,11 @@ interface ControlInterface {
     render(): DocumentFragment;
 }
 
+interface QuickControlInterface {
+    getQuickControls(): ControlInterface[];
+}
+
+
 interface CircControlInterface extends ControlInterface {}
 
 interface ShapeControlInterface extends ControlInterface {}
@@ -158,6 +163,7 @@ export {
     SerializerInterface,
     ControlPanelInterface,
     ControlInterface,
+    QuickControlInterface,
     ShapeControlInterface,
     EngineControlInterface,
     CircleControlInterface,

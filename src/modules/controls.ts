@@ -9,7 +9,7 @@ import {
     ControlPanelInterface,
     EngineControlInterface,
     EngineInterface,
-    GuidePainterInterface,
+    GuidePainterInterface, PainterInterface, QuickControlInterface,
     ShapeControlInterface,
     ShapeInterface
 } from "../structure";
@@ -20,7 +20,7 @@ class ControlPanel implements ControlPanelInterface {
     protected controls: ControlInterface[] = [];
     protected name: string;
 
-    constructor(name: string) {
+    constructor(name: string = null) {
         this.name = name;
     }
 
@@ -28,14 +28,24 @@ class ControlPanel implements ControlPanelInterface {
         this.controls.push(control);
     }
 
+    public addControls(controls: ControlInterface[]): void {
+        controls.forEach((control: ControlInterface) => this.addControl(control));
+    }
+
     public render(): DocumentFragment {
         const wrapperHtml = `
         <div class="control-group">
-            <div class="section-head">${this.name}</div>
             <div class="section-body"></div>
         </div>`;
 
         const controlPanelFragment = document.createRange().createContextualFragment(wrapperHtml);
+
+        if (this.name !== null) {
+            const headerFragment = document.createRange().createContextualFragment(`<div class="section-head">${this.name}</div>`);
+
+            controlPanelFragment.prepend(headerFragment);
+        }
+
         const controlPanelBodyEl = controlPanelFragment.querySelector('.section-body');
 
         this.controls.forEach((control: ControlInterface) => {
@@ -47,7 +57,7 @@ class ControlPanel implements ControlPanelInterface {
 
 }
 
-class EngineControl implements EngineControlInterface {
+class EngineControl implements EngineControlInterface, QuickControlInterface {
     protected circControl: CircControlInterface;
     protected engine: EngineInterface;
 
@@ -61,24 +71,36 @@ class EngineControl implements EngineControlInterface {
 
     public render(): DocumentFragment {
 
+        const engineFragment = document.createDocumentFragment();
+        engineFragment.appendChild(this.makeIntervalFragment());
+        engineFragment.appendChild(this.circControl.render());
+
+        return engineFragment;
+    }
+
+    protected makeIntervalFragment(): DocumentFragment {
         const html = `
-        <div class="control-engine control-group">
-            <div class="section-head">Engine</div>
-            <div class="section-body">
-                <div class="control">
-                    <button class="paused">${this.getPlayButtonLabel()}</button>
-                    <button class="stepThousand">Step 1000</button>
-                </div>
-                <div class="control control-interval">
-                    <label>interval</label>
-                    <input type="number" name="interval" class="input" value="${this.engine.getStepInterval()}">
-                </div>
-            </div>
-        </div>`;
+            <div class="control">
+                <label>interval</label>
+                <input type="number" name="interval" class="input" value="${this.engine.getStepInterval()}">
+            </div>`;
 
-        const engineFragment = document.createRange().createContextualFragment(html);
+        const intervalFragment = document.createRange().createContextualFragment(html);
 
-        engineFragment.querySelector('button.paused').addEventListener('click', e => {
+        intervalFragment.querySelector('input[name="interval"]').addEventListener('input', e => {
+            this.engine.setStepInterval(parseInt(e.target.value));
+            console.log(e)
+        });
+
+        return intervalFragment;
+    }
+
+    protected makePlayFragment(): DocumentFragment {
+        const html = `<button class="paused">${this.getPlayButtonLabel()}</button>`;
+
+        const playFragment = document.createRange().createContextualFragment(html);
+
+        playFragment.querySelector('button.paused').addEventListener('click', e => {
             if (this.engine.isPlaying()) {
                 this.engine.pause();
             } else {
@@ -87,7 +109,15 @@ class EngineControl implements EngineControlInterface {
             e.target.innerText = this.getPlayButtonLabel();
         });
 
-        engineFragment.querySelector('button.stepThousand').addEventListener('click', e => {
+        return playFragment;
+    }
+
+    protected makeStepJumpFragment(): DocumentFragment {
+        const html = `<button class="stepThousand">Step 1000</button>`;
+
+        const stepJumpFragment = document.createRange().createContextualFragment(html);
+
+        stepJumpFragment.querySelector('button.stepThousand').addEventListener('click', e => {
             const remainingSteps = this.engine.getRemainingStepsToRun();
 
             this.engine.pause();
@@ -95,13 +125,24 @@ class EngineControl implements EngineControlInterface {
             this.engine.play(remainingSteps);
         });
 
-        engineFragment.querySelector('input[name="interval"]').addEventListener('input', e => {
-            this.engine.setStepInterval(parseInt(e.target.value));
-        });
+        return stepJumpFragment;
+    }
 
-        engineFragment.append(this.circControl.render());
+    public getQuickControls(): ControlInterface[] {
+        const self = this;
 
-        return engineFragment;
+        return [
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makePlayFragment();
+                }
+            },
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeStepJumpFragment();
+                }
+            },
+        ];
     }
 
     protected getPlayButtonLabel() {
@@ -110,7 +151,7 @@ class EngineControl implements EngineControlInterface {
 
 }
 
-class GuidePainterControl implements ControlInterface {
+class GuidePainterControl implements ControlInterface, QuickControlInterface {
     protected guidePainter: GuidePainterInterface;
 
     constructor(guide: GuidePainterInterface) {
@@ -118,19 +159,15 @@ class GuidePainterControl implements ControlInterface {
     }
 
     public render(): DocumentFragment {
-        const html = `
-        <div class="control-engine control-group">
-            <div class="section-head">Guides</div>
-            <div class="section-body">
-                <div class="control">
-                    <button class="show">${this.getShowButtonLabel()}</button>
-                </div>
-            </div>
-        </div>`;
+        return document.createDocumentFragment();
+    }
 
-        const painterFragment = document.createRange().createContextualFragment(html);
+    protected makeVisibilityFragment(): DocumentFragment {
+        const html = `<button class="show">${this.getShowButtonLabel()}</button>`;
 
-        painterFragment.querySelector('button.show').addEventListener('click', e => {
+        const visibilityFragment = document.createRange().createContextualFragment(html);
+
+        visibilityFragment.querySelector('button.show').addEventListener('click', e => {
             if (this.guidePainter.isVisible()) {
                 this.guidePainter.hide();
             } else {
@@ -139,7 +176,19 @@ class GuidePainterControl implements ControlInterface {
             e.target.innerText = this.getShowButtonLabel();
         });
 
-        return painterFragment;
+        return visibilityFragment;
+    }
+
+    public getQuickControls(): ControlInterface[] {
+        const self = this;
+
+        return [
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeVisibilityFragment();
+                }
+            },
+        ];
     }
 
     protected getShowButtonLabel() {
@@ -154,7 +203,7 @@ class CircControl implements CircControlInterface {
 
     constructor(circ: CircInterface) {
         this.circ = circ;
-        this.panel = new ControlPanel('Circ');
+        this.panel = new ControlPanel('Circ Name Here');
 
         this.panel.addControl(new BackgroundControl(this.circ));
 
@@ -175,6 +224,39 @@ class CircControl implements CircControlInterface {
     public render(): DocumentFragment {
         return this.panel.render();
     }
+}
+
+class PainterControl implements QuickControlInterface {
+    protected painter: PainterInterface;
+
+    constructor(painter: PainterInterface) {
+        this.painter = painter;
+    }
+
+    protected makeClearFragment(): DocumentFragment {
+        const html = `<button class="clear">Clear</button>`;
+
+        const clearFragment = document.createRange().createContextualFragment(html);
+
+        clearFragment.querySelector('button.clear').addEventListener('click', e => {
+            this.painter.clear();
+        });
+
+        return clearFragment;
+    }
+
+    public getQuickControls(): ControlInterface[] {
+        const self = this;
+
+        return [
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeClearFragment();
+                }
+            },
+        ];
+    }
+
 }
 
 class CircleControl implements CircleControlInterface {
@@ -344,10 +426,15 @@ class BackgroundControl implements BackgroundControlInterface {
 
 }
 
+class QuickControlPanel extends ControlPanel {
+
+}
+
 export {
     ControlPanel,
     EngineControl,
     CircControl,
     CircleControl,
     GuidePainterControl,
+    PainterControl,
 }
