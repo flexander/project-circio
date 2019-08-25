@@ -25,7 +25,7 @@ class Circle implements CircleInterface {
         let stepCount = this.state.stepCount;
         let distanceTravelled = arc * stepCount;
         let arcToParentRadians = 0;
-        let parentRadians = parentCircle !== null ? parentCircle.state.getAngle():0; //TODO: should this be parentCircle.state.totalAngle?
+        let parentRadians = parentCircle !== null && this.fixed === true ? parentCircle.state.getAngle():0; //TODO: should this be parentCircle.state.totalAngle?
         let radiusRelative = 0;
         let parentCentreX = this.state.centre.x;
         let parentCentreY = this.state.centre.y;
