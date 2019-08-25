@@ -66,7 +66,7 @@ class EngineControl implements EngineControlInterface {
             <div class="section-head">Engine</div>
             <div class="section-body">
                 <div class="control">
-                    <button class="paused">Play</button>
+                    <button class="paused">${this.getPlayButtonLabel()}</button>
                     <button class="stepThousand">Step 1000</button>
                 </div>
                 <div class="control control-interval">
@@ -84,6 +84,7 @@ class EngineControl implements EngineControlInterface {
             } else {
                 this.engine.play();
             }
+            e.target.innerText = this.getPlayButtonLabel();
         });
 
         engineFragment.querySelector('button.stepThousand').addEventListener('click', e => {
@@ -103,6 +104,10 @@ class EngineControl implements EngineControlInterface {
         return engineFragment;
     }
 
+    protected getPlayButtonLabel() {
+        return (this.engine.isPlaying()) ? 'Pause' : 'Play';
+    }
+
 }
 
 class GuidePainterControl implements ControlInterface {
@@ -113,13 +118,12 @@ class GuidePainterControl implements ControlInterface {
     }
 
     public render(): DocumentFragment {
-
         const html = `
         <div class="control-engine control-group">
             <div class="section-head">Guides</div>
             <div class="section-body">
                 <div class="control">
-                    <button class="show">Show</button>
+                    <button class="show">${this.getShowButtonLabel()}</button>
                 </div>
             </div>
         </div>`;
@@ -132,11 +136,15 @@ class GuidePainterControl implements ControlInterface {
             } else {
                 this.guidePainter.show();
             }
+            e.target.innerText = this.getShowButtonLabel();
         });
 
         return painterFragment;
     }
 
+    protected getShowButtonLabel() {
+        return (this.guidePainter.isVisible()) ? 'Hide' : 'Show';
+    }
 }
 
 class CircControl implements CircControlInterface {

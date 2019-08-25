@@ -33,7 +33,7 @@ engine.addCallback(circ => guidePainter.draw(circ));
 engine.addCallback(circ => backgroundPainter.draw(circ));
 engine.play();
 
-const controlPanel = new ControlPanel('Circio');
+const controlPanel = new ControlPanel('Circ Name');
 const engineControl = new EngineControl(engine);
 const circControl = new CircControl(circ);
 const guidePainterControl = new GuidePainterControl(guidePainter);
