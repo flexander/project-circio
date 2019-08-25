@@ -60,10 +60,6 @@ class EngineControl implements EngineControlInterface {
                     <label>interval</label>
                     <input type="number" name="interval" class="input" value="${this.engine.getStepInterval()}">
                 </div>
-                <div class="control control-backgroundFill">
-                    <label>backgroundFill</label>
-                    <input type="color" name="backgroundFill" class="input">
-                </div>
             </div>
         </div>`;
 
@@ -153,6 +149,19 @@ class CircControl implements CircControlInterface {
 
     public render(): DocumentFragment {
         const fragment = document.createDocumentFragment();
+
+        const backgroundControlHtml = `
+            <div class="control control-backgroundFill">
+                <label>backgroundFill</label>
+                <input type="color" name="backgroundFill" class="input">
+            </div>`;
+        const backgroundControlFragment = document.createRange().createContextualFragment(backgroundControlHtml);
+
+        backgroundControlFragment.querySelector('input[name="backgroundFill"]').addEventListener('input', e => {
+            this.circ.backgroundFill = e.target.value;
+        });
+
+        fragment.appendChild(backgroundControlFragment);
 
         this.shapeControls
             .forEach((shapeControl: ShapeControlInterface) => {
