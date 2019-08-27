@@ -52,8 +52,14 @@ export default class Engine implements EngineInterface {
     public stepFast(count: number): void {
         this.pause();
 
-        for (let step = 0; step<count; step++) {
+        const stepGroup = 100;
+
+        for (let step = 0; step<stepGroup; step++) {
             this.step()
+        }
+
+        if (count-stepGroup > 0) {
+            setTimeout(_=>this.stepFast(count-stepGroup), 0);
         }
     }
 
