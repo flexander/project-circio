@@ -89,7 +89,6 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
 
         intervalFragment.querySelector('input[name="interval"]').addEventListener('input', e => {
             this.engine.setStepInterval(parseInt((e.target as HTMLInputElement).value));
-            console.log(e)
         });
 
         return intervalFragment;
