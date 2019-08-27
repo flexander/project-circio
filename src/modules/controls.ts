@@ -127,6 +127,18 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
         return stepJumpFragment;
     }
 
+    protected makeResetFragment(): DocumentFragment {
+        const html = `<button class="reset">Reset</button>`;
+
+        const resetFragment = document.createRange().createContextualFragment(html);
+
+        resetFragment.querySelector('button.reset').addEventListener('click', e => {
+            this.engine.reset();
+        });
+
+        return resetFragment;
+    }
+
     public getQuickControls(): ControlInterface[] {
         const self = this;
 
@@ -139,6 +151,11 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
             new class implements ControlInterface {
                 render(): DocumentFragment {
                     return self.makeStepJumpFragment();
+                }
+            },
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeResetFragment();
                 }
             },
         ];
@@ -247,13 +264,7 @@ class PainterControl implements QuickControlInterface {
     public getQuickControls(): ControlInterface[] {
         const self = this;
 
-        return [
-            new class implements ControlInterface {
-                render(): DocumentFragment {
-                    return self.makeClearFragment();
-                }
-            },
-        ];
+        return [];
     }
 
 }
