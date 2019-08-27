@@ -191,7 +191,7 @@ class GuidePainterControl implements ControlInterface, QuickControlInterface {
     }
 
     protected getShowButtonLabel() {
-        return (this.guidePainter.isVisible()) ? 'Hide Guides' : 'Show Guides';
+        return (this.guidePainter.isVisible()) ? 'No Guides' : 'Guides';
     }
 }
 
