@@ -12,10 +12,12 @@ export default class GuidePainter implements GuidePainterInterface {
 
     public hide(): void {
         this.visible = false;
+        this.canvasContext.canvas.style.visibility = 'hidden';
     }
 
     public show(): void {
         this.visible = true;
+        this.canvasContext.canvas.style.visibility = 'visible';
     }
 
     public isVisible(): boolean {
@@ -42,10 +44,6 @@ export default class GuidePainter implements GuidePainterInterface {
     public draw(circ: CircInterface): void {
         this.centerCanvas(circ);
         this.clear();
-
-        if (this.visible === false) {
-            return;
-        }
 
         circ.shapes.forEach((circle:CircleInterface) => {
             this.drawCircle(circle);
