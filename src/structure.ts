@@ -63,7 +63,8 @@ interface EngineInterface {
     import(circ: CircInterface): void;
     export(): CircInterface;
 
-    addCallback(callback: CallableFunction): void
+    addStepCallback(callback: CallableFunction): void
+    addResetCallback(callback: CallableFunction): void
     pause(): void;
     play(count?: number|null): void
     stepFast(count: number): void
