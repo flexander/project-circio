@@ -37,7 +37,6 @@ interface ShapeStateInterface {
     totalAngle: number;
     centre: PositionInterface;
     drawPoint: PositionInterface;
-    stepCount: number;
     initialState: ShapeStateInterface;
     previousState: ShapeStateInterface;
 

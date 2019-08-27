@@ -22,7 +22,7 @@ class Circle implements CircleInterface {
         this.savePreviousState();
 
         let arc = this.getArc();
-        let stepCount = this.state.stepCount;
+        let stepCount = this.getStepCount();
         let distanceTravelled = arc * stepCount;
         let arcToParentRadians = 0;
         let parentRadians = parentCircle !== null && this.fixed === true ? parentCircle.state.getAngle():0;
@@ -67,7 +67,6 @@ class Circle implements CircleInterface {
         previousState.centre = Object.assign({},this.state.centre);
         previousState.initialState = Object.assign({},this.state.initialState);
         previousState.totalAngle = this.state.totalAngle;
-        previousState.stepCount = this.state.stepCount;
 
         this.state.previousState = previousState;
     }
@@ -78,7 +77,6 @@ class Circle implements CircleInterface {
         initialState.centre = Object.assign({},this.state.centre);
         initialState.initialState = Object.assign({},this.state.initialState);
         initialState.totalAngle = this.state.totalAngle;
-        initialState.stepCount = this.state.stepCount;
 
         this.state.initialState = initialState;
     }
@@ -100,6 +98,15 @@ class Circle implements CircleInterface {
         return stepRadian;
     }
 
+    protected getStepCount () {
+        let stepCount = 0;
+        if(this.steps > 0) {
+            stepCount = this.state.totalAngle/this.getStepRadians();
+        }
+
+        return stepCount;
+    }
+
     reset(): void {
         this.state = this.state.initialState;
     }
@@ -110,7 +117,6 @@ class CircleState implements ShapeStateInterface {
     drawPoint: PositionInterface = new CircleDrawPosition();
     initialState: ShapeStateInterface = Object.create(this);
     previousState: ShapeStateInterface = null;
-    stepCount: number = 0;
     totalAngle: number = 0;
 
     public getAngle(): number {
