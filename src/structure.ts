@@ -29,7 +29,8 @@ interface ShapeInterface {
     brushes: BrushInterface[];
     state: ShapeStateInterface;
 
-    calculate(parentCircle: ShapeInterface|null): void;
+    calculatePosition(parentCircle: ShapeInterface|null): void;
+    calculateAngle(): void;
     reset(): void;
 }
 

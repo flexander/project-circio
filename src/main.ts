@@ -17,7 +17,7 @@ const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#ba
 const mainCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#main-canvas');
 const guideCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#guide-canvas');
 const storage = new BlueprintStore();
-const circ = storage.get('threeCircles');
+const circ = storage.get('twoCircles');
 
 canvasArea.style.transformOrigin = '0 0'; //scale from top left
 canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
