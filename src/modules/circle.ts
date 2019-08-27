@@ -18,7 +18,7 @@ class Circle implements CircleInterface {
         this.saveInitialState();
     }
 
-    calculate(parentCircle: CircleInterface|null): void {
+    calculatePosition(parentCircle: CircleInterface|null): void {
         this.savePreviousState();
 
         let arc = this.getArc();
@@ -53,7 +53,9 @@ class Circle implements CircleInterface {
         // New x1 & y1 to reflect change in radians
         this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
         this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
+    }
 
+    public calculateAngle(): void {
         if (this.clockwise === true) {
             this.state.totalAngle += this.getStepRadians();
         } else {

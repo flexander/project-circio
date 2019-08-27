@@ -1,7 +1,7 @@
 import {CircInterface, EngineInterface, ShapeInterface} from "../structure";
 
 export default class Engine implements EngineInterface {
-    protected steps: number = 0;
+    protected totalStepsRun: number = 0;
     protected interval: number = 1;
     protected callbacks: Array<Function> = [];
     protected circ: CircInterface;
@@ -55,7 +55,12 @@ export default class Engine implements EngineInterface {
         let parentShape: ShapeInterface|null = null;
         this.circ.shapes.forEach(
             shape =>  {
-                shape.calculate(parentShape);
+                shape.calculatePosition(parentShape);
+
+                if (shape.stepMod === 0 || this.totalStepsRun % shape.stepMod === 0) {
+                    shape.calculateAngle();
+                }
+
                 parentShape = shape;
             });
     }
@@ -78,6 +83,7 @@ export default class Engine implements EngineInterface {
                     if (this.stepsToRun > 0) {
                         this.step();
                         this.stepsToRun--;
+                        this.totalStepsRun++;
                     }
                     this.run();
                 },
