@@ -88,7 +88,7 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
         const intervalFragment = document.createRange().createContextualFragment(html);
 
         intervalFragment.querySelector('input[name="interval"]').addEventListener('input', e => {
-            this.engine.setStepInterval(parseInt(e.target.value));
+            this.engine.setStepInterval(parseInt((e.target as HTMLInputElement).value));
             console.log(e)
         });
 
@@ -106,7 +106,7 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
             } else {
                 this.engine.play();
             }
-            e.target.innerText = this.getPlayButtonLabel();
+            (e.target as HTMLElement).innerText = this.getPlayButtonLabel();
         });
 
         return playFragment;
@@ -173,7 +173,7 @@ class GuidePainterControl implements ControlInterface, QuickControlInterface {
             } else {
                 this.guidePainter.show();
             }
-            e.target.innerText = this.getShowButtonLabel();
+            (e.target as HTMLElement).innerText = this.getShowButtonLabel();
         });
 
         return visibilityFragment;
@@ -192,7 +192,7 @@ class GuidePainterControl implements ControlInterface, QuickControlInterface {
     }
 
     protected getShowButtonLabel() {
-        return (this.guidePainter.isVisible()) ? 'Hide' : 'Show';
+        return (this.guidePainter.isVisible()) ? 'Hide Guides' : 'Show Guides';
     }
 }
 
@@ -315,22 +315,22 @@ class CircleControl implements CircleControlInterface {
         const documentFragment = document.createRange().createContextualFragment(html);
 
         documentFragment.querySelector('input[name="steps"]').addEventListener('input', e => {
-            this.circle.steps = parseInt(e.target.value);
+            this.circle.steps = parseInt((e.target as HTMLInputElement).value);
         });
         documentFragment.querySelector('input[name="radius"]').addEventListener('input', e => {
-            this.circle.radius = parseInt(e.target.value);
+            this.circle.radius = parseInt((e.target as HTMLInputElement).value);
         });
         documentFragment.querySelector('input[name="stepMod"]').addEventListener('input', e => {
-            this.circle.stepMod = parseInt(e.target.value);
+            this.circle.stepMod = parseInt((e.target as HTMLInputElement).value);
         });
         documentFragment.querySelector('input[name="outside"]').addEventListener('input', e => {
-            this.circle.outside = e.target.checked === true;
+            this.circle.outside = (e.target as HTMLInputElement).checked === true;
         });
         documentFragment.querySelector('input[name="clockwise"]').addEventListener('input', e => {
-            this.circle.clockwise = e.target.checked === true;
+            this.circle.clockwise = (e.target as HTMLInputElement).checked === true;
         });
         documentFragment.querySelector('input[name="fixed"]').addEventListener('input', e => {
-            this.circle.fixed = e.target.checked === true;
+            this.circle.fixed = (e.target as HTMLInputElement).checked === true;
         });
 
         this.brushControls.forEach((brushControl: BrushControlInterface) => {
@@ -382,19 +382,19 @@ class BrushControl implements BrushControlInterface {
         const brushFragment = document.createRange().createContextualFragment(html);
 
         brushFragment.querySelector('input[name="color"]').addEventListener('input', e => {
-            this.brush.color = e.target.value;
+            this.brush.color = (e.target as HTMLInputElement).value;
         });
         brushFragment.querySelector('input[name="offset"]').addEventListener('input', e => {
-            this.brush.offset = e.target.value;
+            this.brush.offset = parseInt((e.target as HTMLInputElement).value,10);
         });
         brushFragment.querySelector('input[name="degrees"]').addEventListener('input', e => {
-            this.brush.degrees = e.target.value;
+            this.brush.degrees = parseInt((e.target as HTMLInputElement).value,10);
         });
         brushFragment.querySelector('input[name="point"]').addEventListener('input', e => {
-            this.brush.point = e.target.value;
+            this.brush.point = parseInt((e.target as HTMLInputElement).value,10);
         });
         brushFragment.querySelector('input[name="link"]').addEventListener('input', e => {
-            this.brush.link = e.target.checked === true;
+            this.brush.link = (e.target as HTMLInputElement).checked === true;
         });
 
         return brushFragment;
@@ -418,7 +418,7 @@ class BackgroundControl implements BackgroundControlInterface {
         const backgroundControlFragment = document.createRange().createContextualFragment(backgroundControlHtml);
 
         backgroundControlFragment.querySelector('input[name="backgroundFill"]').addEventListener('input', e => {
-            this.circ.backgroundFill = e.target.value;
+            this.circ.backgroundFill = (e.target as HTMLInputElement).value;
         });
 
         return backgroundControlFragment;
