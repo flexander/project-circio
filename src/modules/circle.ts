@@ -111,6 +111,9 @@ class Circle implements CircleInterface {
 
     reset(): void {
         this.state = this.state.initialState;
+
+        // Create a new initial state object
+        this.saveInitialState();
     }
 }
 
