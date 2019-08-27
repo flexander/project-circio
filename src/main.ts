@@ -35,9 +35,10 @@ const guidePainter = new GuidePainter(guideCanvasElement.getContext("2d"));
 const backgroundPainter = new BackgroundPainter(backgroundCanvasElement.getContext("2d"));
 
 engine.import(circ);
-engine.addCallback(circ => painter.draw(circ));
-engine.addCallback(circ => guidePainter.draw(circ));
-engine.addCallback(circ => backgroundPainter.draw(circ));
+engine.addStepCallback(circ => painter.draw(circ));
+engine.addStepCallback(circ => guidePainter.draw(circ));
+engine.addStepCallback(circ => backgroundPainter.draw(circ));
+engine.addResetCallback(_ => painter.clear());
 engine.play();
 
 const controlPanel = new ControlPanel('Engine');

@@ -3,7 +3,8 @@ import {CircInterface, EngineInterface, ShapeInterface} from "../structure";
 export default class Engine implements EngineInterface {
     protected totalStepsRun: number = 0;
     protected interval: number = 1;
-    protected callbacks: Array<Function> = [];
+    protected stepCallbacks: Array<Function> = [];
+    protected resetCallbacks: Array<Function> = [];
     protected circ: CircInterface;
     protected stepsToRun: number = 0;
 
@@ -11,8 +12,12 @@ export default class Engine implements EngineInterface {
         this.run();
     }
 
-    public addCallback(callback: Function): void {
-        this.callbacks.push(callback);
+    public addStepCallback(callback: Function): void {
+        this.stepCallbacks.push(callback);
+    }
+
+    public addResetCallback(callback: Function): void {
+        this.resetCallbacks.push(callback);
     }
 
     public export(): CircInterface {
@@ -41,6 +46,7 @@ export default class Engine implements EngineInterface {
 
     public reset(): void {
         this.circ.shapes.forEach(shape => shape.reset());
+        this.runResetCallbacks();
     }
 
     public stepFast(count: number): void {
@@ -68,12 +74,18 @@ export default class Engine implements EngineInterface {
     public step(): void {
         this.calculateShapes();
 
-        this.runCallbacks();
+        this.runStepCallbacks();
     }
 
-    protected runCallbacks(): void {
-        this.callbacks.forEach(callable => {
+    protected runStepCallbacks(): void {
+        this.stepCallbacks.forEach(callable => {
             callable(this.circ);
+        })
+    }
+
+    protected runResetCallbacks(): void {
+        this.resetCallbacks.forEach(callable => {
+            callable();
         })
     }
 
