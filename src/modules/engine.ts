@@ -47,6 +47,11 @@ export default class Engine implements EngineInterface {
     public reset(): void {
         this.circ.shapes.forEach(shape => shape.reset());
         this.runResetCallbacks();
+
+        this.totalStepsRun = 0;
+
+        // Run a single step to correctly position and render the shapes
+        this.step();
     }
 
     public stepFast(count: number): void {
