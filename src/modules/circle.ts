@@ -1,5 +1,6 @@
 import '../structure';
 import {BrushInterface, CircleInterface, PositionInterface, ShapeStateInterface} from "../structure";
+const cloneDeep = require('lodash.clonedeep');
 
 class Circle implements CircleInterface {
     brushes: BrushInterface[] = [];
@@ -57,7 +58,7 @@ class Circle implements CircleInterface {
     }
 
     public calculateAngle(): void {
-        this.savePreviousState();
+        this.state.previousState.totalAngle = this.state.totalAngle;
         if (this.clockwise === true) {
             this.state.totalAngle += this.getStepRadians();
         } else {
@@ -66,23 +67,12 @@ class Circle implements CircleInterface {
     }
 
     protected savePreviousState() {
-        const previousState = new CircleState();
-        previousState.drawPoint = Object.assign({},this.state.drawPoint);
-        previousState.centre = Object.assign({},this.state.centre);
-        previousState.initialState = Object.assign({},this.state.initialState);
-        previousState.totalAngle = this.state.totalAngle;
-
-        this.state.previousState = previousState;
+        this.state.previousState = cloneDeep(this.state);
+        delete this.state.previousState.previousState;
     }
 
     protected saveInitialState() {
-        const initialState = new CircleState();
-        initialState.drawPoint = Object.assign({},this.state.drawPoint);
-        initialState.centre = Object.assign({},this.state.centre);
-        initialState.initialState = Object.assign({},this.state.initialState);
-        initialState.totalAngle = this.state.totalAngle;
-
-        this.state.initialState = initialState;
+        this.state.initialState = cloneDeep(this.state);
     }
 
     protected getArc () {
@@ -112,7 +102,7 @@ class Circle implements CircleInterface {
     }
 
     reset(): void {
-        this.state = this.state.initialState;
+        this.state = cloneDeep(this.state.initialState);
 
         // Create a new initial state object
         this.saveInitialState();
