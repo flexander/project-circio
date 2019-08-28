@@ -10,8 +10,10 @@ interface CircInterface {
     height: number;
     backgroundFill: string;
     stepsToComplete: number;
-    shapes: ShapeInterface[];
     state: CircStateInterface;
+
+    addShape(shape: ShapeInterface): void;
+    getShapes(): ShapeInterface[];
 }
 
 interface CircStateInterface {
@@ -28,6 +30,7 @@ interface ShapeInterface {
     startAngle: number;
     brushes: BrushInterface[];
     state: ShapeStateInterface;
+    isRoot: boolean;
 
     calculatePosition(parentCircle: ShapeInterface|null): void;
     calculateAngle(): void;

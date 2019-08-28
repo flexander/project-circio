@@ -59,8 +59,8 @@ export class BlueprintStore implements CircStoreInterface {
 
         circle1.brushes.push(circle1Brush);
 
-        circ.shapes.push(circle0);
-        circ.shapes.push(circle1);
+        circ.addShape(circle0);
+        circ.addShape(circle1);
 
         return circ;
     }
@@ -107,9 +107,9 @@ export class BlueprintStore implements CircStoreInterface {
 
         circle2.brushes.push(circle2Brush);
 
-        circ.shapes.push(circle0);
-        circ.shapes.push(circle1);
-        circ.shapes.push(circle2);
+        circ.addShape(circle0);
+        circ.addShape(circle1);
+        circ.addShape(circle2);
 
         return circ;
     }
@@ -165,10 +165,10 @@ export class BlueprintStore implements CircStoreInterface {
 
         circle3.brushes.push(circle3Brush);
 
-        circ.shapes.push(circle0);
-        circ.shapes.push(circle1);
-        circ.shapes.push(circle2);
-        circ.shapes.push(circle3);
+        circ.addShape(circle0);
+        circ.addShape(circle1);
+        circ.addShape(circle2);
+        circ.addShape(circle3);
 
         return circ;
     }
