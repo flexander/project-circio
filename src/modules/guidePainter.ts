@@ -44,10 +44,34 @@ export default class GuidePainter implements GuidePainterInterface {
     public draw(circ: CircInterface): void {
         this.centerCanvas(circ);
         this.clear();
+        this.guideColor = '#'+this.generateContrastingColor(circ.backgroundFill);
 
         circ.shapes.forEach((circle:CircleInterface) => {
             this.drawCircle(circle);
         })
+    }
+
+    protected generateContrastingColor(color: string): string
+    {
+        color = color.replace('#','');
+
+        return (this.calculateLuma(color) >= 165) ? '000' : 'fff';
+    }
+
+    protected calculateLuma(color: string): number
+    {
+        if (color.length === 3) {
+            color = color.charAt(0) + color.charAt(0) + color.charAt(1) + color.charAt(1) + color.charAt(2) + color.charAt(2);
+        } else if (color.length !== 6) {
+            throw('Invalid hex color: ' + color);
+        }
+
+        const rgb = [];
+        for (let i = 0; i <= 2; i++) {
+            rgb[i] = parseInt(color.substr(i * 2, 2), 16);
+        }
+
+        return (0.2126 * rgb[0]) + (0.7152 * rgb[1]) + (0.0722 * rgb[2]); // SMPTE C, Rec. 709 weightings
     }
 
     public exportImageAsDataURL(): string {
