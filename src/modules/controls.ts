@@ -423,7 +423,7 @@ class BackgroundControl implements BackgroundControlInterface {
         const backgroundControlHtml = `
             <div class="control control-backgroundFill">
                 <label>backgroundFill</label>
-                <input type="color" name="backgroundFill" class="input">
+                <input type="color" name="backgroundFill" class="input" value="${this.circ.backgroundFill}">
             </div>`;
         const backgroundControlFragment = document.createRange().createContextualFragment(backgroundControlHtml);
 
