@@ -12,6 +12,7 @@ class Circle implements CircleInterface {
     state: ShapeStateInterface = new CircleState();
     stepMod: number;
     steps: number;
+    isRoot: boolean;
 
 
     constructor() {
