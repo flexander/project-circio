@@ -56,6 +56,7 @@ class Circle implements CircleInterface {
     }
 
     public calculateAngle(): void {
+        this.savePreviousState();
         if (this.clockwise === true) {
             this.state.totalAngle += this.getStepRadians();
         } else {
