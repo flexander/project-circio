@@ -117,11 +117,7 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
         const stepJumpFragment = document.createRange().createContextualFragment(html);
 
         stepJumpFragment.querySelector('button.stepThousand').addEventListener('click', e => {
-            const remainingSteps = this.engine.getRemainingStepsToRun();
-
-            this.engine.pause();
             this.engine.stepFast(1000);
-            this.engine.play(remainingSteps);
         });
 
         return stepJumpFragment;

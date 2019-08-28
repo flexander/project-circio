@@ -54,7 +54,8 @@ export default class Engine implements EngineInterface {
         this.step();
     }
 
-    public stepFast(count: number): void {
+    public stepFast(count: number, thenContinue: number = null): void {
+        thenContinue = thenContinue === null ? this.getRemainingStepsToRun():thenContinue;
         this.pause();
 
         const stepGroup = 100;
@@ -64,7 +65,9 @@ export default class Engine implements EngineInterface {
         }
 
         if (count-stepGroup > 0) {
-            setTimeout(_=>this.stepFast(count-stepGroup), 0);
+            setTimeout(_ => this.stepFast(count-stepGroup, thenContinue), 0);
+        } else {
+            this.play(thenContinue);
         }
     }
 
