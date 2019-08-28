@@ -228,6 +228,9 @@ class CircControl implements CircControlInterface {
                 let shapeControl;
 
                 if (shape instanceof Circle) {
+                    if (shape.isRoot) {
+
+                    }
                     shapeControl = new CircleControl(shape);
                 }  else {
                     throw `Unable to render shape: ` + typeof shape;
@@ -290,26 +293,38 @@ class CircleControl implements CircleControlInterface {
         const html = `
         <div class="control-circle control-group">
             <div class="section-head">Circle</div>
-            <div class="section-body">
-            </div>
+            <div class="section-body"></div>
         </div>
         `;
 
         const documentFragment = document.createRange().createContextualFragment(html);
         const documentFragmentBody = documentFragment.querySelector('.section-body');
 
-        documentFragmentBody.appendChild(this.makeStepsFragment());
-        documentFragmentBody.appendChild(this.makeRadiusFragment());
-        documentFragmentBody.appendChild(this.makeStepModuloFragment());
-        documentFragmentBody.appendChild(this.makeOutsideFragment());
-        documentFragmentBody.appendChild(this.makeDirectionFragment());
-        documentFragmentBody.appendChild(this.makeFixedFragment());
+        this.getControlFragments().forEach((fragment: DocumentFragment) => {
+            documentFragmentBody.appendChild(fragment);
+        });
 
         this.brushControls.forEach((brushControl: BrushControlInterface) => {
             documentFragment.append(brushControl.render());
         });
 
         return documentFragment;
+    }
+
+    protected getControlFragments(): DocumentFragment[] {
+        const documentFragments = [
+            this.makeStepsFragment(),
+            this.makeRadiusFragment(),
+            this.makeStepModuloFragment(),
+            this.makeDirectionFragment(),
+        ];
+
+        if (this.circle.isRoot === false) {
+            documentFragments.push(this.makeFixedFragment());
+            documentFragments.push(this.makeOutsideFragment());
+        }
+
+        return documentFragments;
     }
 
     protected makeStepsFragment(): DocumentFragment {
