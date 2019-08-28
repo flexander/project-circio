@@ -28,7 +28,7 @@ const painter = new Painter(engine, {
 });
 
 // Data
-const data = redprints.triForce;
+const data = redprints.poppy38;
 engine.import(data.engineData);
 painter.import(data.painterData);
 
@@ -39,7 +39,7 @@ const startFrame = args['start'] !== undefined ? args['start']: 1;
 const endFrame = args['end'] !== undefined ? args['end']: 1;
 const action = (args['action'] !== undefined && args['action'] !== '') ? args['action']: 'draw';
 const name = (args['name'] !== undefined && args['name'] !== '') ? args['name']: Date.now();
-const offset = 180;
+const offset = 90;
 
 const dir = __dirname + '/../output/' + name;
 if (!fs.existsSync(dir)){
@@ -63,24 +63,15 @@ function animate () {
         engine.runOnce();
     }
 
-    painter.brushes[1][0].degrees = painter.brushes[1][0].degrees + startFrame;
-    painter.brushes[1][1].degrees = painter.brushes[1][1].degrees + startFrame;
-    painter.brushes[1][2].degrees = painter.brushes[1][2].degrees + startFrame;
-
     for (let f = startFrame; f <= endFrame; f++) {
         console.log(f + ' of ' + endFrame);
         painter.fillBackground();
         engine.reset();
 
-        painter.brushes[1][0].degrees += 1;
-        painter.brushes[1][1].degrees += 1;
-        painter.brushes[1][2].degrees += 1;
+        //painter.brushes[3][0].degrees = f;
+        //painter.brushes[3][0].offset = brushOffset(offset, f);
 
-        painter.brushes[1][0].offset = brushOffset(offset, f);
-        painter.brushes[1][1].offset = brushOffset(offset, f);
-        painter.brushes[1][2].offset = brushOffset(offset, f);
-
-        engine.list[1].radians = ((2 * Math.PI) / 720) * f;
+        painter.brushes[3][0].offset = data.painterData.brushes[3][0].offset + (offset * Math.sin(f / offset));
 
         for (let s = 0; s < steps; s++) {
             engine.runOnce();
