@@ -223,7 +223,7 @@ class CircControl implements CircControlInterface {
 
         this.panel.addControl(new BackgroundControl(this.circ));
 
-        this.circ.shapes
+        this.circ.getShapes()
             .forEach((shape: ShapeInterface) => {
                 let shapeControl;
 

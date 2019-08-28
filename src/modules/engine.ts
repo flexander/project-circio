@@ -45,7 +45,7 @@ export default class Engine implements EngineInterface {
     }
 
     public reset(): void {
-        this.circ.shapes.forEach(shape => shape.reset());
+        this.circ.getShapes().forEach(shape => shape.reset());
         this.runResetCallbacks();
 
         this.totalStepsRun = 0;
@@ -70,7 +70,7 @@ export default class Engine implements EngineInterface {
 
     protected calculateShapes(): void {
         let parentShape: ShapeInterface|null = null;
-        this.circ.shapes.forEach(
+        this.circ.getShapes().forEach(
             shape =>  {
                 shape.calculatePosition(parentShape);
 

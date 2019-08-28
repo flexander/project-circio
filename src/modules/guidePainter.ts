@@ -46,7 +46,7 @@ export default class GuidePainter implements GuidePainterInterface {
         this.clear();
         this.guideColor = '#'+this.generateContrastingColor(circ.backgroundFill);
 
-        circ.shapes.forEach((circle:CircleInterface) => {
+        circ.getShapes().forEach((circle:CircleInterface) => {
             this.drawCircle(circle);
         })
     }

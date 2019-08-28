@@ -10,8 +10,10 @@ interface CircInterface {
     height: number;
     backgroundFill: string;
     stepsToComplete: number;
-    shapes: ShapeInterface[];
     state: CircStateInterface;
+
+    addShape(shape: ShapeInterface): void;
+    getShapes(): ShapeInterface[];
 }
 
 interface CircStateInterface {
