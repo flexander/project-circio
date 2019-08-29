@@ -60,11 +60,9 @@ class ControlPanel implements ControlPanelInterface {
 class EngineControl implements EngineControlInterface, QuickControlInterface {
     protected circControl: CircControlInterface;
     protected engine: EngineInterface;
-    protected store: CircStoreInterface;
 
-    constructor(engine: EngineInterface, store: CircStoreInterface) {
+    constructor(engine: EngineInterface) {
         this.engine = engine;
-        this.store = store;
     }
 
     public addCircControl(circControl: CircControlInterface): void {
@@ -135,31 +133,6 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
         });
 
         return resetFragment;
-    }protected makeSaveFragment(): DocumentFragment {
-        const html = `<button class="save">Save</button>`;
-
-        const fragment = document.createRange().createContextualFragment(html);
-
-        fragment.querySelector('button.save').addEventListener('click', e => {
-            const name = prompt('Enter Circ name');
-            this.store.store(name, this.engine.export());
-        });
-
-        return fragment;
-    }
-
-    protected makeLoadFragment(): DocumentFragment {
-        const html = `<button class="load">Load</button>`;
-
-        const fragment = document.createRange().createContextualFragment(html);
-
-        fragment.querySelector('button.load').addEventListener('click', e => {
-            const name = prompt('Enter Circ name');
-            const circ = this.store.get(name);
-            this.engine.import(circ);
-        });
-
-        return fragment;
     }
 
     public getQuickControls(): ControlInterface[] {
@@ -179,16 +152,6 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
             new class implements ControlInterface {
                 render(): DocumentFragment {
                     return self.makeResetFragment();
-                }
-            },
-            new class implements ControlInterface {
-                render(): DocumentFragment {
-                    return self.makeSaveFragment();
-                }
-            },
-            new class implements ControlInterface {
-                render(): DocumentFragment {
-                    return self.makeLoadFragment();
                 }
             },
         ];
@@ -546,11 +509,11 @@ class BackgroundControl implements BackgroundControlInterface {
 
 class StorageControl implements ControlInterface, QuickControlInterface {
     protected store: CircStoreInterface;
-    protected circ: CircInterface;
+    protected engine: EngineInterface;
 
-    constructor(store: CircStoreInterface, circ: CircInterface) {
+    constructor(store: CircStoreInterface, engine: EngineInterface) {
         this.store = store;
-        this.circ = circ;
+        this.engine = engine;
     }
 
     public render(): DocumentFragment {
@@ -558,6 +521,49 @@ class StorageControl implements ControlInterface, QuickControlInterface {
         const engineFragment = document.createDocumentFragment();
 
         return engineFragment;
+    }
+
+    protected makeSaveFragment(): DocumentFragment {
+        const html = `<button class="save">Save</button>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('button.save').addEventListener('click', e => {
+            const name = prompt('Enter Circ name');
+            this.store.store(name, this.engine.export());
+        });
+
+        return fragment;
+    }
+
+    protected makeLoadFragment(): DocumentFragment {
+        const html = `<button class="load">Load</button>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('button.load').addEventListener('click', e => {
+            const name = prompt('Enter Circ name');
+            this.engine.import(this.store.get(name));
+        });
+
+        return fragment;
+    }
+
+    public getQuickControls(): ControlInterface[] {
+        const self = this;
+
+        return [
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeSaveFragment();
+                }
+            },
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeLoadFragment();
+                }
+            },
+        ];
     }
 
 }
