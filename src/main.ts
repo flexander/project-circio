@@ -40,15 +40,15 @@ engine.import(circ);
 engine.addStepCallback(circ => painter.draw(circ));
 engine.addStepCallback(circ => guidePainter.draw(circ));
 engine.addStepCallback(circ => backgroundPainter.draw(circ));
+engine.addStepCallback(circ => console.log(circ.shapes[0].steps));
 engine.addResetCallback(_ => painter.clear());
 engine.play();
 
 const controlPanel = new ControlPanel('Engine');
-const engineControl = new EngineControl(engine);
+const engineControl = new EngineControl(engine, storage);
 const circControl = new CircControl(circ);
 const guidePainterControl = new GuidePainterControl(guidePainter);
 const painterControl = new PainterControl(painter);
-const storageControl = new StorageControl(storage, circ);
 
 controlPanel.addControl(guidePainterControl);
 controlPanel.addControl(engineControl);
@@ -59,7 +59,6 @@ quickControls.addControls(guidePainterControl.getQuickControls());
 quickControls.addControls(engineControl.getQuickControls());
 quickControls.addControls(painterControl.getQuickControls());
 quickControls.addControls(painterControl.getQuickControls());
-quickControls.addControls(storageControl.getQuickControls());
 
 document.querySelector('.controls-container .actions').appendChild(quickControls.render());
 document.querySelector('.controls-container .controls').appendChild(controlPanel.render());
