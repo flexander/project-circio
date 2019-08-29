@@ -8,16 +8,18 @@ import {
     ControlPanel,
     EngineControl,
     GuidePainterControl,
-    PainterControl
+    PainterControl, StorageControl
 } from "./modules/controls";
 import BackgroundPainter from "./modules/backgroundPainter";
+import LocalStorage from "./modules/storeLocal";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
 const mainCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#main-canvas');
 const guideCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#guide-canvas');
-const storage = new BlueprintStore();
-const circ = storage.get('twoCircles');
+const blueprintStorage = new BlueprintStore();
+const storage = new LocalStorage();
+const circ = blueprintStorage.get('twoCircles');
 
 canvasArea.style.transformOrigin = '0 0'; //scale from top left
 canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
@@ -46,6 +48,7 @@ const engineControl = new EngineControl(engine);
 const circControl = new CircControl(circ);
 const guidePainterControl = new GuidePainterControl(guidePainter);
 const painterControl = new PainterControl(painter);
+const storageControl = new StorageControl(storage, circ);
 
 controlPanel.addControl(guidePainterControl);
 controlPanel.addControl(engineControl);
@@ -55,6 +58,8 @@ const quickControls = new ControlPanel();
 quickControls.addControls(guidePainterControl.getQuickControls());
 quickControls.addControls(engineControl.getQuickControls());
 quickControls.addControls(painterControl.getQuickControls());
+quickControls.addControls(painterControl.getQuickControls());
+quickControls.addControls(storageControl.getQuickControls());
 
 document.querySelector('.controls-container .actions').appendChild(quickControls.render());
 document.querySelector('.controls-container .controls').appendChild(controlPanel.render());
