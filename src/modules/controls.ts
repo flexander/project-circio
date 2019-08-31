@@ -4,7 +4,7 @@ import {
     CircControlInterface,
     CircInterface,
     CircleControlInterface,
-    CircleInterface,
+    CircleInterface, CircStoreInterface,
     ControlInterface,
     ControlPanelInterface,
     EngineControlInterface,
@@ -507,6 +507,67 @@ class BackgroundControl implements BackgroundControlInterface {
 
 }
 
+class StorageControl implements ControlInterface, QuickControlInterface {
+    protected store: CircStoreInterface;
+    protected engine: EngineInterface;
+
+    constructor(store: CircStoreInterface, engine: EngineInterface) {
+        this.store = store;
+        this.engine = engine;
+    }
+
+    public render(): DocumentFragment {
+
+        const engineFragment = document.createDocumentFragment();
+
+        return engineFragment;
+    }
+
+    protected makeSaveFragment(): DocumentFragment {
+        const html = `<button class="save">Save</button>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('button.save').addEventListener('click', e => {
+            const name = prompt('Enter Circ name');
+            this.store.store(name, this.engine.export());
+        });
+
+        return fragment;
+    }
+
+    protected makeLoadFragment(): DocumentFragment {
+        const html = `<button class="load">Load</button>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('button.load').addEventListener('click', e => {
+            const name = prompt('Enter Circ name');
+            this.engine.import(this.store.get(name));
+        });
+
+        return fragment;
+    }
+
+    public getQuickControls(): ControlInterface[] {
+        const self = this;
+
+        return [
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeSaveFragment();
+                }
+            },
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeLoadFragment();
+                }
+            },
+        ];
+    }
+
+}
+
 class QuickControlPanel extends ControlPanel {
 
 }
@@ -518,4 +579,5 @@ export {
     CircleControl,
     GuidePainterControl,
     PainterControl,
+    StorageControl,
 }
