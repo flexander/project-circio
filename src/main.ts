@@ -34,27 +34,34 @@ const painter = new Painter(mainCanvasElement.getContext("2d"));
 const guidePainter = new GuidePainter(guideCanvasElement.getContext("2d"));
 const backgroundPainter = new BackgroundPainter(backgroundCanvasElement.getContext("2d"));
 
-engine.import(circ);
 engine.addStepCallback(circ => painter.draw(circ));
 engine.addStepCallback(circ => guidePainter.draw(circ));
 engine.addStepCallback(circ => backgroundPainter.draw(circ));
 engine.addResetCallback(_ => painter.clear());
+engine.addImportCallback(circ => {
+    const controlPanel = new ControlPanel('Engine');
+    const engineControl = new EngineControl(engine);
+    const circControl = new CircControl(circ);
+    const guidePainterControl = new GuidePainterControl(guidePainter);
+    const painterControl = new PainterControl(painter);
+
+    controlPanel.addControl(guidePainterControl);
+    controlPanel.addControl(engineControl);
+    engineControl.addCircControl(circControl);
+
+    const quickControls = new ControlPanel();
+    quickControls.addControls(guidePainterControl.getQuickControls());
+    quickControls.addControls(engineControl.getQuickControls());
+    quickControls.addControls(painterControl.getQuickControls());
+
+    const controlActionsEl = document.querySelector('.controls-container .actions');
+    const controlsEl = document.querySelector('.controls-container .controls');
+
+    controlActionsEl.innerHTML = null;
+    controlsEl.innerHTML = null;
+
+    controlActionsEl.appendChild(quickControls.render());
+    controlsEl.appendChild(controlPanel.render());
+});
+engine.import(circ);
 engine.play();
-
-const controlPanel = new ControlPanel('Engine');
-const engineControl = new EngineControl(engine);
-const circControl = new CircControl(circ);
-const guidePainterControl = new GuidePainterControl(guidePainter);
-const painterControl = new PainterControl(painter);
-
-controlPanel.addControl(guidePainterControl);
-controlPanel.addControl(engineControl);
-engineControl.addCircControl(circControl);
-
-const quickControls = new ControlPanel();
-quickControls.addControls(guidePainterControl.getQuickControls());
-quickControls.addControls(engineControl.getQuickControls());
-quickControls.addControls(painterControl.getQuickControls());
-
-document.querySelector('.controls-container .actions').appendChild(quickControls.render());
-document.querySelector('.controls-container .controls').appendChild(controlPanel.render());

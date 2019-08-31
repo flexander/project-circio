@@ -5,6 +5,7 @@ export default class Engine implements EngineInterface {
     protected interval: number = 1;
     protected stepCallbacks: Array<Function> = [];
     protected resetCallbacks: Array<Function> = [];
+    protected importCallbacks: Array<Function> = [];
     protected circ: CircInterface;
     protected stepsToRun: number = 0;
 
@@ -20,12 +21,17 @@ export default class Engine implements EngineInterface {
         this.resetCallbacks.push(callback);
     }
 
+    public addImportCallback(callback: Function): void {
+        this.importCallbacks.push(callback);
+    }
+
     public export(): CircInterface {
         return this.circ;
     }
 
     public import(circ: CircInterface): void {
         this.circ = circ;
+        this.runImportCallbacks()
     }
 
     public pause(): void {
@@ -100,6 +106,12 @@ export default class Engine implements EngineInterface {
     protected runResetCallbacks(): void {
         this.resetCallbacks.forEach(callable => {
             callable();
+        })
+    }
+
+    protected runImportCallbacks(): void {
+        this.importCallbacks.forEach(callable => {
+            callable(this.circ);
         })
     }
 
