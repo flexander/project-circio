@@ -46,7 +46,7 @@ engine.addImportCallback(circ => {
     const circControl = new CircControl(circ);
     const guidePainterControl = new GuidePainterControl(guidePainter);
     const painterControl = new PainterControl(painter);
-const storageControl = new StorageControl(storage, engine);
+    const storageControl = new StorageControl(storage, engine);
 
     controlPanel.addControl(guidePainterControl);
     controlPanel.addControl(engineControl);
