@@ -68,6 +68,7 @@ interface EngineInterface {
 
     addStepCallback(callback: CallableFunction): void
     addResetCallback(callback: CallableFunction): void
+    addImportCallback(callback: CallableFunction): void
     pause(): void;
     play(count?: number|null): void
     stepFast(count: number): void
