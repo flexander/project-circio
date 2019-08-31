@@ -31,6 +31,7 @@ export default class Engine implements EngineInterface {
 
     public import(circ: CircInterface): void {
         this.circ = circ;
+        this.reset();
         this.runImportCallbacks()
     }
 
