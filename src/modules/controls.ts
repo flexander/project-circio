@@ -530,7 +530,10 @@ class StorageControl implements ControlInterface, QuickControlInterface {
 
         fragment.querySelector('button.save').addEventListener('click', e => {
             const name = prompt('Enter Circ name');
-            this.store.store(name, this.engine.export());
+            const circ = this.engine.export();
+            circ.name = name;
+
+            this.store.store(name, circ);
         });
 
         return fragment;
