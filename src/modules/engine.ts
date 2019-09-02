@@ -61,21 +61,15 @@ export default class Engine implements EngineInterface {
         this.step();
     }
 
-    public stepFast(count: number, thenContinue: number = null): void {
-        thenContinue = thenContinue === null ? this.getRemainingStepsToRun():thenContinue;
+    public stepFast(count: number): void {
+        const thenContinue = this.getRemainingStepsToRun();
         this.pause();
 
-        const stepGroup = 100;
-
-        for (let step = 0; step<stepGroup; step++) {
+        for (let step = 0; step<count; step++) {
             this.step()
         }
 
-        if (count-stepGroup > 0) {
-            setTimeout(_ => this.stepFast(count-stepGroup, thenContinue), 0);
-        } else {
-            this.play(thenContinue);
-        }
+        this.play(thenContinue);
     }
 
     protected calculateShapes(): void {
