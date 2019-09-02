@@ -530,7 +530,10 @@ class StorageControl implements ControlInterface, QuickControlInterface {
 
         fragment.querySelector('button.save').addEventListener('click', e => {
             const name = prompt('Enter Circ name');
-            this.store.store(name, this.engine.export());
+            const circ = this.engine.export();
+            circ.name = name;
+
+            this.store.store(name, circ);
         });
 
         return fragment;
@@ -542,8 +545,22 @@ class StorageControl implements ControlInterface, QuickControlInterface {
         const fragment = document.createRange().createContextualFragment(html);
 
         fragment.querySelector('button.load').addEventListener('click', e => {
-            const name = prompt('Enter Circ name');
-            this.engine.import(this.store.get(name));
+            const storeFront = <HTMLElement>document.querySelector('.store');
+            const storeListing = storeFront.querySelector('.listing');
+            storeListing.innerHTML = '';
+
+            this.store.list().forEach((circ: CircInterface) => {
+                const tile = document.createRange().createContextualFragment(`<div class="circ" data-name="${circ.name}">${circ.name}</div>`);
+
+                tile.querySelector('.circ').addEventListener('click', e => {
+                    this.engine.import(this.store.get((e.target as HTMLElement).getAttribute('data-name')));
+                    storeFront.style.display = 'none';
+                });
+
+                storeListing.appendChild(tile);
+            });
+
+            storeFront.style.display = 'block';
         });
 
         return fragment;
