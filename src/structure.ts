@@ -6,6 +6,7 @@ interface PositionInterface {
 }
 
 interface CircInterface {
+    name: string;
     width: number;
     height: number;
     backgroundFill: string;

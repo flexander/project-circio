@@ -1,6 +1,7 @@
 import {CircInterface, CircStateInterface, ShapeInterface} from "../structure";
 
 export default class Circ implements CircInterface {
+    name: string;
     height: number;
     width: number;
     backgroundFill: string;
