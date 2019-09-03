@@ -87,6 +87,7 @@ export default class Engine implements EngineInterface {
     }
 
     public step(): void {
+        this.totalStepsRun++;
         this.calculateShapes();
 
         this.runStepCallbacks();
@@ -116,7 +117,6 @@ export default class Engine implements EngineInterface {
                     if (this.stepsToRun > 0) {
                         this.step();
                         this.stepsToRun--;
-                        this.totalStepsRun++;
                     }
                     this.run();
                 },
