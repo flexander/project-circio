@@ -1,6 +1,6 @@
 {
   "files": [
-    "./src/node.ts",
+    "./src/animate.ts",
     "./src/structure.ts",
     "./src/modules/*.ts"
   ],

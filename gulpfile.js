@@ -33,6 +33,6 @@ gulp.task('build:scss', () => {
 });
 
 gulp.task('default', function() {
-    gulp.watch(['src/*.ts', 'src/**/*.ts'], gulp.parallel('build:ts-browser', 'build:ts-cli'));
+    gulp.watch(['src/*.ts', 'src/**/*.ts'], gulp.parallel('build:ts-browser'));
     gulp.watch(['styles/*.scss'], gulp.series('build:scss'));
 });
