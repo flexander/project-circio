@@ -2,16 +2,14 @@ import Engine from './modules/engine';
 import Painter from "./modules/painter";
 import GuidePainter from "./modules/guidePainter";
 import {BlueprintStore} from "./modules/storeBlueprint";
-import {
-    CircControl,
-    CircleControl,
-    ControlPanel,
-    EngineControl,
-    GuidePainterControl,
-    PainterControl, StorageControl
-} from "./modules/controls";
 import BackgroundPainter from "./modules/backgroundPainter";
 import LocalStorage from "./modules/storeLocal";
+import ControlPanel from "./modules/controls/panel";
+import EngineControl from "./modules/controls/engine";
+import CircControl from "./modules/controls/circ";
+import GuidePainterControl from "./modules/controls/guidePainter";
+import PainterControl from "./modules/controls/painter";
+import StorageControl from "./modules/controls/storage";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
