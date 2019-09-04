@@ -57,16 +57,21 @@ engine.addImportCallback(circ => {
     quickControls.addControls(engineControl.getQuickControls());
     quickControls.addControls(painterControl.getQuickControls());
     quickControls.addControls(painterControl.getQuickControls());
-    quickControls.addControls(storageControl.getQuickControls());
+
+    const storageActions = new ControlPanel();
+    storageActions.addControls(storageControl.getQuickControls());
 
     const controlActionsEl = document.querySelector('.controls-container .actions');
     const controlsEl = document.querySelector('.controls-container .controls');
+    const storageActionsEl = document.querySelector('.controls-container .storage-actions');
 
     controlActionsEl.innerHTML = null;
     controlsEl.innerHTML = null;
+    storageActionsEl.innerHTML = null;
 
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
+    storageActionsEl.appendChild(storageActions.render());
 });
 engine.import(circ);
 engine.play();

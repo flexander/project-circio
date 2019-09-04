@@ -34,8 +34,8 @@ class ControlPanel implements ControlPanelInterface {
 
     public render(): DocumentFragment {
         const wrapperHtml = `
-        <div class="control-group">
-            <div class="section-body"></div>
+        <div class="section-body">
+            <div class="control-group"></div>
         </div>`;
 
         const controlPanelFragment = document.createRange().createContextualFragment(wrapperHtml);
@@ -46,7 +46,7 @@ class ControlPanel implements ControlPanelInterface {
             controlPanelFragment.prepend(headerFragment);
         }
 
-        const controlPanelBodyEl = controlPanelFragment.querySelector('.section-body');
+        const controlPanelBodyEl = controlPanelFragment.querySelector('.control-group');
 
         this.controls.forEach((control: ControlInterface) => {
             controlPanelBodyEl.appendChild(control.render());

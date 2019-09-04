@@ -1798,13 +1798,17 @@ engine.addImportCallback(function (circ) {
     quickControls.addControls(engineControl.getQuickControls());
     quickControls.addControls(painterControl.getQuickControls());
     quickControls.addControls(painterControl.getQuickControls());
-    quickControls.addControls(storageControl.getQuickControls());
+    var storageActions = new controls_1.ControlPanel();
+    storageActions.addControls(storageControl.getQuickControls());
     var controlActionsEl = document.querySelector('.controls-container .actions');
     var controlsEl = document.querySelector('.controls-container .controls');
+    var storageActionsEl = document.querySelector('.controls-container .storage-actions');
     controlActionsEl.innerHTML = null;
     controlsEl.innerHTML = null;
+    storageActionsEl.innerHTML = null;
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
+    storageActionsEl.appendChild(storageActions.render());
 });
 engine.import(circ);
 engine.play();
@@ -2027,13 +2031,13 @@ var ControlPanel = /** @class */ (function () {
         controls.forEach(function (control) { return _this.addControl(control); });
     };
     ControlPanel.prototype.render = function () {
-        var wrapperHtml = "\n        <div class=\"control-group\">\n            <div class=\"section-body\"></div>\n        </div>";
+        var wrapperHtml = "\n        <div class=\"section-body\">\n            <div class=\"control-group\"></div>\n        </div>";
         var controlPanelFragment = document.createRange().createContextualFragment(wrapperHtml);
         if (this.name !== null) {
             var headerFragment = document.createRange().createContextualFragment("<div class=\"section-head\">" + this.name + "</div>");
             controlPanelFragment.prepend(headerFragment);
         }
-        var controlPanelBodyEl = controlPanelFragment.querySelector('.section-body');
+        var controlPanelBodyEl = controlPanelFragment.querySelector('.control-group');
         this.controls.forEach(function (control) {
             controlPanelBodyEl.appendChild(control.render());
         });
