@@ -105,7 +105,7 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
             } else {
                 this.engine.play();
             }
-            (e.target as HTMLElement).innerText = this.getPlayButtonLabel();
+            (e.target as HTMLElement).innerHTML = this.getPlayButtonLabel();
         });
 
         return playFragment;
@@ -158,7 +158,7 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
     }
 
     protected getPlayButtonLabel() {
-        return (this.engine.isPlaying()) ? 'Pause' : 'Play';
+        return (this.engine.isPlaying()) ? '&#9646;&#9646;' : '&#9654;';
     }
 
 }
