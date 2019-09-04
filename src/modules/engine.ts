@@ -5,6 +5,7 @@ export default class Engine implements EngineInterface {
     protected interval: number = 1;
     protected stepCallbacks: Array<Function> = [];
     protected resetCallbacks: Array<Function> = [];
+    protected importCallbacks: Array<Function> = [];
     protected circ: CircInterface;
     protected stepsToRun: number = 0;
 
@@ -20,12 +21,18 @@ export default class Engine implements EngineInterface {
         this.resetCallbacks.push(callback);
     }
 
+    public addImportCallback(callback: Function): void {
+        this.importCallbacks.push(callback);
+    }
+
     public export(): CircInterface {
         return this.circ;
     }
 
     public import(circ: CircInterface): void {
         this.circ = circ;
+        this.reset();
+        this.runImportCallbacks()
     }
 
     public pause(): void {
@@ -45,7 +52,7 @@ export default class Engine implements EngineInterface {
     }
 
     public reset(): void {
-        this.circ.shapes.forEach(shape => shape.reset());
+        this.circ.getShapes().forEach(shape => shape.reset());
         this.runResetCallbacks();
 
         this.totalStepsRun = 0;
@@ -55,22 +62,19 @@ export default class Engine implements EngineInterface {
     }
 
     public stepFast(count: number): void {
+        const thenContinue = this.getRemainingStepsToRun();
         this.pause();
 
-        const stepGroup = 100;
-
-        for (let step = 0; step<stepGroup; step++) {
+        for (let step = 0; step<count; step++) {
             this.step()
         }
 
-        if (count-stepGroup > 0) {
-            setTimeout(_=>this.stepFast(count-stepGroup), 0);
-        }
+        this.play(thenContinue);
     }
 
     protected calculateShapes(): void {
         let parentShape: ShapeInterface|null = null;
-        this.circ.shapes.forEach(
+        this.circ.getShapes().forEach(
             shape =>  {
                 shape.calculatePosition(parentShape);
 
@@ -83,6 +87,7 @@ export default class Engine implements EngineInterface {
     }
 
     public step(): void {
+        this.totalStepsRun++;
         this.calculateShapes();
 
         this.runStepCallbacks();
@@ -100,13 +105,18 @@ export default class Engine implements EngineInterface {
         })
     }
 
+    protected runImportCallbacks(): void {
+        this.importCallbacks.forEach(callable => {
+            callable(this.circ);
+        })
+    }
+
     protected run(): void {
         setTimeout(
             _ => {
                     if (this.stepsToRun > 0) {
                         this.step();
                         this.stepsToRun--;
-                        this.totalStepsRun++;
                     }
                     this.run();
                 },

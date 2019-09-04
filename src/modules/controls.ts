@@ -4,7 +4,7 @@ import {
     CircControlInterface,
     CircInterface,
     CircleControlInterface,
-    CircleInterface,
+    CircleInterface, CircStoreInterface,
     ControlInterface,
     ControlPanelInterface,
     EngineControlInterface,
@@ -117,11 +117,7 @@ class EngineControl implements EngineControlInterface, QuickControlInterface {
         const stepJumpFragment = document.createRange().createContextualFragment(html);
 
         stepJumpFragment.querySelector('button.stepThousand').addEventListener('click', e => {
-            const remainingSteps = this.engine.getRemainingStepsToRun();
-
-            this.engine.pause();
             this.engine.stepFast(1000);
-            this.engine.play(remainingSteps);
         });
 
         return stepJumpFragment;
@@ -223,11 +219,14 @@ class CircControl implements CircControlInterface {
 
         this.panel.addControl(new BackgroundControl(this.circ));
 
-        this.circ.shapes
+        this.circ.getShapes()
             .forEach((shape: ShapeInterface) => {
                 let shapeControl;
 
                 if (shape instanceof Circle) {
+                    if (shape.isRoot) {
+
+                    }
                     shapeControl = new CircleControl(shape);
                 }  else {
                     throw `Unable to render shape: ` + typeof shape;
@@ -286,61 +285,19 @@ class CircleControl implements CircleControlInterface {
     }
 
     public render(): DocumentFragment {
-        const outsideChecked = (this.circle.outside === true) ? 'checked':'';
-        const clockwiseChecked = (this.circle.clockwise === true) ? 'checked':'';
-        const fixedChecked = (this.circle.fixed === true) ? 'checked':'';
 
         const html = `
         <div class="control-circle control-group">
             <div class="section-head">Circle</div>
-            <div class="section-body">
-                <div class="control">
-                    <label>steps</label>
-                    <input type="number" name="steps" class="input" value="${this.circle.steps}">
-                </div>
-                <div class="control">
-                    <label>radius</label>
-                    <input type="number" name="radius" class="input" value="${this.circle.radius}">
-                </div>
-                <div class="control">
-                    <label>stepMod</label>
-                    <input type="number" name="stepMod" class="input" value="${this.circle.stepMod}">
-                </div>
-                <div class="control">
-                    <label>outside</label>
-                    <input type="checkbox" name="outside" value="true" class="input" ${outsideChecked}>
-                </div>
-                <div class="control">
-                    <label>clockwise</label>
-                    <input type="checkbox" name="clockwise" value="true" class="input" ${clockwiseChecked}>
-                </div>
-                <div class="control control-fixed">
-                    <label>fixed</label>
-                    <input type="checkbox" name="fixed" value="true" class="input" ${fixedChecked}>
-                </div>
-            </div>
+            <div class="section-body"></div>
         </div>
         `;
 
         const documentFragment = document.createRange().createContextualFragment(html);
+        const documentFragmentBody = documentFragment.querySelector('.section-body');
 
-        documentFragment.querySelector('input[name="steps"]').addEventListener('input', e => {
-            this.circle.steps = parseInt((e.target as HTMLInputElement).value);
-        });
-        documentFragment.querySelector('input[name="radius"]').addEventListener('input', e => {
-            this.circle.radius = parseInt((e.target as HTMLInputElement).value);
-        });
-        documentFragment.querySelector('input[name="stepMod"]').addEventListener('input', e => {
-            this.circle.stepMod = parseInt((e.target as HTMLInputElement).value);
-        });
-        documentFragment.querySelector('input[name="outside"]').addEventListener('input', e => {
-            this.circle.outside = (e.target as HTMLInputElement).checked === true;
-        });
-        documentFragment.querySelector('input[name="clockwise"]').addEventListener('input', e => {
-            this.circle.clockwise = (e.target as HTMLInputElement).checked === true;
-        });
-        documentFragment.querySelector('input[name="fixed"]').addEventListener('input', e => {
-            this.circle.fixed = (e.target as HTMLInputElement).checked === true;
+        this.getControlFragments().forEach((fragment: DocumentFragment) => {
+            documentFragmentBody.appendChild(fragment);
         });
 
         this.brushControls.forEach((brushControl: BrushControlInterface) => {
@@ -350,6 +307,120 @@ class CircleControl implements CircleControlInterface {
         return documentFragment;
     }
 
+    protected getControlFragments(): DocumentFragment[] {
+        const documentFragments = [
+            this.makeStepsFragment(),
+            this.makeRadiusFragment(),
+            this.makeStepModuloFragment(),
+            this.makeDirectionFragment(),
+        ];
+
+        if (this.circle.isRoot === false) {
+            documentFragments.push(this.makeFixedFragment());
+            documentFragments.push(this.makeOutsideFragment());
+        }
+
+        return documentFragments;
+    }
+
+    protected makeStepsFragment(): DocumentFragment {
+        const html = `
+            <div class="control">
+                <label>steps</label>
+                <input type="number" name="steps" class="input" value="${this.circle.steps}">
+            </div>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('input[name="steps"]').addEventListener('input', e => {
+            this.circle.steps = parseInt((e.target as HTMLInputElement).value);
+        });
+
+        return fragment;
+    }
+
+    protected makeRadiusFragment(): DocumentFragment {
+        const html = `
+            <div class="control">
+                <label>radius</label>
+                <input type="number" name="radius" class="input" value="${this.circle.radius}">
+            </div>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('input[name="radius"]').addEventListener('input', e => {
+            this.circle.radius = parseInt((e.target as HTMLInputElement).value);
+        });
+
+        return fragment;
+    }
+
+    protected makeStepModuloFragment(): DocumentFragment {
+        const html = `
+            <div class="control">
+                <label>stepMod</label>
+                <input type="number" name="stepMod" class="input" value="${this.circle.stepMod}">
+            </div>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('input[name="stepMod"]').addEventListener('input', e => {
+            this.circle.stepMod = parseInt((e.target as HTMLInputElement).value);
+        });
+
+        return fragment;
+    }
+
+    protected makeOutsideFragment(): DocumentFragment {
+        const outsideChecked = (this.circle.outside === true) ? 'checked':'';
+        const html = `
+            <div class="control">
+                <label>outside</label>
+                <input type="checkbox" name="outside" value="true" class="input" ${outsideChecked}>
+            </div>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('input[name="outside"]').addEventListener('input', e => {
+            this.circle.outside = (e.target as HTMLInputElement).checked === true;
+        });
+
+        return fragment;
+    }
+
+    protected makeDirectionFragment(): DocumentFragment {
+        const clockwiseChecked = (this.circle.clockwise === true) ? 'checked':'';
+        const html = `
+            <div class="control">
+                <label>clockwise</label>
+                <input type="checkbox" name="clockwise" value="true" class="input" ${clockwiseChecked}>
+            </div>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('input[name="clockwise"]').addEventListener('input', e => {
+            this.circle.clockwise = (e.target as HTMLInputElement).checked === true;
+        });
+
+        return fragment;
+    }
+
+    protected makeFixedFragment(): DocumentFragment {
+        const fixedChecked = (this.circle.fixed === true) ? 'checked':'';
+        const html = `
+            <div class="control control-fixed">
+                <label>fixed</label>
+                <input type="checkbox" name="fixed" value="true" class="input" ${fixedChecked}>
+            </div>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('input[name="fixed"]').addEventListener('input', e => {
+            this.circle.fixed = (e.target as HTMLInputElement).checked === true;
+        });
+
+        return fragment;
+    }
 }
 
 class BrushControl implements BrushControlInterface {
@@ -487,6 +558,84 @@ class BackgroundControl implements BackgroundControlInterface {
 
 }
 
+class StorageControl implements ControlInterface, QuickControlInterface {
+    protected store: CircStoreInterface;
+    protected engine: EngineInterface;
+
+    constructor(store: CircStoreInterface, engine: EngineInterface) {
+        this.store = store;
+        this.engine = engine;
+    }
+
+    public render(): DocumentFragment {
+
+        const engineFragment = document.createDocumentFragment();
+
+        return engineFragment;
+    }
+
+    protected makeSaveFragment(): DocumentFragment {
+        const html = `<button class="save">Save</button>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('button.save').addEventListener('click', e => {
+            const name = prompt('Enter Circ name');
+            const circ = this.engine.export();
+            circ.name = name;
+
+            this.store.store(name, circ);
+        });
+
+        return fragment;
+    }
+
+    protected makeLoadFragment(): DocumentFragment {
+        const html = `<button class="load">Load</button>`;
+
+        const fragment = document.createRange().createContextualFragment(html);
+
+        fragment.querySelector('button.load').addEventListener('click', e => {
+            const storeFront = <HTMLElement>document.querySelector('.store');
+            const storeListing = storeFront.querySelector('.listing');
+            storeListing.innerHTML = '';
+
+            this.store.list().forEach((circ: CircInterface) => {
+                const tile = document.createRange().createContextualFragment(`<div class="circ" data-name="${circ.name}">${circ.name}</div>`);
+
+                tile.querySelector('.circ').addEventListener('click', e => {
+                    this.engine.import(this.store.get((e.target as HTMLElement).getAttribute('data-name')));
+                    storeFront.style.display = 'none';
+                });
+
+                storeListing.appendChild(tile);
+            });
+
+            storeFront.style.display = 'block';
+        });
+
+        return fragment;
+    }
+
+    public getQuickControls(): ControlInterface[] {
+        const self = this;
+
+        return [
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeSaveFragment();
+                }
+            },
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeLoadFragment();
+                }
+            },
+        ];
+    }
+
+}
+
 class QuickControlPanel extends ControlPanel {
 
 }
@@ -498,4 +647,5 @@ export {
     CircleControl,
     GuidePainterControl,
     PainterControl,
+    StorageControl,
 }

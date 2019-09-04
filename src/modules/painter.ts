@@ -15,7 +15,7 @@ export default class Painter implements CirclePainterInterface {
     draw(circ: CircInterface): void {
         this.centerCanvas(circ);
 
-        circ.shapes.forEach((circle:CircleInterface) => {
+        circ.getShapes().forEach((circle:CircleInterface) => {
             if (circle.brushes.length === 0) {
                 return;
             }
@@ -50,6 +50,7 @@ export default class Painter implements CirclePainterInterface {
             const color = brush.color;
 
             if(brush.link === true) {
+                // console.log(circle.state);
                 const previousX = circle.state.previousState.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
                 const previousY = circle.state.previousState.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
                 this.canvasContext.strokeStyle = color;

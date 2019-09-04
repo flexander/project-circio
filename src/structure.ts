@@ -6,12 +6,15 @@ interface PositionInterface {
 }
 
 interface CircInterface {
+    name: string;
     width: number;
     height: number;
     backgroundFill: string;
     stepsToComplete: number;
-    shapes: ShapeInterface[];
     state: CircStateInterface;
+
+    addShape(shape: ShapeInterface): void;
+    getShapes(): ShapeInterface[];
 }
 
 interface CircStateInterface {
@@ -28,6 +31,7 @@ interface ShapeInterface {
     startAngle: number;
     brushes: BrushInterface[];
     state: ShapeStateInterface;
+    isRoot: boolean;
 
     calculatePosition(parentCircle: ShapeInterface|null): void;
     calculateAngle(): void;
@@ -65,6 +69,7 @@ interface EngineInterface {
 
     addStepCallback(callback: CallableFunction): void
     addResetCallback(callback: CallableFunction): void
+    addImportCallback(callback: CallableFunction): void
     pause(): void;
     play(count?: number|null): void
     stepFast(count: number): void

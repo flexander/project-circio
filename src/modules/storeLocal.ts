@@ -26,13 +26,15 @@ export default class LocalStorage implements CircStoreInterface {
     }
 
     public list(): CircInterface[] {
-        return Object.keys(window.localStorage)
-            .filter(key => {
+        const keys = Object.keys(window.localStorage)
+            .filter((key: string) => {
                 return key.startsWith(this.storeName);
             })
-            .map(circJson => {
-                return this.serializer.unserialize(circJson);
+            .map((key: string) => {
+                return key.replace(this.storeName + '.', '');
             });
+
+        return keys.map((circKey: string) => this.get(circKey));
     }
 
     public store(name: string, circ: CircInterface): void {
