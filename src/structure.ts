@@ -25,6 +25,7 @@ interface ShapeInterface {
     id: number;
     steps: number;
     outside: boolean;
+    radius: number;
     fixed: boolean;
     clockwise: boolean;
     stepMod: number;
@@ -32,6 +33,7 @@ interface ShapeInterface {
     brushes: BrushInterface[];
     state: ShapeStateInterface;
     isRoot: boolean;
+    faces: number;
 
     calculatePosition(parentCircle: ShapeInterface|null): void;
     calculateAngle(): void;

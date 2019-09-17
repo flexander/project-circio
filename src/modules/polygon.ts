@@ -1,8 +1,7 @@
-import '../structure';
-import {BrushInterface, CircleInterface, PositionInterface, ShapeStateInterface} from "../structure";
+import {BrushInterface, CircleInterface, PositionInterface, ShapeInterface, ShapeStateInterface} from "../structure";
 const cloneDeep = require('lodash.clonedeep');
 
-class Circle implements CircleInterface {
+class Polygon implements ShapeInterface {
     brushes: BrushInterface[] = [];
     clockwise: boolean;
     fixed: boolean;
@@ -10,43 +9,47 @@ class Circle implements CircleInterface {
     outside: boolean;
     radius: number;
     startAngle: number;
-    state: ShapeStateInterface = new CircleState();
+    state: ShapeStateInterface = new PolygonState();
     stepMod: number;
     steps: number;
     isRoot: boolean;
-    faces: number = Infinity;
-
+    faces: number;
 
     constructor() {
         this.saveInitialState();
     }
 
-    calculatePosition(parentCircle: CircleInterface|null): void {
+    calculatePosition(parentShape: ShapeInterface|null): void {
         this.savePreviousState();
 
         let arc = this.getArc();
         let stepCount = this.getStepCount();
         let distanceTravelled = arc * stepCount;
         let arcToParentRadians = 0;
-        let parentRadians = parentCircle !== null && this.fixed === true ? parentCircle.state.getAngle():0;
+        let parentRadians = parentShape !== null && this.fixed === true ? parentShape.state.getAngle():0;
         let radiusRelative = 0;
         let parentCentreX = this.state.centre.x;
         let parentCentreY = this.state.centre.y;
 
-        if (parentCircle !== null) {
-            parentCentreX = parentCircle.state.centre.x;
-            parentCentreY = parentCircle.state.centre.y;
+        if (parentShape !== null) {
+            parentCentreX = parentShape.state.centre.x;
+            parentCentreY = parentShape.state.centre.y;
 
-            arcToParentRadians = (distanceTravelled / parentCircle.radius);
+            arcToParentRadians = (distanceTravelled / parentShape.radius);
             if(this.outside === false) {
                 arcToParentRadians *= -1;
             }
 
+            const angle = this.state.totalAngle % (Math.PI * 2);
+            const adjustment = (242.7-300)*Math.sin(angle % 72);
+
+            console.log(adjustment);
+
             // The distance from center to center of child and parent
             if(this.outside === true) {
-                radiusRelative = parentCircle.radius + this.radius;
+                radiusRelative = parentShape.radius + this.radius - adjustment;
             } else {
-                radiusRelative = parentCircle.radius - this.radius;
+                radiusRelative = parentShape.radius - this.radius;
             }
         }
 
@@ -65,15 +68,6 @@ class Circle implements CircleInterface {
         } else {
             this.state.totalAngle -= this.getStepRadians();
         }
-    }
-
-    protected savePreviousState() {
-        this.state.previousState = cloneDeep(this.state);
-        delete this.state.previousState.previousState;
-    }
-
-    protected saveInitialState() {
-        this.state.initialState = cloneDeep(this.state);
     }
 
     protected getArc () {
@@ -102,7 +96,16 @@ class Circle implements CircleInterface {
         return stepCount;
     }
 
-    reset(): void {
+    protected savePreviousState() {
+        this.state.previousState = cloneDeep(this.state);
+        delete this.state.previousState.previousState;
+    }
+
+    protected saveInitialState() {
+        this.state.initialState = cloneDeep(this.state);
+    }
+
+    public reset(): void {
         this.state = cloneDeep(this.state.initialState);
 
         // Create a new initial state object
@@ -110,9 +113,9 @@ class Circle implements CircleInterface {
     }
 }
 
-class CircleState implements ShapeStateInterface {
-    centre: PositionInterface = new CircleCenterPosition();
-    drawPoint: PositionInterface = new CircleDrawPosition();
+class PolygonState implements ShapeStateInterface {
+    centre: PositionInterface = new PolygonCenterPosition();
+    drawPoint: PositionInterface = new PolygonDrawPosition();
     initialState: ShapeStateInterface = Object.create(this);
     previousState: ShapeStateInterface = null;
     totalAngle: number = 0;
@@ -125,19 +128,19 @@ class CircleState implements ShapeStateInterface {
     }
 }
 
-class CircleCenterPosition implements PositionInterface {
+class PolygonCenterPosition implements PositionInterface {
     x: number = 0;
     y: number = 0;
 }
 
-class CircleDrawPosition implements PositionInterface {
+class PolygonDrawPosition implements PositionInterface {
     x: number;
     y: number;
 }
 
 export {
-    Circle,
-    CircleState,
-    CircleCenterPosition,
-    CircleDrawPosition,
+    Polygon,
+    PolygonState,
+    PolygonCenterPosition,
+    PolygonDrawPosition,
 }

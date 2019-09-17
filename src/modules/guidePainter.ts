@@ -1,4 +1,12 @@
-import {BrushInterface, CircInterface, CircleInterface, GuidePainterInterface, PositionInterface} from "../structure";
+import {
+    BrushInterface,
+    CircInterface,
+    CircleInterface,
+    GuidePainterInterface,
+    PositionInterface,
+    ShapeInterface
+} from "../structure";
+import {Circle} from "./circle";
 
 export default class GuidePainter implements GuidePainterInterface {
     protected canvasContext: CanvasRenderingContext2D;
@@ -46,8 +54,16 @@ export default class GuidePainter implements GuidePainterInterface {
         this.clear();
         this.guideColor = '#'+this.generateContrastingColor(circ.backgroundFill);
 
-        circ.getShapes().forEach((circle:CircleInterface) => {
-            this.drawCircle(circle);
+        circ.getShapes().forEach((shape: ShapeInterface) => {
+            if (shape.faces === Infinity) {
+                this.drawCircle(shape);
+            } else {
+                this.drawPolygon(shape);
+                let a = this.guideColor;
+                this.guideColor = '#DDD';
+                this.drawCircle(shape);
+                this.guideColor = a;
+            }
         })
     }
 
@@ -78,6 +94,25 @@ export default class GuidePainter implements GuidePainterInterface {
         return "";
     }
 
+    protected drawPolygon (shape: ShapeInterface): void {
+        this.canvasContext.strokeStyle = this.guideColor;
+        this.canvasContext.beginPath();
+
+        this.canvasContext.moveTo (shape.state.centre.x +  shape.radius * Math.cos(shape.state.totalAngle), shape.state.centre.y +  shape.radius *  Math.sin(shape.state.totalAngle));
+
+        for (let i = 1; i <= shape.faces; i += 1) {
+            const yAngle = Math.sin(i * 2 * Math.PI / shape.faces + shape.state.totalAngle);
+            const xAngle = Math.cos(i * 2 * Math.PI / shape.faces + shape.state.totalAngle);
+
+            this.canvasContext.lineTo (shape.state.centre.x + shape.radius * xAngle, shape.state.centre.y + shape.radius * yAngle);
+        }
+
+        this.canvasContext.stroke();
+
+        this.drawRotationIndicator(shape);
+        shape.brushes.forEach((brush: BrushInterface) => this.drawBrushPoint(shape, brush));
+    }
+
 
     protected drawCircle (circle: CircleInterface): void {
 
@@ -90,20 +125,20 @@ export default class GuidePainter implements GuidePainterInterface {
         circle.brushes.forEach((brush: BrushInterface) => this.drawBrushPoint(circle, brush));
     }
 
-    protected drawRotationIndicator (circle: CircleInterface): void {
+    protected drawRotationIndicator (shape: ShapeInterface): void {
         this.canvasContext.fillStyle = this.guideColor;
         this.canvasContext.beginPath();
-        this.canvasContext.arc(circle.state.drawPoint.x, circle.state.drawPoint.y, 4, 0, 2*Math.PI);
+        this.canvasContext.arc(shape.state.drawPoint.x, shape.state.drawPoint.y, 4, 0, 2*Math.PI);
         this.canvasContext.fill();
     }
 
-    protected drawBrushPoint(circle: CircleInterface, brush: BrushInterface): void {
-        const brushPointX = circle.state.drawPoint.x + (Math.cos(circle.state.getAngle() + (brush.degrees * (Math.PI/180))) * brush.offset);
-        const brushPointY = circle.state.drawPoint.y + (Math.sin(circle.state.getAngle() + (brush.degrees * (Math.PI/180))) * brush.offset);
+    protected drawBrushPoint(shape: ShapeInterface, brush: BrushInterface): void {
+        const brushPointX = shape.state.drawPoint.x + (Math.cos(shape.state.getAngle() + (brush.degrees * (Math.PI/180))) * brush.offset);
+        const brushPointY = shape.state.drawPoint.y + (Math.sin(shape.state.getAngle() + (brush.degrees * (Math.PI/180))) * brush.offset);
 
         this.canvasContext.beginPath();
         this.canvasContext.strokeStyle = this.guideColor;
-        this.canvasContext.moveTo(circle.state.drawPoint.x, circle.state.drawPoint.y);
+        this.canvasContext.moveTo(shape.state.drawPoint.x, shape.state.drawPoint.y);
         this.canvasContext.lineTo(brushPointX, brushPointY);
         this.canvasContext.stroke();
 

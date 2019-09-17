@@ -10,6 +10,10 @@ import CircControl from "./modules/controls/circ";
 import GuidePainterControl from "./modules/controls/guidePainter";
 import PainterControl from "./modules/controls/painter";
 import StorageControl from "./modules/controls/storage";
+import Circ from "./modules/circ";
+import {Circle} from "./modules/circle";
+import {Polygon} from "./modules/polygon";
+import Brush from "./modules/brushes";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
@@ -17,7 +21,53 @@ const mainCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#main-can
 const guideCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#guide-canvas');
 const blueprintStorage = new BlueprintStore();
 const storage = new LocalStorage();
-const circ = blueprintStorage.get('twoCircles');
+// const circ = blueprintStorage.get('twoCircles');
+
+
+const circ = new Circ();
+circ.width = 1080;
+circ.height = 1080;
+circ.backgroundFill = '#1b5eec';
+
+const polygon0 = new Polygon();
+polygon0.steps = 0;
+polygon0.outside = false;
+polygon0.fixed = true;
+polygon0.clockwise = false;
+polygon0.stepMod = 0;
+polygon0.startAngle = 0;
+polygon0.radius = 300;
+polygon0.faces = 5;
+
+const polygon1 = new Polygon();
+polygon1.steps = 500;
+polygon1.outside = true;
+polygon1.fixed = true;
+polygon1.clockwise = true;
+polygon1.stepMod = 0;
+polygon1.startAngle = 0;
+polygon1.radius = 25;
+polygon1.faces = 5;
+
+const polygon1Brush = new Brush();
+polygon1Brush.color = '#FFFFFF';
+polygon1Brush.degrees = 0;
+polygon1Brush.link = false;
+polygon1Brush.offset = 0;
+polygon1Brush.point = 0.5;
+
+const polygon1CentreBrush = new Brush();
+polygon1CentreBrush.color = '#000000';
+polygon1CentreBrush.degrees = 0;
+polygon1CentreBrush.link = false;
+polygon1CentreBrush.offset = -polygon1.radius;
+polygon1CentreBrush.point = 0.5;
+
+polygon1.brushes.push(polygon1Brush);
+polygon1.brushes.push(polygon1CentreBrush);
+
+circ.addShape(polygon0);
+circ.addShape(polygon1);
 
 canvasArea.style.transformOrigin = '0 0'; //scale from top left
 canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';

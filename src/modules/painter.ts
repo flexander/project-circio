@@ -1,4 +1,4 @@
-import {CircInterface, CircleInterface, CirclePainterInterface, PositionInterface} from "../structure";
+import {CircInterface, CircleInterface, CirclePainterInterface, PositionInterface, ShapeInterface} from "../structure";
 
 export default class Painter implements CirclePainterInterface {
     protected canvasContext: CanvasRenderingContext2D;
@@ -15,12 +15,12 @@ export default class Painter implements CirclePainterInterface {
     draw(circ: CircInterface): void {
         this.centerCanvas(circ);
 
-        circ.getShapes().forEach((circle:CircleInterface) => {
-            if (circle.brushes.length === 0) {
+        circ.getShapes().forEach((shape: ShapeInterface) => {
+            if (shape.brushes.length === 0) {
                 return;
             }
             
-            this.drawPoints(circle);
+            this.drawPoints(shape);
         })
     }
 
@@ -41,18 +41,18 @@ export default class Painter implements CirclePainterInterface {
         return "";
     }
 
-    drawPoints (circle: CircleInterface) {
+    drawPoints (shape: ShapeInterface) {
 
-        circle.brushes.forEach(brush => {
-            const radians = circle.state.getAngle();
-            const x = circle.state.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
-            const y = circle.state.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
+        shape.brushes.forEach(brush => {
+            const radians = shape.state.getAngle();
+            const x = shape.state.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
+            const y = shape.state.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
             const color = brush.color;
 
             if(brush.link === true) {
                 // console.log(circle.state);
-                const previousX = circle.state.previousState.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
-                const previousY = circle.state.previousState.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
+                const previousX = shape.state.previousState.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
+                const previousY = shape.state.previousState.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
                 this.canvasContext.strokeStyle = color;
                 this.canvasContext.beginPath();
                 this.canvasContext.moveTo(previousX, previousY);

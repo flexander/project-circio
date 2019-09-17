@@ -25,10 +25,7 @@ export default class CircControl implements CircControlInterface {
             .forEach((shape: ShapeInterface) => {
                 let shapeControl;
 
-                if (shape instanceof Circle) {
-                    if (shape.isRoot) {
-
-                    }
+                if (shape instanceof Circle || true) {
                     shapeControl = new CircleControl(shape);
                 }  else {
                     throw `Unable to render shape: ` + typeof shape;

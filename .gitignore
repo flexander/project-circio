@@ -1,5 +1,5 @@
 .idea
 node_modules
 *.log
-output
+public/output
 redprints
