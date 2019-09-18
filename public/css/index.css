@@ -49,4 +49,14 @@ body {
       width: 200px;
       height: 200px;
       background: #FFF;
-      margin: 10px; }
+      margin: 10px;
+      position: relative;
+      cursor: pointer; }
+      .store .listing .circ canvas {
+        position: absolute; }
+      .store .listing .circ .circName {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        text-align: center; }

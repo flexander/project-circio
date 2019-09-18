@@ -52,7 +52,7 @@ export default class StorageControl implements ControlInterface, QuickControlInt
             storeListing.innerHTML = '';
 
             this.store.list().forEach((circ: CircInterface) => {
-                const tile = document.createRange().createContextualFragment(`<div class="circ" style="position:relative; cursor: pointer" data-name="${circ.name}"><canvas class="canvasBack" style="position: absolute"></canvas><canvas class="canvasCirc" style="position: absolute"></canvas><div style="position: absolute; top: 50%; left: 0; width: 100%; text-align: center">${circ.name}</div></div>`);
+                const tile = document.createRange().createContextualFragment(`<div class="circ" data-name="${circ.name}"><canvas class="canvasBack"></canvas><canvas class="canvasCirc"></canvas><div class="circName">${circ.name}</div></div>`);
 
                 const tileCanvas = <HTMLCanvasElement>tile.querySelector('canvas.canvasCirc');
                 tileCanvas.style.transformOrigin = '0 0'; //scale from top left
