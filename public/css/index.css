@@ -33,14 +33,15 @@ body {
   width: 120px; }
 
 .store {
-  display: none; }
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  left: 40px;
+  bottom: 40px;
+  background: #EEE;
+  overflow-y: scroll; }
   .store .listing {
-    position: absolute;
-    top: 40px;
-    right: 40px;
-    left: 40px;
-    bottom: 40px;
-    background: #EEE;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
