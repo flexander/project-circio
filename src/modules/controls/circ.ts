@@ -17,7 +17,7 @@ export default class CircControl implements CircControlInterface {
 
     constructor(circ: CircInterface) {
         this.circ = circ;
-        this.panel = new ControlPanel('Circ Name Here');
+        this.panel = new ControlPanel('Circ: ' + (circ.name || 'Unnamed'));
 
         this.panel.addControl(new BackgroundControl(this.circ));
 
