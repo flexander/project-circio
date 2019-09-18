@@ -31,3 +31,22 @@ body {
 
 .control input[type=number] {
   width: 120px; }
+
+.store {
+  display: none; }
+  .store .listing {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    left: 40px;
+    bottom: 40px;
+    background: #EEE;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    flex-direction: row; }
+    .store .listing .circ {
+      width: 200px;
+      height: 200px;
+      background: #FFF;
+      margin: 10px; }
