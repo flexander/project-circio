@@ -2,7 +2,7 @@ import '../structure';
 import {BrushInterface, CircleInterface, PositionInterface, ShapeStateInterface} from "../structure";
 const cloneDeep = require('lodash.clonedeep');
 
-class Circle implements CircleInterface {
+class CircleX implements CircleInterface {
     brushes: BrushInterface[] = [];
     clockwise: boolean;
     fixed: boolean;
@@ -133,6 +133,21 @@ class CircleDrawPosition implements PositionInterface {
     x: number;
     y: number;
 }
+
+const newVar = {
+    get: (obj, prop) => {
+        const objElement = obj[prop];
+        // console.log(objElement);
+        return objElement;
+    },
+    set: (target, p: PropertyKey, value: any, receiver: any): boolean => {
+        console.log('set ' + p + ': ' + value);
+        target[p] = value;
+
+        return true;
+    }
+};
+const Circle = new Proxy<CircleX>(CircleX, newVar);
 
 export {
     Circle,

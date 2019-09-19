@@ -152,6 +152,14 @@ interface BrushControlInterface extends ControlInterface {}
 interface BackgroundControlInterface extends ControlInterface {}
 
 
+/** Events **/
+
+interface CircStructureChangedEventInterface extends CustomEvent {}
+interface AttributeChangedEventInterface extends CustomEvent {
+    name: string;
+    value: string|number|boolean;
+}
+
 export {
     PositionInterface,
     CircInterface,
