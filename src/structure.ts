@@ -63,7 +63,7 @@ interface BrushInterface {
 
 /** Engine **/
 
-interface EngineInterface {
+interface EngineInterface extends EventEmitterInterface {
     import(circ: CircInterface): void;
     export(): CircInterface;
 
@@ -155,8 +155,6 @@ interface BackgroundControlInterface extends ControlInterface {}
 /** Events **/
 
 interface EventInterface {
-    name: string;
-
     getName(): string;
     getContext(): any[];
 }
@@ -230,6 +228,7 @@ export {
     BackgroundControlInterface,
     EventEmitter,
     EventEmitterInterface,
+    EventInterface,
     AttributeChangedEventInterface,
 }
 

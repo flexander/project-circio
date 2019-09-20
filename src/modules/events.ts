@@ -1,4 +1,4 @@
-import {AttributeChangedEventInterface} from "../structure";
+import {AttributeChangedEventInterface, EventInterface} from "../structure";
 
 class AttributeChangedEvent implements AttributeChangedEventInterface {
     name: string;
@@ -19,6 +19,28 @@ class AttributeChangedEvent implements AttributeChangedEventInterface {
 
 }
 
+class EnginePauseEvent implements EventInterface {
+    getName(): string {
+        return "pause";
+    }
+
+    getContext(): any[] {
+        return [];
+    }
+}
+
+class EnginePlayEvent implements EventInterface {
+    getName(): string {
+        return "play";
+    }
+
+    getContext(): any[] {
+        return [];
+    }
+}
+
 export {
     AttributeChangedEvent,
+    EnginePauseEvent,
+    EnginePlayEvent,
 }

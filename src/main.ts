@@ -1,4 +1,4 @@
-import Engine from './modules/engine';
+import {EngineFactory} from './modules/engine';
 import Painter from "./modules/painter";
 import GuidePainter from "./modules/guidePainter";
 import {BlueprintStore} from "./modules/storeBlueprint";
@@ -29,7 +29,7 @@ canvasArea.querySelectorAll('canvas').forEach(c => {
     c.setAttribute('width', canvasArea.style.width);
 });
 
-const engine = new Engine();
+const engine = EngineFactory();
 const painter = new Painter(mainCanvasElement.getContext("2d"));
 const guidePainter = new GuidePainter(guideCanvasElement.getContext("2d"));
 const backgroundPainter = new BackgroundPainter(backgroundCanvasElement.getContext("2d"));
