@@ -154,7 +154,7 @@ interface BackgroundControlInterface extends ControlInterface {}
 
 /** Events **/
 
-interface Event {
+interface EventInterface {
     name: string;
 
     getName(): string;
@@ -162,14 +162,14 @@ interface Event {
 }
 
 interface EventEmitterInterface {
-    dispatchEvent(event: Event): void;
+    dispatchEvent(event: EventInterface): void;
     addEventListener(eventName: string, callback: Function): void;
 }
 
 abstract class EventEmitter implements EventEmitterInterface {
     protected events: {[name: string]: Function[]} = {};
 
-    dispatchEvent(event: Event): void {
+    dispatchEvent(event: EventInterface): void {
         if (typeof this.events[event.getName()] === 'undefined') {
             this.events[event.getName()] = [];
         }
@@ -198,8 +198,8 @@ abstract class EventEmitter implements EventEmitterInterface {
 }
 
 
-interface CircStructureChangedEventInterface extends Event {}
-interface AttributeChangedEventInterface extends Event {
+interface CircStructureChangedEventInterface extends EventInterface {}
+interface AttributeChangedEventInterface extends EventInterface {
     name: string;
     value: string|number|boolean;
 }
