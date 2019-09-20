@@ -48,7 +48,7 @@ interface ShapeStateInterface {
     getAngle(): number;
 }
 
-interface CircleInterface extends ShapeInterface {
+interface CircleInterface extends ShapeInterface, EventEmitterInterface {
     radius: number;
 }
 

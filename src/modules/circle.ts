@@ -1,8 +1,9 @@
 import '../structure';
-import {BrushInterface, CircleInterface, PositionInterface, ShapeStateInterface} from "../structure";
+import {BrushInterface, CircleInterface, EventEmitter, PositionInterface, ShapeStateInterface} from "../structure";
+import {AttributeChangedEvent} from "./events";
 const cloneDeep = require('lodash.clonedeep');
 
-class CircleX implements CircleInterface {
+class Circle extends EventEmitter implements CircleInterface {
     brushes: BrushInterface[] = [];
     clockwise: boolean;
     fixed: boolean;
@@ -15,8 +16,9 @@ class CircleX implements CircleInterface {
     steps: number;
     isRoot: boolean;
 
-
     constructor() {
+        super();
+
         this.saveInitialState();
     }
 
@@ -134,23 +136,21 @@ class CircleDrawPosition implements PositionInterface {
     y: number;
 }
 
-const newVar = {
-    get: (obj, prop) => {
-        const objElement = obj[prop];
-        // console.log(objElement);
-        return objElement;
-    },
-    set: (target, p: PropertyKey, value: any, receiver: any): boolean => {
-        console.log('set ' + p + ': ' + value);
-        target[p] = value;
+const CircleProxyHandler = {
+    set: (target: Circle, propertyName: PropertyKey, value: any, receiver: any): boolean => {
+        target[propertyName] = value;
+
+        target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
 
         return true;
-    }
+    },
 };
-const Circle = new Proxy<CircleX>(CircleX, newVar);
+
+const CircleFactory = () => new Proxy<Circle>(new Circle(), CircleProxyHandler);
 
 export {
     Circle,
+    CircleFactory,
     CircleState,
     CircleCenterPosition,
     CircleDrawPosition,
