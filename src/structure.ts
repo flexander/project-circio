@@ -154,8 +154,52 @@ interface BackgroundControlInterface extends ControlInterface {}
 
 /** Events **/
 
-interface CircStructureChangedEventInterface extends CustomEvent {}
-interface AttributeChangedEventInterface extends CustomEvent {
+interface Event {
+    name: string;
+
+    getName(): string;
+    getContext(): any[];
+}
+
+interface EventEmitterInterface {
+    dispatchEvent(event: Event): void;
+    addEventListener(eventName: string, callback: Function): void;
+}
+
+abstract class EventEmitter implements EventEmitterInterface {
+    protected events: {[name: string]: Function[]} = {};
+
+    dispatchEvent(event: Event): void {
+        if (typeof this.events[event.getName()] === 'undefined') {
+            this.events[event.getName()] = [];
+        }
+
+        let compoundEventNameList = event.getName().split('.');
+
+        while (compoundEventNameList.length > 0) {
+            const eventName = compoundEventNameList.join('.');
+            const callbackArray = this.events[eventName] || [];
+
+            callbackArray
+                .forEach((callback: Function) => {
+                    callback(...event.getContext());
+                });
+
+            compoundEventNameList.splice(-1,1);
+        }
+    }
+
+    addEventListener(eventName: string, callback: Function): void {
+        if (typeof this.events[eventName] === 'undefined') {
+            this.events[eventName] = [];
+        }
+        this.events[eventName].push(callback);
+    }
+}
+
+
+interface CircStructureChangedEventInterface extends Event {}
+interface AttributeChangedEventInterface extends Event {
     name: string;
     value: string|number|boolean;
 }
@@ -184,6 +228,9 @@ export {
     BrushControlInterface,
     CircControlInterface,
     BackgroundControlInterface,
+    EventEmitter,
+    EventEmitterInterface,
+    AttributeChangedEventInterface,
 }
 
 
