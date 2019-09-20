@@ -1,12 +1,12 @@
 import Circ from "./circ";
 import Brush from "./brushes";
-import {Circle, CircleCenterPosition, CircleDrawPosition, CircleState} from "./circle";
+import {CircleCenterPosition, CircleDrawPosition, CircleFactory, CircleState} from "./circle";
 import {CircInterface, SerializerInterface} from "../structure";
 
 export default class Serializer implements SerializerInterface {
     protected classes = {
         Circ,
-        Circle,
+        Circle: CircleFactory,
         CircleCenterPosition,
         CircleDrawPosition,
         CircleState,
@@ -22,6 +22,10 @@ export default class Serializer implements SerializerInterface {
     }
 
     protected replace(key: string, value: any) {
+        if (key === 'events') {
+            return;
+        }
+
         if (value instanceof Object) {
             value.__type = value.constructor.name;
         }
