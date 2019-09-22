@@ -55,11 +55,9 @@ export default class CircControl implements CircControlInterface {
                     newShape.stepMod = 0;
                     newShape.startAngle = 0;
                     newShape.radius = 100;
-                    
-                    const newBrush = new Brush();
-                    const newBrush2 = new Brush();
-                    newShape.brushes.push(newBrush);
-                    newShape.brushes.push(newBrush2);
+
+                    newShape.brushes.push(new Brush());
+
                     circ.addShape(newShape);
                 });
 
