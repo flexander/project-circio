@@ -19,15 +19,31 @@ export default class CircleControl implements CircleControlInterface {
 
     public render(): DocumentFragment {
 
+        if (this.circle === null) {
+            return document.createDocumentFragment();
+        }
+
         const html = `
-        <details class="control-group">
-            <summary>Circle</summary>
+        <details class="control-group" data-shape-id="${this.circle.id}">
+            <summary>
+                Circle
+            </summary>
             <div class="section-body"></div>
         </details>
         `;
 
+        const deleteButtonHtml = `
+            <div style="float: right;">
+                <span class="shapeDelete" style="text-transform: uppercase; font-size: 0.6rem; color: darkred; cursor: pointer">Delete</span>
+            </div>`;
+
         const documentFragment = document.createRange().createContextualFragment(html);
+        const shapeDeleteFragment = document.createRange().createContextualFragment(deleteButtonHtml);
         const documentFragmentBody = documentFragment.querySelector('.section-body');
+
+        if (this.circle.isRoot === false) {
+            documentFragment.querySelector('summary').appendChild(shapeDeleteFragment);
+        }
 
         this.getControlFragments().forEach((fragment: DocumentFragment) => {
             documentFragmentBody.appendChild(fragment);
