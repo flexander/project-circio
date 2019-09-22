@@ -55,9 +55,26 @@ class ShapeAddEvent implements EventInterface {
     }
 }
 
+class ShapeDeleteEvent implements EventInterface {
+    protected shape: ShapeInterface;
+
+    constructor(shape: ShapeInterface) {
+        this.shape = shape;
+    }
+
+    getName(): string {
+        return "shape.delete";
+    }
+
+    getContext(): any[] {
+        return [this.shape];
+    }
+}
+
 export {
     AttributeChangedEvent,
     EnginePauseEvent,
     EnginePlayEvent,
-    ShapeAddEvent
+    ShapeAddEvent,
+    ShapeDeleteEvent,
 }

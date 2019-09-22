@@ -30,7 +30,7 @@ canvasArea.querySelectorAll('canvas').forEach(c => {
     c.setAttribute('width', canvasArea.style.width);
 });
 
-const drawControls = circ => {
+const renderControls = circ => {
     const controlPanel = new ControlPanel('Engine');
     const engineControl = new EngineControl(engine);
     const circControl = new CircControl(circ);
@@ -59,7 +59,7 @@ const drawControls = circ => {
     controlsEl.appendChild(controlPanel.render());
 };
 
-circ.addEventListener('shape.add', (shape: ShapeInterface) => drawControls(circ));
+circ.addEventListeners(['shape.add', "shape.delete"], (shape: ShapeInterface) => renderControls(circ));
 
 const engine = EngineFactory();
 const painter = new Painter(mainCanvasElement.getContext("2d"));
@@ -70,6 +70,6 @@ engine.addStepCallback(circ => painter.draw(circ));
 engine.addStepCallback(circ => guidePainter.draw(circ));
 engine.addStepCallback(circ => backgroundPainter.draw(circ));
 engine.addResetCallback(_ => painter.clear());
-engine.addImportCallback(drawControls);
+engine.addImportCallback(renderControls);
 engine.import(circ);
 engine.play();

@@ -41,7 +41,7 @@ export default class CircControl implements CircControlInterface {
         const addShapeControl = new class implements ControlInterface {
             render(): DocumentFragment {
                 const addShapeFragmentHtml = `
-                    <button>Add Shape</button>
+                    <button>Add Circle</button>
                     `;
 
                 const addShapeFragment = document.createRange().createContextualFragment(addShapeFragmentHtml);
@@ -69,6 +69,19 @@ export default class CircControl implements CircControlInterface {
     }
 
     public render(): DocumentFragment {
-        return this.panel.render();
+        const panelFragment = this.panel.render();
+
+        panelFragment.querySelector('.control-group').addEventListener('click', e => {
+            if ((e.target as HTMLElement).closest('.shapeDelete') === null) {
+                return;
+            }
+
+            const controlGroupEl = <HTMLElement>(e.target as HTMLElement).closest('.control-group');
+            const shapeId = parseInt(controlGroupEl.dataset.shapeId);
+
+            this.circ.removeShape(shapeId);
+        });
+
+        return panelFragment;
     }
 }
