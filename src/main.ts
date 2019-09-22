@@ -10,6 +10,7 @@ import CircControl from "./modules/controls/circ";
 import GuidePainterControl from "./modules/controls/guidePainter";
 import PainterControl from "./modules/controls/painter";
 import StorageControl from "./modules/controls/storage";
+import {ShapeInterface} from "./structure";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
@@ -57,6 +58,8 @@ const drawControls = circ => {
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
 };
+
+circ.addEventListener('shape.add', (shape: ShapeInterface) => drawControls(circ));
 
 const engine = EngineFactory();
 const painter = new Painter(mainCanvasElement.getContext("2d"));
