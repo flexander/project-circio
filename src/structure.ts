@@ -14,6 +14,7 @@ interface CircInterface extends EventEmitterInterface {
     state: CircStateInterface;
 
     addShape(shape: ShapeInterface): void;
+    removeShape(id: number): void;
     getShapes(): ShapeInterface[];
 }
 
