@@ -41,7 +41,7 @@ export default class CircControl implements CircControlInterface {
         const addShapeControl = new class implements ControlInterface {
             render(): DocumentFragment {
                 const addShapeFragmentHtml = `
-                    <button>Add Shape</button>
+                    <button>Add Circle</button>
                     `;
 
                 const addShapeFragment = document.createRange().createContextualFragment(addShapeFragmentHtml);
