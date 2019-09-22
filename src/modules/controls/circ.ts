@@ -61,8 +61,6 @@ export default class CircControl implements CircControlInterface {
                     newShape.brushes.push(newBrush);
                     newShape.brushes.push(newBrush2);
                     circ.addShape(newShape);
-
-                    console.log(circ.getShapes());
                 });
 
                 return addShapeFragment;
