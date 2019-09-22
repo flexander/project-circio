@@ -24,7 +24,7 @@ export default class CircleControl implements CircleControlInterface {
         }
 
         const html = `
-        <details class="control-group" data-shape-id="${this.circle.id}">
+        <details class="control-group" data-shape-id="${this.circle.id}" open>
             <summary>
                 Circle
             </summary>
