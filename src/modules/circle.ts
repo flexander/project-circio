@@ -19,6 +19,8 @@ class Circle extends EventEmitter implements CircleInterface {
     constructor() {
         super();
 
+        this.id = Math.floor(Math.random()*100000);
+
         this.saveInitialState();
     }
 
