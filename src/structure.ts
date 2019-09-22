@@ -5,7 +5,7 @@ interface PositionInterface {
     y: number;
 }
 
-interface CircInterface {
+interface CircInterface extends EventEmitterInterface {
     name: string;
     width: number;
     height: number;

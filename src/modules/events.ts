@@ -1,4 +1,4 @@
-import {AttributeChangedEventInterface, EventInterface} from "../structure";
+import {AttributeChangedEventInterface, EventInterface, ShapeInterface} from "../structure";
 
 class AttributeChangedEvent implements AttributeChangedEventInterface {
     name: string;
@@ -39,8 +39,25 @@ class EnginePlayEvent implements EventInterface {
     }
 }
 
+class ShapeAddEvent implements EventInterface {
+    protected shape: ShapeInterface;
+
+    constructor(shape: ShapeInterface) {
+        this.shape = shape;
+    }
+
+    getName(): string {
+        return "shape.add";
+    }
+
+    getContext(): any[] {
+        return [this.shape];
+    }
+}
+
 export {
     AttributeChangedEvent,
     EnginePauseEvent,
     EnginePlayEvent,
+    ShapeAddEvent
 }
