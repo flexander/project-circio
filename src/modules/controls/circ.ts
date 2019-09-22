@@ -1,6 +1,6 @@
 import {
     CircControlInterface,
-    CircInterface,
+    CircInterface, ControlInterface,
     ControlPanelInterface,
     ShapeControlInterface,
     ShapeInterface
@@ -9,6 +9,7 @@ import {Circle} from "../circle";
 import BackgroundControl from "./background";
 import ControlPanel from "./panel";
 import CircleControl from "./shapes/circle";
+import Brush from "../brushes";
 
 export default class CircControl implements CircControlInterface {
     protected circ: CircInterface;
@@ -36,6 +37,35 @@ export default class CircControl implements CircControlInterface {
 
                 this.panel.addControl(shapeControl)
             });
+
+        const addShapeControl = new class implements ControlInterface {
+            render(): DocumentFragment {
+                const addShapeFragmentHtml = `
+                    <button>Add Shape</button>
+                    `;
+
+                const addShapeFragment = document.createRange().createContextualFragment(addShapeFragmentHtml);
+
+                addShapeFragment.querySelector('button').addEventListener('click', e => {
+                    const newShape = new Circle();
+                    newShape.steps = 500;
+                    newShape.outside = true;
+                    newShape.fixed = true;
+                    newShape.clockwise = true;
+                    newShape.stepMod = 0;
+                    newShape.startAngle = 0;
+                    newShape.radius = 100;
+
+                    newShape.brushes.push(new Brush());
+
+                    circ.addShape(newShape);
+                });
+
+                return addShapeFragment;
+            }
+        };
+
+        this.panel.addControl(addShapeControl);
     }
 
     public render(): DocumentFragment {

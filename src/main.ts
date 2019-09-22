@@ -1,4 +1,4 @@
-import Engine from './modules/engine';
+import {EngineFactory} from './modules/engine';
 import Painter from "./modules/painter";
 import GuidePainter from "./modules/guidePainter";
 import {BlueprintStore} from "./modules/storeBlueprint";
@@ -10,6 +10,7 @@ import CircControl from "./modules/controls/circ";
 import GuidePainterControl from "./modules/controls/guidePainter";
 import PainterControl from "./modules/controls/painter";
 import StorageControl from "./modules/controls/storage";
+import {ShapeInterface} from "./structure";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
@@ -29,16 +30,7 @@ canvasArea.querySelectorAll('canvas').forEach(c => {
     c.setAttribute('width', canvasArea.style.width);
 });
 
-const engine = new Engine();
-const painter = new Painter(mainCanvasElement.getContext("2d"));
-const guidePainter = new GuidePainter(guideCanvasElement.getContext("2d"));
-const backgroundPainter = new BackgroundPainter(backgroundCanvasElement.getContext("2d"));
-
-engine.addStepCallback(circ => painter.draw(circ));
-engine.addStepCallback(circ => guidePainter.draw(circ));
-engine.addStepCallback(circ => backgroundPainter.draw(circ));
-engine.addResetCallback(_ => painter.clear());
-engine.addImportCallback(circ => {
+const drawControls = circ => {
     const controlPanel = new ControlPanel('Engine');
     const engineControl = new EngineControl(engine);
     const circControl = new CircControl(circ);
@@ -65,6 +57,19 @@ engine.addImportCallback(circ => {
 
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
-});
+};
+
+circ.addEventListener('shape.add', (shape: ShapeInterface) => drawControls(circ));
+
+const engine = EngineFactory();
+const painter = new Painter(mainCanvasElement.getContext("2d"));
+const guidePainter = new GuidePainter(guideCanvasElement.getContext("2d"));
+const backgroundPainter = new BackgroundPainter(backgroundCanvasElement.getContext("2d"));
+
+engine.addStepCallback(circ => painter.draw(circ));
+engine.addStepCallback(circ => guidePainter.draw(circ));
+engine.addStepCallback(circ => backgroundPainter.draw(circ));
+engine.addResetCallback(_ => painter.clear());
+engine.addImportCallback(drawControls);
 engine.import(circ);
 engine.play();

@@ -64,9 +64,14 @@ export default class CircleControl implements CircleControlInterface {
             </div>`;
 
         const fragment = document.createRange().createContextualFragment(html);
+        const input = fragment.querySelector('input');
 
-        fragment.querySelector('input[name="steps"]').addEventListener('input', e => {
+        input.addEventListener('input', e => {
             this.circle.steps = parseInt((e.target as HTMLInputElement).value);
+        });
+
+        this.circle.addEventListener('change.steps', (value) => {
+            input.value = value;
         });
 
         return fragment;
@@ -80,9 +85,14 @@ export default class CircleControl implements CircleControlInterface {
             </div>`;
 
         const fragment = document.createRange().createContextualFragment(html);
+        const input = fragment.querySelector('input');
 
-        fragment.querySelector('input[name="radius"]').addEventListener('input', e => {
+        input.addEventListener('input', e => {
             this.circle.radius = parseInt((e.target as HTMLInputElement).value);
+        });
+
+        this.circle.addEventListener('change.radius', (value) => {
+            input.value = value;
         });
 
         return fragment;
@@ -96,9 +106,14 @@ export default class CircleControl implements CircleControlInterface {
             </div>`;
 
         const fragment = document.createRange().createContextualFragment(html);
+        const input = fragment.querySelector('input');
 
-        fragment.querySelector('input[name="stepMod"]').addEventListener('input', e => {
+        input.addEventListener('input', e => {
             this.circle.stepMod = parseInt((e.target as HTMLInputElement).value);
+        });
+
+        this.circle.addEventListener('change.stepMod', (value) => {
+            input.value = value;
         });
 
         return fragment;
@@ -113,9 +128,14 @@ export default class CircleControl implements CircleControlInterface {
             </div>`;
 
         const fragment = document.createRange().createContextualFragment(html);
+        const input = fragment.querySelector('input');
 
-        fragment.querySelector('input[name="outside"]').addEventListener('input', e => {
+        input.addEventListener('input', e => {
             this.circle.outside = (e.target as HTMLInputElement).checked === true;
+        });
+
+        this.circle.addEventListener('change.outside', (value) => {
+            input.checked = value;
         });
 
         return fragment;
@@ -130,9 +150,14 @@ export default class CircleControl implements CircleControlInterface {
             </div>`;
 
         const fragment = document.createRange().createContextualFragment(html);
+        const input = fragment.querySelector('input');
 
-        fragment.querySelector('input[name="clockwise"]').addEventListener('input', e => {
+        input.addEventListener('input', e => {
             this.circle.clockwise = (e.target as HTMLInputElement).checked === true;
+        });
+
+        this.circle.addEventListener('change.clockwise', (value) => {
+            input.checked = value;
         });
 
         return fragment;
@@ -147,9 +172,14 @@ export default class CircleControl implements CircleControlInterface {
             </div>`;
 
         const fragment = document.createRange().createContextualFragment(html);
+        const input = fragment.querySelector('input');
 
-        fragment.querySelector('input[name="fixed"]').addEventListener('input', e => {
+        input.addEventListener('input', e => {
             this.circle.fixed = (e.target as HTMLInputElement).checked === true;
+        });
+
+        this.circle.addEventListener('change.fixed', (value) => {
+            input.checked = value;
         });
 
         return fragment;
