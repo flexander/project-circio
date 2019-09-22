@@ -33,14 +33,15 @@ body {
   width: 120px; }
 
 .store {
-  display: none; }
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  left: 40px;
+  bottom: 40px;
+  background: #EEE;
+  overflow-y: scroll; }
   .store .listing {
-    position: absolute;
-    top: 40px;
-    right: 40px;
-    left: 40px;
-    bottom: 40px;
-    background: #EEE;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
@@ -49,4 +50,14 @@ body {
       width: 200px;
       height: 200px;
       background: #FFF;
-      margin: 10px; }
+      margin: 10px;
+      position: relative;
+      cursor: pointer; }
+      .store .listing .circ canvas {
+        position: absolute; }
+      .store .listing .circ .circName {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        text-align: center; }

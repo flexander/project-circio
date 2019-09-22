@@ -1,6 +1,6 @@
 import {
     CircControlInterface,
-    CircInterface,
+    CircInterface, ControlInterface,
     ControlPanelInterface,
     ShapeControlInterface,
     ShapeInterface
@@ -9,6 +9,7 @@ import {Circle} from "../circle";
 import BackgroundControl from "./background";
 import ControlPanel from "./panel";
 import CircleControl from "./shapes/circle";
+import Brush from "../brushes";
 
 export default class CircControl implements CircControlInterface {
     protected circ: CircInterface;
@@ -17,7 +18,7 @@ export default class CircControl implements CircControlInterface {
 
     constructor(circ: CircInterface) {
         this.circ = circ;
-        this.panel = new ControlPanel('Circ Name Here');
+        this.panel = new ControlPanel('Circ: ' + (circ.name || 'Unnamed'));
 
         this.panel.addControl(new BackgroundControl(this.circ));
 
@@ -36,6 +37,39 @@ export default class CircControl implements CircControlInterface {
 
                 this.panel.addControl(shapeControl)
             });
+
+        const addShapeControl = new class implements ControlInterface {
+            render(): DocumentFragment {
+                const addShapeFragmentHtml = `
+                    <button>Add Shape</button>
+                    `;
+
+                const addShapeFragment = document.createRange().createContextualFragment(addShapeFragmentHtml);
+
+                addShapeFragment.querySelector('button').addEventListener('click', e => {
+                    const newShape = new Circle();
+                    newShape.steps = 500;
+                    newShape.outside = true;
+                    newShape.fixed = true;
+                    newShape.clockwise = true;
+                    newShape.stepMod = 0;
+                    newShape.startAngle = 0;
+                    newShape.radius = 100;
+                    
+                    const newBrush = new Brush();
+                    const newBrush2 = new Brush();
+                    newShape.brushes.push(newBrush);
+                    newShape.brushes.push(newBrush2);
+                    circ.addShape(newShape);
+
+                    console.log(circ.getShapes());
+                });
+
+                return addShapeFragment;
+            }
+        };
+
+        this.panel.addControl(addShapeControl);
     }
 
     public render(): DocumentFragment {

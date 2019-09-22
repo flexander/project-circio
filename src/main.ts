@@ -29,16 +29,7 @@ canvasArea.querySelectorAll('canvas').forEach(c => {
     c.setAttribute('width', canvasArea.style.width);
 });
 
-const engine = EngineFactory();
-const painter = new Painter(mainCanvasElement.getContext("2d"));
-const guidePainter = new GuidePainter(guideCanvasElement.getContext("2d"));
-const backgroundPainter = new BackgroundPainter(backgroundCanvasElement.getContext("2d"));
-
-engine.addStepCallback(circ => painter.draw(circ));
-engine.addStepCallback(circ => guidePainter.draw(circ));
-engine.addStepCallback(circ => backgroundPainter.draw(circ));
-engine.addResetCallback(_ => painter.clear());
-engine.addImportCallback(circ => {
+const drawControls = circ => {
     const controlPanel = new ControlPanel('Engine');
     const engineControl = new EngineControl(engine);
     const circControl = new CircControl(circ);
@@ -65,6 +56,17 @@ engine.addImportCallback(circ => {
 
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
-});
+};
+
+const engine = EngineFactory();
+const painter = new Painter(mainCanvasElement.getContext("2d"));
+const guidePainter = new GuidePainter(guideCanvasElement.getContext("2d"));
+const backgroundPainter = new BackgroundPainter(backgroundCanvasElement.getContext("2d"));
+
+engine.addStepCallback(circ => painter.draw(circ));
+engine.addStepCallback(circ => guidePainter.draw(circ));
+engine.addStepCallback(circ => backgroundPainter.draw(circ));
+engine.addResetCallback(_ => painter.clear());
+engine.addImportCallback(drawControls);
 engine.import(circ);
 engine.play();

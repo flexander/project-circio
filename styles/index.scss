@@ -47,13 +47,14 @@ body {
 
 .store {
     display: none;
+    position:absolute;
+    top: 40px;
+    right: 40px;
+    left: 40px;
+    bottom: 40px;
+    background: #EEE;
+    overflow-y: scroll;
     .listing {
-        position:absolute;
-        top: 40px;
-        right: 40px;
-        left: 40px;
-        bottom: 40px;
-        background: #EEE;
         display: flex;
         flex-wrap: wrap;
         align-items: flex-start;
@@ -64,6 +65,20 @@ body {
             height: 200px;
             background: #FFF;
             margin: 10px;
+            position:relative;
+            cursor: pointer;
+
+            canvas {
+                position: absolute;
+            }
+
+            .circName {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                width: 100%;
+                text-align: center;
+            }
         }
     }
 }

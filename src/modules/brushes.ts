@@ -1,10 +1,10 @@
 import {BrushInterface} from "../structure";
 
 export default class Brush implements BrushInterface {
-    color: string;
-    degrees: number;
-    draw: boolean;
-    link: boolean;
-    offset: number;
-    point: number;
+    color: string = '#FFFFFF';
+    degrees: number = 0;
+    draw: boolean = true;
+    link: boolean = false;
+    offset: number = 0;
+    point: number = 0.5;
 }
