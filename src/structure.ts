@@ -163,6 +163,7 @@ interface EventInterface {
 interface EventEmitterInterface {
     dispatchEvent(event: EventInterface): void;
     addEventListener(eventName: string, callback: Function): void;
+    addEventListeners(eventNames: string[], callback: Function): void;
 }
 
 abstract class EventEmitter implements EventEmitterInterface {
@@ -193,6 +194,10 @@ abstract class EventEmitter implements EventEmitterInterface {
             this.events[eventName] = [];
         }
         this.events[eventName].push(callback);
+    }
+
+    addEventListeners(eventNames: string[], callback: Function): void {
+        eventNames.forEach((name: string) => this.addEventListener(name, callback));
     }
 }
 
