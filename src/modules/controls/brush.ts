@@ -9,11 +9,10 @@ export default class BrushControl implements BrushControlInterface {
 
     public render(): DocumentFragment {
         const html = `
-        <div class="control-brush control-group">
-            <div class="section-head">Brush</div>
-            <div class="section-body">
-            </div>
-        </div>`;
+        <details class="control-group">
+            <summary>Brush</summary>
+            <div class="section-body"></div>
+        </details>`;
 
         const brushFragment = document.createRange().createContextualFragment(html);
 

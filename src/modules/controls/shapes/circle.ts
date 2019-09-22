@@ -20,10 +20,10 @@ export default class CircleControl implements CircleControlInterface {
     public render(): DocumentFragment {
 
         const html = `
-        <div class="control-circle control-group">
-            <div class="section-head">Circle</div>
+        <details class="control-group">
+            <summary>Circle</summary>
             <div class="section-body"></div>
-        </div>
+        </details>
         `;
 
         const documentFragment = document.createRange().createContextualFragment(html);
@@ -34,7 +34,7 @@ export default class CircleControl implements CircleControlInterface {
         });
 
         this.brushControls.forEach((brushControl: BrushControlInterface) => {
-            documentFragment.append(brushControl.render());
+            documentFragmentBody.append(brushControl.render());
         });
 
         return documentFragment;
