@@ -57,9 +57,9 @@ const renderControls = circ => {
 
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
+    circ.addEventListeners(['shape.add', "shape.delete"], (shape: ShapeInterface) => renderControls(circ));
 };
 
-circ.addEventListeners(['shape.add', "shape.delete"], (shape: ShapeInterface) => renderControls(circ));
 
 const engine = EngineFactory();
 const painter = new Painter(mainCanvasElement.getContext("2d"));
