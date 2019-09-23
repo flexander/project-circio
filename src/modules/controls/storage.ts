@@ -5,7 +5,7 @@ import {
     EngineInterface,
     QuickControlInterface
 } from "../../structure";
-import Engine, {EngineFactory} from "../engine";
+import {EngineFactory} from "../engine";
 import Painter from "../painter";
 import BackgroundPainter from "../backgroundPainter";
 
