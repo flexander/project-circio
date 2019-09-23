@@ -114,6 +114,7 @@ interface CircStoreInterface {
     getIndex(index: number): CircInterface
     list(): CircInterface[];
     store(name: string, circ: CircInterface): void;
+    delete(name: string): void;
 }
 
 // interface BluePrints extends CircStoreInterface {}

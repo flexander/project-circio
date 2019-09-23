@@ -25,6 +25,9 @@ export class BlueprintStore implements CircStoreInterface {
     store(name: string, circ: CircInterface): void {
     }
 
+    delete(name: string): void {
+        throw new Error("Blueprints can't be deleted.");
+    }
 
     protected makeTwoCircles(): CircInterface {
         const circ = new Circ();
