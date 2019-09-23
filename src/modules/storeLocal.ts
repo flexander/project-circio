@@ -43,7 +43,7 @@ export default class LocalStorage implements CircStoreInterface {
         window.localStorage.setItem(`${this.storeName}.${name}`, circJson);
     }
 
-    delete(name: string): void {
+    public delete(name: string): void {
         window.localStorage.removeItem(name);
     }
 

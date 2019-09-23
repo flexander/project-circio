@@ -10,22 +10,22 @@ export class BlueprintStore implements CircStoreInterface {
         'fourCircles': this.makeFourCircles,
     };
 
-    get(name: string): CircInterface {
+    public get(name: string): CircInterface {
         return this.blueprintsStore[name]();
     }
 
-    getIndex(index: number): CircInterface {
+    public getIndex(index: number): CircInterface {
         return undefined;
     }
 
-    list(): CircInterface[] {
+    public list(): CircInterface[] {
         return [];
     }
 
-    store(name: string, circ: CircInterface): void {
+    public store(name: string, circ: CircInterface): void {
     }
 
-    delete(name: string): void {
+    public delete(name: string): void {
         throw new Error("Blueprints can't be deleted.");
     }
 
