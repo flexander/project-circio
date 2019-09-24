@@ -56,6 +56,7 @@ interface CircleInterface extends ShapeInterface, EventEmitterInterface {
 interface BrushInterface {
     draw: boolean;
     color: string;
+    transparency: number;
     point: number;
     offset: number;
     degrees: number;
