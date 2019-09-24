@@ -113,7 +113,7 @@ export default class BrushControl implements BrushControlInterface {
         const html = `
             <div class="control control-point">
                 <label>point</label>
-                <input type="number" name="point" step="0.5" class="input" value="${this.brush.point}">
+                <input type="number" name="point" min="0" step="0.5" class="input" value="${this.brush.point}">
             </div>`;
 
         const pointFragment = document.createRange().createContextualFragment(html);
