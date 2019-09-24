@@ -76,7 +76,7 @@ export default class CircleControl implements CircleControlInterface {
         const html = `
             <div class="control">
                 <label>steps</label>
-                <input type="number" name="steps" class="input" value="${this.circle.steps}">
+                <input type="number" name="steps" min="0" class="input" value="${this.circle.steps}">
             </div>`;
 
         const fragment = document.createRange().createContextualFragment(html);
@@ -97,7 +97,7 @@ export default class CircleControl implements CircleControlInterface {
         const html = `
             <div class="control">
                 <label>radius</label>
-                <input type="number" name="radius" class="input" value="${this.circle.radius}">
+                <input type="number" name="radius" min="1" class="input" value="${this.circle.radius}">
             </div>`;
 
         const fragment = document.createRange().createContextualFragment(html);
@@ -118,7 +118,7 @@ export default class CircleControl implements CircleControlInterface {
         const html = `
             <div class="control">
                 <label>stepMod</label>
-                <input type="number" name="stepMod" class="input" value="${this.circle.stepMod}">
+                <input type="number" name="stepMod" min="0" class="input" value="${this.circle.stepMod}">
             </div>`;
 
         const fragment = document.createRange().createContextualFragment(html);
