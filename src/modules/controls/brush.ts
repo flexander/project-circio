@@ -18,6 +18,7 @@ export default class BrushControl implements BrushControlInterface {
 
         const brushFragmentBody = brushFragment.querySelector('.section-body');
         brushFragmentBody.appendChild(this.makeColourFragment());
+        brushFragmentBody.appendChild(this.makeTransparencyFragment());
         brushFragmentBody.appendChild(this.makeOffsetFragment());
         brushFragmentBody.appendChild(this.makeAngleFragment());
         brushFragmentBody.appendChild(this.makeLinkFragment());
@@ -30,7 +31,7 @@ export default class BrushControl implements BrushControlInterface {
         const html = `
             <div class="control control-color">
                 <label>color</label>
-                <input type="text" name="color" class="input" value="${this.brush.color}">
+                <input type="color" name="color" class="input" value="${this.brush.color}">
             </div>`;
 
         const colourFragment = document.createRange().createContextualFragment(html);
@@ -40,6 +41,22 @@ export default class BrushControl implements BrushControlInterface {
         });
 
         return colourFragment;
+    }
+
+    protected makeTransparencyFragment(): DocumentFragment {
+        const html = `
+            <div class="control control-transparency">
+                <label>transparency</label>
+                <input type="range" min="0" max="255" step="10" name="transparency" class="input" value="${this.brush.transparency}">
+            </div>`;
+
+        const transparencyFragment = document.createRange().createContextualFragment(html);
+
+        transparencyFragment.querySelector('input[name="transparency"]').addEventListener('input', e => {
+            this.brush.transparency = parseInt((e.target as HTMLInputElement).value);
+        });
+
+        return transparencyFragment;
     }
 
     protected makeOffsetFragment(): DocumentFragment {
