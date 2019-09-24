@@ -31,7 +31,7 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         const html = `
             <div class="control">
                 <label>interval</label>
-                <input type="number" name="interval" class="input" value="${this.engine.getStepInterval()}">
+                <input type="number" name="interval" min="0" class="input" value="${this.engine.getStepInterval()}">
             </div>`;
 
         const intervalFragment = document.createRange().createContextualFragment(html);
