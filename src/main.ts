@@ -11,13 +11,14 @@ import GuidePainterControl from "./modules/controls/guidePainter";
 import PainterControl from "./modules/controls/painter";
 import StorageControl from "./modules/controls/storage";
 import {CircInterface, ShapeInterface} from "./structure";
+import CloudStorage from "./modules/storeCloud";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
 const mainCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#main-canvas');
 const guideCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#guide-canvas');
 const blueprintStorage = new BlueprintStore();
-const storage = new LocalStorage();
+const storage = new CloudStorage();
 
 const renderControls = circ => {
     const controlPanel = new ControlPanel('Engine');
