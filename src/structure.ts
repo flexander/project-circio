@@ -111,9 +111,9 @@ interface BackgroundPainterInterface extends PainterInterface {}
 **/
 
 interface CircStoreInterface {
-    get(name: string): CircInterface
-    getIndex(index: number): CircInterface
-    list(): CircInterface[];
+    get(name: string): Promise<CircInterface>
+    getIndex(index: number): Promise<CircInterface>
+    list(): Promise<CircInterface[]>;
     store(name: string, circ: CircInterface): void;
     delete(name: string): void;
 }

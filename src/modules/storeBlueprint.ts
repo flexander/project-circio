@@ -10,16 +10,22 @@ export class BlueprintStore implements CircStoreInterface {
         'fourCircles': this.makeFourCircles,
     };
 
-    public get(name: string): CircInterface {
-        return this.blueprintsStore[name]();
+    public get(name: string): Promise<CircInterface> {
+        return new Promise((resolve, reject) => {
+            resolve(this.blueprintsStore[name]());
+        });
     }
 
-    public getIndex(index: number): CircInterface {
-        return undefined;
+    public getIndex(index: number): Promise<CircInterface> {
+        return new Promise((resolve, reject) => {
+            resolve(undefined);
+        });
     }
 
-    public list(): CircInterface[] {
-        return [];
+    public list(): Promise<CircInterface[]> {
+        return new Promise((resolve, reject) => {
+            resolve([]);
+        });
     }
 
     public store(name: string, circ: CircInterface): void {
