@@ -3,7 +3,6 @@ import Painter from "./modules/painter";
 import GuidePainter from "./modules/guidePainter";
 import {BlueprintStore} from "./modules/storeBlueprint";
 import BackgroundPainter from "./modules/backgroundPainter";
-import LocalStorage from "./modules/storeLocal";
 import ControlPanel from "./modules/controls/panel";
 import EngineControl from "./modules/controls/engine";
 import CircControl from "./modules/controls/circ";
