@@ -3,32 +3,21 @@ import Painter from "./modules/painter";
 import GuidePainter from "./modules/guidePainter";
 import {BlueprintStore} from "./modules/storeBlueprint";
 import BackgroundPainter from "./modules/backgroundPainter";
-import LocalStorage from "./modules/storeLocal";
 import ControlPanel from "./modules/controls/panel";
 import EngineControl from "./modules/controls/engine";
 import CircControl from "./modules/controls/circ";
 import GuidePainterControl from "./modules/controls/guidePainter";
 import PainterControl from "./modules/controls/painter";
 import StorageControl from "./modules/controls/storage";
-import {ShapeInterface} from "./structure";
+import {CircInterface, ShapeInterface} from "./structure";
+import CloudStorage from "./modules/storeCloud";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
 const mainCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#main-canvas');
 const guideCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#guide-canvas');
 const blueprintStorage = new BlueprintStore();
-const storage = new LocalStorage();
-const circ = blueprintStorage.get('twoCircles');
-
-canvasArea.style.transformOrigin = '0 0'; //scale from top left
-canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
-canvasArea.style.width = circ.width + 'px';
-canvasArea.style.height = circ.height + 'px';
-
-canvasArea.querySelectorAll('canvas').forEach(c => {
-    c.setAttribute('height', canvasArea.style.height);
-    c.setAttribute('width', canvasArea.style.width);
-});
+const storage = new CloudStorage();
 
 const renderControls = circ => {
     const controlPanel = new ControlPanel('Engine');
@@ -71,5 +60,19 @@ engine.addStepCallback(circ => guidePainter.draw(circ));
 engine.addStepCallback(circ => backgroundPainter.draw(circ));
 engine.addResetCallback(_ => painter.clear());
 engine.addImportCallback(renderControls);
-engine.import(circ);
 engine.play();
+
+blueprintStorage.get('twoCircles')
+    .then((circ: CircInterface) => {
+        canvasArea.style.transformOrigin = '0 0'; //scale from top left
+        canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
+        canvasArea.style.width = circ.width + 'px';
+        canvasArea.style.height = circ.height + 'px';
+
+        canvasArea.querySelectorAll('canvas').forEach(c => {
+            c.setAttribute('height', canvasArea.style.height);
+            c.setAttribute('width', canvasArea.style.width);
+        });
+
+        engine.import(circ);
+    });
