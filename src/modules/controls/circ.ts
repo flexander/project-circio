@@ -43,6 +43,8 @@ export default class CircControl implements CircControlInterface {
     }
 
     protected makeAddShapeControl(): ShapeControlInterface {
+        const self = this;
+
         return new class implements ControlInterface {
             render(): DocumentFragment {
                 const addShapeFragmentHtml = `
@@ -63,7 +65,7 @@ export default class CircControl implements CircControlInterface {
 
                     newShape.brushes.push(new Brush());
 
-                    circ.addShape(newShape);
+                    self.circ.addShape(newShape);
                 });
 
                 return addShapeFragment;
