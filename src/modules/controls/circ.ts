@@ -15,6 +15,7 @@ export default class CircControl implements CircControlInterface {
     protected circ: CircInterface;
     protected shapeControls: ShapeControlInterface[] = [];
     protected panel: ControlPanelInterface;
+    protected simplified: boolean = true;
 
     constructor(circ: CircInterface) {
         this.circ = circ;
@@ -38,7 +39,11 @@ export default class CircControl implements CircControlInterface {
                 this.panel.addControl(shapeControl)
             });
 
-        const addShapeControl = new class implements ControlInterface {
+        this.panel.addControl(this.makeAddShapeControl());
+    }
+
+    protected makeAddShapeControl(): ShapeControlInterface {
+        return new class implements ControlInterface {
             render(): DocumentFragment {
                 const addShapeFragmentHtml = `
                     <button>Add Circle</button>
@@ -64,8 +69,6 @@ export default class CircControl implements CircControlInterface {
                 return addShapeFragment;
             }
         };
-
-        this.panel.addControl(addShapeControl);
     }
 
     public render(): DocumentFragment {
