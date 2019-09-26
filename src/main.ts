@@ -47,6 +47,7 @@ const renderControls = circ => {
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
     circ.addEventListeners(['shape.add', "shape.delete"], (shape: ShapeInterface) => renderControls(circ));
+    controlPanel.addEventListener('controls.simplify', _ => {renderControls(circ)});
 };
 
 
