@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         throw new Exception('Invalid JSON');
     }
 
-    array_push($circsData, $requestJson);
+    array_push($circsData, $requestBody);
 
     file_put_contents($storeFile, json_encode($circsData));
 }
@@ -27,24 +27,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header('Content-Type: text/json');
         echo $circJsonString;
     }
-    if ($_GET['action'] === 'get') {
+    if ($_GET['action'] === 'getByName') {
         $circName = $_GET['name'];
 
-        $filteredCircs = array_filter($circsData, function ($circ) use ($circName) {
+        $filteredCircStrings = array_filter($circsData, function ($circJsonString) use ($circName) {
+            $circ = json_decode($circJsonString);
             return ($circ->name === $circName);
         });
 
-        if (count($filteredCircs) === 0) {
+        if (count($filteredCircStrings) === 0) {
             throw new Exception('Circ not found');
         }
 
-        if (count($filteredCircs) > 1) {
+        if (count($filteredCircStrings) > 1) {
             throw new Exception('Multiple Circs found');
         }
 
-        $circ = $filteredCircs[0];
+        $circString = array_pop(array_reverse($filteredCircStrings));
 
         header('Content-Type: text/json');
-        echo $circ;
+        echo $circString;
+    }
+    if ($_GET['action'] === 'getByIndex') {
+        $circIndex = $_GET['index'];
+
+        $circString = $circsData[$circIndex];
+
+        if ($circString === null) {
+            throw new Exception('Circ not found');
+        }
+
+        header('Content-Type: text/json');
+        echo $circString;
     }
 }
