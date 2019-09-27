@@ -31,7 +31,7 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         const html = `
             <div class="control">
                 <label>interval</label>
-                <input type="number" name="interval" class="input" value="${this.engine.getStepInterval()}">
+                <input type="number" name="interval" min="0" class="input" value="${this.engine.getStepInterval()}">
             </div>`;
 
         const intervalFragment = document.createRange().createContextualFragment(html);
@@ -47,14 +47,22 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         const html = `<button class="paused">${this.getPlayButtonLabel()}</button>`;
 
         const playFragment = document.createRange().createContextualFragment(html);
+        const button = playFragment.querySelector('button');
 
-        playFragment.querySelector('button.paused').addEventListener('click', e => {
+        button.addEventListener('click', e => {
             if (this.engine.isPlaying()) {
                 this.engine.pause();
             } else {
                 this.engine.play();
             }
-            (e.target as HTMLElement).innerText = this.getPlayButtonLabel();
+        });
+
+        this.engine.addEventListener('pause', (value) => {
+            button.innerText = this.getPlayButtonLabel();
+        });
+
+        this.engine.addEventListener('play', (value) => {
+            button.innerText = this.getPlayButtonLabel();
         });
 
         return playFragment;

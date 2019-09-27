@@ -5,7 +5,7 @@ interface PositionInterface {
     y: number;
 }
 
-interface CircInterface {
+interface CircInterface extends EventEmitterInterface {
     name: string;
     width: number;
     height: number;
@@ -14,6 +14,7 @@ interface CircInterface {
     state: CircStateInterface;
 
     addShape(shape: ShapeInterface): void;
+    removeShape(id: number): void;
     getShapes(): ShapeInterface[];
 }
 
@@ -48,13 +49,14 @@ interface ShapeStateInterface {
     getAngle(): number;
 }
 
-interface CircleInterface extends ShapeInterface {
+interface CircleInterface extends ShapeInterface, EventEmitterInterface {
     radius: number;
 }
 
 interface BrushInterface {
     draw: boolean;
     color: string;
+    transparency: number;
     point: number;
     offset: number;
     degrees: number;
@@ -63,7 +65,7 @@ interface BrushInterface {
 
 /** Engine **/
 
-interface EngineInterface {
+interface EngineInterface extends EventEmitterInterface {
     import(circ: CircInterface): void;
     export(): CircInterface;
 
@@ -109,10 +111,11 @@ interface BackgroundPainterInterface extends PainterInterface {}
 **/
 
 interface CircStoreInterface {
-    get(name: string): CircInterface
-    getIndex(index: number): CircInterface
-    list(): CircInterface[];
+    get(name: string): Promise<CircInterface>
+    getIndex(index: number): Promise<CircInterface>
+    list(): Promise<CircInterface[]>;
     store(name: string, circ: CircInterface): void;
+    delete(name: string): void;
 }
 
 // interface BluePrints extends CircStoreInterface {}
@@ -152,6 +155,61 @@ interface BrushControlInterface extends ControlInterface {}
 interface BackgroundControlInterface extends ControlInterface {}
 
 
+/** Events **/
+
+interface EventInterface {
+    getName(): string;
+    getContext(): any[];
+}
+
+interface EventEmitterInterface {
+    dispatchEvent(event: EventInterface): void;
+    addEventListener(eventName: string, callback: Function): void;
+    addEventListeners(eventNames: string[], callback: Function): void;
+}
+
+abstract class EventEmitter implements EventEmitterInterface {
+    protected events: {[name: string]: Function[]} = {};
+
+    dispatchEvent(event: EventInterface): void {
+        if (typeof this.events[event.getName()] === 'undefined') {
+            this.events[event.getName()] = [];
+        }
+
+        let compoundEventNameList = event.getName().split('.');
+
+        while (compoundEventNameList.length > 0) {
+            const eventName = compoundEventNameList.join('.');
+            const callbackArray = this.events[eventName] || [];
+
+            callbackArray
+                .forEach((callback: Function) => {
+                    callback(...event.getContext());
+                });
+
+            compoundEventNameList.splice(-1,1);
+        }
+    }
+
+    addEventListener(eventName: string, callback: Function): void {
+        if (typeof this.events[eventName] === 'undefined') {
+            this.events[eventName] = [];
+        }
+        this.events[eventName].push(callback);
+    }
+
+    addEventListeners(eventNames: string[], callback: Function): void {
+        eventNames.forEach((name: string) => this.addEventListener(name, callback));
+    }
+}
+
+
+interface CircStructureChangedEventInterface extends EventInterface {}
+interface AttributeChangedEventInterface extends EventInterface {
+    name: string;
+    value: string|number|boolean;
+}
+
 export {
     PositionInterface,
     CircInterface,
@@ -176,6 +234,10 @@ export {
     BrushControlInterface,
     CircControlInterface,
     BackgroundControlInterface,
+    EventEmitter,
+    EventEmitterInterface,
+    EventInterface,
+    AttributeChangedEventInterface,
 }
 
 

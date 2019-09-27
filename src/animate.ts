@@ -1,4 +1,4 @@
-import Engine from './modules/engine';
+import {EngineFactory} from "./modules/engine";
 import Painter from './modules/painter';
 import {BlueprintStore} from "./modules/storeBlueprint";
 import {CircInterface, EngineInterface} from "./structure";
@@ -14,7 +14,7 @@ const blueprintStorage = new BlueprintStore();
 const circ = blueprintStorage.get('threeCircles');
 
 
-const engine = new Engine();
+const engine = EngineFactory();
 const painter = new Painter(canvas.getContext('2d'));
 const backgroundPainter = new BackgroundPainter(canvas.getContext('2d'));
 

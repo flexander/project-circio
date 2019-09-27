@@ -1,4 +1,4 @@
-import {CircInterface, CircleInterface, CirclePainterInterface, PositionInterface} from "../structure";
+import {BrushInterface, CircInterface, CircleInterface, CirclePainterInterface, PositionInterface} from "../structure";
 
 export default class Painter implements CirclePainterInterface {
     protected canvasContext: CanvasRenderingContext2D;
@@ -43,14 +43,13 @@ export default class Painter implements CirclePainterInterface {
 
     drawPoints (circle: CircleInterface) {
 
-        circle.brushes.forEach(brush => {
+        circle.brushes.forEach((brush: BrushInterface) => {
             const radians = circle.state.getAngle();
             const x = circle.state.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
             const y = circle.state.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
             const color = brush.color;
 
             if(brush.link === true) {
-                // console.log(circle.state);
                 const previousX = circle.state.previousState.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
                 const previousY = circle.state.previousState.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
                 this.canvasContext.strokeStyle = color;
