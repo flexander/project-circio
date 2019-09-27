@@ -19,10 +19,7 @@ export default class StorageControl implements ControlInterface, QuickControlInt
     }
 
     public render(): DocumentFragment {
-
-        const engineFragment = document.createDocumentFragment();
-
-        return engineFragment;
+        return document.createDocumentFragment();
     }
 
     protected makeSaveFragment(): DocumentFragment {
