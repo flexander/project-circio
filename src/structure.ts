@@ -33,6 +33,8 @@ interface ShapeInterface {
     brushes: BrushInterface[];
     state: ShapeStateInterface;
     isRoot: boolean;
+    faces: number;
+    faceWidth: number;
 
     calculatePosition(parentCircle: ShapeInterface|null): void;
     calculateAngle(): void;
