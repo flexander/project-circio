@@ -22,7 +22,7 @@ gulp.task('build:ts-cli', function () {
     return tsProject.src()
         .on('error', function (error) { console.error(error.toString()); })
         .pipe(tsProject())
-        .js.pipe(gulp.dest('node'));
+        .js.pipe(gulp.dest('animate'));
 });
 
 gulp.task('build:scss', () => {
@@ -33,6 +33,6 @@ gulp.task('build:scss', () => {
 });
 
 gulp.task('default', function() {
-    gulp.watch(['src/*.ts', 'src/**/*.ts'], gulp.parallel('build:ts-browser'));
+    gulp.watch(['src/*.ts', 'src/**/*.ts'], gulp.parallel(['build:ts-browser','build:ts-cli']));
     gulp.watch(['styles/*.scss'], gulp.series('build:scss'));
 });
