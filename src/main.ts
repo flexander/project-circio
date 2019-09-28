@@ -20,6 +20,7 @@ const guideCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#guide-c
 const blueprintStorage = new BlueprintStore();
 const storageCloud = new CloudStorage();
 const storageLocal = new LocalStorage();
+const storageBlueprint = new BlueprintStore();
 
 const renderControls = circ => {
     const controlPanel = new ControlPanel('Engine');
@@ -27,7 +28,7 @@ const renderControls = circ => {
     const circControl = new CircControl(circ);
     const guidePainterControl = new GuidePainterControl(guidePainter);
     const painterControl = new PainterControl(painter);
-    const storageControl = new StorageControl([storageCloud, storageLocal], engine);
+    const storageControl = new StorageControl([storageCloud, storageLocal, storageBlueprint], engine);
 
     controlPanel.addControl(guidePainterControl);
     controlPanel.addControl(engineControl);
