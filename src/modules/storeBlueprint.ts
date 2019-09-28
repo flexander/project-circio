@@ -14,7 +14,7 @@ export class BlueprintStore implements CircStoreInterface {
 
     public get(name: string): Promise<CircInterface> {
         return new Promise((resolve, reject) => {
-            resolve(this.blueprintsStore[name]());
+            resolve(this.resolveCirc(name));
         });
     }
 
@@ -26,8 +26,21 @@ export class BlueprintStore implements CircStoreInterface {
 
     public list(): Promise<CircInterface[]> {
         return new Promise((resolve, reject) => {
-            resolve([]);
+            const circs = [];
+
+            for (let circName in this.blueprintsStore) {
+                circs.push(this.resolveCirc(circName));
+            }
+
+            resolve(circs);
         });
+    }
+
+    private resolveCirc(circName: string): CircInterface {
+        const circ = this.blueprintsStore[circName]();
+        circ.name = circName + ' blueprint';
+
+        return circ;
     }
 
     public store(name: string, circ: CircInterface): void {
