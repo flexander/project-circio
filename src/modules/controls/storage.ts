@@ -29,6 +29,10 @@ export default class StorageControl implements ControlInterface, QuickControlInt
 
         fragment.querySelector('button.save').addEventListener('click', e => {
             const name = prompt('Enter Circ name');
+            if (name === '' || name === null) {
+                return;
+            }
+
             const circ = this.engine.export();
             circ.name = name;
 
