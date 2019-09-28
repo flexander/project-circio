@@ -2609,6 +2609,9 @@ var StorageControl = /** @class */ (function () {
         var fragment = document.createRange().createContextualFragment(html);
         fragment.querySelector('button.save').addEventListener('click', function (e) {
             var name = prompt('Enter Circ name');
+            if (name === '' || name === null) {
+                return;
+            }
             var circ = _this.engine.export();
             circ.name = name;
             _this.stores[0].store(name, circ);
@@ -2620,6 +2623,7 @@ var StorageControl = /** @class */ (function () {
         var html = "<button class=\"load\">Load</button>";
         var fragment = document.createRange().createContextualFragment(html);
         fragment.querySelector('button.load').addEventListener('click', function (e) {
+            _this.engine.pause();
             var storeFront = document.querySelector('.store');
             storeFront.innerHTML = '';
             _this.stores.forEach(function (store) {
@@ -2656,6 +2660,7 @@ var StorageControl = /** @class */ (function () {
                                 .get(circName)
                                 .then(function (circ) {
                                 _this.engine.import(circ);
+                                _this.engine.play();
                                 storeFront.style.display = 'none';
                             });
                         });

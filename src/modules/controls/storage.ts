@@ -48,6 +48,7 @@ export default class StorageControl implements ControlInterface, QuickControlInt
         const fragment = document.createRange().createContextualFragment(html);
 
         fragment.querySelector('button.load').addEventListener('click', e => {
+            this.engine.pause();
             const storeFront = <HTMLElement>document.querySelector('.store');
             storeFront.innerHTML = '';
 
@@ -91,6 +92,7 @@ export default class StorageControl implements ControlInterface, QuickControlInt
                                     .get(circName)
                                     .then((circ: CircInterface) => {
                                         this.engine.import(circ);
+                                        this.engine.play();
                                         storeFront.style.display = 'none';
                                     });
                             });
