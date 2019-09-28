@@ -1,10 +1,13 @@
-import {BrushControlInterface, BrushInterface} from "../../structure";
+import {BrushControlInterface, BrushInterface, CircleInterface} from "../../structure";
+import {ControlModes} from "./mode";
 
 export default class BrushControl implements BrushControlInterface {
     protected brush: BrushInterface;
+    protected mode: string;
 
-    constructor(brush: BrushInterface) {
+    constructor(brush: BrushInterface, mode: string = ControlModes.MODE_DEFAULT) {
         this.brush = brush;
+        this.mode = mode;
     }
 
     public render(): DocumentFragment {
@@ -18,11 +21,14 @@ export default class BrushControl implements BrushControlInterface {
 
         const brushFragmentBody = brushFragment.querySelector('.section-body');
         brushFragmentBody.appendChild(this.makeColourFragment());
-        brushFragmentBody.appendChild(this.makeTransparencyFragment());
-        brushFragmentBody.appendChild(this.makeOffsetFragment());
-        brushFragmentBody.appendChild(this.makeAngleFragment());
         brushFragmentBody.appendChild(this.makeLinkFragment());
-        brushFragmentBody.appendChild(this.makePointFragment());
+
+        if (this.mode === ControlModes.MODE_ADVANCED) {
+            brushFragmentBody.appendChild(this.makeTransparencyFragment());
+            brushFragmentBody.appendChild(this.makeOffsetFragment());
+            brushFragmentBody.appendChild(this.makeAngleFragment());
+            brushFragmentBody.appendChild(this.makePointFragment());
+        }
 
         return brushFragment;
     }

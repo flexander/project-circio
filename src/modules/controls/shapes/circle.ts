@@ -1,12 +1,15 @@
 import {BrushControlInterface, BrushInterface, CircleControlInterface, CircleInterface} from "../../../structure";
 import BrushControl from "../brush";
+import {ControlModes} from "../mode";
 
 export default class CircleControl implements CircleControlInterface {
     protected circle: CircleInterface;
     protected brushControls: BrushControlInterface[] = [];
+    protected mode: string;
 
-    constructor(circle: CircleInterface) {
+    constructor(circle: CircleInterface, mode: string = ControlModes.MODE_DEFAULT) {
         this.circle = circle;
+        this.mode = mode;
 
         this.circle.brushes.forEach((brush: BrushInterface) => {
             this.addBrushControl(new BrushControl(brush));
@@ -60,13 +63,19 @@ export default class CircleControl implements CircleControlInterface {
         const documentFragments = [
             this.makeStepsFragment(),
             this.makeRadiusFragment(),
-            this.makeStepModuloFragment(),
             this.makeDirectionFragment(),
         ];
 
+        if (this.mode === ControlModes.MODE_ADVANCED) {
+            documentFragments.push(this.makeStepModuloFragment());
+        }
+
         if (this.circle.isRoot === false) {
-            documentFragments.push(this.makeFixedFragment());
             documentFragments.push(this.makeOutsideFragment());
+
+            if (this.mode === ControlModes.MODE_ADVANCED) {
+                documentFragments.push(this.makeFixedFragment());
+            }
         }
 
         return documentFragments;
