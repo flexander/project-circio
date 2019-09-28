@@ -22,7 +22,7 @@ const blueprintStorage = new BlueprintStore();
 const storageCloud = new CloudStorage();
 const storageLocal = new LocalStorage();
 const storageBlueprint = new BlueprintStore();
-let controlMode = ControlModes.MODE_SIMPLE;
+let controlMode = ControlModes.MODE_DEFAULT;
 
 const renderControls = circ => {
     const controlPanel = new ControlPanel('Engine');

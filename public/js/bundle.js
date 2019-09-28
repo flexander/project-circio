@@ -1775,7 +1775,7 @@ var blueprintStorage = new storeBlueprint_1.BlueprintStore();
 var storageCloud = new storeCloud_1.default();
 var storageLocal = new storeLocal_1.default();
 var storageBlueprint = new storeBlueprint_1.BlueprintStore();
-var controlMode = mode_1.ControlModes.MODE_SIMPLE;
+var controlMode = mode_1.ControlModes.MODE_DEFAULT;
 var renderControls = function (circ) {
     var controlPanel = new panel_1.default('Engine');
     var engineControl = new engine_2.default(engine);
@@ -2120,7 +2120,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var mode_1 = require("./mode");
 var BrushControl = /** @class */ (function () {
     function BrushControl(brush, mode) {
-        if (mode === void 0) { mode = mode_1.ControlModes.MODE_SIMPLE; }
+        if (mode === void 0) { mode = mode_1.ControlModes.MODE_DEFAULT; }
         this.brush = brush;
         this.mode = mode;
     }
@@ -2209,7 +2209,7 @@ var mode_1 = require("./mode");
 var CircControl = /** @class */ (function () {
     function CircControl(circ, mode) {
         var _this = this;
-        if (mode === void 0) { mode = mode_1.ControlModes.MODE_SIMPLE; }
+        if (mode === void 0) { mode = mode_1.ControlModes.MODE_DEFAULT; }
         this.shapeControls = [];
         this.simplified = true;
         this.circ = circ;
@@ -2496,6 +2496,13 @@ var ControlModes = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(ControlModes, "MODE_DEFAULT", {
+        get: function () {
+            return this.MODE_SIMPLE;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return ControlModes;
 }());
 exports.ControlModes = ControlModes;
@@ -2579,7 +2586,7 @@ var mode_1 = require("../mode");
 var CircleControl = /** @class */ (function () {
     function CircleControl(circle, mode) {
         var _this = this;
-        if (mode === void 0) { mode = mode_1.ControlModes.MODE_SIMPLE; }
+        if (mode === void 0) { mode = mode_1.ControlModes.MODE_DEFAULT; }
         this.brushControls = [];
         this.circle = circle;
         this.mode = mode;

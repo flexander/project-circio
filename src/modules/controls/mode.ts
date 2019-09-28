@@ -56,6 +56,10 @@ class ControlModes {
     static get MODE_ADVANCED(): string {
         return 'advanced';
     }
+
+    static get MODE_DEFAULT(): string {
+        return this.MODE_SIMPLE;
+    }
 }
 
 class ControlModeEvent implements EventInterface {

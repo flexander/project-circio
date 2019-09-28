@@ -19,7 +19,7 @@ export default class CircControl implements CircControlInterface {
     protected simplified: boolean = true;
     protected mode: string;
 
-    constructor(circ: CircInterface, mode: string = ControlModes.MODE_SIMPLE) {
+    constructor(circ: CircInterface, mode: string = ControlModes.MODE_DEFAULT) {
         this.circ = circ;
         this.mode = mode;
         this.panel = new ControlPanel('Circ: ' + (circ.name || 'Unnamed'));

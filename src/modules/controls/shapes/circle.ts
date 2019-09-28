@@ -7,7 +7,7 @@ export default class CircleControl implements CircleControlInterface {
     protected brushControls: BrushControlInterface[] = [];
     protected mode: string;
 
-    constructor(circle: CircleInterface, mode: string = ControlModes.MODE_SIMPLE) {
+    constructor(circle: CircleInterface, mode: string = ControlModes.MODE_DEFAULT) {
         this.circle = circle;
         this.mode = mode;
 

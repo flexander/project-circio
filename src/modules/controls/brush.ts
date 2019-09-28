@@ -5,7 +5,7 @@ export default class BrushControl implements BrushControlInterface {
     protected brush: BrushInterface;
     protected mode: string;
 
-    constructor(brush: BrushInterface, mode: string = ControlModes.MODE_SIMPLE) {
+    constructor(brush: BrushInterface, mode: string = ControlModes.MODE_DEFAULT) {
         this.brush = brush;
         this.mode = mode;
     }
