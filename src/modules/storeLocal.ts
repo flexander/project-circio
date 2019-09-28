@@ -4,6 +4,7 @@ import Serializer from "./serializer";
 export default class LocalStorage implements CircStoreInterface {
     protected storeName = 'store.v2';
     protected serializer = new Serializer();
+    public name: string = 'Browser';
 
     public get(name: string): Promise<CircInterface> {
         return new Promise((resolve, reject) => {

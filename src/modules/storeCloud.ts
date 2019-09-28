@@ -4,6 +4,7 @@ import Serializer from "./serializer";
 export default class CloudStorage implements CircStoreInterface {
     protected serializer = new Serializer();
     protected apiUrl = 'https://circio.mountainofcode.co.uk';
+    public name: string = 'Cloud';
 
     public async get(name: string): Promise<CircInterface> {
         const response = await fetch(this.apiUrl + '?action=getByName&name=' + encodeURIComponent(name));
