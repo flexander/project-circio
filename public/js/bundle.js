@@ -1765,19 +1765,22 @@ var guidePainter_2 = require("./modules/controls/guidePainter");
 var painter_2 = require("./modules/controls/painter");
 var storage_1 = require("./modules/controls/storage");
 var storeCloud_1 = require("./modules/storeCloud");
+var storeLocal_1 = require("./modules/storeLocal");
 var canvasArea = document.querySelector('#circio .painter');
 var backgroundCanvasElement = canvasArea.querySelector('#background-canvas');
 var mainCanvasElement = canvasArea.querySelector('#main-canvas');
 var guideCanvasElement = canvasArea.querySelector('#guide-canvas');
 var blueprintStorage = new storeBlueprint_1.BlueprintStore();
-var storage = new storeCloud_1.default();
+var storageCloud = new storeCloud_1.default();
+var storageLocal = new storeLocal_1.default();
+var storageBlueprint = new storeBlueprint_1.BlueprintStore();
 var renderControls = function (circ) {
     var controlPanel = new panel_1.default('Engine');
     var engineControl = new engine_2.default(engine);
     var circControl = new circ_1.default(circ);
     var guidePainterControl = new guidePainter_2.default(guidePainter);
     var painterControl = new painter_2.default(painter);
-    var storageControl = new storage_1.default(storage, engine);
+    var storageControl = new storage_1.default([storageCloud, storageLocal, storageBlueprint], engine);
     controlPanel.addControl(guidePainterControl);
     controlPanel.addControl(engineControl);
     engineControl.addCircControl(circControl);
@@ -1818,7 +1821,7 @@ blueprintStorage.get('twoCircles')
     engine.import(circ);
 });
 
-},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/painter":12,"./modules/controls/panel":13,"./modules/controls/storage":15,"./modules/engine":16,"./modules/guidePainter":18,"./modules/painter":19,"./modules/storeBlueprint":21,"./modules/storeCloud":22}],3:[function(require,module,exports){
+},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/painter":12,"./modules/controls/panel":13,"./modules/controls/storage":15,"./modules/engine":16,"./modules/guidePainter":18,"./modules/painter":19,"./modules/storeBlueprint":21,"./modules/storeCloud":22,"./modules/storeLocal":23}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundPainter = /** @class */ (function () {
@@ -1938,7 +1941,7 @@ var Circ = /** @class */ (function (_super) {
 }(structure_1.EventEmitter));
 exports.default = Circ;
 
-},{"../structure":23,"./events":17}],6:[function(require,module,exports){
+},{"../structure":24,"./events":17}],6:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2083,7 +2086,7 @@ var CircleProxyHandler = {
 var CircleFactory = function () { return new Proxy(new Circle(), CircleProxyHandler); };
 exports.CircleFactory = CircleFactory;
 
-},{"../structure":23,"./events":17,"lodash.clonedeep":1}],7:[function(require,module,exports){
+},{"../structure":24,"./events":17,"lodash.clonedeep":1}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundControl = /** @class */ (function () {
@@ -2593,13 +2596,12 @@ var engine_1 = require("../engine");
 var painter_1 = require("../painter");
 var backgroundPainter_1 = require("../backgroundPainter");
 var StorageControl = /** @class */ (function () {
-    function StorageControl(store, engine) {
-        this.store = store;
+    function StorageControl(stores, engine) {
+        this.stores = stores;
         this.engine = engine;
     }
     StorageControl.prototype.render = function () {
-        var engineFragment = document.createDocumentFragment();
-        return engineFragment;
+        return document.createDocumentFragment();
     };
     StorageControl.prototype.makeSaveFragment = function () {
         var _this = this;
@@ -2609,7 +2611,7 @@ var StorageControl = /** @class */ (function () {
             var name = prompt('Enter Circ name');
             var circ = _this.engine.export();
             circ.name = name;
-            _this.store.store(name, circ);
+            _this.stores[0].store(name, circ);
         });
         return fragment;
     };
@@ -2619,51 +2621,56 @@ var StorageControl = /** @class */ (function () {
         var fragment = document.createRange().createContextualFragment(html);
         fragment.querySelector('button.load').addEventListener('click', function (e) {
             var storeFront = document.querySelector('.store');
-            var storeListing = storeFront.querySelector('.listing');
-            storeListing.innerHTML = '';
-            _this.store.list()
-                .then(function (circs) {
-                circs.forEach(function (circ) {
-                    var tile = document.createRange().createContextualFragment("<div class=\"circ\" data-name=\"" + circ.name + "\"><canvas class=\"canvasBack\"></canvas><canvas class=\"canvasCirc\"></canvas><div class=\"circName\">" + circ.name + "</div></div>");
-                    var tileCanvas = tile.querySelector('canvas.canvasCirc');
-                    tileCanvas.style.transformOrigin = '0 0'; //scale from top left
-                    tileCanvas.style.transform = 'scale(' + 200 / circ.height + ')';
-                    tileCanvas.style.width = circ.width + 'px';
-                    tileCanvas.style.height = circ.height + 'px';
-                    tileCanvas.setAttribute('height', tileCanvas.style.height);
-                    tileCanvas.setAttribute('width', tileCanvas.style.width);
-                    var tileBackCanvas = tile.querySelector('canvas.canvasBack');
-                    tileBackCanvas.style.transformOrigin = '0 0'; //scale from top left
-                    tileBackCanvas.style.transform = 'scale(' + 200 / circ.height + ')';
-                    tileBackCanvas.style.width = circ.width + 'px';
-                    tileBackCanvas.style.height = circ.height + 'px';
-                    tileBackCanvas.setAttribute('height', tileBackCanvas.style.height);
-                    tileBackCanvas.setAttribute('width', tileBackCanvas.style.width);
-                    var previewPainter = new painter_1.default(tileCanvas.getContext('2d'));
-                    var previewBackgroundPainter = new backgroundPainter_1.default(tileBackCanvas.getContext('2d'));
-                    var previewEngine = engine_1.EngineFactory();
-                    previewEngine.addStepCallback(function (circ) { return previewPainter.draw(circ); });
-                    previewEngine.addStepCallback(function (circ) { return previewBackgroundPainter.draw(circ); });
-                    previewEngine.import(circ);
-                    tile.querySelector('.circ').addEventListener('click', function (e) {
-                        var circName = e.target.closest('[data-name]').getAttribute('data-name');
-                        _this.store
-                            .get(circName)
-                            .then(function (circ) {
-                            _this.engine.import(circ);
-                            storeFront.style.display = 'none';
+            storeFront.innerHTML = '';
+            _this.stores.forEach(function (store) {
+                var storeListingHtml = "\n                <h2>" + store.name + " Circs</h2>\n                <div class=\"listing\"></div>\n                ";
+                var circStore = document.createRange().createContextualFragment(storeListingHtml);
+                var circListing = circStore.querySelector('.listing');
+                store.list()
+                    .then(function (circs) {
+                    circs.forEach(function (circ) {
+                        var tile = document.createRange().createContextualFragment("<div class=\"circ\" data-name=\"" + circ.name + "\"><canvas class=\"canvasBack\"></canvas><canvas class=\"canvasCirc\"></canvas><div class=\"circName\">" + circ.name + "</div></div>");
+                        var tileCanvas = tile.querySelector('canvas.canvasCirc');
+                        tileCanvas.style.transformOrigin = '0 0'; //scale from top left
+                        tileCanvas.style.transform = 'scale(' + 200 / circ.height + ')';
+                        tileCanvas.style.width = circ.width + 'px';
+                        tileCanvas.style.height = circ.height + 'px';
+                        tileCanvas.setAttribute('height', tileCanvas.style.height);
+                        tileCanvas.setAttribute('width', tileCanvas.style.width);
+                        var tileBackCanvas = tile.querySelector('canvas.canvasBack');
+                        tileBackCanvas.style.transformOrigin = '0 0'; //scale from top left
+                        tileBackCanvas.style.transform = 'scale(' + 200 / circ.height + ')';
+                        tileBackCanvas.style.width = circ.width + 'px';
+                        tileBackCanvas.style.height = circ.height + 'px';
+                        tileBackCanvas.setAttribute('height', tileBackCanvas.style.height);
+                        tileBackCanvas.setAttribute('width', tileBackCanvas.style.width);
+                        var previewPainter = new painter_1.default(tileCanvas.getContext('2d'));
+                        var previewBackgroundPainter = new backgroundPainter_1.default(tileBackCanvas.getContext('2d'));
+                        var previewEngine = engine_1.EngineFactory();
+                        previewEngine.addStepCallback(function (circ) { return previewPainter.draw(circ); });
+                        previewEngine.addStepCallback(function (circ) { return previewBackgroundPainter.draw(circ); });
+                        previewEngine.import(circ);
+                        tile.querySelector('.circ').addEventListener('click', function (e) {
+                            var circName = e.target.closest('[data-name]').getAttribute('data-name');
+                            store
+                                .get(circName)
+                                .then(function (circ) {
+                                _this.engine.import(circ);
+                                storeFront.style.display = 'none';
+                            });
                         });
+                        tile.querySelector('.circ').addEventListener('mouseenter', function (e) {
+                            previewEngine.play();
+                        });
+                        tile.querySelector('.circ').addEventListener('mouseleave', function (e) {
+                            previewEngine.pause();
+                        });
+                        circListing.appendChild(tile);
                     });
-                    tile.querySelector('.circ').addEventListener('mouseenter', function (e) {
-                        previewEngine.play();
-                    });
-                    tile.querySelector('.circ').addEventListener('mouseleave', function (e) {
-                        previewEngine.pause();
-                    });
-                    storeListing.appendChild(tile);
                 });
-                storeFront.style.display = 'block';
+                storeFront.appendChild(circStore);
             });
+            storeFront.style.display = 'block';
         });
         return fragment;
     };
@@ -2831,7 +2838,7 @@ var EngineProxyHandler = {
 var EngineFactory = function () { return new Proxy(new Engine(), EngineProxyHandler); };
 exports.EngineFactory = EngineFactory;
 
-},{"../structure":23,"./events":17}],17:[function(require,module,exports){
+},{"../structure":24,"./events":17}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AttributeChangedEvent = /** @class */ (function () {
@@ -3142,11 +3149,12 @@ var BlueprintStore = /** @class */ (function () {
             'threeCircles': this.makeThreeCircles,
             'fourCircles': this.makeFourCircles,
         };
+        this.name = 'Blueprints';
     }
     BlueprintStore.prototype.get = function (name) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            resolve(_this.blueprintsStore[name]());
+            resolve(_this.resolveCirc(name));
         });
     };
     BlueprintStore.prototype.getIndex = function (index) {
@@ -3155,9 +3163,19 @@ var BlueprintStore = /** @class */ (function () {
         });
     };
     BlueprintStore.prototype.list = function () {
+        var _this = this;
         return new Promise(function (resolve, reject) {
-            resolve([]);
+            var circs = [];
+            for (var circName in _this.blueprintsStore) {
+                circs.push(_this.resolveCirc(circName));
+            }
+            resolve(circs);
         });
+    };
+    BlueprintStore.prototype.resolveCirc = function (circName) {
+        var circ = this.blueprintsStore[circName]();
+        circ.name = circName + ' blueprint';
+        return circ;
     };
     BlueprintStore.prototype.store = function (name, circ) {
     };
@@ -3294,10 +3312,11 @@ exports.BlueprintStore = BlueprintStore;
 },{"./brushes":4,"./circ":5,"./circle":6}],22:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -3334,6 +3353,7 @@ var CloudStorage = /** @class */ (function () {
     function CloudStorage() {
         this.serializer = new serializer_1.default();
         this.apiUrl = 'https://circio.mountainofcode.co.uk';
+        this.name = 'Cloud';
     }
     CloudStorage.prototype.get = function (name) {
         return __awaiter(this, void 0, void 0, function () {
@@ -3393,6 +3413,67 @@ var CloudStorage = /** @class */ (function () {
 exports.default = CloudStorage;
 
 },{"./serializer":20}],23:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var serializer_1 = require("./serializer");
+var LocalStorage = /** @class */ (function () {
+    function LocalStorage() {
+        this.storeName = 'store.v2';
+        this.serializer = new serializer_1.default();
+        this.name = 'Browser';
+    }
+    LocalStorage.prototype.get = function (name) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var circJson = window.localStorage.getItem(_this.storeName + "." + name);
+            resolve(_this.serializer.unserialize(circJson));
+        });
+    };
+    LocalStorage.prototype.getIndex = function (index) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            if (typeof index !== 'number') {
+                throw 'Provide a valid index';
+            }
+            _this.list().then(function (circList) {
+                var circ = circList[index];
+                if (circ === null) {
+                    throw 'No data found';
+                }
+                resolve(circ);
+            });
+        });
+    };
+    LocalStorage.prototype.list = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var keys = Object.keys(window.localStorage)
+                .filter(function (key) {
+                return key.startsWith(_this.storeName);
+            })
+                .map(function (key) {
+                return key.replace(_this.storeName + '.', '');
+            });
+            var circPromises = keys.map(function (circKey) {
+                return _this.get(circKey);
+            });
+            Promise.all(circPromises).then(function (circs) {
+                resolve(circs);
+            });
+        });
+    };
+    LocalStorage.prototype.store = function (name, circ) {
+        var circJson = this.serializer.serialize(circ);
+        window.localStorage.setItem(this.storeName + "." + name, circJson);
+    };
+    LocalStorage.prototype.delete = function (name) {
+        window.localStorage.removeItem(name);
+    };
+    return LocalStorage;
+}());
+exports.default = LocalStorage;
+
+},{"./serializer":20}],24:[function(require,module,exports){
 "use strict";
 /** Data **/
 Object.defineProperty(exports, "__esModule", { value: true });
