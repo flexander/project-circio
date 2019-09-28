@@ -1766,6 +1766,7 @@ var painter_2 = require("./modules/controls/painter");
 var storage_1 = require("./modules/controls/storage");
 var storeCloud_1 = require("./modules/storeCloud");
 var storeLocal_1 = require("./modules/storeLocal");
+var mode_1 = require("./modules/controls/mode");
 var canvasArea = document.querySelector('#circio .painter');
 var backgroundCanvasElement = canvasArea.querySelector('#background-canvas');
 var mainCanvasElement = canvasArea.querySelector('#main-canvas');
@@ -1774,13 +1775,15 @@ var blueprintStorage = new storeBlueprint_1.BlueprintStore();
 var storageCloud = new storeCloud_1.default();
 var storageLocal = new storeLocal_1.default();
 var storageBlueprint = new storeBlueprint_1.BlueprintStore();
+var controlMode = mode_1.ControlModes.MODE_SIMPLE;
 var renderControls = function (circ) {
     var controlPanel = new panel_1.default('Engine');
     var engineControl = new engine_2.default(engine);
-    var circControl = new circ_1.default(circ);
+    var circControl = new circ_1.default(circ, controlMode);
     var guidePainterControl = new guidePainter_2.default(guidePainter);
     var painterControl = new painter_2.default(painter);
     var storageControl = new storage_1.default([storageCloud, storageLocal, storageBlueprint], engine);
+    var modeControl = new mode_1.ModeControl(controlMode);
     controlPanel.addControl(guidePainterControl);
     controlPanel.addControl(engineControl);
     engineControl.addCircControl(circControl);
@@ -1790,6 +1793,7 @@ var renderControls = function (circ) {
     quickControls.addControls(painterControl.getQuickControls());
     quickControls.addControls(painterControl.getQuickControls());
     quickControls.addControls(storageControl.getQuickControls());
+    quickControls.addControls(modeControl.getQuickControls());
     var controlActionsEl = document.querySelector('.controls-container .actions');
     var controlsEl = document.querySelector('.controls-container .controls');
     controlActionsEl.innerHTML = null;
@@ -1797,6 +1801,10 @@ var renderControls = function (circ) {
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
     circ.addEventListeners(['shape.add', "shape.delete"], function (shape) { return renderControls(circ); });
+    modeControl.addEventListener('controls.mode', function (newMode) {
+        controlMode = newMode;
+        renderControls(circ);
+    });
 };
 var engine = engine_1.EngineFactory();
 var painter = new painter_1.default(mainCanvasElement.getContext("2d"));
@@ -1821,7 +1829,7 @@ blueprintStorage.get('twoCircles')
     engine.import(circ);
 });
 
-},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/painter":12,"./modules/controls/panel":13,"./modules/controls/storage":15,"./modules/engine":16,"./modules/guidePainter":18,"./modules/painter":19,"./modules/storeBlueprint":21,"./modules/storeCloud":22,"./modules/storeLocal":23}],3:[function(require,module,exports){
+},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/mode":12,"./modules/controls/painter":13,"./modules/controls/panel":14,"./modules/controls/storage":16,"./modules/engine":17,"./modules/guidePainter":19,"./modules/painter":20,"./modules/storeBlueprint":22,"./modules/storeCloud":23,"./modules/storeLocal":24}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundPainter = /** @class */ (function () {
@@ -1941,7 +1949,7 @@ var Circ = /** @class */ (function (_super) {
 }(structure_1.EventEmitter));
 exports.default = Circ;
 
-},{"../structure":24,"./events":17}],6:[function(require,module,exports){
+},{"../structure":25,"./events":18}],6:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2086,7 +2094,7 @@ var CircleProxyHandler = {
 var CircleFactory = function () { return new Proxy(new Circle(), CircleProxyHandler); };
 exports.CircleFactory = CircleFactory;
 
-},{"../structure":24,"./events":17,"lodash.clonedeep":1}],7:[function(require,module,exports){
+},{"../structure":25,"./events":18,"lodash.clonedeep":1}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundControl = /** @class */ (function () {
@@ -2109,20 +2117,25 @@ exports.default = BackgroundControl;
 },{}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var mode_1 = require("./mode");
 var BrushControl = /** @class */ (function () {
-    function BrushControl(brush) {
+    function BrushControl(brush, mode) {
+        if (mode === void 0) { mode = mode_1.ControlModes.MODE_SIMPLE; }
         this.brush = brush;
+        this.mode = mode;
     }
     BrushControl.prototype.render = function () {
         var html = "\n        <details class=\"control-group\">\n            <summary>Brush</summary>\n            <div class=\"section-body\"></div>\n        </details>";
         var brushFragment = document.createRange().createContextualFragment(html);
         var brushFragmentBody = brushFragment.querySelector('.section-body');
         brushFragmentBody.appendChild(this.makeColourFragment());
-        brushFragmentBody.appendChild(this.makeTransparencyFragment());
-        brushFragmentBody.appendChild(this.makeOffsetFragment());
-        brushFragmentBody.appendChild(this.makeAngleFragment());
         brushFragmentBody.appendChild(this.makeLinkFragment());
-        brushFragmentBody.appendChild(this.makePointFragment());
+        if (this.mode === mode_1.ControlModes.MODE_ADVANCED) {
+            brushFragmentBody.appendChild(this.makeTransparencyFragment());
+            brushFragmentBody.appendChild(this.makeOffsetFragment());
+            brushFragmentBody.appendChild(this.makeAngleFragment());
+            brushFragmentBody.appendChild(this.makePointFragment());
+        }
         return brushFragment;
     };
     BrushControl.prototype.makeColourFragment = function () {
@@ -2184,7 +2197,7 @@ var BrushControl = /** @class */ (function () {
 }());
 exports.default = BrushControl;
 
-},{}],9:[function(require,module,exports){
+},{"./mode":12}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = require("../circle");
@@ -2192,11 +2205,15 @@ var background_1 = require("./background");
 var panel_1 = require("./panel");
 var circle_2 = require("./shapes/circle");
 var brushes_1 = require("../brushes");
+var mode_1 = require("./mode");
 var CircControl = /** @class */ (function () {
-    function CircControl(circ) {
+    function CircControl(circ, mode) {
         var _this = this;
+        if (mode === void 0) { mode = mode_1.ControlModes.MODE_SIMPLE; }
         this.shapeControls = [];
+        this.simplified = true;
         this.circ = circ;
+        this.mode = mode;
         this.panel = new panel_1.default('Circ: ' + (circ.name || 'Unnamed'));
         this.panel.addControl(new background_1.default(this.circ));
         this.circ.getShapes()
@@ -2205,14 +2222,18 @@ var CircControl = /** @class */ (function () {
             if (shape instanceof circle_1.Circle) {
                 if (shape.isRoot) {
                 }
-                shapeControl = new circle_2.default(shape);
+                shapeControl = new circle_2.default(shape, _this.mode);
             }
             else {
                 throw "Unable to render shape: " + typeof shape;
             }
             _this.panel.addControl(shapeControl);
         });
-        var addShapeControl = new /** @class */ (function () {
+        this.panel.addControl(this.makeAddShapeControl());
+    }
+    CircControl.prototype.makeAddShapeControl = function () {
+        var self = this;
+        return new /** @class */ (function () {
             function class_1() {
             }
             class_1.prototype.render = function () {
@@ -2228,14 +2249,13 @@ var CircControl = /** @class */ (function () {
                     newShape.startAngle = 0;
                     newShape.radius = 100;
                     newShape.brushes.push(new brushes_1.default());
-                    circ.addShape(newShape);
+                    self.circ.addShape(newShape);
                 });
                 return addShapeFragment;
             };
             return class_1;
         }());
-        this.panel.addControl(addShapeControl);
-    }
+    };
     CircControl.prototype.render = function () {
         var _this = this;
         var panelFragment = this.panel.render();
@@ -2253,7 +2273,7 @@ var CircControl = /** @class */ (function () {
 }());
 exports.default = CircControl;
 
-},{"../brushes":4,"../circle":6,"./background":7,"./panel":13,"./shapes/circle":14}],10:[function(require,module,exports){
+},{"../brushes":4,"../circle":6,"./background":7,"./mode":12,"./panel":14,"./shapes/circle":15}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var EngineControl = /** @class */ (function () {
@@ -2400,6 +2420,101 @@ exports.default = GuidePainterControl;
 
 },{}],12:[function(require,module,exports){
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var structure_1 = require("../../structure");
+var ModeControl = /** @class */ (function (_super) {
+    __extends(ModeControl, _super);
+    function ModeControl(currentMode) {
+        var _this = _super.call(this) || this;
+        _this.currentMode = currentMode;
+        return _this;
+    }
+    ModeControl.prototype.render = function () {
+        return this.makeModeFragment();
+    };
+    ModeControl.prototype.makeModeFragment = function () {
+        var _this = this;
+        var html = "<button>" + this.getModeButtonLabel() + "</button>";
+        var modeFragment = document.createRange().createContextualFragment(html);
+        var button = modeFragment.querySelector('button');
+        button.addEventListener('click', function (e) {
+            if (_this.currentMode === ControlModes.MODE_ADVANCED) {
+                _this.dispatchEvent(new ControlModeEvent(ControlModes.MODE_SIMPLE));
+            }
+            else {
+                _this.dispatchEvent(new ControlModeEvent(ControlModes.MODE_ADVANCED));
+            }
+        });
+        return modeFragment;
+    };
+    ModeControl.prototype.getModeButtonLabel = function () {
+        return (this.currentMode === ControlModes.MODE_ADVANCED) ? 'Simple' : 'Advanced';
+    };
+    ModeControl.prototype.getQuickControls = function () {
+        var self = this;
+        return [
+            new /** @class */ (function () {
+                function class_1() {
+                }
+                class_1.prototype.render = function () {
+                    return self.makeModeFragment();
+                };
+                return class_1;
+            }()),
+        ];
+    };
+    return ModeControl;
+}(structure_1.EventEmitter));
+exports.ModeControl = ModeControl;
+var ControlModes = /** @class */ (function () {
+    function ControlModes() {
+    }
+    Object.defineProperty(ControlModes, "MODE_SIMPLE", {
+        get: function () {
+            return 'simple';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ControlModes, "MODE_ADVANCED", {
+        get: function () {
+            return 'advanced';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return ControlModes;
+}());
+exports.ControlModes = ControlModes;
+var ControlModeEvent = /** @class */ (function () {
+    function ControlModeEvent(mode) {
+        this.mode = mode;
+    }
+    ControlModeEvent.prototype.getContext = function () {
+        return [this.mode];
+    };
+    ControlModeEvent.prototype.getName = function () {
+        return "controls.mode";
+    };
+    return ControlModeEvent;
+}());
+exports.ControlModeEvent = ControlModeEvent;
+
+},{"../../structure":25}],13:[function(require,module,exports){
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var PainterControl = /** @class */ (function () {
     function PainterControl(painter) {
@@ -2422,13 +2537,14 @@ var PainterControl = /** @class */ (function () {
 }());
 exports.default = PainterControl;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ControlPanel = /** @class */ (function () {
     function ControlPanel(name) {
         if (name === void 0) { name = null; }
         this.controls = [];
+        this.simplified = true;
         this.name = name;
     }
     ControlPanel.prototype.addControl = function (control) {
@@ -2455,15 +2571,18 @@ var ControlPanel = /** @class */ (function () {
 }());
 exports.default = ControlPanel;
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var brush_1 = require("../brush");
+var mode_1 = require("../mode");
 var CircleControl = /** @class */ (function () {
-    function CircleControl(circle) {
+    function CircleControl(circle, mode) {
         var _this = this;
+        if (mode === void 0) { mode = mode_1.ControlModes.MODE_SIMPLE; }
         this.brushControls = [];
         this.circle = circle;
+        this.mode = mode;
         this.circle.brushes.forEach(function (brush) {
             _this.addBrushControl(new brush_1.default(brush));
         });
@@ -2495,12 +2614,16 @@ var CircleControl = /** @class */ (function () {
         var documentFragments = [
             this.makeStepsFragment(),
             this.makeRadiusFragment(),
-            this.makeStepModuloFragment(),
             this.makeDirectionFragment(),
         ];
+        if (this.mode === mode_1.ControlModes.MODE_ADVANCED) {
+            documentFragments.push(this.makeStepModuloFragment());
+        }
         if (this.circle.isRoot === false) {
-            documentFragments.push(this.makeFixedFragment());
             documentFragments.push(this.makeOutsideFragment());
+            if (this.mode === mode_1.ControlModes.MODE_ADVANCED) {
+                documentFragments.push(this.makeFixedFragment());
+            }
         }
         return documentFragments;
     };
@@ -2589,7 +2712,7 @@ var CircleControl = /** @class */ (function () {
 }());
 exports.default = CircleControl;
 
-},{"../brush":8}],15:[function(require,module,exports){
+},{"../brush":8,"../mode":12}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var engine_1 = require("../engine");
@@ -2704,7 +2827,7 @@ var StorageControl = /** @class */ (function () {
 }());
 exports.default = StorageControl;
 
-},{"../backgroundPainter":3,"../engine":16,"../painter":19}],16:[function(require,module,exports){
+},{"../backgroundPainter":3,"../engine":17,"../painter":20}],17:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2843,7 +2966,7 @@ var EngineProxyHandler = {
 var EngineFactory = function () { return new Proxy(new Engine(), EngineProxyHandler); };
 exports.EngineFactory = EngineFactory;
 
-},{"../structure":24,"./events":17}],17:[function(require,module,exports){
+},{"../structure":25,"./events":18}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AttributeChangedEvent = /** @class */ (function () {
@@ -2911,7 +3034,7 @@ var ShapeDeleteEvent = /** @class */ (function () {
 }());
 exports.ShapeDeleteEvent = ShapeDeleteEvent;
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var GuidePainter = /** @class */ (function () {
@@ -3015,7 +3138,7 @@ var CanvasCenter = /** @class */ (function () {
     return CanvasCenter;
 }());
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Painter = /** @class */ (function () {
@@ -3088,7 +3211,7 @@ var CanvasCenter = /** @class */ (function () {
     return CanvasCenter;
 }());
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circ_1 = require("./circ");
@@ -3141,7 +3264,7 @@ var Serializer = /** @class */ (function () {
 }());
 exports.default = Serializer;
 
-},{"./brushes":4,"./circ":5,"./circle":6}],21:[function(require,module,exports){
+},{"./brushes":4,"./circ":5,"./circle":6}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = require("./circle");
@@ -3314,7 +3437,7 @@ var BlueprintStore = /** @class */ (function () {
 }());
 exports.BlueprintStore = BlueprintStore;
 
-},{"./brushes":4,"./circ":5,"./circle":6}],22:[function(require,module,exports){
+},{"./brushes":4,"./circ":5,"./circle":6}],23:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -3417,7 +3540,7 @@ var CloudStorage = /** @class */ (function () {
 }());
 exports.default = CloudStorage;
 
-},{"./serializer":20}],23:[function(require,module,exports){
+},{"./serializer":21}],24:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var serializer_1 = require("./serializer");
@@ -3478,7 +3601,7 @@ var LocalStorage = /** @class */ (function () {
 }());
 exports.default = LocalStorage;
 
-},{"./serializer":20}],24:[function(require,module,exports){
+},{"./serializer":21}],25:[function(require,module,exports){
 "use strict";
 /** Data **/
 Object.defineProperty(exports, "__esModule", { value: true });

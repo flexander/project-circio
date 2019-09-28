@@ -128,7 +128,7 @@ interface SerializerInterface {
 }
 
 /** Controls **/
-interface ControlPanelInterface extends EventEmitterInterface {
+interface ControlPanelInterface {
     addControl(control: ControlInterface): void;
     render(): DocumentFragment;
 }

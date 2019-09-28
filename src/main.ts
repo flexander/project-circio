@@ -12,6 +12,7 @@ import StorageControl from "./modules/controls/storage";
 import {CircInterface, ShapeInterface} from "./structure";
 import CloudStorage from "./modules/storeCloud";
 import LocalStorage from "./modules/storeLocal";
+import {ControlModes, ModeControl} from "./modules/controls/mode";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
@@ -21,14 +22,16 @@ const blueprintStorage = new BlueprintStore();
 const storageCloud = new CloudStorage();
 const storageLocal = new LocalStorage();
 const storageBlueprint = new BlueprintStore();
+let controlMode = ControlModes.MODE_SIMPLE;
 
 const renderControls = circ => {
     const controlPanel = new ControlPanel('Engine');
     const engineControl = new EngineControl(engine);
-    const circControl = new CircControl(circ);
+    const circControl = new CircControl(circ, controlMode);
     const guidePainterControl = new GuidePainterControl(guidePainter);
     const painterControl = new PainterControl(painter);
     const storageControl = new StorageControl([storageCloud, storageLocal, storageBlueprint], engine);
+    const modeControl = new ModeControl(controlMode);
 
     controlPanel.addControl(guidePainterControl);
     controlPanel.addControl(engineControl);
@@ -40,6 +43,7 @@ const renderControls = circ => {
     quickControls.addControls(painterControl.getQuickControls());
     quickControls.addControls(painterControl.getQuickControls());
     quickControls.addControls(storageControl.getQuickControls());
+    quickControls.addControls(modeControl.getQuickControls());
 
     const controlActionsEl = document.querySelector('.controls-container .actions');
     const controlsEl = document.querySelector('.controls-container .controls');
@@ -50,7 +54,10 @@ const renderControls = circ => {
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
     circ.addEventListeners(['shape.add', "shape.delete"], (shape: ShapeInterface) => renderControls(circ));
-    controlPanel.addEventListener('controls.simplify', _ => {renderControls(circ)});
+    modeControl.addEventListener('controls.mode', (newMode: string) => {
+        controlMode = newMode;
+        renderControls(circ)
+    });
 };
 
 
