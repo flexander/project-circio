@@ -1773,13 +1773,14 @@ var guideCanvasElement = canvasArea.querySelector('#guide-canvas');
 var blueprintStorage = new storeBlueprint_1.BlueprintStore();
 var storageCloud = new storeCloud_1.default();
 var storageLocal = new storeLocal_1.default();
+var storageBlueprint = new storeBlueprint_1.BlueprintStore();
 var renderControls = function (circ) {
     var controlPanel = new panel_1.default('Engine');
     var engineControl = new engine_2.default(engine);
     var circControl = new circ_1.default(circ);
     var guidePainterControl = new guidePainter_2.default(guidePainter);
     var painterControl = new painter_2.default(painter);
-    var storageControl = new storage_1.default([storageCloud, storageLocal], engine);
+    var storageControl = new storage_1.default([storageCloud, storageLocal, storageBlueprint], engine);
     controlPanel.addControl(guidePainterControl);
     controlPanel.addControl(engineControl);
     engineControl.addCircControl(circControl);
@@ -2610,7 +2611,7 @@ var StorageControl = /** @class */ (function () {
             var name = prompt('Enter Circ name');
             var circ = _this.engine.export();
             circ.name = name;
-            _this.store.store(name, circ);
+            _this.stores[0].store(name, circ);
         });
         return fragment;
     };
@@ -2620,9 +2621,11 @@ var StorageControl = /** @class */ (function () {
         var fragment = document.createRange().createContextualFragment(html);
         fragment.querySelector('button.load').addEventListener('click', function (e) {
             var storeFront = document.querySelector('.store');
-            var storeListing = storeFront.querySelector('.listing');
-            storeListing.innerHTML = '';
+            storeFront.innerHTML = '';
             _this.stores.forEach(function (store) {
+                var storeListingHtml = "\n                <h2>" + store.name + " Circs</h2>\n                <div class=\"listing\"></div>\n                ";
+                var circStore = document.createRange().createContextualFragment(storeListingHtml);
+                var circListing = circStore.querySelector('.listing');
                 store.list()
                     .then(function (circs) {
                     circs.forEach(function (circ) {
@@ -2662,11 +2665,12 @@ var StorageControl = /** @class */ (function () {
                         tile.querySelector('.circ').addEventListener('mouseleave', function (e) {
                             previewEngine.pause();
                         });
-                        storeListing.appendChild(tile);
+                        circListing.appendChild(tile);
                     });
-                    storeFront.style.display = 'block';
                 });
+                storeFront.appendChild(circStore);
             });
+            storeFront.style.display = 'block';
         });
         return fragment;
     };
@@ -3145,11 +3149,12 @@ var BlueprintStore = /** @class */ (function () {
             'threeCircles': this.makeThreeCircles,
             'fourCircles': this.makeFourCircles,
         };
+        this.name = 'Blueprints';
     }
     BlueprintStore.prototype.get = function (name) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            resolve(_this.blueprintsStore[name]());
+            resolve(_this.resolveCirc(name));
         });
     };
     BlueprintStore.prototype.getIndex = function (index) {
@@ -3158,9 +3163,19 @@ var BlueprintStore = /** @class */ (function () {
         });
     };
     BlueprintStore.prototype.list = function () {
+        var _this = this;
         return new Promise(function (resolve, reject) {
-            resolve([]);
+            var circs = [];
+            for (var circName in _this.blueprintsStore) {
+                circs.push(_this.resolveCirc(circName));
+            }
+            resolve(circs);
         });
+    };
+    BlueprintStore.prototype.resolveCirc = function (circName) {
+        var circ = this.blueprintsStore[circName]();
+        circ.name = circName + ' blueprint';
+        return circ;
     };
     BlueprintStore.prototype.store = function (name, circ) {
     };
@@ -3297,10 +3312,11 @@ exports.BlueprintStore = BlueprintStore;
 },{"./brushes":4,"./circ":5,"./circle":6}],22:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -3337,6 +3353,7 @@ var CloudStorage = /** @class */ (function () {
     function CloudStorage() {
         this.serializer = new serializer_1.default();
         this.apiUrl = 'https://circio.mountainofcode.co.uk';
+        this.name = 'Cloud';
     }
     CloudStorage.prototype.get = function (name) {
         return __awaiter(this, void 0, void 0, function () {
@@ -3403,6 +3420,7 @@ var LocalStorage = /** @class */ (function () {
     function LocalStorage() {
         this.storeName = 'store.v2';
         this.serializer = new serializer_1.default();
+        this.name = 'Browser';
     }
     LocalStorage.prototype.get = function (name) {
         var _this = this;

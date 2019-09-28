@@ -32,7 +32,7 @@ export default class StorageControl implements ControlInterface, QuickControlInt
             const circ = this.engine.export();
             circ.name = name;
 
-            this.store.store(name, circ);
+            this.stores[0].store(name, circ);
         });
 
         return fragment;
