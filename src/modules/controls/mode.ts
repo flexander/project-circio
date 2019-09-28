@@ -1,5 +1,4 @@
 import {ControlInterface, EventEmitter, EventInterface, QuickControlInterface} from "../../structure";
-import {Engine} from "../engine";
 
 class ModeControl extends EventEmitter implements ControlInterface, QuickControlInterface {
     protected currentMode: string;
