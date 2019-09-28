@@ -45,10 +45,15 @@ export default class StorageControl implements ControlInterface, QuickControlInt
 
         fragment.querySelector('button.load').addEventListener('click', e => {
             const storeFront = <HTMLElement>document.querySelector('.store');
-            const storeListing = storeFront.querySelector('.listing');
-            storeListing.innerHTML = '';
+            storeFront.innerHTML = '';
 
             this.stores.forEach((store: CircStoreInterface) => {
+                const storeListingHtml = `
+                <h2>${store.name} Circs</h2>
+                <div class="listing"></div>
+                `;
+                const circStore = document.createRange().createContextualFragment(storeListingHtml);
+                const circListing = circStore.querySelector('.listing');
                 store.list()
                     .then((circs: CircInterface[]) => {
                         circs.forEach((circ: CircInterface) => {
@@ -95,12 +100,13 @@ export default class StorageControl implements ControlInterface, QuickControlInt
                             });
 
 
-                            storeListing.appendChild(tile);
+                            circListing.appendChild(tile);
                         });
-
-                        storeFront.style.display = 'block';
                     });
+
+                storeFront.appendChild(circStore);
             });
+            storeFront.style.display = 'block';
         });
 
         return fragment;
