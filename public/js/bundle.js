@@ -2592,7 +2592,7 @@ var CircleControl = /** @class */ (function () {
         this.circle = circle;
         this.mode = mode;
         this.circle.brushes.forEach(function (brush) {
-            _this.addBrushControl(new brush_1.default(brush));
+            _this.addBrushControl(new brush_1.default(brush, mode));
         });
     }
     CircleControl.prototype.addBrushControl = function (brushControl) {
