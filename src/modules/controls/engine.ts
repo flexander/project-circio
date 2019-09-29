@@ -72,9 +72,14 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         const html = `<button class="stepThousand">Step 1000</button>`;
 
         const stepJumpFragment = document.createRange().createContextualFragment(html);
+        const stepJumpButton = stepJumpFragment.querySelector('button.stepThousand');
 
-        stepJumpFragment.querySelector('button.stepThousand').addEventListener('click', e => {
-            this.engine.stepFast(1000);
+        stepJumpButton.addEventListener('click', e => {
+            stepJumpButton.setAttribute('disabled', 'disabled');
+            this.engine.stepFast(1000)
+                .then(_ => {
+                    stepJumpButton.removeAttribute('disabled');
+                });
         });
 
         return stepJumpFragment;

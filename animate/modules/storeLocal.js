@@ -5,6 +5,7 @@ var LocalStorage = /** @class */ (function () {
     function LocalStorage() {
         this.storeName = 'store.v2';
         this.serializer = new serializer_1.default();
+        this.name = 'Browser';
     }
     LocalStorage.prototype.get = function (name) {
         var _this = this;

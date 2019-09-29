@@ -9,6 +9,7 @@ class Engine extends EventEmitter implements EngineInterface {
     protected importCallbacks: Array<Function> = [];
     protected circ: CircInterface;
     protected stepsToRun: number = 0;
+    protected stepJumps: Promise<void>[] = [];
 
     constructor() {
         super();
@@ -66,15 +67,37 @@ class Engine extends EventEmitter implements EngineInterface {
         this.step();
     }
 
-    public stepFast(count: number): void {
+    public stepFast(count: number): Promise<void> {
+        if (this.stepJumps.length > 0) {
+            throw `Step jump in progress`;
+        }
+
         const thenContinue = this.getRemainingStepsToRun();
         this.pause();
 
-        for (let step = 0; step<count; step++) {
-            this.step()
+        const stepGroup = 100;
+        const stepJumpCount = Math.ceil(count/stepGroup);
+
+        for (let stepJump = 0; stepJump<stepJumpCount; stepJump++) {
+            this.stepJumps.push(this.stepJump(stepGroup));
         }
 
-        this.play(thenContinue);
+        return Promise.all(this.stepJumps)
+            .then(_ => {
+                this.play(thenContinue);
+                this.stepJumps = [];
+            });
+    }
+
+    protected stepJump(number: number): Promise<void> {
+        return new Promise<void>((resolve, reject): void => {
+            setTimeout(_ => {
+                for (let step = 0; step<number; step++) {
+                    this.step()
+                }
+                resolve();
+            }, 0);
+        });
     }
 
     protected calculateShapes(): void {

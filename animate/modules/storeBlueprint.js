@@ -10,11 +10,12 @@ var BlueprintStore = /** @class */ (function () {
             'threeCircles': this.makeThreeCircles,
             'fourCircles': this.makeFourCircles,
         };
+        this.name = 'Blueprints';
     }
     BlueprintStore.prototype.get = function (name) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            resolve(_this.blueprintsStore[name]());
+            resolve(_this.resolveCirc(name));
         });
     };
     BlueprintStore.prototype.getIndex = function (index) {
@@ -23,9 +24,19 @@ var BlueprintStore = /** @class */ (function () {
         });
     };
     BlueprintStore.prototype.list = function () {
+        var _this = this;
         return new Promise(function (resolve, reject) {
-            resolve([]);
+            var circs = [];
+            for (var circName in _this.blueprintsStore) {
+                circs.push(_this.resolveCirc(circName));
+            }
+            resolve(circs);
         });
+    };
+    BlueprintStore.prototype.resolveCirc = function (circName) {
+        var circ = this.blueprintsStore[circName]();
+        circ.name = circName + ' blueprint';
+        return circ;
     };
     BlueprintStore.prototype.store = function (name, circ) {
     };
