@@ -12,7 +12,7 @@ export default class CircleControl implements CircleControlInterface {
         this.mode = mode;
 
         this.circle.brushes.forEach((brush: BrushInterface) => {
-            this.addBrushControl(new BrushControl(brush));
+            this.addBrushControl(new BrushControl(brush, mode));
         });
     }
 
