@@ -1775,7 +1775,7 @@ var blueprintStorage = new storeBlueprint_1.BlueprintStore();
 var storageCloud = new storeCloud_1.default();
 var storageLocal = new storeLocal_1.default();
 var storageBlueprint = new storeBlueprint_1.BlueprintStore();
-var controlMode = mode_1.ControlModes.MODE_DEFAULT;
+var controlMode = window.localStorage.getItem('config.controlMode') || mode_1.ControlModes.MODE_DEFAULT;
 var renderControls = function (circ) {
     var controlPanel = new panel_1.default('Engine');
     var engineControl = new engine_2.default(engine);
@@ -1803,6 +1803,7 @@ var renderControls = function (circ) {
     circ.addEventListeners(['shape.add', "shape.delete"], function (shape) { return renderControls(circ); });
     modeControl.addEventListener('controls.mode', function (newMode) {
         controlMode = newMode;
+        window.localStorage.setItem('config.controlMode', newMode);
         renderControls(circ);
     });
 };
