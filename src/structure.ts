@@ -74,7 +74,7 @@ interface EngineInterface extends EventEmitterInterface {
     addImportCallback(callback: CallableFunction): void
     pause(): void;
     play(count?: number|null): void
-    stepFast(count: number): void
+    stepFast(count: number): Promise<void>
     step(): void;
     reset(): void
     isPlaying(): boolean;

@@ -2324,8 +2324,13 @@ var EngineControl = /** @class */ (function () {
         var _this = this;
         var html = "<button class=\"stepThousand\">Step 1000</button>";
         var stepJumpFragment = document.createRange().createContextualFragment(html);
-        stepJumpFragment.querySelector('button.stepThousand').addEventListener('click', function (e) {
-            _this.engine.stepFast(1000);
+        var stepJumpButton = stepJumpFragment.querySelector('button.stepThousand');
+        stepJumpButton.addEventListener('click', function (e) {
+            stepJumpButton.setAttribute('disabled', 'disabled');
+            _this.engine.stepFast(1000)
+                .then(function (_) {
+                stepJumpButton.removeAttribute('disabled');
+            });
         });
         return stepJumpFragment;
     };
@@ -2863,6 +2868,7 @@ var Engine = /** @class */ (function (_super) {
         _this.resetCallbacks = [];
         _this.importCallbacks = [];
         _this.stepsToRun = 0;
+        _this.stepJumps = [];
         _this.run();
         return _this;
     }
@@ -2905,12 +2911,33 @@ var Engine = /** @class */ (function (_super) {
         this.step();
     };
     Engine.prototype.stepFast = function (count) {
+        var _this = this;
+        if (this.stepJumps.length > 0) {
+            throw "Step jump in progress";
+        }
         var thenContinue = this.getRemainingStepsToRun();
         this.pause();
-        for (var step = 0; step < count; step++) {
-            this.step();
+        var stepGroup = 100;
+        var stepJumpCount = Math.ceil(count / stepGroup);
+        for (var stepJump = 0; stepJump < stepJumpCount; stepJump++) {
+            this.stepJumps.push(this.stepJump(stepGroup));
         }
-        this.play(thenContinue);
+        return Promise.all(this.stepJumps)
+            .then(function (_) {
+            _this.play(thenContinue);
+            _this.stepJumps = [];
+        });
+    };
+    Engine.prototype.stepJump = function (number) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            setTimeout(function (_) {
+                for (var step = 0; step < number; step++) {
+                    _this.step();
+                }
+                resolve();
+            }, 0);
+        });
     };
     Engine.prototype.calculateShapes = function () {
         var _this = this;
