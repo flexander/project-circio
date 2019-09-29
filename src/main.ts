@@ -22,7 +22,7 @@ const blueprintStorage = new BlueprintStore();
 const storageCloud = new CloudStorage();
 const storageLocal = new LocalStorage();
 const storageBlueprint = new BlueprintStore();
-let controlMode = ControlModes.MODE_DEFAULT;
+let controlMode = window.localStorage.getItem('config.controlMode') || ControlModes.MODE_DEFAULT;
 
 const renderControls = circ => {
     const controlPanel = new ControlPanel('Engine');
@@ -56,6 +56,7 @@ const renderControls = circ => {
     circ.addEventListeners(['shape.add', "shape.delete"], (shape: ShapeInterface) => renderControls(circ));
     modeControl.addEventListener('controls.mode', (newMode: string) => {
         controlMode = newMode;
+        window.localStorage.setItem('config.controlMode', newMode);
         renderControls(circ)
     });
 };
