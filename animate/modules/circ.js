@@ -46,4 +46,13 @@ var Circ = /** @class */ (function (_super) {
     };
     return Circ;
 }(structure_1.EventEmitter));
-exports.default = Circ;
+exports.Circ = Circ;
+var CircProxyHandler = {
+    set: function (target, propertyName, value, receiver) {
+        target[propertyName] = value;
+        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
+        return true;
+    },
+};
+var CircFactory = function () { return new Proxy(new Circ(), CircProxyHandler); };
+exports.CircFactory = CircFactory;

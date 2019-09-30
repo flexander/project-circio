@@ -1,7 +1,7 @@
 import {CircInterface, CircStoreInterface} from "../structure";
 import {CircleFactory} from "./circle";
 import Brush from "./brushes";
-import Circ from "./circ";
+import {CircFactory} from "./circ";
 
 export class BlueprintStore implements CircStoreInterface {
     protected blueprintsStore: {[name: string]: Function} = {
@@ -51,7 +51,7 @@ export class BlueprintStore implements CircStoreInterface {
     }
 
     protected makeTwoCircles(): CircInterface {
-        const circ = new Circ();
+        const circ = CircFactory();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -90,7 +90,7 @@ export class BlueprintStore implements CircStoreInterface {
     }
 
     protected makeThreeCircles(): CircInterface {
-        const circ = new Circ();
+        const circ = CircFactory();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -139,7 +139,7 @@ export class BlueprintStore implements CircStoreInterface {
     }
 
     protected makeFourCircles(): CircInterface {
-        const circ = new Circ();
+        const circ = CircFactory();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
