@@ -1806,6 +1806,10 @@ var renderControls = function (circ) {
         window.localStorage.setItem('config.controlMode', newMode);
         renderControls(circ);
     });
+    circ.addEventListener('change.backgroundFill', function (_) {
+        backgroundPainter.draw(circ);
+        guidePainter.draw(circ);
+    });
 };
 var engine = engine_1.EngineFactory();
 var painter = new painter_1.default(mainCanvasElement.getContext("2d"));
@@ -1813,9 +1817,9 @@ var guidePainter = new guidePainter_1.default(guideCanvasElement.getContext("2d"
 var backgroundPainter = new backgroundPainter_1.default(backgroundCanvasElement.getContext("2d"));
 engine.addStepCallback(function (circ) { return painter.draw(circ); });
 engine.addStepCallback(function (circ) { return guidePainter.draw(circ); });
-engine.addStepCallback(function (circ) { return backgroundPainter.draw(circ); });
 engine.addResetCallback(function (_) { return painter.clear(); });
 engine.addImportCallback(renderControls);
+engine.addImportCallback(function (circ) { backgroundPainter.draw(circ); });
 engine.play();
 blueprintStorage.get('twoCircles')
     .then(function (circ) {
@@ -1877,7 +1881,7 @@ var CanvasCenter = /** @class */ (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Brush = /** @class */ (function () {
     function Brush() {
-        this.hexcolor = '#FFFFFF';
+        this.color = '#FFFFFF';
         this.transparency = 0;
         this.degrees = 0;
         this.draw = true;
@@ -1885,12 +1889,9 @@ var Brush = /** @class */ (function () {
         this.offset = 0;
         this.point = 0.5;
     }
-    Object.defineProperty(Brush.prototype, "color", {
+    Object.defineProperty(Brush.prototype, "colorWithAlpha", {
         get: function () {
-            return this.hexcolor + ('00' + (255 - this.transparency).toString(16)).substr(-2);
-        },
-        set: function (value) {
-            this.hexcolor = value;
+            return this.color + ('00' + (255 - this.transparency).toString(16)).substr(-2);
         },
         enumerable: true,
         configurable: true
@@ -1948,7 +1949,16 @@ var Circ = /** @class */ (function (_super) {
     };
     return Circ;
 }(structure_1.EventEmitter));
-exports.default = Circ;
+exports.Circ = Circ;
+var CircProxyHandler = {
+    set: function (target, propertyName, value, receiver) {
+        target[propertyName] = value;
+        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
+        return true;
+    },
+};
+var CircFactory = function () { return new Proxy(new Circ(), CircProxyHandler); };
+exports.CircFactory = CircFactory;
 
 },{"../structure":25,"./events":18}],6:[function(require,module,exports){
 "use strict";
@@ -2888,6 +2898,7 @@ var Engine = /** @class */ (function (_super) {
         this.circ = circ;
         this.reset();
         this.runImportCallbacks();
+        console.log(circ);
     };
     Engine.prototype.pause = function () {
         this.stepsToRun = 0;
@@ -3161,7 +3172,7 @@ var GuidePainter = /** @class */ (function () {
         this.canvasContext.lineTo(brushPointX, brushPointY);
         this.canvasContext.stroke();
         this.canvasContext.beginPath();
-        this.canvasContext.fillStyle = brush.color;
+        this.canvasContext.fillStyle = brush.colorWithAlpha;
         this.canvasContext.arc(brushPointX, brushPointY, 4, 0, 2 * Math.PI);
         this.canvasContext.fill();
     };
@@ -3218,7 +3229,7 @@ var Painter = /** @class */ (function () {
             var radians = circle.state.getAngle();
             var x = circle.state.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);
             var y = circle.state.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);
-            var color = brush.color;
+            var color = brush.colorWithAlpha;
             if (brush.link === true) {
                 var previousX = circle.state.previousState.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);
                 var previousY = circle.state.previousState.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);
@@ -3252,13 +3263,13 @@ var CanvasCenter = /** @class */ (function () {
 },{}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var circ_1 = require("./circ");
 var brushes_1 = require("./brushes");
 var circle_1 = require("./circle");
+var circ_1 = require("./circ");
 var Serializer = /** @class */ (function () {
     function Serializer() {
         this.classes = {
-            Circ: circ_1.default,
+            Circ: circ_1.CircFactory,
             Circle: circle_1.CircleFactory,
             CircleCenterPosition: circle_1.CircleCenterPosition,
             CircleDrawPosition: circle_1.CircleDrawPosition,
@@ -3340,7 +3351,7 @@ var BlueprintStore = /** @class */ (function () {
     };
     BlueprintStore.prototype.resolveCirc = function (circName) {
         var circ = this.blueprintsStore[circName]();
-        circ.name = circName + ' blueprint';
+        circ.name = circName;
         return circ;
     };
     BlueprintStore.prototype.store = function (name, circ) {
@@ -3349,7 +3360,7 @@ var BlueprintStore = /** @class */ (function () {
         throw new Error("Blueprints can't be deleted.");
     };
     BlueprintStore.prototype.makeTwoCircles = function () {
-        var circ = new circ_1.default();
+        var circ = circ_1.CircFactory();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -3381,7 +3392,7 @@ var BlueprintStore = /** @class */ (function () {
         return circ;
     };
     BlueprintStore.prototype.makeThreeCircles = function () {
-        var circ = new circ_1.default();
+        var circ = circ_1.CircFactory();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -3422,7 +3433,7 @@ var BlueprintStore = /** @class */ (function () {
         return circ;
     };
     BlueprintStore.prototype.makeFourCircles = function () {
-        var circ = new circ_1.default();
+        var circ = circ_1.CircFactory();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';

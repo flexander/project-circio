@@ -24,7 +24,7 @@ const storageLocal = new LocalStorage();
 const storageBlueprint = new BlueprintStore();
 let controlMode = window.localStorage.getItem('config.controlMode') || ControlModes.MODE_DEFAULT;
 
-const renderControls = circ => {
+const renderControls = (circ: CircInterface) => {
     const controlPanel = new ControlPanel('Engine');
     const engineControl = new EngineControl(engine);
     const circControl = new CircControl(circ, controlMode);
@@ -59,6 +59,10 @@ const renderControls = circ => {
         window.localStorage.setItem('config.controlMode', newMode);
         renderControls(circ)
     });
+    circ.addEventListener('change.backgroundFill', _ => {
+        backgroundPainter.draw(circ);
+        guidePainter.draw(circ);
+    });
 };
 
 
@@ -69,9 +73,9 @@ const backgroundPainter = new BackgroundPainter(backgroundCanvasElement.getConte
 
 engine.addStepCallback(circ => painter.draw(circ));
 engine.addStepCallback(circ => guidePainter.draw(circ));
-engine.addStepCallback(circ => backgroundPainter.draw(circ));
 engine.addResetCallback(_ => painter.clear());
 engine.addImportCallback(renderControls);
+engine.addImportCallback((circ: CircInterface) => {backgroundPainter.draw(circ)});
 engine.play();
 
 blueprintStorage.get('twoCircles')
