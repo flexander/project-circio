@@ -1808,6 +1808,7 @@ var renderControls = function (circ) {
     });
     circ.addEventListener('change.backgroundFill', function (_) {
         backgroundPainter.draw(circ);
+        guidePainter.draw(circ);
     });
 };
 var engine = engine_1.EngineFactory();

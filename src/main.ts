@@ -61,6 +61,7 @@ const renderControls = (circ: CircInterface) => {
     });
     circ.addEventListener('change.backgroundFill', _ => {
         backgroundPainter.draw(circ);
+        guidePainter.draw(circ);
     });
 };
 
