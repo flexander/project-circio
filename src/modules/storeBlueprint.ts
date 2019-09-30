@@ -38,7 +38,7 @@ export class BlueprintStore implements CircStoreInterface {
 
     private resolveCirc(circName: string): CircInterface {
         const circ = this.blueprintsStore[circName]();
-        circ.name = circName + ' blueprint';
+        circ.name = circName;
 
         return circ;
     }
