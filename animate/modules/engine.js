@@ -45,7 +45,6 @@ var Engine = /** @class */ (function (_super) {
         this.circ = circ;
         this.reset();
         this.runImportCallbacks();
-        console.log(circ);
     };
     Engine.prototype.pause = function () {
         this.stepsToRun = 0;

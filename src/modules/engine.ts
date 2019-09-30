@@ -36,9 +36,7 @@ class Engine extends EventEmitter implements EngineInterface {
     public import(circ: CircInterface): void {
         this.circ = circ;
         this.reset();
-        this.runImportCallbacks()
-
-        console.log(circ);
+        this.runImportCallbacks();
     }
 
     public pause(): void {
