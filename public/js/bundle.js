@@ -1806,6 +1806,9 @@ var renderControls = function (circ) {
         window.localStorage.setItem('config.controlMode', newMode);
         renderControls(circ);
     });
+    circ.addEventListener('change.backgroundFill', function (_) {
+        backgroundPainter.draw(circ);
+    });
 };
 var engine = engine_1.EngineFactory();
 var painter = new painter_1.default(mainCanvasElement.getContext("2d"));
@@ -1813,9 +1816,9 @@ var guidePainter = new guidePainter_1.default(guideCanvasElement.getContext("2d"
 var backgroundPainter = new backgroundPainter_1.default(backgroundCanvasElement.getContext("2d"));
 engine.addStepCallback(function (circ) { return painter.draw(circ); });
 engine.addStepCallback(function (circ) { return guidePainter.draw(circ); });
-engine.addStepCallback(function (circ) { return backgroundPainter.draw(circ); });
 engine.addResetCallback(function (_) { return painter.clear(); });
 engine.addImportCallback(renderControls);
+engine.addImportCallback(function (circ) { backgroundPainter.draw(circ); });
 engine.play();
 blueprintStorage.get('twoCircles')
     .then(function (circ) {
@@ -1948,7 +1951,16 @@ var Circ = /** @class */ (function (_super) {
     };
     return Circ;
 }(structure_1.EventEmitter));
-exports.default = Circ;
+exports.Circ = Circ;
+var CircProxyHandler = {
+    set: function (target, propertyName, value, receiver) {
+        target[propertyName] = value;
+        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
+        return true;
+    },
+};
+var CircFactory = function () { return new Proxy(new Circ(), CircProxyHandler); };
+exports.CircFactory = CircFactory;
 
 },{"../structure":25,"./events":18}],6:[function(require,module,exports){
 "use strict";
@@ -3249,13 +3261,13 @@ var CanvasCenter = /** @class */ (function () {
 },{}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var circ_1 = require("./circ");
 var brushes_1 = require("./brushes");
 var circle_1 = require("./circle");
+var circ_1 = require("./circ");
 var Serializer = /** @class */ (function () {
     function Serializer() {
         this.classes = {
-            Circ: circ_1.default,
+            Circ: circ_1.CircFactory,
             Circle: circle_1.CircleFactory,
             CircleCenterPosition: circle_1.CircleCenterPosition,
             CircleDrawPosition: circle_1.CircleDrawPosition,
@@ -3346,7 +3358,7 @@ var BlueprintStore = /** @class */ (function () {
         throw new Error("Blueprints can't be deleted.");
     };
     BlueprintStore.prototype.makeTwoCircles = function () {
-        var circ = new circ_1.default();
+        var circ = circ_1.CircFactory();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -3378,7 +3390,7 @@ var BlueprintStore = /** @class */ (function () {
         return circ;
     };
     BlueprintStore.prototype.makeThreeCircles = function () {
-        var circ = new circ_1.default();
+        var circ = circ_1.CircFactory();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -3419,7 +3431,7 @@ var BlueprintStore = /** @class */ (function () {
         return circ;
     };
     BlueprintStore.prototype.makeFourCircles = function () {
-        var circ = new circ_1.default();
+        var circ = circ_1.CircFactory();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -3475,11 +3487,10 @@ exports.BlueprintStore = BlueprintStore;
 },{"./brushes":4,"./circ":5,"./circle":6}],23:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
