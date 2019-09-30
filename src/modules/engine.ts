@@ -78,10 +78,15 @@ class Engine extends EventEmitter implements EngineInterface {
         this.pause();
 
         const stepGroup = 100;
-        const stepJumpCount = Math.ceil(count/stepGroup);
+        let stepsRun = 0;
 
-        for (let stepJump = 0; stepJump<stepJumpCount; stepJump++) {
-            this.stepJumps.push(this.stepJump(stepGroup));
+        while (stepsRun < count) {
+            const stepsLeftToRun = count - stepsRun;
+            const stepsToRun = (stepsLeftToRun < stepGroup) ? stepsLeftToRun:stepGroup;
+
+            this.stepJumps.push(this.stepJump(stepsToRun));
+
+            stepsRun += stepsToRun;
         }
 
         return Promise.all(this.stepJumps)

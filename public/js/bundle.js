@@ -2929,9 +2929,12 @@ var Engine = /** @class */ (function (_super) {
         var thenContinue = this.getRemainingStepsToRun();
         this.pause();
         var stepGroup = 100;
-        var stepJumpCount = Math.ceil(count / stepGroup);
-        for (var stepJump = 0; stepJump < stepJumpCount; stepJump++) {
-            this.stepJumps.push(this.stepJump(stepGroup));
+        var stepsRun = 0;
+        while (stepsRun < count) {
+            var stepsLeftToRun = count - stepsRun;
+            var stepsToRun = (stepsLeftToRun < stepGroup) ? stepsLeftToRun : stepGroup;
+            this.stepJumps.push(this.stepJump(stepsToRun));
+            stepsRun += stepsToRun;
         }
         return Promise.all(this.stepJumps)
             .then(function (_) {
@@ -3486,10 +3489,11 @@ exports.BlueprintStore = BlueprintStore;
 },{"./brushes":4,"./circ":5,"./circle":6}],23:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };

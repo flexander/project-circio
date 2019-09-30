@@ -76,9 +76,12 @@ var Engine = /** @class */ (function (_super) {
         var thenContinue = this.getRemainingStepsToRun();
         this.pause();
         var stepGroup = 100;
-        var stepJumpCount = Math.ceil(count / stepGroup);
-        for (var stepJump = 0; stepJump < stepJumpCount; stepJump++) {
-            this.stepJumps.push(this.stepJump(stepGroup));
+        var stepsRun = 0;
+        while (stepsRun < count) {
+            var stepsLeftToRun = count - stepsRun;
+            var stepsToRun = (stepsLeftToRun < stepGroup) ? stepsLeftToRun : stepGroup;
+            this.stepJumps.push(this.stepJump(stepsToRun));
+            stepsRun += stepsToRun;
         }
         return Promise.all(this.stepJumps)
             .then(function (_) {
