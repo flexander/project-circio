@@ -1881,7 +1881,7 @@ var CanvasCenter = /** @class */ (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Brush = /** @class */ (function () {
     function Brush() {
-        this.hexcolor = '#FFFFFF';
+        this.color = '#FFFFFF';
         this.transparency = 0;
         this.degrees = 0;
         this.draw = true;
@@ -1889,12 +1889,9 @@ var Brush = /** @class */ (function () {
         this.offset = 0;
         this.point = 0.5;
     }
-    Object.defineProperty(Brush.prototype, "color", {
+    Object.defineProperty(Brush.prototype, "colorWithAlpha", {
         get: function () {
-            return this.hexcolor + ('00' + (255 - this.transparency).toString(16)).substr(-2);
-        },
-        set: function (value) {
-            this.hexcolor = value;
+            return this.color + ('00' + (255 - this.transparency).toString(16)).substr(-2);
         },
         enumerable: true,
         configurable: true
@@ -2901,6 +2898,7 @@ var Engine = /** @class */ (function (_super) {
         this.circ = circ;
         this.reset();
         this.runImportCallbacks();
+        console.log(circ);
     };
     Engine.prototype.pause = function () {
         this.stepsToRun = 0;
@@ -3171,7 +3169,7 @@ var GuidePainter = /** @class */ (function () {
         this.canvasContext.lineTo(brushPointX, brushPointY);
         this.canvasContext.stroke();
         this.canvasContext.beginPath();
-        this.canvasContext.fillStyle = brush.color;
+        this.canvasContext.fillStyle = brush.colorWithAlpha;
         this.canvasContext.arc(brushPointX, brushPointY, 4, 0, 2 * Math.PI);
         this.canvasContext.fill();
     };
@@ -3228,7 +3226,7 @@ var Painter = /** @class */ (function () {
             var radians = circle.state.getAngle();
             var x = circle.state.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);
             var y = circle.state.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);
-            var color = brush.color;
+            var color = brush.colorWithAlpha;
             if (brush.link === true) {
                 var previousX = circle.state.previousState.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);
                 var previousY = circle.state.previousState.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);

@@ -47,7 +47,7 @@ export default class Painter implements CirclePainterInterface {
             const radians = circle.state.getAngle();
             const x = circle.state.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
             const y = circle.state.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
-            const color = brush.color;
+            const color = brush.colorWithAlpha;
 
             if(brush.link === true) {
                 const previousX = circle.state.previousState.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
