@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var circ_1 = require("./circ");
 var brushes_1 = require("./brushes");
 var circle_1 = require("./circle");
+var circ_1 = require("./circ");
 var Serializer = /** @class */ (function () {
     function Serializer() {
         this.classes = {
-            Circ: circ_1.default,
+            Circ: circ_1.CircFactory,
             Circle: circle_1.CircleFactory,
             CircleCenterPosition: circle_1.CircleCenterPosition,
             CircleDrawPosition: circle_1.CircleDrawPosition,
