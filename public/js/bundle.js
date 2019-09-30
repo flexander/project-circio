@@ -3350,7 +3350,7 @@ var BlueprintStore = /** @class */ (function () {
     };
     BlueprintStore.prototype.resolveCirc = function (circName) {
         var circ = this.blueprintsStore[circName]();
-        circ.name = circName + ' blueprint';
+        circ.name = circName;
         return circ;
     };
     BlueprintStore.prototype.store = function (name, circ) {
