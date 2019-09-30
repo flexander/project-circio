@@ -85,6 +85,28 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         return stepJumpFragment;
     }
 
+    protected makeStepJumpByFragment(): DocumentFragment {
+        const html = `<button class="stepBy">Step By...</button>`;
+
+        const stepJumpByFragment = document.createRange().createContextualFragment(html);
+        const stepJumpByButton = stepJumpByFragment.querySelector('button.stepBy');
+
+        stepJumpByButton.addEventListener('click', e => {
+            const stepsToRun = parseInt(prompt('Steps To Run'));
+            if (isNaN(stepsToRun) === true || stepsToRun === null) {
+                return;
+            }
+
+            stepJumpByButton.setAttribute('disabled', 'disabled');
+            this.engine.stepFast(stepsToRun)
+                .then(_ => {
+                    stepJumpByButton.removeAttribute('disabled');
+                });
+        });
+
+        return stepJumpByFragment;
+    }
+
     protected makeResetFragment(): DocumentFragment {
         const html = `<button class="reset">Reset</button>`;
 
@@ -109,6 +131,11 @@ export default class EngineControl implements EngineControlInterface, QuickContr
             new class implements ControlInterface {
                 render(): DocumentFragment {
                     return self.makeStepJumpFragment();
+                }
+            },
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeStepJumpByFragment();
                 }
             },
             new class implements ControlInterface {

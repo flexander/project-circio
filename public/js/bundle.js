@@ -2344,6 +2344,24 @@ var EngineControl = /** @class */ (function () {
         });
         return stepJumpFragment;
     };
+    EngineControl.prototype.makeStepJumpByFragment = function () {
+        var _this = this;
+        var html = "<button class=\"stepBy\">Step By...</button>";
+        var stepJumpByFragment = document.createRange().createContextualFragment(html);
+        var stepJumpByButton = stepJumpByFragment.querySelector('button.stepBy');
+        stepJumpByButton.addEventListener('click', function (e) {
+            var stepsToRun = parseInt(prompt('Steps To Run'));
+            if (isNaN(stepsToRun) === true || stepsToRun === null) {
+                return;
+            }
+            stepJumpByButton.setAttribute('disabled', 'disabled');
+            _this.engine.stepFast(stepsToRun)
+                .then(function (_) {
+                stepJumpByButton.removeAttribute('disabled');
+            });
+        });
+        return stepJumpByFragment;
+    };
     EngineControl.prototype.makeResetFragment = function () {
         var _this = this;
         var html = "<button class=\"reset\">Reset</button>";
@@ -2376,9 +2394,17 @@ var EngineControl = /** @class */ (function () {
                 function class_3() {
                 }
                 class_3.prototype.render = function () {
-                    return self.makeResetFragment();
+                    return self.makeStepJumpByFragment();
                 };
                 return class_3;
+            }()),
+            new /** @class */ (function () {
+                function class_4() {
+                }
+                class_4.prototype.render = function () {
+                    return self.makeResetFragment();
+                };
+                return class_4;
             }()),
         ];
     };
