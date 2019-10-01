@@ -125,7 +125,7 @@ export default class BrushControl implements BrushControlInterface {
         const pointFragment = document.createRange().createContextualFragment(html);
 
         pointFragment.querySelector('input[name="point"]').addEventListener('input', e => {
-            this.brush.point = parseInt((e.target as HTMLInputElement).value,10);
+            this.brush.point = parseFloat((e.target as HTMLInputElement).value);
         });
 
         return pointFragment;

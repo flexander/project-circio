@@ -2234,7 +2234,7 @@ var BrushControl = /** @class */ (function () {
         var html = "\n            <div class=\"control control-point\">\n                <label>point</label>\n                <input type=\"number\" name=\"point\" min=\"0\" step=\"0.5\" class=\"input\" value=\"" + this.brush.point + "\">\n            </div>";
         var pointFragment = document.createRange().createContextualFragment(html);
         pointFragment.querySelector('input[name="point"]').addEventListener('input', function (e) {
-            _this.brush.point = parseInt(e.target.value, 10);
+            _this.brush.point = parseFloat(e.target.value);
         });
         return pointFragment;
     };
@@ -3548,11 +3548,10 @@ exports.BlueprintStore = BlueprintStore;
 },{"./brushes":4,"./circ":5,"./circle":6}],23:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
