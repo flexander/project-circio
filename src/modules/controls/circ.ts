@@ -9,7 +9,7 @@ import {Circle} from "../circle";
 import BackgroundControl from "./background";
 import ControlPanel from "./panel";
 import CircleControl from "./shapes/circle";
-import Brush from "../brushes";
+import {BrushFactory} from "../brushes";
 import {ControlModes} from "./mode";
 
 export default class CircControl implements CircControlInterface {
@@ -66,7 +66,7 @@ export default class CircControl implements CircControlInterface {
                     newShape.startAngle = 0;
                     newShape.radius = 100;
 
-                    newShape.brushes.push(new Brush());
+                    newShape.brushes.push(BrushFactory());
 
                     self.circ.addShape(newShape);
                 });

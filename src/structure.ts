@@ -53,7 +53,7 @@ interface CircleInterface extends ShapeInterface, EventEmitterInterface {
     radius: number;
 }
 
-interface BrushInterface {
+interface BrushInterface extends EventEmitterInterface {
     draw: boolean;
     color: string;
     colorWithAlpha: string;
