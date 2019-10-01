@@ -1810,6 +1810,13 @@ var renderControls = function (circ) {
         backgroundPainter.draw(circ);
         guidePainter.draw(circ);
     });
+    circ.getShapes().forEach(function (shape) {
+        shape.brushes.forEach(function (brush) {
+            brush.addEventListener('change', function (value) {
+                guidePainter.draw(circ);
+            });
+        });
+    });
 };
 var engine = engine_1.EngineFactory();
 var painter = new painter_1.default(mainCanvasElement.getContext("2d"));
@@ -1878,16 +1885,34 @@ var CanvasCenter = /** @class */ (function () {
 
 },{}],4:[function(require,module,exports){
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Brush = /** @class */ (function () {
+var structure_1 = require("../structure");
+var events_1 = require("./events");
+var Brush = /** @class */ (function (_super) {
+    __extends(Brush, _super);
     function Brush() {
-        this.color = '#FFFFFF';
-        this.transparency = 0;
-        this.degrees = 0;
-        this.draw = true;
-        this.link = false;
-        this.offset = 0;
-        this.point = 0.5;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.color = '#FFFFFF';
+        _this.transparency = 0;
+        _this.degrees = 0;
+        _this.draw = true;
+        _this.link = false;
+        _this.offset = 0;
+        _this.point = 0.5;
+        return _this;
     }
     Object.defineProperty(Brush.prototype, "colorWithAlpha", {
         get: function () {
@@ -1897,10 +1922,20 @@ var Brush = /** @class */ (function () {
         configurable: true
     });
     return Brush;
-}());
-exports.default = Brush;
+}(structure_1.EventEmitter));
+exports.Brush = Brush;
+var BrushProxyHandler = {
+    set: function (target, propertyName, value, receiver) {
+        target[propertyName] = value;
+        console.log(propertyName, value);
+        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
+        return true;
+    },
+};
+var BrushFactory = function () { return new Proxy(new Brush(), BrushProxyHandler); };
+exports.BrushFactory = BrushFactory;
 
-},{}],5:[function(require,module,exports){
+},{"../structure":25,"./events":18}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2259,7 +2294,7 @@ var CircControl = /** @class */ (function () {
                     newShape.stepMod = 0;
                     newShape.startAngle = 0;
                     newShape.radius = 100;
-                    newShape.brushes.push(new brushes_1.default());
+                    newShape.brushes.push(brushes_1.BrushFactory());
                     self.circ.addShape(newShape);
                 });
                 return addShapeFragment;
@@ -3299,7 +3334,7 @@ var Serializer = /** @class */ (function () {
             CircleCenterPosition: circle_1.CircleCenterPosition,
             CircleDrawPosition: circle_1.CircleDrawPosition,
             CircleState: circle_1.CircleState,
-            Brush: brushes_1.default,
+            Brush: brushes_1.BrushFactory,
         };
     }
     Serializer.prototype.serialize = function (circ) {
@@ -3405,7 +3440,7 @@ var BlueprintStore = /** @class */ (function () {
         circle1.stepMod = 0;
         circle1.startAngle = 0;
         circle1.radius = 100;
-        var circle1Brush = new brushes_1.default();
+        var circle1Brush = brushes_1.BrushFactory();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
         circle1Brush.link = false;
@@ -3445,7 +3480,7 @@ var BlueprintStore = /** @class */ (function () {
         circle2.stepMod = 0;
         circle2.startAngle = 0;
         circle2.radius = 25;
-        var circle2Brush = new brushes_1.default();
+        var circle2Brush = brushes_1.BrushFactory();
         circle2Brush.color = '#FFFFFF';
         circle2Brush.degrees = 0;
         circle2Brush.link = false;
@@ -3494,7 +3529,7 @@ var BlueprintStore = /** @class */ (function () {
         circle3.stepMod = 0;
         circle3.startAngle = 0;
         circle3.radius = 15;
-        var circle3Brush = new brushes_1.default();
+        var circle3Brush = brushes_1.BrushFactory();
         circle3Brush.color = '#FFFFFF';
         circle3Brush.degrees = 0;
         circle3Brush.link = false;

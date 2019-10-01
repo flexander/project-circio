@@ -11,7 +11,7 @@ var Serializer = /** @class */ (function () {
             CircleCenterPosition: circle_1.CircleCenterPosition,
             CircleDrawPosition: circle_1.CircleDrawPosition,
             CircleState: circle_1.CircleState,
-            Brush: brushes_1.default,
+            Brush: brushes_1.BrushFactory,
         };
     }
     Serializer.prototype.serialize = function (circ) {

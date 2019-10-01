@@ -9,7 +9,7 @@ import CircControl from "./modules/controls/circ";
 import GuidePainterControl from "./modules/controls/guidePainter";
 import PainterControl from "./modules/controls/painter";
 import StorageControl from "./modules/controls/storage";
-import {CircInterface, ShapeInterface} from "./structure";
+import {BrushInterface, CircInterface, ShapeInterface} from "./structure";
 import CloudStorage from "./modules/storeCloud";
 import LocalStorage from "./modules/storeLocal";
 import {ControlModes, ModeControl} from "./modules/controls/mode";
@@ -63,6 +63,13 @@ const renderControls = (circ: CircInterface) => {
         backgroundPainter.draw(circ);
         guidePainter.draw(circ);
     });
+    circ.getShapes().forEach((shape: ShapeInterface): void => {
+        shape.brushes.forEach((brush: BrushInterface): void => {
+            brush.addEventListener('change', (value) => {
+                guidePainter.draw(circ);
+            });
+        });
+    })
 };
 
 
