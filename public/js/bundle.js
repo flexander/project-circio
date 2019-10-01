@@ -1927,7 +1927,6 @@ exports.Brush = Brush;
 var BrushProxyHandler = {
     set: function (target, propertyName, value, receiver) {
         target[propertyName] = value;
-        console.log(propertyName, value);
         target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
         return true;
     },

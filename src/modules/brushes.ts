@@ -19,8 +19,6 @@ const BrushProxyHandler = {
     set: (target: Brush, propertyName: PropertyKey, value: any, receiver: any): boolean => {
         target[propertyName] = value;
 
-        console.log(propertyName, value);
-
         target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
 
         return true;
