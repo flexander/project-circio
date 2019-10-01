@@ -3233,7 +3233,7 @@ var GuidePainter = /** @class */ (function () {
         this.canvasContext.stroke();
         this.canvasContext.beginPath();
         this.canvasContext.fillStyle = brush.colorWithAlpha;
-        this.canvasContext.arc(brushPointX, brushPointY, 4, 0, 2 * Math.PI);
+        this.canvasContext.arc(brushPointX, brushPointY, Math.max(2, brush.point), 0, 2 * Math.PI);
         this.canvasContext.fill();
     };
     return GuidePainter;
