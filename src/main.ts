@@ -53,12 +53,15 @@ const renderControls = (circ: CircInterface) => {
 
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
-    circ.addEventListeners(['shape.add', "shape.delete"], (shape: ShapeInterface) => renderControls(circ));
     modeControl.addEventListener('controls.mode', (newMode: string) => {
         controlMode = newMode;
         window.localStorage.setItem('config.controlMode', newMode);
         renderControls(circ)
     });
+};
+
+const initialiseEventListeners = (circ: CircInterface) => {
+    circ.addEventListeners(['shape.add', "shape.delete"], (shape: ShapeInterface) => renderControls(circ));
     circ.addEventListener('change.backgroundFill', _ => {
         backgroundPainter.draw(circ);
         guidePainter.draw(circ);
@@ -82,6 +85,7 @@ engine.addStepCallback(circ => painter.draw(circ));
 engine.addStepCallback(circ => guidePainter.draw(circ));
 engine.addResetCallback(_ => painter.clear());
 engine.addImportCallback(renderControls);
+engine.addImportCallback(initialiseEventListeners);
 engine.addImportCallback((circ: CircInterface) => {backgroundPainter.draw(circ)});
 engine.play();
 

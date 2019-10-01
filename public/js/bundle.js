@@ -1800,12 +1800,14 @@ var renderControls = function (circ) {
     controlsEl.innerHTML = null;
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
-    circ.addEventListeners(['shape.add', "shape.delete"], function (shape) { return renderControls(circ); });
     modeControl.addEventListener('controls.mode', function (newMode) {
         controlMode = newMode;
         window.localStorage.setItem('config.controlMode', newMode);
         renderControls(circ);
     });
+};
+var initialiseEventListeners = function (circ) {
+    circ.addEventListeners(['shape.add', "shape.delete"], function (shape) { return renderControls(circ); });
     circ.addEventListener('change.backgroundFill', function (_) {
         backgroundPainter.draw(circ);
         guidePainter.draw(circ);
@@ -1826,6 +1828,7 @@ engine.addStepCallback(function (circ) { return painter.draw(circ); });
 engine.addStepCallback(function (circ) { return guidePainter.draw(circ); });
 engine.addResetCallback(function (_) { return painter.clear(); });
 engine.addImportCallback(renderControls);
+engine.addImportCallback(initialiseEventListeners);
 engine.addImportCallback(function (circ) { backgroundPainter.draw(circ); });
 engine.play();
 blueprintStorage.get('twoCircles')
