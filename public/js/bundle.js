@@ -2231,7 +2231,7 @@ var BrushControl = /** @class */ (function () {
     };
     BrushControl.prototype.makePointFragment = function () {
         var _this = this;
-        var html = "\n            <div class=\"control control-point\">\n                <label>point</label>\n                <input type=\"number\" name=\"point\" min=\"0\" step=\"0.5\" class=\"input\" value=\"" + this.brush.point + "\">\n            </div>";
+        var html = "\n            <div class=\"control control-point\">\n                <label>point</label>\n                <input type=\"number\" name=\"point\" min=\"0.5\" step=\"0.5\" class=\"input\" value=\"" + this.brush.point + "\">\n            </div>";
         var pointFragment = document.createRange().createContextualFragment(html);
         pointFragment.querySelector('input[name="point"]').addEventListener('input', function (e) {
             _this.brush.point = parseFloat(e.target.value);
