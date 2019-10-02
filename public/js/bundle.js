@@ -1778,7 +1778,7 @@ var storageBlueprint = new storeBlueprint_1.BlueprintStore();
 var controlMode = window.localStorage.getItem('config.controlMode') || mode_1.ControlModes.MODE_DEFAULT;
 var renderControls = function (circ) {
     var controlPanel = new panel_1.default('Engine');
-    var engineControl = new engine_2.default(engine);
+    var engineControl = new engine_2.default(engine, controlMode);
     var circControl = new circ_1.default(circ, controlMode);
     var guidePainterControl = new guidePainter_2.default(guidePainter);
     var painterControl = new painter_2.default(painter);
@@ -2324,25 +2324,48 @@ exports.default = CircControl;
 },{"../brushes":4,"../circle":6,"./background":7,"./mode":12,"./panel":14,"./shapes/circle":15}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var mode_1 = require("./mode");
 var EngineControl = /** @class */ (function () {
-    function EngineControl(engine) {
+    function EngineControl(engine, mode) {
+        if (mode === void 0) { mode = mode_1.ControlModes.MODE_DEFAULT; }
         this.engine = engine;
+        this.mode = mode;
     }
     EngineControl.prototype.addCircControl = function (circControl) {
         this.circControl = circControl;
     };
     EngineControl.prototype.render = function () {
         var engineFragment = document.createDocumentFragment();
-        engineFragment.appendChild(this.makeIntervalFragment());
+        if (this.mode === mode_1.ControlModes.MODE_SIMPLE) {
+            engineFragment.appendChild(this.makeSimpleIntervalFragment());
+        }
+        else if (this.mode === mode_1.ControlModes.MODE_ADVANCED) {
+            engineFragment.appendChild(this.makeAdvancedIntervalFragment());
+        }
         engineFragment.appendChild(this.circControl.render());
         return engineFragment;
     };
-    EngineControl.prototype.makeIntervalFragment = function () {
+    EngineControl.prototype.makeAdvancedIntervalFragment = function () {
         var _this = this;
-        var html = "\n            <div class=\"control\">\n                <label>interval</label>\n                <input type=\"number\" name=\"interval\" min=\"0\" class=\"input\" value=\"" + this.engine.getStepInterval() + "\">\n            </div>";
+        var html = "\n            <div class=\"control\">\n                <label>Step Interval</label>\n                <input type=\"number\" name=\"interval\" min=\"0\" class=\"input\" value=\"" + this.engine.getStepInterval() + "\">\n            </div>";
         var intervalFragment = document.createRange().createContextualFragment(html);
         intervalFragment.querySelector('input[name="interval"]').addEventListener('input', function (e) {
             _this.engine.setStepInterval(parseInt(e.target.value));
+        });
+        return intervalFragment;
+    };
+    EngineControl.prototype.makeSimpleIntervalFragment = function () {
+        var _this = this;
+        var slowChecked = this.engine.getStepInterval() === 1 ? '' : 'checked';
+        var html = "\n            <div class=\"control\">\n                <label>Slow Mode</label>\n                <input type=\"checkbox\" name=\"slowMode\" class=\"input\" " + slowChecked + ">\n            </div>";
+        var intervalFragment = document.createRange().createContextualFragment(html);
+        intervalFragment.querySelector('input[name="slowMode"]').addEventListener('input', function (e) {
+            if (e.target.checked === true) {
+                _this.engine.setStepInterval(100);
+            }
+            else {
+                _this.engine.setStepInterval(1);
+            }
         });
         return intervalFragment;
     };
@@ -2452,7 +2475,7 @@ var EngineControl = /** @class */ (function () {
 }());
 exports.default = EngineControl;
 
-},{}],11:[function(require,module,exports){
+},{"./mode":12}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var GuidePainterControl = /** @class */ (function () {
@@ -3551,10 +3574,11 @@ exports.BlueprintStore = BlueprintStore;
 },{"./brushes":4,"./circ":5,"./circle":6}],23:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };

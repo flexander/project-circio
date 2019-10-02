@@ -26,7 +26,7 @@ let controlMode = window.localStorage.getItem('config.controlMode') || ControlMo
 
 const renderControls = (circ: CircInterface) => {
     const controlPanel = new ControlPanel('Engine');
-    const engineControl = new EngineControl(engine);
+    const engineControl = new EngineControl(engine, controlMode);
     const circControl = new CircControl(circ, controlMode);
     const guidePainterControl = new GuidePainterControl(guidePainter);
     const painterControl = new PainterControl(painter);

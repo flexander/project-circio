@@ -1,17 +1,21 @@
 import {
+    BrushInterface,
     CircControlInterface,
     ControlInterface,
     EngineControlInterface,
     EngineInterface,
     QuickControlInterface
 } from "../../structure";
+import {ControlModes} from "./mode";
 
 export default class EngineControl implements EngineControlInterface, QuickControlInterface {
     protected circControl: CircControlInterface;
     protected engine: EngineInterface;
+    protected mode: string;
 
-    constructor(engine: EngineInterface) {
+    constructor(engine: EngineInterface, mode: string = ControlModes.MODE_DEFAULT) {
         this.engine = engine;
+        this.mode = mode;
     }
 
     public addCircControl(circControl: CircControlInterface): void {
@@ -19,18 +23,23 @@ export default class EngineControl implements EngineControlInterface, QuickContr
     }
 
     public render(): DocumentFragment {
-
         const engineFragment = document.createDocumentFragment();
-        engineFragment.appendChild(this.makeIntervalFragment());
+
+        if (this.mode === ControlModes.MODE_SIMPLE) {
+            engineFragment.appendChild(this.makeSimpleIntervalFragment());
+        } else if (this.mode === ControlModes.MODE_ADVANCED) {
+            engineFragment.appendChild(this.makeAdvancedIntervalFragment());
+        }
+
         engineFragment.appendChild(this.circControl.render());
 
         return engineFragment;
     }
 
-    protected makeIntervalFragment(): DocumentFragment {
+    protected makeAdvancedIntervalFragment(): DocumentFragment {
         const html = `
             <div class="control">
-                <label>interval</label>
+                <label>Step Interval</label>
                 <input type="number" name="interval" min="0" class="input" value="${this.engine.getStepInterval()}">
             </div>`;
 
@@ -38,6 +47,28 @@ export default class EngineControl implements EngineControlInterface, QuickContr
 
         intervalFragment.querySelector('input[name="interval"]').addEventListener('input', e => {
             this.engine.setStepInterval(parseInt((e.target as HTMLInputElement).value));
+        });
+
+        return intervalFragment;
+    }
+
+    protected makeSimpleIntervalFragment(): DocumentFragment {
+        const slowChecked = this.engine.getStepInterval() === 1 ? '':'checked';
+
+        const html = `
+            <div class="control">
+                <label>Slow Mode</label>
+                <input type="checkbox" name="slowMode" class="input" ${slowChecked}>
+            </div>`;
+
+        const intervalFragment = document.createRange().createContextualFragment(html);
+
+        intervalFragment.querySelector('input[name="slowMode"]').addEventListener('input', e => {
+            if ((e.target as HTMLInputElement).checked === true) {
+                this.engine.setStepInterval(100);
+            } else {
+                this.engine.setStepInterval(1);
+            }
         });
 
         return intervalFragment;
