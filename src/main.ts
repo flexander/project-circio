@@ -13,6 +13,7 @@ import {BrushInterface, CircInterface, ShapeInterface} from "./structure";
 import CloudStorage from "./modules/storeCloud";
 import LocalStorage from "./modules/storeLocal";
 import {ControlModes, ModeControl} from "./modules/controls/mode";
+import {StoreRandom} from "./modules/storeRandom";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
@@ -22,6 +23,7 @@ const blueprintStorage = new BlueprintStore();
 const storageCloud = new CloudStorage();
 const storageLocal = new LocalStorage();
 const storageBlueprint = new BlueprintStore();
+const storageRandom = new StoreRandom();
 let controlMode = window.localStorage.getItem('config.controlMode') || ControlModes.MODE_DEFAULT;
 
 const renderControls = (circ: CircInterface) => {
@@ -30,7 +32,7 @@ const renderControls = (circ: CircInterface) => {
     const circControl = new CircControl(circ, controlMode);
     const guidePainterControl = new GuidePainterControl(guidePainter);
     const painterControl = new PainterControl(painter);
-    const storageControl = new StorageControl([storageCloud, storageLocal, storageBlueprint], engine);
+    const storageControl = new StorageControl([storageCloud, storageLocal, storageBlueprint,storageRandom], engine);
     const modeControl = new ModeControl(controlMode);
 
     controlPanel.addControl(guidePainterControl);
@@ -91,7 +93,7 @@ engine.play();
 
 blueprintStorage.get('twoCircles')
     .then((circ: CircInterface) => {
-        canvasArea.style.transformOrigin = '0 0'; //scale from top left
+        canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
         canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
         canvasArea.style.width = circ.width + 'px';
         canvasArea.style.height = circ.height + 'px';

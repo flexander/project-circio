@@ -1767,6 +1767,7 @@ var storage_1 = require("./modules/controls/storage");
 var storeCloud_1 = require("./modules/storeCloud");
 var storeLocal_1 = require("./modules/storeLocal");
 var mode_1 = require("./modules/controls/mode");
+var storeRandom_1 = require("./modules/storeRandom");
 var canvasArea = document.querySelector('#circio .painter');
 var backgroundCanvasElement = canvasArea.querySelector('#background-canvas');
 var mainCanvasElement = canvasArea.querySelector('#main-canvas');
@@ -1775,6 +1776,7 @@ var blueprintStorage = new storeBlueprint_1.BlueprintStore();
 var storageCloud = new storeCloud_1.default();
 var storageLocal = new storeLocal_1.default();
 var storageBlueprint = new storeBlueprint_1.BlueprintStore();
+var storageRandom = new storeRandom_1.StoreRandom();
 var controlMode = window.localStorage.getItem('config.controlMode') || mode_1.ControlModes.MODE_DEFAULT;
 var renderControls = function (circ) {
     var controlPanel = new panel_1.default('Engine');
@@ -1782,7 +1784,7 @@ var renderControls = function (circ) {
     var circControl = new circ_1.default(circ, controlMode);
     var guidePainterControl = new guidePainter_2.default(guidePainter);
     var painterControl = new painter_2.default(painter);
-    var storageControl = new storage_1.default([storageCloud, storageLocal, storageBlueprint], engine);
+    var storageControl = new storage_1.default([storageCloud, storageLocal, storageBlueprint, storageRandom], engine);
     var modeControl = new mode_1.ModeControl(controlMode);
     controlPanel.addControl(guidePainterControl);
     controlPanel.addControl(engineControl);
@@ -1833,7 +1835,7 @@ engine.addImportCallback(function (circ) { backgroundPainter.draw(circ); });
 engine.play();
 blueprintStorage.get('twoCircles')
     .then(function (circ) {
-    canvasArea.style.transformOrigin = '0 0'; //scale from top left
+    canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
     canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
     canvasArea.style.width = circ.width + 'px';
     canvasArea.style.height = circ.height + 'px';
@@ -1844,7 +1846,7 @@ blueprintStorage.get('twoCircles')
     engine.import(circ);
 });
 
-},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/mode":12,"./modules/controls/painter":13,"./modules/controls/panel":14,"./modules/controls/storage":16,"./modules/engine":17,"./modules/guidePainter":19,"./modules/painter":20,"./modules/storeBlueprint":22,"./modules/storeCloud":23,"./modules/storeLocal":24}],3:[function(require,module,exports){
+},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/mode":12,"./modules/controls/painter":13,"./modules/controls/panel":14,"./modules/controls/storage":16,"./modules/engine":17,"./modules/guidePainter":19,"./modules/painter":20,"./modules/storeBlueprint":22,"./modules/storeCloud":23,"./modules/storeLocal":24,"./modules/storeRandom":25}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundPainter = /** @class */ (function () {
@@ -1937,7 +1939,7 @@ var BrushProxyHandler = {
 var BrushFactory = function () { return new Proxy(new Brush(), BrushProxyHandler); };
 exports.BrushFactory = BrushFactory;
 
-},{"../structure":25,"./events":18}],5:[function(require,module,exports){
+},{"../structure":26,"./events":18}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -1997,7 +1999,7 @@ var CircProxyHandler = {
 var CircFactory = function () { return new Proxy(new Circ(), CircProxyHandler); };
 exports.CircFactory = CircFactory;
 
-},{"../structure":25,"./events":18}],6:[function(require,module,exports){
+},{"../structure":26,"./events":18}],6:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2142,7 +2144,7 @@ var CircleProxyHandler = {
 var CircleFactory = function () { return new Proxy(new Circle(), CircleProxyHandler); };
 exports.CircleFactory = CircleFactory;
 
-},{"../structure":25,"./events":18,"lodash.clonedeep":1}],7:[function(require,module,exports){
+},{"../structure":26,"./events":18,"lodash.clonedeep":1}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundControl = /** @class */ (function () {
@@ -2622,7 +2624,7 @@ var ControlModeEvent = /** @class */ (function () {
 }());
 exports.ControlModeEvent = ControlModeEvent;
 
-},{"../../structure":25}],13:[function(require,module,exports){
+},{"../../structure":26}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var PainterControl = /** @class */ (function () {
@@ -3100,7 +3102,7 @@ var EngineProxyHandler = {
 var EngineFactory = function () { return new Proxy(new Engine(), EngineProxyHandler); };
 exports.EngineFactory = EngineFactory;
 
-},{"../structure":25,"./events":18}],18:[function(require,module,exports){
+},{"../structure":26,"./events":18}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AttributeChangedEvent = /** @class */ (function () {
@@ -3736,6 +3738,83 @@ var LocalStorage = /** @class */ (function () {
 exports.default = LocalStorage;
 
 },{"./serializer":21}],25:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var circle_1 = require("./circle");
+var brushes_1 = require("./brushes");
+var circ_1 = require("./circ");
+var StoreRandom = /** @class */ (function () {
+    function StoreRandom() {
+        this.name = 'Randomiser';
+    }
+    StoreRandom.prototype.get = function (name) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var circ = _this.makeCirc();
+            circ.name = 'Random Circ';
+            resolve(circ);
+        });
+    };
+    StoreRandom.prototype.getIndex = function (index) {
+        return this.get(index.toString());
+    };
+    StoreRandom.prototype.list = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var circs = [];
+            for (var i = 0; i < 5; i++) {
+                var circ = _this.makeCirc();
+                circ.name = "Random Circ " + (i + 1);
+                circs.push(circ);
+            }
+            resolve(circs);
+        });
+    };
+    StoreRandom.prototype.store = function (name, circ) {
+    };
+    StoreRandom.prototype.delete = function (name) {
+        throw new Error("Blueprints can't be deleted.");
+    };
+    StoreRandom.prototype.getRandomInt = function (min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+    StoreRandom.prototype.getRandomBool = function () {
+        return this.getRandomInt(0, 1) === 1;
+    };
+    StoreRandom.prototype.makeCirc = function () {
+        var circ = circ_1.CircFactory();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#1b5eec';
+        var shapes = this.getRandomInt(2, 4);
+        var multiple = this.getRandomInt(2, 10);
+        for (var i = 0; i < shapes; i++) {
+            var circle = circle_1.CircleFactory();
+            circle.steps = this.getRandomInt(10, 100) * multiple;
+            circle.outside = this.getRandomBool();
+            circle.fixed = true;
+            circle.clockwise = this.getRandomBool();
+            circle.stepMod = 0;
+            circle.startAngle = 0;
+            circle.radius = this.getRandomInt(10, 100) * multiple;
+            circ.addShape(circle);
+        }
+        var brush = brushes_1.BrushFactory();
+        brush.color = '#FFFFFF';
+        brush.degrees = 0;
+        brush.link = this.getRandomBool();
+        brush.offset = 0;
+        brush.point = 0.5;
+        circ.getShapes()[circ.getShapes().length - 1].brushes.push(brush);
+        return circ;
+    };
+    return StoreRandom;
+}());
+exports.StoreRandom = StoreRandom;
+
+},{"./brushes":4,"./circ":5,"./circle":6}],26:[function(require,module,exports){
 "use strict";
 /** Data **/
 Object.defineProperty(exports, "__esModule", { value: true });
