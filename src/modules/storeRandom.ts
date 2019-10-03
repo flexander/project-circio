@@ -78,7 +78,7 @@ export class StoreRandom implements CircStoreInterface {
         brush.offset = 0;
         brush.point = 0.5;
 
-        circ.getShapes()[-1].brushes.push(brush);
+        circ.getShapes()[circ.getShapes().length-1].brushes.push(brush);
 
         return circ;
     }
