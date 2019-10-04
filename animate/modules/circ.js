@@ -51,6 +51,7 @@ var CircProxyHandler = {
     set: function (target, propertyName, value, receiver) {
         target[propertyName] = value;
         target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
+        target.modified = true;
         return true;
     },
 };

@@ -11,7 +11,9 @@ var LocalStorage = /** @class */ (function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var circJson = window.localStorage.getItem(_this.storeName + "." + name);
-            resolve(_this.serializer.unserialize(circJson));
+            var circ = _this.serializer.unserialize(circJson);
+            circ.modified = false;
+            resolve(circ);
         });
     };
     LocalStorage.prototype.getIndex = function (index) {
@@ -48,6 +50,7 @@ var LocalStorage = /** @class */ (function () {
         });
     };
     LocalStorage.prototype.store = function (name, circ) {
+        circ.modified = null;
         var circJson = this.serializer.serialize(circ);
         window.localStorage.setItem(this.storeName + "." + name, circJson);
     };

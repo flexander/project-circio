@@ -10,14 +10,20 @@ export default class CloudStorage implements CircStoreInterface {
         const response = await fetch(this.apiUrl + '?action=getByName&name=' + encodeURIComponent(name));
         const circJsonString = await response.text();
 
-        return this.serializer.unserialize(circJsonString);
+        const circ = this.serializer.unserialize(circJsonString);
+        circ.modified = false;
+
+        return circ;
     }
 
     public async getIndex(index: number): Promise<CircInterface> {
         const response = await fetch(this.apiUrl + '?action=getByIndex&index=' + encodeURIComponent(index));
         const circJsonString = await response.text();
 
-        return this.serializer.unserialize(circJsonString);
+        const circ = this.serializer.unserialize(circJsonString);
+        circ.modified = false;
+
+        return circ;
     }
 
     public list(): Promise<CircInterface[]> {
@@ -27,7 +33,10 @@ export default class CloudStorage implements CircStoreInterface {
                     response.json()
                         .then(circJsonStrings => {
                             const circs = circJsonStrings.map((circJsonString: string): CircInterface => {
-                                return this.serializer.unserialize(circJsonString);
+                                const circ = this.serializer.unserialize(circJsonString);
+                                circ.modified = false;
+
+                                return circ;
                             });
 
                             resolve(circs)
@@ -37,6 +46,7 @@ export default class CloudStorage implements CircStoreInterface {
     }
 
     public store(name: string, circ: CircInterface): void {
+        circ.modified = null;
         const circJson = this.serializer.serialize(circ);
         fetch(this.apiUrl, {method: 'POST', body: circJson});
     }

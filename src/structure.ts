@@ -12,6 +12,7 @@ interface CircInterface extends EventEmitterInterface {
     backgroundFill: string;
     stepsToComplete: number;
     state: CircStateInterface;
+    modified: boolean;
 
     addShape(shape: ShapeInterface): void;
     removeShape(id: number): void;
