@@ -36,6 +36,7 @@ var BlueprintStore = /** @class */ (function () {
     BlueprintStore.prototype.resolveCirc = function (circName) {
         var circ = this.blueprintsStore[circName]();
         circ.name = circName;
+        circ.modified = false;
         return circ;
     };
     BlueprintStore.prototype.store = function (name, circ) {

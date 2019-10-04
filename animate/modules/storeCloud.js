@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -45,7 +44,7 @@ var CloudStorage = /** @class */ (function () {
     }
     CloudStorage.prototype.get = function (name) {
         return __awaiter(this, void 0, void 0, function () {
-            var response, circJsonString;
+            var response, circJsonString, circ;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=getByName&name=' + encodeURIComponent(name))];
@@ -54,14 +53,16 @@ var CloudStorage = /** @class */ (function () {
                         return [4 /*yield*/, response.text()];
                     case 2:
                         circJsonString = _a.sent();
-                        return [2 /*return*/, this.serializer.unserialize(circJsonString)];
+                        circ = this.serializer.unserialize(circJsonString);
+                        circ.modified = false;
+                        return [2 /*return*/, circ];
                 }
             });
         });
     };
     CloudStorage.prototype.getIndex = function (index) {
         return __awaiter(this, void 0, void 0, function () {
-            var response, circJsonString;
+            var response, circJsonString, circ;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=getByIndex&index=' + encodeURIComponent(index))];
@@ -70,7 +71,9 @@ var CloudStorage = /** @class */ (function () {
                         return [4 /*yield*/, response.text()];
                     case 2:
                         circJsonString = _a.sent();
-                        return [2 /*return*/, this.serializer.unserialize(circJsonString)];
+                        circ = this.serializer.unserialize(circJsonString);
+                        circ.modified = false;
+                        return [2 /*return*/, circ];
                 }
             });
         });
@@ -83,7 +86,9 @@ var CloudStorage = /** @class */ (function () {
                 response.json()
                     .then(function (circJsonStrings) {
                     var circs = circJsonStrings.map(function (circJsonString) {
-                        return _this.serializer.unserialize(circJsonString);
+                        var circ = _this.serializer.unserialize(circJsonString);
+                        circ.modified = false;
+                        return circ;
                     });
                     resolve(circs);
                 });
@@ -91,6 +96,7 @@ var CloudStorage = /** @class */ (function () {
         });
     };
     CloudStorage.prototype.store = function (name, circ) {
+        circ.modified = null;
         var circJson = this.serializer.serialize(circ);
         fetch(this.apiUrl, { method: 'POST', body: circJson });
     };
