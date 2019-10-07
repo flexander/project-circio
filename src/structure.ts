@@ -5,18 +5,22 @@ interface PositionInterface {
     y: number;
 }
 
-interface CircInterface extends EventEmitterInterface {
-    name: string;
-    width: number;
-    height: number;
-    backgroundFill: string;
-    stepsToComplete: number;
-    state: CircStateInterface;
+interface ModifiableInterface {
     modified: boolean;
+}
 
+interface CircInterface extends EventEmitterInterface, CircConfigInterface, ModifiableInterface {
     addShape(shape: ShapeInterface): void;
     removeShape(id: number): void;
     getShapes(): ShapeInterface[];
+}
+
+interface CircConfigInterface {
+    name: string;
+    height: number;
+    width: number;
+    backgroundFill: string;
+    stepsToComplete: number;
 }
 
 interface CircStateInterface {
@@ -217,6 +221,7 @@ export {
     PositionInterface,
     CircInterface,
     CircStateInterface,
+    CircConfigInterface,
     ShapeInterface,
     ShapeStateInterface,
     CircleInterface,
