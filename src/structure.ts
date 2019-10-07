@@ -9,13 +9,13 @@ interface ModifiableInterface {
     modified: boolean;
 }
 
-interface CircInterface extends EventEmitterInterface, CircConfigInterface, ModifiableInterface {
+interface CircInterface extends EventEmitterInterface, CircConfigInterface {
     addShape(shape: ShapeInterface): void;
     removeShape(id: number): void;
     getShapes(): ShapeInterface[];
 }
 
-interface CircConfigInterface {
+interface CircConfigInterface extends ModifiableInterface{
     name: string;
     height: number;
     width: number;
