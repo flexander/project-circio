@@ -6,7 +6,7 @@ var circ_1 = require("./circ");
 var Serializer = /** @class */ (function () {
     function Serializer() {
         this.classes = {
-            Circ: circ_1.CircFactory,
+            Circ: circ_1.Circ,
             Circle: circle_1.CircleFactory,
             CircleCenterPosition: circle_1.CircleCenterPosition,
             CircleDrawPosition: circle_1.CircleDrawPosition,

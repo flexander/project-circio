@@ -45,7 +45,7 @@ var BlueprintStore = /** @class */ (function () {
         throw new Error("Blueprints can't be deleted.");
     };
     BlueprintStore.prototype.makeTwoCircles = function () {
-        var circ = circ_1.CircFactory();
+        var circ = new circ_1.Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -77,7 +77,7 @@ var BlueprintStore = /** @class */ (function () {
         return circ;
     };
     BlueprintStore.prototype.makeThreeCircles = function () {
-        var circ = circ_1.CircFactory();
+        var circ = new circ_1.Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -118,7 +118,7 @@ var BlueprintStore = /** @class */ (function () {
         return circ;
     };
     BlueprintStore.prototype.makeFourCircles = function () {
-        var circ = circ_1.CircFactory();
+        var circ = new circ_1.Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';

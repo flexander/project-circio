@@ -1959,6 +1959,7 @@ var Circ = /** @class */ (function (_super) {
     __extends(Circ, _super);
     function Circ() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.config = new CircConfig();
         _this.shapes = [];
         return _this;
     }
@@ -1984,19 +1985,70 @@ var Circ = /** @class */ (function (_super) {
     Circ.prototype.getShapes = function () {
         return this.shapes;
     };
+    Object.defineProperty(Circ.prototype, "name", {
+        get: function () {
+            return this.config['name'];
+        },
+        set: function (name) {
+            this.config['name'] = name;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.name', this.name));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circ.prototype, "height", {
+        get: function () {
+            return this.config.height;
+        },
+        set: function (height) {
+            this.config.height = height;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.height', this.height));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circ.prototype, "width", {
+        get: function () {
+            return this.config.width;
+        },
+        set: function (width) {
+            this.config.width = width;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.width', this.width));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circ.prototype, "backgroundFill", {
+        get: function () {
+            return this.config.backgroundFill;
+        },
+        set: function (backgroundFill) {
+            this.config.backgroundFill = backgroundFill;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.backgroundFill', this.backgroundFill));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circ.prototype, "stepsToComplete", {
+        get: function () {
+            return this.config.stepsToComplete;
+        },
+        set: function (stepsToComplete) {
+            this.config.stepsToComplete = stepsToComplete;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.stepsToComplete', this.stepsToComplete));
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Circ;
 }(structure_1.EventEmitter));
 exports.Circ = Circ;
-var CircProxyHandler = {
-    set: function (target, propertyName, value, receiver) {
-        target[propertyName] = value;
-        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
-        target.modified = true;
-        return true;
-    },
-};
-var CircFactory = function () { return new Proxy(new Circ(), CircProxyHandler); };
-exports.CircFactory = CircFactory;
+var CircConfig = /** @class */ (function () {
+    function CircConfig() {
+    }
+    return CircConfig;
+}());
+exports.CircConfig = CircConfig;
 
 },{"../structure":25,"./events":18}],6:[function(require,module,exports){
 "use strict";
@@ -3355,7 +3407,7 @@ var circ_1 = require("./circ");
 var Serializer = /** @class */ (function () {
     function Serializer() {
         this.classes = {
-            Circ: circ_1.CircFactory,
+            Circ: circ_1.Circ,
             Circle: circle_1.CircleFactory,
             CircleCenterPosition: circle_1.CircleCenterPosition,
             CircleDrawPosition: circle_1.CircleDrawPosition,
@@ -3447,7 +3499,7 @@ var BlueprintStore = /** @class */ (function () {
         throw new Error("Blueprints can't be deleted.");
     };
     BlueprintStore.prototype.makeTwoCircles = function () {
-        var circ = circ_1.CircFactory();
+        var circ = new circ_1.Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -3479,7 +3531,7 @@ var BlueprintStore = /** @class */ (function () {
         return circ;
     };
     BlueprintStore.prototype.makeThreeCircles = function () {
-        var circ = circ_1.CircFactory();
+        var circ = new circ_1.Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -3520,7 +3572,7 @@ var BlueprintStore = /** @class */ (function () {
         return circ;
     };
     BlueprintStore.prototype.makeFourCircles = function () {
-        var circ = circ_1.CircFactory();
+        var circ = new circ_1.Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
