@@ -40,20 +40,20 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         const html = `
             <div class="control">
                 <label>Step Interval</label>
-                <input type="number" name="interval" min="0" class="input" value="${this.engine.getStepInterval()}">
+                <input type="number" name="interval" min="0" class="input" value="${this.engine.stepInterval}">
             </div>`;
 
         const intervalFragment = document.createRange().createContextualFragment(html);
 
         intervalFragment.querySelector('input[name="interval"]').addEventListener('input', e => {
-            this.engine.setStepInterval(parseInt((e.target as HTMLInputElement).value));
+            this.engine.stepInterval = parseInt((e.target as HTMLInputElement).value);
         });
 
         return intervalFragment;
     }
 
     protected makeSimpleIntervalFragment(): DocumentFragment {
-        const slowChecked = this.engine.getStepInterval() === 1 ? '':'checked';
+        const slowChecked = this.engine.stepInterval === 1 ? '':'checked';
 
         const html = `
             <div class="control">
@@ -65,9 +65,9 @@ export default class EngineControl implements EngineControlInterface, QuickContr
 
         intervalFragment.querySelector('input[name="slowMode"]').addEventListener('input', e => {
             if ((e.target as HTMLInputElement).checked === true) {
-                this.engine.setStepInterval(100);
+                this.engine.stepInterval = 100;
             } else {
-                this.engine.setStepInterval(1);
+                this.engine.stepInterval = 1;
             }
         });
 

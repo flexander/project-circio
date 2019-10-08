@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var engine_1 = require("./modules/engine");
 var painter_1 = require("./modules/painter");
 var storeBlueprint_1 = require("./modules/storeBlueprint");
 var backgroundPainter_1 = require("./modules/backgroundPainter");
+var engine_1 = require("./modules/engine");
 // import { createCanvas } from 'canvas';
 var _a = require('canvas'), createCanvas = _a.createCanvas, loadImage = _a.loadImage;
 var args = require('minimist')(process.argv.slice(2));
 var fs = require('fs');
 var canvas = createCanvas(1080, 1080);
 var blueprintStorage = new storeBlueprint_1.BlueprintStore();
-var engine = engine_1.EngineFactory();
+var engine = new engine_1.Engine();
 var painter = new painter_1.default(canvas.getContext('2d'));
 var backgroundPainter = new backgroundPainter_1.default(canvas.getContext('2d'));
 engine.addStepCallback(function (circ) { return backgroundPainter.draw(circ); });

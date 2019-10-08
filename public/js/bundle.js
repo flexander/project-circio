@@ -1753,13 +1753,12 @@ module.exports = cloneDeep;
 },{}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var engine_1 = require("./modules/engine");
 var painter_1 = require("./modules/painter");
 var guidePainter_1 = require("./modules/guidePainter");
 var storeBlueprint_1 = require("./modules/storeBlueprint");
 var backgroundPainter_1 = require("./modules/backgroundPainter");
 var panel_1 = require("./modules/controls/panel");
-var engine_2 = require("./modules/controls/engine");
+var engine_1 = require("./modules/controls/engine");
 var circ_1 = require("./modules/controls/circ");
 var guidePainter_2 = require("./modules/controls/guidePainter");
 var painter_2 = require("./modules/controls/painter");
@@ -1767,6 +1766,7 @@ var storage_1 = require("./modules/controls/storage");
 var storeCloud_1 = require("./modules/storeCloud");
 var storeLocal_1 = require("./modules/storeLocal");
 var mode_1 = require("./modules/controls/mode");
+var engine_2 = require("./modules/engine");
 var canvasArea = document.querySelector('#circio .painter');
 var backgroundCanvasElement = canvasArea.querySelector('#background-canvas');
 var mainCanvasElement = canvasArea.querySelector('#main-canvas');
@@ -1778,7 +1778,7 @@ var storageBlueprint = new storeBlueprint_1.BlueprintStore();
 var controlMode = window.localStorage.getItem('config.controlMode') || mode_1.ControlModes.MODE_DEFAULT;
 var renderControls = function (circ) {
     var controlPanel = new panel_1.default('Engine');
-    var engineControl = new engine_2.default(engine, controlMode);
+    var engineControl = new engine_1.default(engine, controlMode);
     var circControl = new circ_1.default(circ, controlMode);
     var guidePainterControl = new guidePainter_2.default(guidePainter);
     var painterControl = new painter_2.default(painter);
@@ -1820,7 +1820,7 @@ var initialiseEventListeners = function (circ) {
         });
     });
 };
-var engine = engine_1.EngineFactory();
+var engine = new engine_2.Engine();
 var painter = new painter_1.default(mainCanvasElement.getContext("2d"));
 var guidePainter = new guidePainter_1.default(guideCanvasElement.getContext("2d"));
 var backgroundPainter = new backgroundPainter_1.default(backgroundCanvasElement.getContext("2d"));
@@ -2582,24 +2582,24 @@ var EngineControl = /** @class */ (function () {
     };
     EngineControl.prototype.makeAdvancedIntervalFragment = function () {
         var _this = this;
-        var html = "\n            <div class=\"control\">\n                <label>Step Interval</label>\n                <input type=\"number\" name=\"interval\" min=\"0\" class=\"input\" value=\"" + this.engine.getStepInterval() + "\">\n            </div>";
+        var html = "\n            <div class=\"control\">\n                <label>Step Interval</label>\n                <input type=\"number\" name=\"interval\" min=\"0\" class=\"input\" value=\"" + this.engine.stepInterval + "\">\n            </div>";
         var intervalFragment = document.createRange().createContextualFragment(html);
         intervalFragment.querySelector('input[name="interval"]').addEventListener('input', function (e) {
-            _this.engine.setStepInterval(parseInt(e.target.value));
+            _this.engine.stepInterval = parseInt(e.target.value);
         });
         return intervalFragment;
     };
     EngineControl.prototype.makeSimpleIntervalFragment = function () {
         var _this = this;
-        var slowChecked = this.engine.getStepInterval() === 1 ? '' : 'checked';
+        var slowChecked = this.engine.stepInterval === 1 ? '' : 'checked';
         var html = "\n            <div class=\"control\">\n                <label>Slow Mode</label>\n                <input type=\"checkbox\" name=\"slowMode\" class=\"input\" " + slowChecked + ">\n            </div>";
         var intervalFragment = document.createRange().createContextualFragment(html);
         intervalFragment.querySelector('input[name="slowMode"]').addEventListener('input', function (e) {
             if (e.target.checked === true) {
-                _this.engine.setStepInterval(100);
+                _this.engine.stepInterval = 100;
             }
             else {
-                _this.engine.setStepInterval(1);
+                _this.engine.stepInterval = 1;
             }
         });
         return intervalFragment;
@@ -3059,9 +3059,9 @@ exports.default = CircleControl;
 },{"../brush":8,"../mode":12}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var engine_1 = require("../engine");
 var painter_1 = require("../painter");
 var backgroundPainter_1 = require("../backgroundPainter");
+var engine_1 = require("../engine");
 var StorageControl = /** @class */ (function () {
     function StorageControl(stores, engine) {
         this.stores = stores;
@@ -3117,7 +3117,7 @@ var StorageControl = /** @class */ (function () {
                         tileBackCanvas.setAttribute('width', tileBackCanvas.style.width);
                         var previewPainter = new painter_1.default(tileCanvas.getContext('2d'));
                         var previewBackgroundPainter = new backgroundPainter_1.default(tileBackCanvas.getContext('2d'));
-                        var previewEngine = engine_1.EngineFactory();
+                        var previewEngine = new engine_1.Engine();
                         previewEngine.addStepCallback(function (circ) { return previewPainter.draw(circ); });
                         previewEngine.addStepCallback(function (circ) { return previewBackgroundPainter.draw(circ); });
                         previewEngine.import(circ);
@@ -3193,8 +3193,8 @@ var Engine = /** @class */ (function (_super) {
     __extends(Engine, _super);
     function Engine() {
         var _this = _super.call(this) || this;
+        _this.config = new EngineConfig();
         _this.totalStepsRun = 0;
-        _this.interval = 1;
         _this.stepCallbacks = [];
         _this.resetCallbacks = [];
         _this.importCallbacks = [];
@@ -3314,26 +3314,29 @@ var Engine = /** @class */ (function (_super) {
                 _this.stepsToRun--;
             }
             _this.run();
-        }, this.interval);
+        }, this.stepInterval);
     };
-    Engine.prototype.getStepInterval = function () {
-        return this.interval;
-    };
-    Engine.prototype.setStepInterval = function (milliseconds) {
-        this.interval = milliseconds;
-    };
+    Object.defineProperty(Engine.prototype, "stepInterval", {
+        get: function () {
+            return this.config.stepInterval;
+        },
+        set: function (milliseconds) {
+            this.config.stepInterval = milliseconds;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('stepInterval', this.stepInterval));
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Engine;
 }(structure_1.EventEmitter));
 exports.Engine = Engine;
-var EngineProxyHandler = {
-    set: function (target, propertyName, value, receiver) {
-        target[propertyName] = value;
-        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
-        return true;
-    },
-};
-var EngineFactory = function () { return new Proxy(new Engine(), EngineProxyHandler); };
-exports.EngineFactory = EngineFactory;
+var EngineConfig = /** @class */ (function () {
+    function EngineConfig() {
+        this.stepInterval = 1;
+    }
+    return EngineConfig;
+}());
+exports.EngineConfig = EngineConfig;
 
 },{"../structure":25,"./events":18}],18:[function(require,module,exports){
 "use strict";
