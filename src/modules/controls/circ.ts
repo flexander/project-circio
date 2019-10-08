@@ -66,7 +66,7 @@ export default class CircControl implements CircControlInterface {
                     newShape.startAngle = 0;
                     newShape.radius = 100;
 
-                    newShape.brushes.push(new Brush());
+                    newShape.addBrush(new Brush());
 
                     self.circ.addShape(newShape);
                 });

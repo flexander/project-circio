@@ -69,7 +69,7 @@ var GuidePainter = /** @class */ (function () {
         this.canvasContext.arc(circle.state.centre.x, circle.state.centre.y, circle.radius, 0, 2 * Math.PI);
         this.canvasContext.stroke();
         this.drawRotationIndicator(circle);
-        circle.brushes.forEach(function (brush) { return _this.drawBrushPoint(circle, brush); });
+        circle.getBrushes().forEach(function (brush) { return _this.drawBrushPoint(circle, brush); });
     };
     GuidePainter.prototype.drawRotationIndicator = function (circle) {
         this.canvasContext.fillStyle = this.guideColor;

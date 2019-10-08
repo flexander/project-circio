@@ -1813,7 +1813,7 @@ var initialiseEventListeners = function (circ) {
         guidePainter.draw(circ);
     });
     circ.getShapes().forEach(function (shape) {
-        shape.brushes.forEach(function (brush) {
+        shape.getBrushes().forEach(function (brush) {
             brush.addEventListener('change', function (value) {
                 guidePainter.draw(circ);
             });
@@ -2242,6 +2242,12 @@ var Circle = /** @class */ (function (_super) {
         // Create a new initial state object
         this.saveInitialState();
     };
+    Circle.prototype.addBrush = function (brush) {
+        this.brushes.push(brush);
+    };
+    Circle.prototype.getBrushes = function () {
+        return this.brushes;
+    };
     Object.defineProperty(Circle.prototype, "steps", {
         get: function () {
             return this.config.steps;
@@ -2531,7 +2537,7 @@ var CircControl = /** @class */ (function () {
                     newShape.stepMod = 0;
                     newShape.startAngle = 0;
                     newShape.radius = 100;
-                    newShape.brushes.push(new brushes_1.Brush());
+                    newShape.addBrush(new brushes_1.Brush());
                     self.circ.addShape(newShape);
                 });
                 return addShapeFragment;
@@ -2927,7 +2933,7 @@ var CircleControl = /** @class */ (function () {
         this.brushControls = [];
         this.circle = circle;
         this.mode = mode;
-        this.circle.brushes.forEach(function (brush) {
+        this.circle.getBrushes().forEach(function (brush) {
             _this.addBrushControl(new brush_1.default(brush, mode));
         });
     }
@@ -3478,7 +3484,7 @@ var GuidePainter = /** @class */ (function () {
         this.canvasContext.arc(circle.state.centre.x, circle.state.centre.y, circle.radius, 0, 2 * Math.PI);
         this.canvasContext.stroke();
         this.drawRotationIndicator(circle);
-        circle.brushes.forEach(function (brush) { return _this.drawBrushPoint(circle, brush); });
+        circle.getBrushes().forEach(function (brush) { return _this.drawBrushPoint(circle, brush); });
     };
     GuidePainter.prototype.drawRotationIndicator = function (circle) {
         this.canvasContext.fillStyle = this.guideColor;
@@ -3525,7 +3531,7 @@ var Painter = /** @class */ (function () {
         var _this = this;
         this.centerCanvas(circ);
         circ.getShapes().forEach(function (circle) {
-            if (circle.brushes.length === 0) {
+            if (circle.getBrushes().length === 0) {
                 return;
             }
             _this.drawPoints(circle);
@@ -3548,7 +3554,7 @@ var Painter = /** @class */ (function () {
     };
     Painter.prototype.drawPoints = function (circle) {
         var _this = this;
-        circle.brushes.forEach(function (brush) {
+        circle.getBrushes().forEach(function (brush) {
             var radians = circle.state.getAngle();
             var x = circle.state.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);
             var y = circle.state.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);
@@ -3712,7 +3718,7 @@ var BlueprintStore = /** @class */ (function () {
         circle1Brush.link = false;
         circle1Brush.offset = 0;
         circle1Brush.point = 0.5;
-        circle1.brushes.push(circle1Brush);
+        circle1.addBrush(circle1Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
         return circ;
@@ -3752,7 +3758,7 @@ var BlueprintStore = /** @class */ (function () {
         circle2Brush.link = false;
         circle2Brush.offset = 0;
         circle2Brush.point = 0.5;
-        circle2.brushes.push(circle2Brush);
+        circle2.addBrush(circle2Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
         circ.addShape(circle2);
@@ -3801,7 +3807,7 @@ var BlueprintStore = /** @class */ (function () {
         circle3Brush.link = false;
         circle3Brush.offset = 0;
         circle3Brush.point = 0.5;
-        circle3.brushes.push(circle3Brush);
+        circle3.addBrush(circle3Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
         circ.addShape(circle2);

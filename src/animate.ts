@@ -40,12 +40,12 @@ blueprintStorage.get('threeCircles')
             console.log(f + ' of ' + endFrame);
             engine.reset();
 
-            circ.getShapes()[2].brushes[0].degrees = f;
+            circ.getShapes()[2].getBrushes()[0].degrees = f;
 
             if(f <= (2 * offset)) {
-                circ.getShapes()[2].brushes[0].offset = (-1 * offset) + f;
+                circ.getShapes()[2].getBrushes()[0].offset = (-1 * offset) + f;
             } else {
-                circ.getShapes()[2].brushes[0].offset = offset - (f - (2 * offset));
+                circ.getShapes()[2].getBrushes()[0].offset = offset - (f - (2 * offset));
             }
 
             let fileName = name + '/frame-'+ f.toString().padStart(10 , '0') +'.png';

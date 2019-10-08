@@ -67,7 +67,7 @@ const initialiseEventListeners = (circ: CircInterface) => {
         guidePainter.draw(circ);
     });
     circ.getShapes().forEach((shape: ShapeInterface): void => {
-        shape.brushes.forEach((brush: BrushInterface): void => {
+        shape.getBrushes().forEach((brush: BrushInterface): void => {
             brush.addEventListener('change', (value) => {
                 guidePainter.draw(circ);
             });

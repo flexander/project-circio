@@ -70,7 +70,7 @@ var BlueprintStore = /** @class */ (function () {
         circle1Brush.link = false;
         circle1Brush.offset = 0;
         circle1Brush.point = 0.5;
-        circle1.brushes.push(circle1Brush);
+        circle1.addBrush(circle1Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
         return circ;
@@ -110,7 +110,7 @@ var BlueprintStore = /** @class */ (function () {
         circle2Brush.link = false;
         circle2Brush.offset = 0;
         circle2Brush.point = 0.5;
-        circle2.brushes.push(circle2Brush);
+        circle2.addBrush(circle2Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
         circ.addShape(circle2);
@@ -159,7 +159,7 @@ var BlueprintStore = /** @class */ (function () {
         circle3Brush.link = false;
         circle3Brush.offset = 0;
         circle3Brush.point = 0.5;
-        circle3.brushes.push(circle3Brush);
+        circle3.addBrush(circle3Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
         circ.addShape(circle2);
