@@ -61,7 +61,10 @@ interface CircleInterface extends ShapeInterface, EventEmitterInterface {
     radius: number;
 }
 
-interface BrushInterface extends EventEmitterInterface {
+interface BrushInterface extends EventEmitterInterface, BrushConfigInterface {
+}
+
+interface BrushConfigInterface {
     draw: boolean;
     color: string;
     colorWithAlpha: string;
@@ -230,6 +233,7 @@ export {
     ShapeConfigInterface,
     CircleInterface,
     BrushInterface,
+    BrushConfigInterface,
     EngineInterface,
     PainterInterface,
     CircStoreInterface,

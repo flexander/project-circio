@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var brushes_1 = require("./brushes");
 var circ_1 = require("./circ");
 var circle_1 = require("./circle");
+var brushes_1 = require("./brushes");
 var BlueprintStore = /** @class */ (function () {
     function BlueprintStore() {
         this.blueprintsStore = {
@@ -36,7 +36,6 @@ var BlueprintStore = /** @class */ (function () {
     BlueprintStore.prototype.resolveCirc = function (circName) {
         var circ = this.blueprintsStore[circName]();
         circ.name = circName;
-        circ.modified = false;
         return circ;
     };
     BlueprintStore.prototype.store = function (name, circ) {
@@ -65,7 +64,7 @@ var BlueprintStore = /** @class */ (function () {
         circle1.stepMod = 0;
         circle1.startAngle = 0;
         circle1.radius = 100;
-        var circle1Brush = brushes_1.BrushFactory();
+        var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
         circle1Brush.link = false;
@@ -105,7 +104,7 @@ var BlueprintStore = /** @class */ (function () {
         circle2.stepMod = 0;
         circle2.startAngle = 0;
         circle2.radius = 25;
-        var circle2Brush = brushes_1.BrushFactory();
+        var circle2Brush = new brushes_1.Brush();
         circle2Brush.color = '#FFFFFF';
         circle2Brush.degrees = 0;
         circle2Brush.link = false;
@@ -154,7 +153,7 @@ var BlueprintStore = /** @class */ (function () {
         circle3.stepMod = 0;
         circle3.startAngle = 0;
         circle3.radius = 15;
-        var circle3Brush = brushes_1.BrushFactory();
+        var circle3Brush = new brushes_1.Brush();
         circle3Brush.color = '#FFFFFF';
         circle3Brush.degrees = 0;
         circle3Brush.link = false;

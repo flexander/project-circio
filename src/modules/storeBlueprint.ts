@@ -1,7 +1,7 @@
 import {CircInterface, CircStoreInterface} from "../structure";
-import {BrushFactory} from "./brushes";
 import {Circ} from "./circ";
 import {Circle} from "./circle";
+import {Brush} from "./brushes";
 
 export class BlueprintStore implements CircStoreInterface {
     protected blueprintsStore: {[name: string]: Function} = {
@@ -74,7 +74,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle1.startAngle = 0;
         circle1.radius = 100;
 
-        const circle1Brush = BrushFactory();
+        const circle1Brush = new Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
         circle1Brush.link = false;
@@ -122,7 +122,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle2.startAngle = 0;
         circle2.radius = 25;
 
-        const circle2Brush = BrushFactory();
+        const circle2Brush = new Brush();
         circle2Brush.color = '#FFFFFF';
         circle2Brush.degrees = 0;
         circle2Brush.link = false;
@@ -180,7 +180,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle3.startAngle = 0;
         circle3.radius = 15;
 
-        const circle3Brush = BrushFactory();
+        const circle3Brush = new Brush();
         circle3Brush.color = '#FFFFFF';
         circle3Brush.degrees = 0;
         circle3Brush.link = false;

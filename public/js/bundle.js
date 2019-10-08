@@ -1903,23 +1903,86 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var structure_1 = require("../structure");
-var events_1 = require("./events");
 var Brush = /** @class */ (function (_super) {
     __extends(Brush, _super);
     function Brush() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.color = '#FFFFFF';
-        _this.transparency = 0;
-        _this.degrees = 0;
-        _this.draw = true;
-        _this.link = false;
-        _this.offset = 0;
-        _this.point = 0.5;
+        _this.config = new BrushConfig();
         return _this;
     }
+    Object.defineProperty(Brush.prototype, "color", {
+        get: function () {
+            return this.config.color;
+        },
+        set: function (color) {
+            this.config.color = color;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Brush.prototype, "transparency", {
+        get: function () {
+            return this.config.transparency;
+        },
+        set: function (transparency) {
+            this.config.transparency = transparency;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Brush.prototype, "degrees", {
+        get: function () {
+            return this.config.degrees;
+        },
+        set: function (degrees) {
+            this.config.degrees = degrees;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Brush.prototype, "draw", {
+        get: function () {
+            return this.config.draw;
+        },
+        set: function (draw) {
+            this.config.draw = draw;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Brush.prototype, "link", {
+        get: function () {
+            return this.config.link;
+        },
+        set: function (link) {
+            this.config.link = link;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Brush.prototype, "offset", {
+        get: function () {
+            return this.config.offset;
+        },
+        set: function (offset) {
+            this.config.offset = offset;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Brush.prototype, "point", {
+        get: function () {
+            return this.config.point;
+        },
+        set: function (point) {
+            this.config.point = point;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Brush.prototype, "colorWithAlpha", {
         get: function () {
-            return this.color + ('00' + (255 - this.transparency).toString(16)).substr(-2);
+            return this.config.colorWithAlpha;
         },
         enumerable: true,
         configurable: true
@@ -1927,17 +1990,28 @@ var Brush = /** @class */ (function (_super) {
     return Brush;
 }(structure_1.EventEmitter));
 exports.Brush = Brush;
-var BrushProxyHandler = {
-    set: function (target, propertyName, value, receiver) {
-        target[propertyName] = value;
-        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
-        return true;
-    },
-};
-var BrushFactory = function () { return new Proxy(new Brush(), BrushProxyHandler); };
-exports.BrushFactory = BrushFactory;
+var BrushConfig = /** @class */ (function () {
+    function BrushConfig() {
+        this.color = '#FFFFFF';
+        this.transparency = 0;
+        this.degrees = 0;
+        this.draw = true;
+        this.link = false;
+        this.offset = 0;
+        this.point = 0.5;
+    }
+    Object.defineProperty(BrushConfig.prototype, "colorWithAlpha", {
+        get: function () {
+            return this.color + ('00' + (255 - this.transparency).toString(16)).substr(-2);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return BrushConfig;
+}());
+exports.BrushConfig = BrushConfig;
 
-},{"../structure":25,"./events":18}],5:[function(require,module,exports){
+},{"../structure":25}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2405,8 +2479,8 @@ var circle_1 = require("../circle");
 var background_1 = require("./background");
 var panel_1 = require("./panel");
 var circle_2 = require("./shapes/circle");
-var brushes_1 = require("../brushes");
 var mode_1 = require("./mode");
+var brushes_1 = require("../brushes");
 var CircControl = /** @class */ (function () {
     function CircControl(circ, mode) {
         var _this = this;
@@ -2449,7 +2523,7 @@ var CircControl = /** @class */ (function () {
                     newShape.stepMod = 0;
                     newShape.startAngle = 0;
                     newShape.radius = 100;
-                    newShape.brushes.push(brushes_1.BrushFactory());
+                    newShape.brushes.push(new brushes_1.Brush());
                     self.circ.addShape(newShape);
                 });
                 return addShapeFragment;
@@ -3501,9 +3575,9 @@ var CanvasCenter = /** @class */ (function () {
 },{}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var brushes_1 = require("./brushes");
 var circle_1 = require("./circle");
 var circ_1 = require("./circ");
+var brushes_1 = require("./brushes");
 var Serializer = /** @class */ (function () {
     function Serializer() {
         this.classes = {
@@ -3514,7 +3588,8 @@ var Serializer = /** @class */ (function () {
             CircleDrawPosition: circle_1.CircleDrawPosition,
             CircleState: circle_1.CircleState,
             CircleConfig: circle_1.CircleConfig,
-            Brush: brushes_1.BrushFactory,
+            Brush: brushes_1.Brush,
+            BrushConfig: brushes_1.BrushConfig,
         };
     }
     Serializer.prototype.serialize = function (circ) {
@@ -3556,9 +3631,9 @@ exports.default = Serializer;
 },{"./brushes":4,"./circ":5,"./circle":6}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var brushes_1 = require("./brushes");
 var circ_1 = require("./circ");
 var circle_1 = require("./circle");
+var brushes_1 = require("./brushes");
 var BlueprintStore = /** @class */ (function () {
     function BlueprintStore() {
         this.blueprintsStore = {
@@ -3592,7 +3667,6 @@ var BlueprintStore = /** @class */ (function () {
     BlueprintStore.prototype.resolveCirc = function (circName) {
         var circ = this.blueprintsStore[circName]();
         circ.name = circName;
-        circ.modified = false;
         return circ;
     };
     BlueprintStore.prototype.store = function (name, circ) {
@@ -3621,7 +3695,7 @@ var BlueprintStore = /** @class */ (function () {
         circle1.stepMod = 0;
         circle1.startAngle = 0;
         circle1.radius = 100;
-        var circle1Brush = brushes_1.BrushFactory();
+        var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
         circle1Brush.link = false;
@@ -3661,7 +3735,7 @@ var BlueprintStore = /** @class */ (function () {
         circle2.stepMod = 0;
         circle2.startAngle = 0;
         circle2.radius = 25;
-        var circle2Brush = brushes_1.BrushFactory();
+        var circle2Brush = new brushes_1.Brush();
         circle2Brush.color = '#FFFFFF';
         circle2Brush.degrees = 0;
         circle2Brush.link = false;
@@ -3710,7 +3784,7 @@ var BlueprintStore = /** @class */ (function () {
         circle3.stepMod = 0;
         circle3.startAngle = 0;
         circle3.radius = 15;
-        var circle3Brush = brushes_1.BrushFactory();
+        var circle3Brush = new brushes_1.Brush();
         circle3Brush.color = '#FFFFFF';
         circle3Brush.degrees = 0;
         circle3Brush.link = false;
@@ -3774,7 +3848,7 @@ var CloudStorage = /** @class */ (function () {
     }
     CloudStorage.prototype.get = function (name) {
         return __awaiter(this, void 0, void 0, function () {
-            var response, circJsonString, circ;
+            var response, circJsonString;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=getByName&name=' + encodeURIComponent(name))];
@@ -3783,16 +3857,14 @@ var CloudStorage = /** @class */ (function () {
                         return [4 /*yield*/, response.text()];
                     case 2:
                         circJsonString = _a.sent();
-                        circ = this.serializer.unserialize(circJsonString);
-                        circ.modified = false;
-                        return [2 /*return*/, circ];
+                        return [2 /*return*/, this.serializer.unserialize(circJsonString)];
                 }
             });
         });
     };
     CloudStorage.prototype.getIndex = function (index) {
         return __awaiter(this, void 0, void 0, function () {
-            var response, circJsonString, circ;
+            var response, circJsonString;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=getByIndex&index=' + encodeURIComponent(index))];
@@ -3801,9 +3873,7 @@ var CloudStorage = /** @class */ (function () {
                         return [4 /*yield*/, response.text()];
                     case 2:
                         circJsonString = _a.sent();
-                        circ = this.serializer.unserialize(circJsonString);
-                        circ.modified = false;
-                        return [2 /*return*/, circ];
+                        return [2 /*return*/, this.serializer.unserialize(circJsonString)];
                 }
             });
         });
@@ -3816,9 +3886,7 @@ var CloudStorage = /** @class */ (function () {
                 response.json()
                     .then(function (circJsonStrings) {
                     var circs = circJsonStrings.map(function (circJsonString) {
-                        var circ = _this.serializer.unserialize(circJsonString);
-                        circ.modified = false;
-                        return circ;
+                        return _this.serializer.unserialize(circJsonString);
                     });
                     resolve(circs);
                 });
@@ -3826,7 +3894,6 @@ var CloudStorage = /** @class */ (function () {
         });
     };
     CloudStorage.prototype.store = function (name, circ) {
-        circ.modified = null;
         var circJson = this.serializer.serialize(circ);
         fetch(this.apiUrl, { method: 'POST', body: circJson });
     };
@@ -3850,9 +3917,7 @@ var LocalStorage = /** @class */ (function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var circJson = window.localStorage.getItem(_this.storeName + "." + name);
-            var circ = _this.serializer.unserialize(circJson);
-            circ.modified = false;
-            resolve(circ);
+            resolve(_this.serializer.unserialize(circJson));
         });
     };
     LocalStorage.prototype.getIndex = function (index) {
@@ -3889,7 +3954,6 @@ var LocalStorage = /** @class */ (function () {
         });
     };
     LocalStorage.prototype.store = function (name, circ) {
-        circ.modified = null;
         var circJson = this.serializer.serialize(circ);
         window.localStorage.setItem(this.storeName + "." + name, circJson);
     };
