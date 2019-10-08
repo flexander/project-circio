@@ -11,6 +11,7 @@ class Brush extends EventEmitter implements BrushInterface {
     
     set color(color: string) {
         this.config.color = color;
+        this.dispatchEvent(new AttributeChangedEvent('color', this.color));
     }
     
     get transparency(): number {
@@ -19,6 +20,7 @@ class Brush extends EventEmitter implements BrushInterface {
     
     set transparency(transparency: number) {
         this.config.transparency = transparency;
+        this.dispatchEvent(new AttributeChangedEvent('transparency', this.transparency));
     }
     
     get degrees(): number {
@@ -27,6 +29,7 @@ class Brush extends EventEmitter implements BrushInterface {
     
     set degrees(degrees: number) {
         this.config.degrees = degrees;
+        this.dispatchEvent(new AttributeChangedEvent('degrees', this.degrees));
     }
     
     get draw(): boolean {
@@ -35,6 +38,7 @@ class Brush extends EventEmitter implements BrushInterface {
     
     set draw(draw: boolean) {
         this.config.draw = draw;
+        this.dispatchEvent(new AttributeChangedEvent('draw', this.draw));
     }
     
     get link(): boolean {
@@ -43,6 +47,7 @@ class Brush extends EventEmitter implements BrushInterface {
     
     set link(link: boolean) {
         this.config.link = link;
+        this.dispatchEvent(new AttributeChangedEvent('link', this.link));
     }
     
     get offset(): number {
@@ -51,6 +56,7 @@ class Brush extends EventEmitter implements BrushInterface {
     
     set offset(offset: number) {
         this.config.offset = offset;
+        this.dispatchEvent(new AttributeChangedEvent('offset', this.offset));
     }
     
     get point(): number {
@@ -59,6 +65,7 @@ class Brush extends EventEmitter implements BrushInterface {
     
     set point(point: number) {
         this.config.point = point;
+        this.dispatchEvent(new AttributeChangedEvent('point', this.point));
     }
 
     get colorWithAlpha(): string {

@@ -14,6 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var structure_1 = require("../structure");
+var events_1 = require("./events");
 var Brush = /** @class */ (function (_super) {
     __extends(Brush, _super);
     function Brush() {
@@ -27,6 +28,7 @@ var Brush = /** @class */ (function (_super) {
         },
         set: function (color) {
             this.config.color = color;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('color', this.color));
         },
         enumerable: true,
         configurable: true
@@ -37,6 +39,7 @@ var Brush = /** @class */ (function (_super) {
         },
         set: function (transparency) {
             this.config.transparency = transparency;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('transparency', this.transparency));
         },
         enumerable: true,
         configurable: true
@@ -47,6 +50,7 @@ var Brush = /** @class */ (function (_super) {
         },
         set: function (degrees) {
             this.config.degrees = degrees;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('degrees', this.degrees));
         },
         enumerable: true,
         configurable: true
@@ -57,6 +61,7 @@ var Brush = /** @class */ (function (_super) {
         },
         set: function (draw) {
             this.config.draw = draw;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('draw', this.draw));
         },
         enumerable: true,
         configurable: true
@@ -67,6 +72,7 @@ var Brush = /** @class */ (function (_super) {
         },
         set: function (link) {
             this.config.link = link;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('link', this.link));
         },
         enumerable: true,
         configurable: true
@@ -77,6 +83,7 @@ var Brush = /** @class */ (function (_super) {
         },
         set: function (offset) {
             this.config.offset = offset;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('offset', this.offset));
         },
         enumerable: true,
         configurable: true
@@ -87,6 +94,7 @@ var Brush = /** @class */ (function (_super) {
         },
         set: function (point) {
             this.config.point = point;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('point', this.point));
         },
         enumerable: true,
         configurable: true
