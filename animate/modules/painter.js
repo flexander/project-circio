@@ -12,7 +12,7 @@ var Painter = /** @class */ (function () {
         var _this = this;
         this.centerCanvas(circ);
         circ.getShapes().forEach(function (circle) {
-            if (circle.brushes.length === 0) {
+            if (circle.getBrushes().length === 0) {
                 return;
             }
             _this.drawPoints(circle);
@@ -35,7 +35,7 @@ var Painter = /** @class */ (function () {
     };
     Painter.prototype.drawPoints = function (circle) {
         var _this = this;
-        circle.brushes.forEach(function (brush) {
+        circle.getBrushes().forEach(function (brush) {
             var radians = circle.state.getAngle();
             var x = circle.state.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);
             var y = circle.state.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI / 180))) * brush.offset);

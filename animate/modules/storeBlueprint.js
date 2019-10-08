@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var circ_1 = require("./circ");
 var circle_1 = require("./circle");
 var brushes_1 = require("./brushes");
-var circ_1 = require("./circ");
 var polygon_1 = require("./polygon");
 var BlueprintStore = /** @class */ (function () {
     function BlueprintStore() {
@@ -38,7 +38,6 @@ var BlueprintStore = /** @class */ (function () {
     BlueprintStore.prototype.resolveCirc = function (circName) {
         var circ = this.blueprintsStore[circName]();
         circ.name = circName;
-        circ.modified = false;
         return circ;
     };
     BlueprintStore.prototype.store = function (name, circ) {
@@ -47,11 +46,11 @@ var BlueprintStore = /** @class */ (function () {
         throw new Error("Blueprints can't be deleted.");
     };
     BlueprintStore.prototype.makeTwoCircles = function () {
-        var circ = circ_1.CircFactory();
+        var circ = new circ_1.Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
-        var circle0 = circle_1.CircleFactory();
+        var circle0 = new circle_1.Circle();
         circle0.steps = 500;
         circle0.outside = false;
         circle0.fixed = true;
@@ -59,7 +58,7 @@ var BlueprintStore = /** @class */ (function () {
         circle0.stepMod = 0;
         circle0.startAngle = 0;
         circle0.radius = 300;
-        var circle1 = circle_1.CircleFactory();
+        var circle1 = new circle_1.Circle();
         circle1.steps = 500;
         circle1.outside = true;
         circle1.fixed = true;
@@ -67,23 +66,23 @@ var BlueprintStore = /** @class */ (function () {
         circle1.stepMod = 0;
         circle1.startAngle = 0;
         circle1.radius = 100;
-        var circle1Brush = brushes_1.BrushFactory();
+        var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
         circle1Brush.link = false;
         circle1Brush.offset = 0;
         circle1Brush.point = 0.5;
-        circle1.brushes.push(circle1Brush);
+        circle1.addBrush(circle1Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
         return circ;
     };
     BlueprintStore.prototype.makeThreeCircles = function () {
-        var circ = circ_1.CircFactory();
+        var circ = new circ_1.Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
-        var circle0 = circle_1.CircleFactory();
+        var circle0 = new circle_1.Circle();
         circle0.steps = 500;
         circle0.outside = false;
         circle0.fixed = true;
@@ -91,7 +90,7 @@ var BlueprintStore = /** @class */ (function () {
         circle0.stepMod = 0;
         circle0.startAngle = 0;
         circle0.radius = 100;
-        var circle1 = circle_1.CircleFactory();
+        var circle1 = new circle_1.Circle();
         circle1.steps = 500;
         circle1.outside = true;
         circle1.fixed = true;
@@ -99,7 +98,7 @@ var BlueprintStore = /** @class */ (function () {
         circle1.stepMod = 0;
         circle1.startAngle = 0;
         circle1.radius = 50;
-        var circle2 = circle_1.CircleFactory();
+        var circle2 = new circle_1.Circle();
         circle2.steps = 500;
         circle2.outside = true;
         circle2.fixed = true;
@@ -107,24 +106,24 @@ var BlueprintStore = /** @class */ (function () {
         circle2.stepMod = 0;
         circle2.startAngle = 0;
         circle2.radius = 25;
-        var circle2Brush = brushes_1.BrushFactory();
+        var circle2Brush = new brushes_1.Brush();
         circle2Brush.color = '#FFFFFF';
         circle2Brush.degrees = 0;
         circle2Brush.link = false;
         circle2Brush.offset = 0;
         circle2Brush.point = 0.5;
-        circle2.brushes.push(circle2Brush);
+        circle2.addBrush(circle2Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
         circ.addShape(circle2);
         return circ;
     };
     BlueprintStore.prototype.makeFourCircles = function () {
-        var circ = circ_1.CircFactory();
+        var circ = new circ_1.Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
-        var circle0 = circle_1.CircleFactory();
+        var circle0 = new circle_1.Circle();
         circle0.steps = 1000;
         circle0.outside = false;
         circle0.fixed = true;
@@ -132,7 +131,7 @@ var BlueprintStore = /** @class */ (function () {
         circle0.stepMod = 0;
         circle0.startAngle = 0;
         circle0.radius = 120;
-        var circle1 = circle_1.CircleFactory();
+        var circle1 = new circle_1.Circle();
         circle1.steps = 500;
         circle1.outside = true;
         circle1.fixed = true;
@@ -140,7 +139,7 @@ var BlueprintStore = /** @class */ (function () {
         circle1.stepMod = 0;
         circle1.startAngle = 0;
         circle1.radius = 60;
-        var circle2 = circle_1.CircleFactory();
+        var circle2 = new circle_1.Circle();
         circle2.steps = 250;
         circle2.outside = true;
         circle2.fixed = true;
@@ -148,7 +147,7 @@ var BlueprintStore = /** @class */ (function () {
         circle2.stepMod = 0;
         circle2.startAngle = 0;
         circle2.radius = 30;
-        var circle3 = circle_1.CircleFactory();
+        var circle3 = new circle_1.Circle();
         circle3.steps = 125;
         circle3.outside = true;
         circle3.fixed = true;
@@ -156,13 +155,13 @@ var BlueprintStore = /** @class */ (function () {
         circle3.stepMod = 0;
         circle3.startAngle = 0;
         circle3.radius = 15;
-        var circle3Brush = brushes_1.BrushFactory();
+        var circle3Brush = new brushes_1.Brush();
         circle3Brush.color = '#FFFFFF';
         circle3Brush.degrees = 0;
         circle3Brush.link = false;
         circle3Brush.offset = 0;
         circle3Brush.point = 0.5;
-        circle3.brushes.push(circle3Brush);
+        circle3.addBrush(circle3Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
         circ.addShape(circle2);
@@ -170,11 +169,11 @@ var BlueprintStore = /** @class */ (function () {
         return circ;
     };
     BlueprintStore.prototype.makeTwoSquares = function () {
-        var circ = circ_1.CircFactory();
+        var circ = new circ_1.Circ();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
-        var square0 = polygon_1.PolygonFactory();
+        var square0 = new polygon_1.Polygon();
         square0.steps = 1000;
         square0.outside = true;
         square0.fixed = true;
@@ -183,7 +182,7 @@ var BlueprintStore = /** @class */ (function () {
         square0.startAngle = 0;
         square0.faces = 4;
         square0.faceWidth = 40;
-        var square1 = polygon_1.PolygonFactory();
+        var square1 = new polygon_1.Polygon();
         square1.steps = 1000;
         square1.outside = true;
         square1.fixed = true;
@@ -192,13 +191,13 @@ var BlueprintStore = /** @class */ (function () {
         square1.startAngle = 0;
         square1.faces = 4;
         square1.faceWidth = 15;
-        var circle1Brush = brushes_1.BrushFactory();
+        var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
         circle1Brush.link = false;
         circle1Brush.offset = 0;
         circle1Brush.point = 0.5;
-        square0.brushes.push(circle1Brush);
+        square0.addBrush(circle1Brush);
         circ.addShape(square0);
         // circ.addShape(square1);
         return circ;

@@ -19,6 +19,7 @@ var Circ = /** @class */ (function (_super) {
     __extends(Circ, _super);
     function Circ() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.config = new CircConfig();
         _this.shapes = [];
         return _this;
     }
@@ -44,16 +45,74 @@ var Circ = /** @class */ (function (_super) {
     Circ.prototype.getShapes = function () {
         return this.shapes;
     };
+    Object.defineProperty(Circ.prototype, "name", {
+        get: function () {
+            return this.config['name'];
+        },
+        set: function (name) {
+            this.config['name'] = name;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('name', this.name));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circ.prototype, "height", {
+        get: function () {
+            return this.config.height;
+        },
+        set: function (height) {
+            this.config.height = height;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('height', this.height));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circ.prototype, "width", {
+        get: function () {
+            return this.config.width;
+        },
+        set: function (width) {
+            this.config.width = width;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('width', this.width));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circ.prototype, "backgroundFill", {
+        get: function () {
+            return this.config.backgroundFill;
+        },
+        set: function (backgroundFill) {
+            this.config.backgroundFill = backgroundFill;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('backgroundFill', this.backgroundFill));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circ.prototype, "stepsToComplete", {
+        get: function () {
+            return this.config.stepsToComplete;
+        },
+        set: function (stepsToComplete) {
+            this.config.stepsToComplete = stepsToComplete;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('stepsToComplete', this.stepsToComplete));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circ.prototype, "modified", {
+        get: function () {
+            return this.config.modified;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Circ;
 }(structure_1.EventEmitter));
 exports.Circ = Circ;
-var CircProxyHandler = {
-    set: function (target, propertyName, value, receiver) {
-        target[propertyName] = value;
-        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
-        target.modified = true;
-        return true;
-    },
-};
-var CircFactory = function () { return new Proxy(new Circ(), CircProxyHandler); };
-exports.CircFactory = CircFactory;
+var CircConfig = /** @class */ (function () {
+    function CircConfig() {
+    }
+    return CircConfig;
+}());
+exports.CircConfig = CircConfig;

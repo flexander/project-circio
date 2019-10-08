@@ -15,7 +15,6 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("../structure");
 var structure_1 = require("../structure");
-var events_1 = require("./events");
 var cloneDeep = require('lodash.clonedeep');
 var Polygon = /** @class */ (function (_super) {
     __extends(Polygon, _super);
@@ -86,6 +85,12 @@ var Polygon = /** @class */ (function (_super) {
         // Create a new initial state object
         this.saveInitialState();
     };
+    Polygon.prototype.addBrush = function (brush) {
+        this.brushes.push(brush);
+    };
+    Polygon.prototype.getBrushes = function () {
+        return this.brushes;
+    };
     return Polygon;
 }(structure_1.EventEmitter));
 exports.Polygon = Polygon;
@@ -119,12 +124,3 @@ var PolygonDrawPosition = /** @class */ (function () {
     return PolygonDrawPosition;
 }());
 exports.PolygonDrawPosition = PolygonDrawPosition;
-var PolygonProxyHandler = {
-    set: function (target, propertyName, value, receiver) {
-        target[propertyName] = value;
-        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
-        return true;
-    },
-};
-var PolygonFactory = function () { return new Proxy(new Polygon(), PolygonProxyHandler); };
-exports.PolygonFactory = PolygonFactory;

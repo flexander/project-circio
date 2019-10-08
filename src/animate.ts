@@ -1,8 +1,8 @@
-import {EngineFactory} from "./modules/engine";
 import Painter from './modules/painter';
 import {BlueprintStore} from "./modules/storeBlueprint";
 import {CircInterface, EngineInterface} from "./structure";
 import BackgroundPainter from "./modules/backgroundPainter";
+import {Engine} from "./modules/engine";
 // import { createCanvas } from 'canvas';
 const { createCanvas, loadImage } = require('canvas');
 const args = require('minimist')(process.argv.slice(2));
@@ -13,7 +13,7 @@ const canvas = createCanvas(1080, 1080);
 const blueprintStorage = new BlueprintStore();
 
 
-const engine = EngineFactory();
+const engine = new Engine();
 const painter = new Painter(canvas.getContext('2d'));
 const backgroundPainter = new BackgroundPainter(canvas.getContext('2d'));
 
@@ -40,12 +40,12 @@ blueprintStorage.get('threeCircles')
             console.log(f + ' of ' + endFrame);
             engine.reset();
 
-            circ.getShapes()[2].brushes[0].degrees = f;
+            circ.getShapes()[2].getBrushes()[0].degrees = f;
 
             if(f <= (2 * offset)) {
-                circ.getShapes()[2].brushes[0].offset = (-1 * offset) + f;
+                circ.getShapes()[2].getBrushes()[0].offset = (-1 * offset) + f;
             } else {
-                circ.getShapes()[2].brushes[0].offset = offset - (f - (2 * offset));
+                circ.getShapes()[2].getBrushes()[0].offset = offset - (f - (2 * offset));
             }
 
             let fileName = name + '/frame-'+ f.toString().padStart(10 , '0') +'.png';

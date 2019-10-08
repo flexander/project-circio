@@ -19,8 +19,8 @@ var Engine = /** @class */ (function (_super) {
     __extends(Engine, _super);
     function Engine() {
         var _this = _super.call(this) || this;
+        _this.config = new EngineConfig();
         _this.totalStepsRun = 0;
-        _this.interval = 1;
         _this.stepCallbacks = [];
         _this.resetCallbacks = [];
         _this.importCallbacks = [];
@@ -140,23 +140,26 @@ var Engine = /** @class */ (function (_super) {
                 _this.stepsToRun--;
             }
             _this.run();
-        }, this.interval);
+        }, this.stepInterval);
     };
-    Engine.prototype.getStepInterval = function () {
-        return this.interval;
-    };
-    Engine.prototype.setStepInterval = function (milliseconds) {
-        this.interval = milliseconds;
-    };
+    Object.defineProperty(Engine.prototype, "stepInterval", {
+        get: function () {
+            return this.config.stepInterval;
+        },
+        set: function (milliseconds) {
+            this.config.stepInterval = milliseconds;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('stepInterval', this.stepInterval));
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Engine;
 }(structure_1.EventEmitter));
 exports.Engine = Engine;
-var EngineProxyHandler = {
-    set: function (target, propertyName, value, receiver) {
-        target[propertyName] = value;
-        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
-        return true;
-    },
-};
-var EngineFactory = function () { return new Proxy(new Engine(), EngineProxyHandler); };
-exports.EngineFactory = EngineFactory;
+var EngineConfig = /** @class */ (function () {
+    function EngineConfig() {
+        this.stepInterval = 1;
+    }
+    return EngineConfig;
+}());
+exports.EngineConfig = EngineConfig;

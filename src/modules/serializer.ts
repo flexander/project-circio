@@ -1,16 +1,19 @@
-import {BrushFactory} from "./brushes";
-import {CircleCenterPosition, CircleDrawPosition, CircleFactory, CircleState} from "./circle";
+import {Circle, CircleCenterPosition, CircleConfig, CircleDrawPosition, CircleState} from "./circle";
 import {CircInterface, SerializerInterface} from "../structure";
-import {CircFactory} from "./circ";
+import {Circ, CircConfig} from "./circ";
+import {Brush, BrushConfig} from "./brushes";
 
 export default class Serializer implements SerializerInterface {
     protected classes = {
-        Circ: CircFactory,
-        Circle: CircleFactory,
+        Circ,
+        CircConfig,
+        Circle,
         CircleCenterPosition,
         CircleDrawPosition,
         CircleState,
-        Brush: BrushFactory,
+        CircleConfig,
+        Brush,
+        BrushConfig,
     };
 
     public serialize(circ: CircInterface): string {

@@ -11,7 +11,7 @@ export default class CircleControl implements CircleControlInterface {
         this.circle = circle;
         this.mode = mode;
 
-        this.circle.brushes.forEach((brush: BrushInterface) => {
+        this.circle.getBrushes().forEach((brush: BrushInterface) => {
             this.addBrushControl(new BrushControl(brush, mode));
         });
     }

@@ -17,6 +17,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
     isRoot: boolean;
     faces: number;
     faceWidth: number;
+    modified: boolean;
 
     constructor() {
         super();
@@ -100,6 +101,14 @@ class Polygon extends EventEmitter implements PolygonInterface {
         // Create a new initial state object
         this.saveInitialState();
     }
+
+    addBrush(brush: BrushInterface): void {
+        this.brushes.push(brush);
+    }
+
+    getBrushes(): BrushInterface[] {
+        return this.brushes;
+    }
 }
 
 class PolygonState implements ShapeStateInterface {
@@ -127,21 +136,8 @@ class PolygonDrawPosition implements PositionInterface {
     y: number;
 }
 
-const PolygonProxyHandler = {
-    set: (target: Polygon, propertyName: PropertyKey, value: any, receiver: any): boolean => {
-        target[propertyName] = value;
-
-        target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
-
-        return true;
-    },
-};
-
-const PolygonFactory = () => new Proxy<Polygon>(new Polygon(), PolygonProxyHandler);
-
 export {
     Polygon,
-    PolygonFactory,
     PolygonState,
     PolygonCenterPosition,
     PolygonDrawPosition,

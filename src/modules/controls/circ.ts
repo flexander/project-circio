@@ -9,8 +9,8 @@ import {Circle} from "../circle";
 import BackgroundControl from "./background";
 import ControlPanel from "./panel";
 import CircleControl from "./shapes/circle";
-import {BrushFactory} from "../brushes";
 import {ControlModes} from "./mode";
+import {Brush} from "../brushes";
 
 export default class CircControl implements CircControlInterface {
     protected circ: CircInterface;
@@ -31,9 +31,6 @@ export default class CircControl implements CircControlInterface {
                 let shapeControl;
 
                 if (shape instanceof Circle) {
-                    if (shape.isRoot) {
-
-                    }
                     shapeControl = new CircleControl(shape, this.mode);
                 }  else {
                     // TODO: add polygon controls
@@ -67,7 +64,7 @@ export default class CircControl implements CircControlInterface {
                     newShape.startAngle = 0;
                     newShape.radius = 100;
 
-                    newShape.brushes.push(BrushFactory());
+                    newShape.addBrush(new Brush());
 
                     self.circ.addShape(newShape);
                 });

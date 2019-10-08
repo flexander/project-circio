@@ -1,9 +1,9 @@
-import {CircInterface, EngineInterface, EventEmitter, ShapeInterface} from "../structure";
+import {CircInterface, EngineConfigInterface, EngineInterface, EventEmitter, ShapeInterface} from "../structure";
 import {AttributeChangedEvent, EnginePauseEvent, EnginePlayEvent} from "./events";
 
 class Engine extends EventEmitter implements EngineInterface {
+    protected config: EngineConfigInterface = new EngineConfig();
     protected totalStepsRun: number = 0;
-    protected interval: number = 1;
     protected stepCallbacks: Array<Function> = [];
     protected resetCallbacks: Array<Function> = [];
     protected importCallbacks: Array<Function> = [];
@@ -153,32 +153,25 @@ class Engine extends EventEmitter implements EngineInterface {
                     }
                     this.run();
                 },
-            this.interval
+            this.stepInterval
         );
     }
 
-    getStepInterval(): number {
-        return this.interval;
+    get stepInterval(): number {
+        return this.config.stepInterval;
     }
 
-    setStepInterval(milliseconds: number): void {
-        this.interval = milliseconds;
+    set stepInterval(milliseconds: number) {
+        this.config.stepInterval = milliseconds;
+        this.dispatchEvent(new AttributeChangedEvent('stepInterval', this.stepInterval));
     }
 }
 
-const EngineProxyHandler = {
-    set: (target: Engine, propertyName: PropertyKey, value: any, receiver: any): boolean => {
-        target[propertyName] = value;
-
-        target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
-
-        return true;
-    },
-};
-
-const EngineFactory = () => new Proxy<Engine>(new Engine(), EngineProxyHandler);
+class EngineConfig implements EngineConfigInterface {
+    stepInterval: number = 1;
+}
 
 export {
     Engine,
-    EngineFactory,
+    EngineConfig,
 }

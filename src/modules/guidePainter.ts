@@ -100,7 +100,7 @@ export default class GuidePainter implements GuidePainterInterface {
         this.canvasContext.stroke();
 
         this.drawRotationIndicator(circle);
-        circle.brushes.forEach((brush: BrushInterface) => this.drawBrushPoint(circle, brush));
+        circle.getBrushes().forEach((brush: BrushInterface) => this.drawBrushPoint(circle, brush));
     }
 
     protected drawPolygon (polygon: PolygonInterface): void {
