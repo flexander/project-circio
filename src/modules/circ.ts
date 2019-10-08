@@ -4,7 +4,6 @@ import {AttributeChangedEvent, ShapeAddEvent, ShapeDeleteEvent} from "./events";
 class Circ extends EventEmitter implements CircInterface {
     protected config: CircConfigInterface = new CircConfig();
     protected shapes: ShapeInterface[] = [];
-    modified: boolean;
 
     addShape(shape: ShapeInterface): void {
         shape.isRoot = (this.shapes.length === 0);
@@ -76,6 +75,10 @@ class Circ extends EventEmitter implements CircInterface {
     set stepsToComplete(stepsToComplete: number) {
         this.config.stepsToComplete = stepsToComplete;
         this.dispatchEvent(new AttributeChangedEvent('circ.stepsToComplete', this.stepsToComplete));
+    }
+
+    get modified(): boolean {
+        return this.config.modified;
     }
 }
 

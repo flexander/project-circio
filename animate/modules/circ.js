@@ -100,6 +100,13 @@ var Circ = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Circ.prototype, "modified", {
+        get: function () {
+            return this.config.modified;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Circ;
 }(structure_1.EventEmitter));
 exports.Circ = Circ;
