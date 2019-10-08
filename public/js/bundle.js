@@ -3496,6 +3496,11 @@ var GuidePainter = /** @class */ (function () {
         this.canvasContext.strokeStyle = this.guideColor;
         this.canvasContext.beginPath();
         // TODO: Draw polygon
+        this.canvasContext.moveTo(polygon.state.centre.x + polygon.faceWidth * Math.cos(polygon.state.totalAngle), polygon.state.centre.y + polygon.faceWidth * Math.sin(polygon.state.totalAngle));
+        for (var i = 1; i <= polygon.faces; i += 1) {
+            this.canvasContext.lineTo(polygon.state.centre.x + polygon.faceWidth * Math.cos((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.faceWidth * Math.sin((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)));
+        }
+        this.canvasContext.stroke();
     };
     GuidePainter.prototype.drawRotationIndicator = function (circle) {
         this.canvasContext.fillStyle = this.guideColor;
@@ -3631,9 +3636,6 @@ var Polygon = /** @class */ (function (_super) {
     }
     Polygon.prototype.calculatePosition = function (parentPolygon) {
         this.savePreviousState();
-        var arc = this.getArc();
-        var stepCount = this.getStepCount();
-        var distanceTravelled = arc * stepCount;
         var arcToParentRadians = 0;
         var parentRadians = parentPolygon !== null && this.fixed === true ? parentPolygon.state.getAngle() : 0;
         var radiusRelative = 0;
@@ -3662,12 +3664,6 @@ var Polygon = /** @class */ (function (_super) {
     };
     Polygon.prototype.saveInitialState = function () {
         this.state.initialState = cloneDeep(this.state);
-    };
-    Polygon.prototype.getArc = function () {
-        if (this.steps === 0) {
-            return 0;
-        }
-        return this.radius * this.getStepRadians();
     };
     Polygon.prototype.getStepRadians = function () {
         var stepRadian = 0;
@@ -3968,7 +3964,7 @@ var BlueprintStore = /** @class */ (function () {
         square0.stepMod = 0;
         square0.startAngle = 0;
         square0.faces = 4;
-        square0.faceWidth = 40;
+        square0.faceWidth = 200;
         var square1 = new polygon_1.Polygon();
         square1.steps = 1000;
         square1.outside = true;
@@ -3977,7 +3973,7 @@ var BlueprintStore = /** @class */ (function () {
         square1.stepMod = 0;
         square1.startAngle = 0;
         square1.faces = 4;
-        square1.faceWidth = 15;
+        square1.faceWidth = 75;
         var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
@@ -3996,10 +3992,11 @@ exports.BlueprintStore = BlueprintStore;
 },{"./brushes":4,"./circ":5,"./circle":6,"./polygon":21}],24:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };

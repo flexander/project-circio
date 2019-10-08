@@ -28,9 +28,6 @@ var Polygon = /** @class */ (function (_super) {
     }
     Polygon.prototype.calculatePosition = function (parentPolygon) {
         this.savePreviousState();
-        var arc = this.getArc();
-        var stepCount = this.getStepCount();
-        var distanceTravelled = arc * stepCount;
         var arcToParentRadians = 0;
         var parentRadians = parentPolygon !== null && this.fixed === true ? parentPolygon.state.getAngle() : 0;
         var radiusRelative = 0;
@@ -59,12 +56,6 @@ var Polygon = /** @class */ (function (_super) {
     };
     Polygon.prototype.saveInitialState = function () {
         this.state.initialState = cloneDeep(this.state);
-    };
-    Polygon.prototype.getArc = function () {
-        if (this.steps === 0) {
-            return 0;
-        }
-        return this.radius * this.getStepRadians();
     };
     Polygon.prototype.getStepRadians = function () {
         var stepRadian = 0;

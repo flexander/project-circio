@@ -30,9 +30,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
     calculatePosition(parentPolygon: PolygonInterface|null): void {
         this.savePreviousState();
 
-        let arc = this.getArc();
-        let stepCount = this.getStepCount();
-        let distanceTravelled = arc * stepCount;
         let arcToParentRadians = 0;
         let parentRadians = parentPolygon !== null && this.fixed === true ? parentPolygon.state.getAngle():0;
         let radiusRelative = 0;
@@ -67,14 +64,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
     protected saveInitialState() {
         this.state.initialState = cloneDeep(this.state);
-    }
-
-    protected getArc () {
-        if (this.steps === 0) {
-            return 0;
-        }
-
-        return this.radius*this.getStepRadians();
     }
 
     protected getStepRadians () {

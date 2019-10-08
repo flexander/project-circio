@@ -82,6 +82,11 @@ var GuidePainter = /** @class */ (function () {
         this.canvasContext.strokeStyle = this.guideColor;
         this.canvasContext.beginPath();
         // TODO: Draw polygon
+        this.canvasContext.moveTo(polygon.state.centre.x + polygon.faceWidth * Math.cos(polygon.state.totalAngle), polygon.state.centre.y + polygon.faceWidth * Math.sin(polygon.state.totalAngle));
+        for (var i = 1; i <= polygon.faces; i += 1) {
+            this.canvasContext.lineTo(polygon.state.centre.x + polygon.faceWidth * Math.cos((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.faceWidth * Math.sin((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)));
+        }
+        this.canvasContext.stroke();
     };
     GuidePainter.prototype.drawRotationIndicator = function (circle) {
         this.canvasContext.fillStyle = this.guideColor;

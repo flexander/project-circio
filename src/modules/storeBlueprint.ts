@@ -213,7 +213,7 @@ export class BlueprintStore implements CircStoreInterface {
         square0.stepMod = 0;
         square0.startAngle = 0;
         square0.faces = 4;
-        square0.faceWidth = 40;
+        square0.faceWidth = 200;
 
         const square1 = new Polygon();
         square1.steps = 1000;
@@ -223,7 +223,7 @@ export class BlueprintStore implements CircStoreInterface {
         square1.stepMod = 0;
         square1.startAngle = 0;
         square1.faces = 4;
-        square1.faceWidth = 15;
+        square1.faceWidth = 75;
 
         const circle1Brush = new Brush();
         circle1Brush.color = '#FFFFFF';

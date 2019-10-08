@@ -109,6 +109,13 @@ export default class GuidePainter implements GuidePainterInterface {
         this.canvasContext.beginPath();
 
         // TODO: Draw polygon
+        this.canvasContext.moveTo (polygon.state.centre.x +  polygon.faceWidth * Math.cos(polygon.state.totalAngle), polygon.state.centre.y +  polygon.faceWidth *  Math.sin(polygon.state.totalAngle));
+
+        for (var i = 1; i <= polygon.faces;i += 1) {
+            this.canvasContext.lineTo (polygon.state.centre.x + polygon.faceWidth * Math.cos((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.faceWidth * Math.sin((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)));
+        }
+
+        this.canvasContext.stroke();
     }
 
     protected drawRotationIndicator (circle: CircleInterface): void {
