@@ -2,12 +2,14 @@ import {CircInterface, CircStoreInterface} from "../structure";
 import {CircleFactory} from "./circle";
 import {BrushFactory} from "./brushes";
 import {CircFactory} from "./circ";
+import {PolygonFactory} from "./polygon";
 
 export class BlueprintStore implements CircStoreInterface {
     protected blueprintsStore: {[name: string]: Function} = {
         'twoCircles': this.makeTwoCircles,
         'threeCircles': this.makeThreeCircles,
         'fourCircles': this.makeFourCircles,
+        'twoSquares': this.makeTwoSquares,
     };
 
     public name: string = 'Blueprints';
@@ -194,6 +196,46 @@ export class BlueprintStore implements CircStoreInterface {
         circ.addShape(circle1);
         circ.addShape(circle2);
         circ.addShape(circle3);
+
+        return circ;
+    }
+
+    protected makeTwoSquares(): CircInterface {
+        const circ = CircFactory();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#1b5eec';
+
+        const square0 = PolygonFactory();
+        square0.steps = 1000;
+        square0.outside = true;
+        square0.fixed = true;
+        square0.clockwise = false;
+        square0.stepMod = 0;
+        square0.startAngle = 0;
+        square0.faces = 4;
+        square0.faceWidth = 40;
+
+        const square1 = PolygonFactory();
+        square1.steps = 1000;
+        square1.outside = true;
+        square1.fixed = true;
+        square1.clockwise = false;
+        square1.stepMod = 0;
+        square1.startAngle = 0;
+        square1.faces = 4;
+        square1.faceWidth = 15;
+
+        const circle1Brush = BrushFactory();
+        circle1Brush.color = '#FFFFFF';
+        circle1Brush.degrees = 0;
+        circle1Brush.link = false;
+        circle1Brush.offset = 0;
+        circle1Brush.point = 0.5;
+
+        square0.brushes.push(circle1Brush);
+        circ.addShape(square0);
+        // circ.addShape(square1);
 
         return circ;
     }

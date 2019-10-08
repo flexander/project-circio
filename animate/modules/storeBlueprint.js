@@ -3,12 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = require("./circle");
 var brushes_1 = require("./brushes");
 var circ_1 = require("./circ");
+var polygon_1 = require("./polygon");
 var BlueprintStore = /** @class */ (function () {
     function BlueprintStore() {
         this.blueprintsStore = {
             'twoCircles': this.makeTwoCircles,
             'threeCircles': this.makeThreeCircles,
             'fourCircles': this.makeFourCircles,
+            'twoSquares': this.makeTwoSquares,
         };
         this.name = 'Blueprints';
     }
@@ -165,6 +167,40 @@ var BlueprintStore = /** @class */ (function () {
         circ.addShape(circle1);
         circ.addShape(circle2);
         circ.addShape(circle3);
+        return circ;
+    };
+    BlueprintStore.prototype.makeTwoSquares = function () {
+        var circ = circ_1.CircFactory();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#1b5eec';
+        var square0 = polygon_1.PolygonFactory();
+        square0.steps = 1000;
+        square0.outside = true;
+        square0.fixed = true;
+        square0.clockwise = false;
+        square0.stepMod = 0;
+        square0.startAngle = 0;
+        square0.faces = 4;
+        square0.faceWidth = 40;
+        var square1 = polygon_1.PolygonFactory();
+        square1.steps = 1000;
+        square1.outside = true;
+        square1.fixed = true;
+        square1.clockwise = false;
+        square1.stepMod = 0;
+        square1.startAngle = 0;
+        square1.faces = 4;
+        square1.faceWidth = 15;
+        var circle1Brush = brushes_1.BrushFactory();
+        circle1Brush.color = '#FFFFFF';
+        circle1Brush.degrees = 0;
+        circle1Brush.link = false;
+        circle1Brush.offset = 0;
+        circle1Brush.point = 0.5;
+        square0.brushes.push(circle1Brush);
+        circ.addShape(square0);
+        // circ.addShape(square1);
         return circ;
     };
     return BlueprintStore;

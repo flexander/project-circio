@@ -56,6 +56,11 @@ interface CircleInterface extends ShapeInterface, EventEmitterInterface {
     radius: number;
 }
 
+interface PolygonInterface extends ShapeInterface, EventEmitterInterface {
+    faces: number;
+    faceWidth: number;
+}
+
 interface BrushInterface extends EventEmitterInterface {
     draw: boolean;
     color: string;
@@ -222,6 +227,7 @@ export {
     ShapeInterface,
     ShapeStateInterface,
     CircleInterface,
+    PolygonInterface,
     BrushInterface,
     EngineInterface,
     PainterInterface,

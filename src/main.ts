@@ -89,7 +89,7 @@ engine.addImportCallback(initialiseEventListeners);
 engine.addImportCallback((circ: CircInterface) => {backgroundPainter.draw(circ)});
 engine.play();
 
-blueprintStorage.get('twoCircles')
+blueprintStorage.get('twoSquares')
     .then((circ: CircInterface) => {
         canvasArea.style.transformOrigin = '0 0'; //scale from top left
         canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';

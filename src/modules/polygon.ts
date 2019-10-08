@@ -1,9 +1,9 @@
 import '../structure';
-import {BrushInterface, CircleInterface, EventEmitter, PositionInterface, ShapeStateInterface} from "../structure";
+import {BrushInterface, PolygonInterface, EventEmitter, PositionInterface, ShapeStateInterface} from "../structure";
 import {AttributeChangedEvent} from "./events";
 const cloneDeep = require('lodash.clonedeep');
 
-class Circle extends EventEmitter implements CircleInterface {
+class Polygon extends EventEmitter implements PolygonInterface {
     brushes: BrushInterface[] = [];
     clockwise: boolean;
     fixed: boolean;
@@ -11,7 +11,7 @@ class Circle extends EventEmitter implements CircleInterface {
     outside: boolean;
     radius: number;
     startAngle: number;
-    state: ShapeStateInterface = new CircleState();
+    state: ShapeStateInterface = new PolygonState();
     stepMod: number;
     steps: number;
     isRoot: boolean;
@@ -26,33 +26,20 @@ class Circle extends EventEmitter implements CircleInterface {
         this.saveInitialState();
     }
 
-    calculatePosition(parentCircle: CircleInterface|null): void {
+    calculatePosition(parentPolygon: PolygonInterface|null): void {
         this.savePreviousState();
 
         let arc = this.getArc();
         let stepCount = this.getStepCount();
         let distanceTravelled = arc * stepCount;
         let arcToParentRadians = 0;
-        let parentRadians = parentCircle !== null && this.fixed === true ? parentCircle.state.getAngle():0;
+        let parentRadians = parentPolygon !== null && this.fixed === true ? parentPolygon.state.getAngle():0;
         let radiusRelative = 0;
         let parentCentreX = this.state.centre.x;
         let parentCentreY = this.state.centre.y;
 
-        if (parentCircle !== null) {
-            parentCentreX = parentCircle.state.centre.x;
-            parentCentreY = parentCircle.state.centre.y;
+        if (parentPolygon !== null) {
 
-            arcToParentRadians = (distanceTravelled / parentCircle.radius);
-            if(this.outside === false) {
-                arcToParentRadians *= -1;
-            }
-
-            // The distance from center to center of child and parent
-            if(this.outside === true) {
-                radiusRelative = parentCircle.radius + this.radius;
-            } else {
-                radiusRelative = parentCircle.radius - this.radius;
-            }
         }
 
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
@@ -115,9 +102,9 @@ class Circle extends EventEmitter implements CircleInterface {
     }
 }
 
-class CircleState implements ShapeStateInterface {
-    centre: PositionInterface = new CircleCenterPosition();
-    drawPoint: PositionInterface = new CircleDrawPosition();
+class PolygonState implements ShapeStateInterface {
+    centre: PositionInterface = new PolygonCenterPosition();
+    drawPoint: PositionInterface = new PolygonDrawPosition();
     initialState: ShapeStateInterface = Object.create(this);
     previousState: ShapeStateInterface = null;
     totalAngle: number = 0;
@@ -130,18 +117,18 @@ class CircleState implements ShapeStateInterface {
     }
 }
 
-class CircleCenterPosition implements PositionInterface {
+class PolygonCenterPosition implements PositionInterface {
     x: number = 0;
     y: number = 0;
 }
 
-class CircleDrawPosition implements PositionInterface {
+class PolygonDrawPosition implements PositionInterface {
     x: number;
     y: number;
 }
 
-const CircleProxyHandler = {
-    set: (target: Circle, propertyName: PropertyKey, value: any, receiver: any): boolean => {
+const PolygonProxyHandler = {
+    set: (target: Polygon, propertyName: PropertyKey, value: any, receiver: any): boolean => {
         target[propertyName] = value;
 
         target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
@@ -150,12 +137,12 @@ const CircleProxyHandler = {
     },
 };
 
-const CircleFactory = () => new Proxy<Circle>(new Circle(), CircleProxyHandler);
+const PolygonFactory = () => new Proxy<Polygon>(new Polygon(), PolygonProxyHandler);
 
 export {
-    Circle,
-    CircleFactory,
-    CircleState,
-    CircleCenterPosition,
-    CircleDrawPosition,
+    Polygon,
+    PolygonFactory,
+    PolygonState,
+    PolygonCenterPosition,
+    PolygonDrawPosition,
 }

@@ -1,4 +1,13 @@
-import {BrushInterface, CircInterface, CircleInterface, GuidePainterInterface, PositionInterface} from "../structure";
+import {
+    BrushInterface,
+    CircInterface,
+    CircleInterface,
+    GuidePainterInterface, PolygonInterface,
+    PositionInterface,
+    ShapeInterface
+} from "../structure";
+import {Circle} from "./circle";
+import {Polygon} from "./polygon";
 
 export default class GuidePainter implements GuidePainterInterface {
     protected canvasContext: CanvasRenderingContext2D;
@@ -46,8 +55,12 @@ export default class GuidePainter implements GuidePainterInterface {
         this.clear();
         this.guideColor = '#'+this.generateContrastingColor(circ.backgroundFill);
 
-        circ.getShapes().forEach((circle:CircleInterface) => {
-            this.drawCircle(circle);
+        circ.getShapes().forEach((shape: ShapeInterface) => {
+            if (shape instanceof Circle) {
+                this.drawCircle(shape);
+            } else if (shape instanceof Polygon) {
+                this.drawPolygon(shape);
+            }
         })
     }
 
@@ -88,6 +101,14 @@ export default class GuidePainter implements GuidePainterInterface {
 
         this.drawRotationIndicator(circle);
         circle.brushes.forEach((brush: BrushInterface) => this.drawBrushPoint(circle, brush));
+    }
+
+    protected drawPolygon (polygon: PolygonInterface): void {
+
+        this.canvasContext.strokeStyle = this.guideColor;
+        this.canvasContext.beginPath();
+
+        // TODO: Draw polygon
     }
 
     protected drawRotationIndicator (circle: CircleInterface): void {
