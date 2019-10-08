@@ -1,15 +1,9 @@
-import {CircInterface, CircStateInterface, EventEmitter, ShapeInterface} from "../structure";
+import {CircConfigInterface, CircInterface, CircStateInterface, EventEmitter, ShapeInterface} from "../structure";
 import {AttributeChangedEvent, ShapeAddEvent, ShapeDeleteEvent} from "./events";
 
 class Circ extends EventEmitter implements CircInterface {
-    name: string;
-    height: number;
-    width: number;
-    backgroundFill: string;
-    stepsToComplete: number;
-    state: CircStateInterface;
+    protected config: CircConfigInterface = new CircConfig();
     protected shapes: ShapeInterface[] = [];
-    modified: boolean;
 
     addShape(shape: ShapeInterface): void {
         shape.isRoot = (this.shapes.length === 0);
@@ -37,23 +31,67 @@ class Circ extends EventEmitter implements CircInterface {
     getShapes(): ShapeInterface[] {
         return this.shapes;
     }
+
+    get name(): string {
+        return this.config['name'];
+    }
+
+    set name(name: string) {
+        this.config['name'] = name;
+        this.dispatchEvent(new AttributeChangedEvent('name', this.name));
+    }
+
+    get height(): number {
+        return this.config.height;
+    }
+
+    set height(height: number) {
+        this.config.height = height;
+        this.dispatchEvent(new AttributeChangedEvent('height', this.height));
+    }
+
+    get width(): number {
+        return this.config.width;
+    }
+
+    set width(width: number) {
+        this.config.width = width;
+        this.dispatchEvent(new AttributeChangedEvent('width', this.width));
+    }
+
+    get backgroundFill(): string {
+        return this.config.backgroundFill;
+    }
+
+    set backgroundFill(backgroundFill: string) {
+        this.config.backgroundFill = backgroundFill;
+        this.dispatchEvent(new AttributeChangedEvent('backgroundFill', this.backgroundFill));
+    }
+
+    get stepsToComplete(): number {
+        return this.config.stepsToComplete;
+    }
+
+    set stepsToComplete(stepsToComplete: number) {
+        this.config.stepsToComplete = stepsToComplete;
+        this.dispatchEvent(new AttributeChangedEvent('stepsToComplete', this.stepsToComplete));
+    }
+
+    get modified(): boolean {
+        return this.config.modified;
+    }
 }
 
-const CircProxyHandler = {
-    set: (target: Circ, propertyName: PropertyKey, value: any, receiver: any): boolean => {
-        target[propertyName] = value;
-
-        target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
-
-        target.modified = true;
-
-        return true;
-    },
-};
-
-const CircFactory = () => new Proxy<Circ>(new Circ(), CircProxyHandler);
+class CircConfig implements CircConfigInterface {
+    name: string;
+    height: number;
+    width: number;
+    backgroundFill: string;
+    stepsToComplete: number;
+    modified: boolean;
+}
 
 export {
     Circ,
-    CircFactory,
+    CircConfig,
 }

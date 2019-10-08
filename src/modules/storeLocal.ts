@@ -10,10 +10,7 @@ export default class LocalStorage implements CircStoreInterface {
         return new Promise((resolve, reject) => {
             let circJson = window.localStorage.getItem(`${this.storeName}.${name}`);
 
-            const circ = this.serializer.unserialize(circJson);
-            circ.modified = false;
-
-            resolve(circ);
+            resolve(this.serializer.unserialize(circJson));
         });
     }
 
@@ -57,7 +54,6 @@ export default class LocalStorage implements CircStoreInterface {
     }
 
     public store(name: string, circ: CircInterface): void {
-        circ.modified = null;
         const circJson = this.serializer.serialize(circ);
 
         window.localStorage.setItem(`${this.storeName}.${name}`, circJson);

@@ -5,9 +5,9 @@ import {
     EngineInterface,
     QuickControlInterface
 } from "../../structure";
-import {EngineFactory} from "../engine";
 import Painter from "../painter";
 import BackgroundPainter from "../backgroundPainter";
+import {Engine} from "../engine";
 
 export default class StorageControl implements ControlInterface, QuickControlInterface {
     protected stores: CircStoreInterface[];
@@ -81,7 +81,7 @@ export default class StorageControl implements ControlInterface, QuickControlInt
 
                             const previewPainter = new Painter(tileCanvas.getContext('2d'));
                             const previewBackgroundPainter = new BackgroundPainter(tileBackCanvas.getContext('2d'));
-                            const previewEngine = EngineFactory();
+                            const previewEngine = new Engine();
                             previewEngine.addStepCallback(circ => previewPainter.draw(circ));
                             previewEngine.addStepCallback(circ => previewBackgroundPainter.draw(circ));
                             previewEngine.import(circ);

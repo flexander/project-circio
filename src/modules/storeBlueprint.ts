@@ -1,7 +1,7 @@
 import {CircInterface, CircStoreInterface} from "../structure";
-import {CircleFactory} from "./circle";
-import {BrushFactory} from "./brushes";
-import {CircFactory} from "./circ";
+import {Circ} from "./circ";
+import {Circle} from "./circle";
+import {Brush} from "./brushes";
 
 export class BlueprintStore implements CircStoreInterface {
     protected blueprintsStore: {[name: string]: Function} = {
@@ -39,7 +39,6 @@ export class BlueprintStore implements CircStoreInterface {
     private resolveCirc(circName: string): CircInterface {
         const circ = this.blueprintsStore[circName]();
         circ.name = circName;
-        circ.modified = false;
 
         return circ;
     }
@@ -52,12 +51,12 @@ export class BlueprintStore implements CircStoreInterface {
     }
 
     protected makeTwoCircles(): CircInterface {
-        const circ = CircFactory();
+        const circ = new Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
 
-        const circle0 = CircleFactory();
+        const circle0 = new Circle();
         circle0.steps = 500;
         circle0.outside = false;
         circle0.fixed = true;
@@ -66,7 +65,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle0.startAngle = 0;
         circle0.radius = 300;
 
-        const circle1 = CircleFactory();
+        const circle1 = new Circle();
         circle1.steps = 500;
         circle1.outside = true;
         circle1.fixed = true;
@@ -75,7 +74,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle1.startAngle = 0;
         circle1.radius = 100;
 
-        const circle1Brush = BrushFactory();
+        const circle1Brush = new Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
         circle1Brush.link = false;
@@ -91,12 +90,12 @@ export class BlueprintStore implements CircStoreInterface {
     }
 
     protected makeThreeCircles(): CircInterface {
-        const circ = CircFactory();
+        const circ = new Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
 
-        const circle0 = CircleFactory();
+        const circle0 = new Circle();
         circle0.steps = 500;
         circle0.outside = false;
         circle0.fixed = true;
@@ -105,7 +104,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle0.startAngle = 0;
         circle0.radius = 100;
 
-        const circle1 = CircleFactory();
+        const circle1 = new Circle();
         circle1.steps = 500;
         circle1.outside = true;
         circle1.fixed = true;
@@ -114,7 +113,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle1.startAngle = 0;
         circle1.radius = 50;
 
-        const circle2 = CircleFactory();
+        const circle2 = new Circle();
         circle2.steps = 500;
         circle2.outside = true;
         circle2.fixed = true;
@@ -123,7 +122,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle2.startAngle = 0;
         circle2.radius = 25;
 
-        const circle2Brush = BrushFactory();
+        const circle2Brush = new Brush();
         circle2Brush.color = '#FFFFFF';
         circle2Brush.degrees = 0;
         circle2Brush.link = false;
@@ -140,12 +139,12 @@ export class BlueprintStore implements CircStoreInterface {
     }
 
     protected makeFourCircles(): CircInterface {
-        const circ = CircFactory();
+        const circ = new Circ;
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
 
-        const circle0 = CircleFactory();
+        const circle0 = new Circle();
         circle0.steps = 1000;
         circle0.outside = false;
         circle0.fixed = true;
@@ -154,7 +153,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle0.startAngle = 0;
         circle0.radius = 120;
 
-        const circle1 = CircleFactory();
+        const circle1 = new Circle();
         circle1.steps = 500;
         circle1.outside = true;
         circle1.fixed = true;
@@ -163,7 +162,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle1.startAngle = 0;
         circle1.radius = 60;
 
-        const circle2 = CircleFactory();
+        const circle2 = new Circle();
         circle2.steps = 250;
         circle2.outside = true;
         circle2.fixed = true;
@@ -172,7 +171,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle2.startAngle = 0;
         circle2.radius = 30;
 
-        const circle3 = CircleFactory();
+        const circle3 = new Circle();
         circle3.steps = 125;
         circle3.outside = true;
         circle3.fixed = true;
@@ -181,7 +180,7 @@ export class BlueprintStore implements CircStoreInterface {
         circle3.startAngle = 0;
         circle3.radius = 15;
 
-        const circle3Brush = BrushFactory();
+        const circle3Brush = new Brush();
         circle3Brush.color = '#FFFFFF';
         circle3Brush.degrees = 0;
         circle3Brush.link = false;
