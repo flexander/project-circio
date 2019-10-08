@@ -3,6 +3,7 @@ import {ControlInterface, ControlPanelInterface} from "../../structure";
 export default class ControlPanel implements ControlPanelInterface {
     protected controls: ControlInterface[] = [];
     protected name: string;
+    protected simplified: boolean = true;
 
     constructor(name: string = null) {
         this.name = name;
@@ -38,5 +39,7 @@ export default class ControlPanel implements ControlPanelInterface {
 
         return controlPanelFragment;
     }
+
+
 
 }

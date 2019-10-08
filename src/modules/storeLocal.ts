@@ -4,12 +4,16 @@ import Serializer from "./serializer";
 export default class LocalStorage implements CircStoreInterface {
     protected storeName = 'store.v2';
     protected serializer = new Serializer();
+    public name: string = 'Browser';
 
     public get(name: string): Promise<CircInterface> {
         return new Promise((resolve, reject) => {
             let circJson = window.localStorage.getItem(`${this.storeName}.${name}`);
 
-            resolve(this.serializer.unserialize(circJson));
+            const circ = this.serializer.unserialize(circJson);
+            circ.modified = false;
+
+            resolve(circ);
         });
     }
 
@@ -53,6 +57,7 @@ export default class LocalStorage implements CircStoreInterface {
     }
 
     public store(name: string, circ: CircInterface): void {
+        circ.modified = null;
         const circJson = this.serializer.serialize(circ);
 
         window.localStorage.setItem(`${this.storeName}.${name}`, circJson);

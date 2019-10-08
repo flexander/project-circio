@@ -12,6 +12,7 @@ interface CircInterface extends EventEmitterInterface {
     backgroundFill: string;
     stepsToComplete: number;
     state: CircStateInterface;
+    modified: boolean;
 
     addShape(shape: ShapeInterface): void;
     removeShape(id: number): void;
@@ -55,9 +56,10 @@ interface CircleInterface extends ShapeInterface, EventEmitterInterface {
     radius: number;
 }
 
-interface BrushInterface {
+interface BrushInterface extends EventEmitterInterface {
     draw: boolean;
     color: string;
+    colorWithAlpha: string;
     transparency: number;
     point: number;
     offset: number;
@@ -76,7 +78,7 @@ interface EngineInterface extends EventEmitterInterface {
     addImportCallback(callback: CallableFunction): void
     pause(): void;
     play(count?: number|null): void
-    stepFast(count: number): void
+    stepFast(count: number): Promise<void>
     step(): void;
     reset(): void
     isPlaying(): boolean;
@@ -113,6 +115,7 @@ interface BackgroundPainterInterface extends PainterInterface {}
 **/
 
 interface CircStoreInterface {
+    name: string;
     get(name: string): Promise<CircInterface>
     getIndex(index: number): Promise<CircInterface>
     list(): Promise<CircInterface[]>;

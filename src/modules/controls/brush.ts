@@ -1,10 +1,13 @@
-import {BrushControlInterface, BrushInterface} from "../../structure";
+import {BrushControlInterface, BrushInterface, CircleInterface} from "../../structure";
+import {ControlModes} from "./mode";
 
 export default class BrushControl implements BrushControlInterface {
     protected brush: BrushInterface;
+    protected mode: string;
 
-    constructor(brush: BrushInterface) {
+    constructor(brush: BrushInterface, mode: string = ControlModes.MODE_DEFAULT) {
         this.brush = brush;
+        this.mode = mode;
     }
 
     public render(): DocumentFragment {
@@ -18,11 +21,14 @@ export default class BrushControl implements BrushControlInterface {
 
         const brushFragmentBody = brushFragment.querySelector('.section-body');
         brushFragmentBody.appendChild(this.makeColourFragment());
-        brushFragmentBody.appendChild(this.makeTransparencyFragment());
-        brushFragmentBody.appendChild(this.makeOffsetFragment());
-        brushFragmentBody.appendChild(this.makeAngleFragment());
         brushFragmentBody.appendChild(this.makeLinkFragment());
-        brushFragmentBody.appendChild(this.makePointFragment());
+
+        if (this.mode === ControlModes.MODE_ADVANCED) {
+            brushFragmentBody.appendChild(this.makeTransparencyFragment());
+            brushFragmentBody.appendChild(this.makeOffsetFragment());
+            brushFragmentBody.appendChild(this.makeAngleFragment());
+            brushFragmentBody.appendChild(this.makePointFragment());
+        }
 
         return brushFragment;
     }
@@ -113,13 +119,13 @@ export default class BrushControl implements BrushControlInterface {
         const html = `
             <div class="control control-point">
                 <label>point</label>
-                <input type="number" name="point" min="0" step="0.5" class="input" value="${this.brush.point}">
+                <input type="number" name="point" min="0.5" step="0.5" class="input" value="${this.brush.point}">
             </div>`;
 
         const pointFragment = document.createRange().createContextualFragment(html);
 
         pointFragment.querySelector('input[name="point"]').addEventListener('input', e => {
-            this.brush.point = parseInt((e.target as HTMLInputElement).value,10);
+            this.brush.point = parseFloat((e.target as HTMLInputElement).value);
         });
 
         return pointFragment;

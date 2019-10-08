@@ -9,6 +9,7 @@ class Engine extends EventEmitter implements EngineInterface {
     protected importCallbacks: Array<Function> = [];
     protected circ: CircInterface;
     protected stepsToRun: number = 0;
+    protected stepJumps: Promise<void>[] = [];
 
     constructor() {
         super();
@@ -35,7 +36,7 @@ class Engine extends EventEmitter implements EngineInterface {
     public import(circ: CircInterface): void {
         this.circ = circ;
         this.reset();
-        this.runImportCallbacks()
+        this.runImportCallbacks();
     }
 
     public pause(): void {
@@ -66,15 +67,42 @@ class Engine extends EventEmitter implements EngineInterface {
         this.step();
     }
 
-    public stepFast(count: number): void {
+    public stepFast(count: number): Promise<void> {
+        if (this.stepJumps.length > 0) {
+            throw `Step jump in progress`;
+        }
+
         const thenContinue = this.getRemainingStepsToRun();
         this.pause();
 
-        for (let step = 0; step<count; step++) {
-            this.step()
+        const stepGroup = 100;
+        let stepsRun = 0;
+
+        while (stepsRun < count) {
+            const stepsLeftToRun = count - stepsRun;
+            const stepsToRun = (stepsLeftToRun < stepGroup) ? stepsLeftToRun:stepGroup;
+
+            this.stepJumps.push(this.stepJump(stepsToRun));
+
+            stepsRun += stepsToRun;
         }
 
-        this.play(thenContinue);
+        return Promise.all(this.stepJumps)
+            .then(_ => {
+                this.play(thenContinue);
+                this.stepJumps = [];
+            });
+    }
+
+    protected stepJump(number: number): Promise<void> {
+        return new Promise<void>((resolve, reject): void => {
+            setTimeout(_ => {
+                for (let step = 0; step<number; step++) {
+                    this.step()
+                }
+                resolve();
+            }, 0);
+        });
     }
 
     protected calculateShapes(): void {

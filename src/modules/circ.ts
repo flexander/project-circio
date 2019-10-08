@@ -1,7 +1,7 @@
 import {CircInterface, CircStateInterface, EventEmitter, ShapeInterface} from "../structure";
-import {ShapeAddEvent, ShapeDeleteEvent} from "./events";
+import {AttributeChangedEvent, ShapeAddEvent, ShapeDeleteEvent} from "./events";
 
-export default class Circ extends EventEmitter implements CircInterface {
+class Circ extends EventEmitter implements CircInterface {
     name: string;
     height: number;
     width: number;
@@ -9,6 +9,7 @@ export default class Circ extends EventEmitter implements CircInterface {
     stepsToComplete: number;
     state: CircStateInterface;
     protected shapes: ShapeInterface[] = [];
+    modified: boolean;
 
     addShape(shape: ShapeInterface): void {
         shape.isRoot = (this.shapes.length === 0);
@@ -36,4 +37,23 @@ export default class Circ extends EventEmitter implements CircInterface {
     getShapes(): ShapeInterface[] {
         return this.shapes;
     }
+}
+
+const CircProxyHandler = {
+    set: (target: Circ, propertyName: PropertyKey, value: any, receiver: any): boolean => {
+        target[propertyName] = value;
+
+        target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
+
+        target.modified = true;
+
+        return true;
+    },
+};
+
+const CircFactory = () => new Proxy<Circ>(new Circ(), CircProxyHandler);
+
+export {
+    Circ,
+    CircFactory,
 }

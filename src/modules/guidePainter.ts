@@ -108,8 +108,8 @@ export default class GuidePainter implements GuidePainterInterface {
         this.canvasContext.stroke();
 
         this.canvasContext.beginPath();
-        this.canvasContext.fillStyle = brush.color;
-        this.canvasContext.arc(brushPointX, brushPointY, 4, 0, 2*Math.PI);
+        this.canvasContext.fillStyle = brush.colorWithAlpha;
+        this.canvasContext.arc(brushPointX, brushPointY, Math.max(2,brush.point), 0, 2*Math.PI);
         this.canvasContext.fill();
     }
 

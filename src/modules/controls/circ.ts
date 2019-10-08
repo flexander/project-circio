@@ -9,15 +9,19 @@ import {Circle} from "../circle";
 import BackgroundControl from "./background";
 import ControlPanel from "./panel";
 import CircleControl from "./shapes/circle";
-import Brush from "../brushes";
+import {BrushFactory} from "../brushes";
+import {ControlModes} from "./mode";
 
 export default class CircControl implements CircControlInterface {
     protected circ: CircInterface;
     protected shapeControls: ShapeControlInterface[] = [];
     protected panel: ControlPanelInterface;
+    protected simplified: boolean = true;
+    protected mode: string;
 
-    constructor(circ: CircInterface) {
+    constructor(circ: CircInterface, mode: string = ControlModes.MODE_DEFAULT) {
         this.circ = circ;
+        this.mode = mode;
         this.panel = new ControlPanel('Circ: ' + (circ.name || 'Unnamed'));
 
         this.panel.addControl(new BackgroundControl(this.circ));
@@ -30,7 +34,7 @@ export default class CircControl implements CircControlInterface {
                     if (shape.isRoot) {
 
                     }
-                    shapeControl = new CircleControl(shape);
+                    shapeControl = new CircleControl(shape, this.mode);
                 }  else {
                     throw `Unable to render shape: ` + typeof shape;
                 }
@@ -38,7 +42,13 @@ export default class CircControl implements CircControlInterface {
                 this.panel.addControl(shapeControl)
             });
 
-        const addShapeControl = new class implements ControlInterface {
+        this.panel.addControl(this.makeAddShapeControl());
+    }
+
+    protected makeAddShapeControl(): ShapeControlInterface {
+        const self = this;
+
+        return new class implements ControlInterface {
             render(): DocumentFragment {
                 const addShapeFragmentHtml = `
                     <button>Add Circle</button>
@@ -56,16 +66,14 @@ export default class CircControl implements CircControlInterface {
                     newShape.startAngle = 0;
                     newShape.radius = 100;
 
-                    newShape.brushes.push(new Brush());
+                    newShape.brushes.push(BrushFactory());
 
-                    circ.addShape(newShape);
+                    self.circ.addShape(newShape);
                 });
 
                 return addShapeFragment;
             }
         };
-
-        this.panel.addControl(addShapeControl);
     }
 
     public render(): DocumentFragment {

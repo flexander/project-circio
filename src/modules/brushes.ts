@@ -1,7 +1,8 @@
-import {BrushInterface} from "../structure";
+import {BrushInterface, EventEmitter} from "../structure";
+import {AttributeChangedEvent} from "./events";
 
-export default class Brush implements BrushInterface {
-    hexcolor: string = '#FFFFFF';
+class Brush extends EventEmitter implements BrushInterface {
+    color: string = '#FFFFFF';
     transparency: number = 0;
     degrees: number = 0;
     draw: boolean = true;
@@ -9,11 +10,24 @@ export default class Brush implements BrushInterface {
     offset: number = 0;
     point: number = 0.5;
 
-    public get color(): string {
-        return this.hexcolor + ('00' + (255-this.transparency).toString(16)).substr(-2);
+    public get colorWithAlpha(): string {
+        return this.color + ('00' + (255-this.transparency).toString(16)).substr(-2);
     }
+}
 
-    public set color(value: string) {
-        this.hexcolor = value;
-    }
+const BrushProxyHandler = {
+    set: (target: Brush, propertyName: PropertyKey, value: any, receiver: any): boolean => {
+        target[propertyName] = value;
+
+        target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
+
+        return true;
+    },
+};
+
+const BrushFactory = () => new Proxy<Brush>(new Brush(), BrushProxyHandler);
+
+export {
+    Brush,
+    BrushFactory,
 }
