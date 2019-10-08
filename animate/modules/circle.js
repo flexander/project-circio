@@ -203,6 +203,7 @@ var CircleConfig = /** @class */ (function () {
     }
     return CircleConfig;
 }());
+exports.CircleConfig = CircleConfig;
 var CircleState = /** @class */ (function () {
     function CircleState() {
         this.centre = new CircleCenterPosition();

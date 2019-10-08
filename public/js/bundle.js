@@ -2263,6 +2263,7 @@ var CircleConfig = /** @class */ (function () {
     }
     return CircleConfig;
 }());
+exports.CircleConfig = CircleConfig;
 var CircleState = /** @class */ (function () {
     function CircleState() {
         this.centre = new CircleCenterPosition();
@@ -3507,10 +3508,12 @@ var Serializer = /** @class */ (function () {
     function Serializer() {
         this.classes = {
             Circ: circ_1.Circ,
+            CircConfig: circ_1.CircConfig,
             Circle: circle_1.Circle,
             CircleCenterPosition: circle_1.CircleCenterPosition,
             CircleDrawPosition: circle_1.CircleDrawPosition,
             CircleState: circle_1.CircleState,
+            CircleConfig: circle_1.CircleConfig,
             Brush: brushes_1.BrushFactory,
         };
     }
