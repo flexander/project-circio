@@ -36,7 +36,7 @@ export default class CircControl implements CircControlInterface {
                     }
                     shapeControl = new CircleControl(shape, this.mode);
                 }  else {
-                    throw `Unable to render shape: ` + typeof shape;
+                    throw `Unable to render control for shape of type: ` + shape.constructor.name;
                 }
 
                 this.panel.addControl(shapeControl)
