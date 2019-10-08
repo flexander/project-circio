@@ -11,7 +11,7 @@ const cloneDeep = require('lodash.clonedeep');
 
 class Circle extends EventEmitter implements CircleInterface {
     id: number;
-    brushes: BrushInterface[] = [];
+    protected brushes: BrushInterface[] = [];
     state: ShapeStateInterface = new CircleState();
     protected config: ShapeConfigInterface = new CircleConfig();
 
@@ -109,6 +109,14 @@ class Circle extends EventEmitter implements CircleInterface {
 
         // Create a new initial state object
         this.saveInitialState();
+    }
+
+    public addBrush(brush: BrushInterface): void {
+        this.brushes.push(brush);
+    }
+
+    public getBrushes(): BrushInterface[] {
+        return this.brushes;
     }
     
     get steps(): number {

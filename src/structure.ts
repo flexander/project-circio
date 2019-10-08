@@ -29,11 +29,12 @@ interface CircStateInterface {
 
 interface ShapeInterface extends ShapeConfigInterface {
     id: number;
-    brushes: BrushInterface[];
     state: ShapeStateInterface;
     calculatePosition(parentCircle: ShapeInterface|null): void;
     calculateAngle(): void;
     reset(): void;
+    addBrush(brush: BrushInterface): void;
+    getBrushes(): BrushInterface[];
 }
 
 interface ShapeConfigInterface extends ModifiableInterface {

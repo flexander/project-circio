@@ -100,6 +100,12 @@ var Circle = /** @class */ (function (_super) {
         // Create a new initial state object
         this.saveInitialState();
     };
+    Circle.prototype.addBrush = function (brush) {
+        this.brushes.push(brush);
+    };
+    Circle.prototype.getBrushes = function () {
+        return this.brushes;
+    };
     Object.defineProperty(Circle.prototype, "steps", {
         get: function () {
             return this.config.steps;

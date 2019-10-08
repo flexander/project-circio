@@ -16,7 +16,7 @@ export default class Painter implements CirclePainterInterface {
         this.centerCanvas(circ);
 
         circ.getShapes().forEach((circle:CircleInterface) => {
-            if (circle.brushes.length === 0) {
+            if (circle.getBrushes().length === 0) {
                 return;
             }
             
@@ -43,7 +43,7 @@ export default class Painter implements CirclePainterInterface {
 
     drawPoints (circle: CircleInterface) {
 
-        circle.brushes.forEach((brush: BrushInterface) => {
+        circle.getBrushes().forEach((brush: BrushInterface) => {
             const radians = circle.state.getAngle();
             const x = circle.state.drawPoint.x + (Math.cos(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
             const y = circle.state.drawPoint.y + (Math.sin(radians + (brush.degrees * (Math.PI/180))) * brush.offset);
