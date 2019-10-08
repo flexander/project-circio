@@ -2514,7 +2514,7 @@ var CircControl = /** @class */ (function () {
                 shapeControl = new circle_2.default(shape, _this.mode);
             }
             else {
-                throw "Unable to render shape: " + typeof shape;
+                throw "Unable to render control for shape of type: " + shape.constructor.name;
             }
             _this.panel.addControl(shapeControl);
         });
