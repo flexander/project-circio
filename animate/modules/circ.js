@@ -51,7 +51,7 @@ var Circ = /** @class */ (function (_super) {
         },
         set: function (name) {
             this.config['name'] = name;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.name', this.name));
+            this.dispatchEvent(new events_1.AttributeChangedEvent('name', this.name));
         },
         enumerable: true,
         configurable: true
@@ -62,7 +62,7 @@ var Circ = /** @class */ (function (_super) {
         },
         set: function (height) {
             this.config.height = height;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.height', this.height));
+            this.dispatchEvent(new events_1.AttributeChangedEvent('height', this.height));
         },
         enumerable: true,
         configurable: true
@@ -73,7 +73,7 @@ var Circ = /** @class */ (function (_super) {
         },
         set: function (width) {
             this.config.width = width;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.width', this.width));
+            this.dispatchEvent(new events_1.AttributeChangedEvent('width', this.width));
         },
         enumerable: true,
         configurable: true
@@ -84,7 +84,7 @@ var Circ = /** @class */ (function (_super) {
         },
         set: function (backgroundFill) {
             this.config.backgroundFill = backgroundFill;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.backgroundFill', this.backgroundFill));
+            this.dispatchEvent(new events_1.AttributeChangedEvent('backgroundFill', this.backgroundFill));
         },
         enumerable: true,
         configurable: true
@@ -95,7 +95,7 @@ var Circ = /** @class */ (function (_super) {
         },
         set: function (stepsToComplete) {
             this.config.stepsToComplete = stepsToComplete;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.stepsToComplete', this.stepsToComplete));
+            this.dispatchEvent(new events_1.AttributeChangedEvent('stepsToComplete', this.stepsToComplete));
         },
         enumerable: true,
         configurable: true

@@ -38,7 +38,7 @@ class Circ extends EventEmitter implements CircInterface {
 
     set name(name: string) {
         this.config['name'] = name;
-        this.dispatchEvent(new AttributeChangedEvent('circ.name', this.name));
+        this.dispatchEvent(new AttributeChangedEvent('name', this.name));
     }
 
     get height(): number {
@@ -47,7 +47,7 @@ class Circ extends EventEmitter implements CircInterface {
 
     set height(height: number) {
         this.config.height = height;
-        this.dispatchEvent(new AttributeChangedEvent('circ.height', this.height));
+        this.dispatchEvent(new AttributeChangedEvent('height', this.height));
     }
 
     get width(): number {
@@ -56,7 +56,7 @@ class Circ extends EventEmitter implements CircInterface {
 
     set width(width: number) {
         this.config.width = width;
-        this.dispatchEvent(new AttributeChangedEvent('circ.width', this.width));
+        this.dispatchEvent(new AttributeChangedEvent('width', this.width));
     }
 
     get backgroundFill(): string {
@@ -65,7 +65,7 @@ class Circ extends EventEmitter implements CircInterface {
 
     set backgroundFill(backgroundFill: string) {
         this.config.backgroundFill = backgroundFill;
-        this.dispatchEvent(new AttributeChangedEvent('circ.backgroundFill', this.backgroundFill));
+        this.dispatchEvent(new AttributeChangedEvent('backgroundFill', this.backgroundFill));
     }
 
     get stepsToComplete(): number {
@@ -74,7 +74,7 @@ class Circ extends EventEmitter implements CircInterface {
 
     set stepsToComplete(stepsToComplete: number) {
         this.config.stepsToComplete = stepsToComplete;
-        this.dispatchEvent(new AttributeChangedEvent('circ.stepsToComplete', this.stepsToComplete));
+        this.dispatchEvent(new AttributeChangedEvent('stepsToComplete', this.stepsToComplete));
     }
 
     get modified(): boolean {

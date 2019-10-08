@@ -1991,7 +1991,7 @@ var Circ = /** @class */ (function (_super) {
         },
         set: function (name) {
             this.config['name'] = name;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.name', this.name));
+            this.dispatchEvent(new events_1.AttributeChangedEvent('name', this.name));
         },
         enumerable: true,
         configurable: true
@@ -2002,7 +2002,7 @@ var Circ = /** @class */ (function (_super) {
         },
         set: function (height) {
             this.config.height = height;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.height', this.height));
+            this.dispatchEvent(new events_1.AttributeChangedEvent('height', this.height));
         },
         enumerable: true,
         configurable: true
@@ -2013,7 +2013,7 @@ var Circ = /** @class */ (function (_super) {
         },
         set: function (width) {
             this.config.width = width;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.width', this.width));
+            this.dispatchEvent(new events_1.AttributeChangedEvent('width', this.width));
         },
         enumerable: true,
         configurable: true
@@ -2024,7 +2024,7 @@ var Circ = /** @class */ (function (_super) {
         },
         set: function (backgroundFill) {
             this.config.backgroundFill = backgroundFill;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.backgroundFill', this.backgroundFill));
+            this.dispatchEvent(new events_1.AttributeChangedEvent('backgroundFill', this.backgroundFill));
         },
         enumerable: true,
         configurable: true
@@ -2035,7 +2035,7 @@ var Circ = /** @class */ (function (_super) {
         },
         set: function (stepsToComplete) {
             this.config.stepsToComplete = stepsToComplete;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('circ.stepsToComplete', this.stepsToComplete));
+            this.dispatchEvent(new events_1.AttributeChangedEvent('stepsToComplete', this.stepsToComplete));
         },
         enumerable: true,
         configurable: true
@@ -3730,11 +3730,10 @@ exports.BlueprintStore = BlueprintStore;
 },{"./brushes":4,"./circ":5,"./circle":6}],23:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
