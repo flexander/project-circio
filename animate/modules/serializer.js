@@ -7,7 +7,7 @@ var Serializer = /** @class */ (function () {
     function Serializer() {
         this.classes = {
             Circ: circ_1.Circ,
-            Circle: circle_1.CircleFactory,
+            Circle: circle_1.Circle,
             CircleCenterPosition: circle_1.CircleCenterPosition,
             CircleDrawPosition: circle_1.CircleDrawPosition,
             CircleState: circle_1.CircleState,

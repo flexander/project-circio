@@ -27,21 +27,24 @@ interface CircStateInterface {
     totalSteps: number;
 }
 
-interface ShapeInterface {
+interface ShapeInterface extends ShapeConfigInterface {
     id: number;
+    brushes: BrushInterface[];
+    state: ShapeStateInterface;
+    calculatePosition(parentCircle: ShapeInterface|null): void;
+    calculateAngle(): void;
+    reset(): void;
+}
+
+interface ShapeConfigInterface extends ModifiableInterface {
     steps: number;
     outside: boolean;
     fixed: boolean;
     clockwise: boolean;
     stepMod: number;
     startAngle: number;
-    brushes: BrushInterface[];
-    state: ShapeStateInterface;
     isRoot: boolean;
-
-    calculatePosition(parentCircle: ShapeInterface|null): void;
-    calculateAngle(): void;
-    reset(): void;
+    radius: number;
 }
 
 interface ShapeStateInterface {
@@ -224,6 +227,7 @@ export {
     CircConfigInterface,
     ShapeInterface,
     ShapeStateInterface,
+    ShapeConfigInterface,
     CircleInterface,
     BrushInterface,
     EngineInterface,

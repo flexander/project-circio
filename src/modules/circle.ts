@@ -1,20 +1,19 @@
 import '../structure';
-import {BrushInterface, CircleInterface, EventEmitter, PositionInterface, ShapeStateInterface} from "../structure";
+import {
+    BrushInterface,
+    CircleInterface,
+    EventEmitter,
+    PositionInterface, ShapeConfigInterface,
+    ShapeStateInterface
+} from "../structure";
 import {AttributeChangedEvent} from "./events";
 const cloneDeep = require('lodash.clonedeep');
 
 class Circle extends EventEmitter implements CircleInterface {
-    brushes: BrushInterface[] = [];
-    clockwise: boolean;
-    fixed: boolean;
     id: number;
-    outside: boolean;
-    radius: number;
-    startAngle: number;
+    brushes: BrushInterface[] = [];
     state: ShapeStateInterface = new CircleState();
-    stepMod: number;
-    steps: number;
-    isRoot: boolean;
+    protected config: ShapeConfigInterface = new CircleConfig();
 
     constructor() {
         super();
@@ -111,6 +110,94 @@ class Circle extends EventEmitter implements CircleInterface {
         // Create a new initial state object
         this.saveInitialState();
     }
+    
+    get steps(): number {
+        return this.config.steps;
+    }
+    
+    set steps(steps: number) {
+        this.config.steps = steps;
+        this.dispatchEvent(new AttributeChangedEvent('steps', this.steps));
+    }
+    
+    get outside(): boolean {
+        return this.config.outside;
+    }
+    
+    set outside(outside: boolean) {
+        this.config.outside = outside;
+        this.dispatchEvent(new AttributeChangedEvent('outside', this.outside));
+    }
+    
+    get fixed(): boolean {
+        return this.config.fixed;
+    }
+    
+    set fixed(fixed: boolean) {
+        this.config.fixed = fixed;
+        this.dispatchEvent(new AttributeChangedEvent('fixed', this.fixed));
+    }
+    
+    get clockwise(): boolean {
+        return this.config.clockwise;
+    }
+    
+    set clockwise(clockwise: boolean) {
+        this.config.clockwise = clockwise;
+        this.dispatchEvent(new AttributeChangedEvent('clockwise', this.clockwise));
+    }
+    
+    get isRoot(): boolean {
+        return this.config.isRoot;
+    }
+    
+    set isRoot(isRoot: boolean) {
+        this.config.isRoot = isRoot;
+        this.dispatchEvent(new AttributeChangedEvent('isRoot', this.isRoot));
+    }
+
+    get stepMod(): number {
+        return this.config.stepMod;
+    }
+
+    set stepMod(stepMod: number) {
+        this.config.stepMod = stepMod;
+        this.dispatchEvent(new AttributeChangedEvent('stepMod', this.stepMod));
+    }
+
+    get startAngle(): number {
+        return this.config.startAngle;
+    }
+
+    set startAngle(startAngle: number) {
+        this.config.startAngle = startAngle;
+        this.dispatchEvent(new AttributeChangedEvent('startAngle', this.startAngle));
+    }
+
+    get radius(): number {
+        return this.config.radius;
+    }
+
+    set radius(radius: number) {
+        this.config.radius = radius;
+        this.dispatchEvent(new AttributeChangedEvent('radius', this.radius));
+    }
+
+    get modified(): boolean {
+        return this.config.modified;
+    }
+}
+
+class CircleConfig implements ShapeConfigInterface {
+    steps: number;
+    outside: boolean;
+    fixed: boolean;
+    clockwise: boolean;
+    stepMod: number;
+    startAngle: number;
+    isRoot: boolean;
+    modified: boolean;
+    radius: number;
 }
 
 class CircleState implements ShapeStateInterface {
@@ -138,21 +225,8 @@ class CircleDrawPosition implements PositionInterface {
     y: number;
 }
 
-const CircleProxyHandler = {
-    set: (target: Circle, propertyName: PropertyKey, value: any, receiver: any): boolean => {
-        target[propertyName] = value;
-
-        target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
-
-        return true;
-    },
-};
-
-const CircleFactory = () => new Proxy<Circle>(new Circle(), CircleProxyHandler);
-
 export {
     Circle,
-    CircleFactory,
     CircleState,
     CircleCenterPosition,
     CircleDrawPosition,

@@ -2083,6 +2083,7 @@ var Circle = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this.brushes = [];
         _this.state = new CircleState();
+        _this.config = new CircleConfig();
         _this.id = Math.floor(Math.random() * 100000);
         _this.saveInitialState();
         return _this;
@@ -2159,9 +2160,109 @@ var Circle = /** @class */ (function (_super) {
         // Create a new initial state object
         this.saveInitialState();
     };
+    Object.defineProperty(Circle.prototype, "steps", {
+        get: function () {
+            return this.config.steps;
+        },
+        set: function (steps) {
+            this.config.steps = steps;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('steps', this.steps));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circle.prototype, "outside", {
+        get: function () {
+            return this.config.outside;
+        },
+        set: function (outside) {
+            this.config.outside = outside;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('outside', this.outside));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circle.prototype, "fixed", {
+        get: function () {
+            return this.config.fixed;
+        },
+        set: function (fixed) {
+            this.config.fixed = fixed;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('fixed', this.fixed));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circle.prototype, "clockwise", {
+        get: function () {
+            return this.config.clockwise;
+        },
+        set: function (clockwise) {
+            this.config.clockwise = clockwise;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('clockwise', this.clockwise));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circle.prototype, "isRoot", {
+        get: function () {
+            return this.config.isRoot;
+        },
+        set: function (isRoot) {
+            this.config.isRoot = isRoot;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('isRoot', this.isRoot));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circle.prototype, "stepMod", {
+        get: function () {
+            return this.config.stepMod;
+        },
+        set: function (stepMod) {
+            this.config.stepMod = stepMod;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('stepMod', this.stepMod));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circle.prototype, "startAngle", {
+        get: function () {
+            return this.config.startAngle;
+        },
+        set: function (startAngle) {
+            this.config.startAngle = startAngle;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('startAngle', this.startAngle));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circle.prototype, "radius", {
+        get: function () {
+            return this.config.radius;
+        },
+        set: function (radius) {
+            this.config.radius = radius;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('radius', this.radius));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Circle.prototype, "modified", {
+        get: function () {
+            return this.config.modified;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Circle;
 }(structure_1.EventEmitter));
 exports.Circle = Circle;
+var CircleConfig = /** @class */ (function () {
+    function CircleConfig() {
+    }
+    return CircleConfig;
+}());
 var CircleState = /** @class */ (function () {
     function CircleState() {
         this.centre = new CircleCenterPosition();
@@ -2192,15 +2293,6 @@ var CircleDrawPosition = /** @class */ (function () {
     return CircleDrawPosition;
 }());
 exports.CircleDrawPosition = CircleDrawPosition;
-var CircleProxyHandler = {
-    set: function (target, propertyName, value, receiver) {
-        target[propertyName] = value;
-        target.dispatchEvent(new events_1.AttributeChangedEvent(propertyName.toString(), value));
-        return true;
-    },
-};
-var CircleFactory = function () { return new Proxy(new Circle(), CircleProxyHandler); };
-exports.CircleFactory = CircleFactory;
 
 },{"../structure":25,"./events":18,"lodash.clonedeep":1}],7:[function(require,module,exports){
 "use strict";
@@ -3415,7 +3507,7 @@ var Serializer = /** @class */ (function () {
     function Serializer() {
         this.classes = {
             Circ: circ_1.Circ,
-            Circle: circle_1.CircleFactory,
+            Circle: circle_1.Circle,
             CircleCenterPosition: circle_1.CircleCenterPosition,
             CircleDrawPosition: circle_1.CircleDrawPosition,
             CircleState: circle_1.CircleState,
@@ -3461,9 +3553,9 @@ exports.default = Serializer;
 },{"./brushes":4,"./circ":5,"./circle":6}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var circle_1 = require("./circle");
 var brushes_1 = require("./brushes");
 var circ_1 = require("./circ");
+var circle_1 = require("./circle");
 var BlueprintStore = /** @class */ (function () {
     function BlueprintStore() {
         this.blueprintsStore = {
@@ -3510,7 +3602,7 @@ var BlueprintStore = /** @class */ (function () {
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
-        var circle0 = circle_1.CircleFactory();
+        var circle0 = new circle_1.Circle();
         circle0.steps = 500;
         circle0.outside = false;
         circle0.fixed = true;
@@ -3518,7 +3610,7 @@ var BlueprintStore = /** @class */ (function () {
         circle0.stepMod = 0;
         circle0.startAngle = 0;
         circle0.radius = 300;
-        var circle1 = circle_1.CircleFactory();
+        var circle1 = new circle_1.Circle();
         circle1.steps = 500;
         circle1.outside = true;
         circle1.fixed = true;
@@ -3542,7 +3634,7 @@ var BlueprintStore = /** @class */ (function () {
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
-        var circle0 = circle_1.CircleFactory();
+        var circle0 = new circle_1.Circle();
         circle0.steps = 500;
         circle0.outside = false;
         circle0.fixed = true;
@@ -3550,7 +3642,7 @@ var BlueprintStore = /** @class */ (function () {
         circle0.stepMod = 0;
         circle0.startAngle = 0;
         circle0.radius = 100;
-        var circle1 = circle_1.CircleFactory();
+        var circle1 = new circle_1.Circle();
         circle1.steps = 500;
         circle1.outside = true;
         circle1.fixed = true;
@@ -3558,7 +3650,7 @@ var BlueprintStore = /** @class */ (function () {
         circle1.stepMod = 0;
         circle1.startAngle = 0;
         circle1.radius = 50;
-        var circle2 = circle_1.CircleFactory();
+        var circle2 = new circle_1.Circle();
         circle2.steps = 500;
         circle2.outside = true;
         circle2.fixed = true;
@@ -3583,7 +3675,7 @@ var BlueprintStore = /** @class */ (function () {
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
-        var circle0 = circle_1.CircleFactory();
+        var circle0 = new circle_1.Circle();
         circle0.steps = 1000;
         circle0.outside = false;
         circle0.fixed = true;
@@ -3591,7 +3683,7 @@ var BlueprintStore = /** @class */ (function () {
         circle0.stepMod = 0;
         circle0.startAngle = 0;
         circle0.radius = 120;
-        var circle1 = circle_1.CircleFactory();
+        var circle1 = new circle_1.Circle();
         circle1.steps = 500;
         circle1.outside = true;
         circle1.fixed = true;
@@ -3599,7 +3691,7 @@ var BlueprintStore = /** @class */ (function () {
         circle1.stepMod = 0;
         circle1.startAngle = 0;
         circle1.radius = 60;
-        var circle2 = circle_1.CircleFactory();
+        var circle2 = new circle_1.Circle();
         circle2.steps = 250;
         circle2.outside = true;
         circle2.fixed = true;
@@ -3607,7 +3699,7 @@ var BlueprintStore = /** @class */ (function () {
         circle2.stepMod = 0;
         circle2.startAngle = 0;
         circle2.radius = 30;
-        var circle3 = circle_1.CircleFactory();
+        var circle3 = new circle_1.Circle();
         circle3.steps = 125;
         circle3.outside = true;
         circle3.fixed = true;
