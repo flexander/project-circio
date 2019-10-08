@@ -31,9 +31,6 @@ export default class CircControl implements CircControlInterface {
                 let shapeControl;
 
                 if (shape instanceof Circle) {
-                    if (shape.isRoot) {
-
-                    }
                     shapeControl = new CircleControl(shape, this.mode);
                 }  else {
                     throw `Unable to render control for shape of type: ` + shape.constructor.name;
