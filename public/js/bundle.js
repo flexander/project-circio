@@ -2500,8 +2500,6 @@ var CircControl = /** @class */ (function () {
     function CircControl(circ, mode) {
         var _this = this;
         if (mode === void 0) { mode = mode_1.ControlModes.MODE_DEFAULT; }
-        this.shapeControls = [];
-        this.simplified = true;
         this.circ = circ;
         this.mode = mode;
         this.panel = new panel_1.default('Circ: ' + (circ.name || 'Unnamed'));

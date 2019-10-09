@@ -15,9 +15,7 @@ import ShapeControl from "./shape";
 
 export default class CircControl implements CircControlInterface {
     protected circ: CircInterface;
-    protected shapeControls: ShapeControlInterface[] = [];
     protected panel: ControlPanelInterface;
-    protected simplified: boolean = true;
     protected mode: string;
 
     constructor(circ: CircInterface, mode: string = ControlModes.MODE_DEFAULT) {
