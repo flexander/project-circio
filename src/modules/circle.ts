@@ -1,9 +1,10 @@
 import '../structure';
 import {
     BrushInterface,
+    CircleConfigInterface,
     CircleInterface,
     EventEmitter,
-    PositionInterface, ShapeConfigInterface,
+    PositionInterface,
     ShapeStateInterface
 } from "../structure";
 import {AttributeChangedEvent} from "./events";
@@ -13,7 +14,7 @@ class Circle extends EventEmitter implements CircleInterface {
     id: number;
     protected brushes: BrushInterface[] = [];
     state: ShapeStateInterface = new CircleState();
-    protected config: ShapeConfigInterface = new CircleConfig();
+    protected config: CircleConfigInterface = new CircleConfig();
 
     constructor() {
         super();
@@ -196,7 +197,7 @@ class Circle extends EventEmitter implements CircleInterface {
     }
 }
 
-class CircleConfig implements ShapeConfigInterface {
+class CircleConfig implements CircleConfigInterface {
     steps: number;
     outside: boolean;
     fixed: boolean;
