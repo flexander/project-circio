@@ -19,13 +19,11 @@ var Engine = /** @class */ (function (_super) {
     __extends(Engine, _super);
     function Engine() {
         var _this = _super.call(this) || this;
+        _this.state = new EngineState();
         _this.config = new EngineConfig();
-        _this.totalStepsRun = 0;
         _this.stepCallbacks = [];
         _this.resetCallbacks = [];
         _this.importCallbacks = [];
-        _this.stepsToRun = 0;
-        _this.stepJumps = [];
         _this.run();
         return _this;
     }
@@ -48,44 +46,39 @@ var Engine = /** @class */ (function (_super) {
     };
     Engine.prototype.pause = function () {
         this.stepsToRun = 0;
-        this.dispatchEvent(new events_1.EnginePauseEvent());
     };
     Engine.prototype.play = function (count) {
         this.stepsToRun = typeof count === 'number' ? count : Infinity;
-        this.dispatchEvent(new events_1.EnginePlayEvent());
     };
     Engine.prototype.isPlaying = function () {
         return this.stepsToRun > 0;
     };
-    Engine.prototype.getRemainingStepsToRun = function () {
-        return this.stepsToRun;
-    };
     Engine.prototype.reset = function () {
         this.circ.getShapes().forEach(function (shape) { return shape.reset(); });
         this.runResetCallbacks();
-        this.totalStepsRun = 0;
+        this.state.totalStepsRun = 0;
         // Run a single step to correctly position and render the shapes
         this.step();
     };
     Engine.prototype.stepFast = function (count) {
         var _this = this;
-        if (this.stepJumps.length > 0) {
+        if (this.state.stepJumps.length > 0) {
             throw "Step jump in progress";
         }
-        var thenContinue = this.getRemainingStepsToRun();
+        var thenContinue = this.stepsToRun;
         this.pause();
         var stepGroup = 100;
         var stepsRun = 0;
         while (stepsRun < count) {
             var stepsLeftToRun = count - stepsRun;
             var stepsToRun = (stepsLeftToRun < stepGroup) ? stepsLeftToRun : stepGroup;
-            this.stepJumps.push(this.stepJump(stepsToRun));
+            this.state.stepJumps.push(this.stepJump(stepsToRun));
             stepsRun += stepsToRun;
         }
-        return Promise.all(this.stepJumps)
+        return Promise.all(this.state.stepJumps)
             .then(function (_) {
             _this.play(thenContinue);
-            _this.stepJumps = [];
+            _this.state.stepJumps = [];
         });
     };
     Engine.prototype.stepJump = function (number) {
@@ -104,14 +97,14 @@ var Engine = /** @class */ (function (_super) {
         var parentShape = null;
         this.circ.getShapes().forEach(function (shape) {
             shape.calculatePosition(parentShape);
-            if (shape.stepMod === 0 || _this.totalStepsRun % shape.stepMod === 0) {
+            if (shape.stepMod === 0 || _this.state.totalStepsRun % shape.stepMod === 0) {
                 shape.calculateAngle();
             }
             parentShape = shape;
         });
     };
     Engine.prototype.step = function () {
-        this.totalStepsRun++;
+        this.state.totalStepsRun++;
         this.calculateShapes();
         this.runStepCallbacks();
     };
@@ -153,13 +146,41 @@ var Engine = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Engine.prototype, "stepsToRun", {
+        get: function () {
+            return this.config.stepsToRun;
+        },
+        set: function (steps) {
+            var stepsChangedBy = Math.abs(this.config.stepsToRun - steps);
+            this.config.stepsToRun = steps;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('stepsToRun', this.stepsToRun));
+            if (stepsChangedBy !== 0) {
+                if (steps > 0) {
+                    this.dispatchEvent(new events_1.EnginePlayEvent());
+                }
+                else if (steps === 0) {
+                    this.dispatchEvent(new events_1.EnginePauseEvent());
+                }
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Engine;
 }(structure_1.EventEmitter));
 exports.Engine = Engine;
 var EngineConfig = /** @class */ (function () {
     function EngineConfig() {
         this.stepInterval = 1;
+        this.stepsToRun = 0;
     }
     return EngineConfig;
 }());
 exports.EngineConfig = EngineConfig;
+var EngineState = /** @class */ (function () {
+    function EngineState() {
+        this.totalStepsRun = 0;
+        this.stepJumps = [];
+    }
+    return EngineState;
+}());
