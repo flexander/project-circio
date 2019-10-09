@@ -11,6 +11,7 @@ var BlueprintStore = /** @class */ (function () {
             'threeCircles': this.makeThreeCircles,
             'fourCircles': this.makeFourCircles,
             'twoSquares': this.makeTwoSquares,
+            'twoPolygons': this.makeTwoPolygons,
         };
         this.name = 'Blueprints';
     }
@@ -199,7 +200,41 @@ var BlueprintStore = /** @class */ (function () {
         circle1Brush.point = 0.5;
         square0.addBrush(circle1Brush);
         circ.addShape(square0);
-        // circ.addShape(square1);
+        circ.addShape(square1);
+        return circ;
+    };
+    BlueprintStore.prototype.makeTwoPolygons = function () {
+        var circ = new circ_1.Circ();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#1b5eec';
+        var poly0 = new polygon_1.Polygon();
+        poly0.steps = 1000;
+        poly0.outside = true;
+        poly0.fixed = true;
+        poly0.clockwise = false;
+        poly0.stepMod = 0;
+        poly0.startAngle = 0;
+        poly0.faces = 5;
+        poly0.faceWidth = 200;
+        var poly1 = new polygon_1.Polygon();
+        poly1.steps = 1000;
+        poly1.outside = true;
+        poly1.fixed = true;
+        poly1.clockwise = false;
+        poly1.stepMod = 0;
+        poly1.startAngle = 0;
+        poly1.faces = 4;
+        poly1.faceWidth = 75;
+        var circle1Brush = new brushes_1.Brush();
+        circle1Brush.color = '#FFFFFF';
+        circle1Brush.degrees = 0;
+        circle1Brush.link = false;
+        circle1Brush.offset = 0;
+        circle1Brush.point = 0.5;
+        poly0.addBrush(circle1Brush);
+        circ.addShape(poly0);
+        circ.addShape(poly1);
         return circ;
     };
     return BlueprintStore;

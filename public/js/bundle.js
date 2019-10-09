@@ -1831,7 +1831,7 @@ engine.addImportCallback(renderControls);
 engine.addImportCallback(initialiseEventListeners);
 engine.addImportCallback(function (circ) { backgroundPainter.draw(circ); });
 engine.play();
-blueprintStorage.get('twoSquares')
+blueprintStorage.get('twoPolygons')
     .then(function (circ) {
     canvasArea.style.transformOrigin = '0 0'; //scale from top left
     canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
@@ -3690,6 +3690,40 @@ var Polygon = /** @class */ (function (_super) {
     Polygon.prototype.getBrushes = function () {
         return this.brushes;
     };
+    Polygon.prototype.getRadius = function () {
+        return this.faceWidth / (2 * Math.sin(Math.PI / this.faces));
+    };
+    Polygon.prototype.getInRadius = function () {
+        return this.faceWidth / (2 * Math.tan(Math.PI / this.faces));
+    };
+    Polygon.prototype.getInnerAngle = function () {
+        return (2 * Math.PI) / this.faces;
+    };
+    Polygon.prototype.getOuterAngle = function () {
+        return Math.PI - (this.getInnerAngle());
+    };
+    // Calculate values of a triangle where we know two sides and the angle between them
+    Polygon.prototype.getValuesFromSAS = function (side1, angle, side2) {
+        var b = side1;
+        var A = angle;
+        var c = side2;
+        var a;
+        var B;
+        var C;
+        // a^2 = b^2 + c^2 − 2bc cosA
+        a = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2) - (2 * b * c * Math.cos(A)));
+        var smallAngle = Math.asin((Math.sin(A) * Math.min(b, c)) / a);
+        var largeAngle = Math.PI - smallAngle;
+        if (b < c) {
+            B = smallAngle;
+            C = largeAngle;
+        }
+        else {
+            C = smallAngle;
+            B = largeAngle;
+        }
+        return { a: a, b: b, c: c, A: A, B: B, C: C };
+    };
     return Polygon;
 }(structure_1.EventEmitter));
 exports.Polygon = Polygon;
@@ -3794,6 +3828,7 @@ var BlueprintStore = /** @class */ (function () {
             'threeCircles': this.makeThreeCircles,
             'fourCircles': this.makeFourCircles,
             'twoSquares': this.makeTwoSquares,
+            'twoPolygons': this.makeTwoPolygons,
         };
         this.name = 'Blueprints';
     }
@@ -3982,7 +4017,41 @@ var BlueprintStore = /** @class */ (function () {
         circle1Brush.point = 0.5;
         square0.addBrush(circle1Brush);
         circ.addShape(square0);
-        // circ.addShape(square1);
+        circ.addShape(square1);
+        return circ;
+    };
+    BlueprintStore.prototype.makeTwoPolygons = function () {
+        var circ = new circ_1.Circ();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#1b5eec';
+        var poly0 = new polygon_1.Polygon();
+        poly0.steps = 1000;
+        poly0.outside = true;
+        poly0.fixed = true;
+        poly0.clockwise = false;
+        poly0.stepMod = 0;
+        poly0.startAngle = 0;
+        poly0.faces = 5;
+        poly0.faceWidth = 200;
+        var poly1 = new polygon_1.Polygon();
+        poly1.steps = 1000;
+        poly1.outside = true;
+        poly1.fixed = true;
+        poly1.clockwise = false;
+        poly1.stepMod = 0;
+        poly1.startAngle = 0;
+        poly1.faces = 4;
+        poly1.faceWidth = 75;
+        var circle1Brush = new brushes_1.Brush();
+        circle1Brush.color = '#FFFFFF';
+        circle1Brush.degrees = 0;
+        circle1Brush.link = false;
+        circle1Brush.offset = 0;
+        circle1Brush.point = 0.5;
+        poly0.addBrush(circle1Brush);
+        circ.addShape(poly0);
+        circ.addShape(poly1);
         return circ;
     };
     return BlueprintStore;

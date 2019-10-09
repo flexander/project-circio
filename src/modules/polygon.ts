@@ -98,6 +98,49 @@ class Polygon extends EventEmitter implements PolygonInterface {
     getBrushes(): BrushInterface[] {
         return this.brushes;
     }
+
+    getRadius(): number {
+        return this.faceWidth / (2 * Math.sin(Math.PI / this.faces));
+    }
+
+    getInRadius(): number {
+        return this.faceWidth / (2 * Math.tan(Math.PI / this.faces));
+    }
+
+    getInnerAngle(): number {
+        return (2* Math.PI) / this.faces;
+    }
+
+    getOuterAngle(): number {
+        return Math.PI - (this.getInnerAngle());
+    }
+
+    // Calculate values of a triangle where we know two sides and the angle between them
+    public getValuesFromSAS(side1, angle, side2): object {
+        const b = side1;
+        const A = angle;
+        const c = side2;
+
+        let a;
+        let B;
+        let C;
+
+        // a^2 = b^2 + c^2 − 2bc cosA
+        a = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2) - (2 * b * c * Math.cos(A)));
+
+        const smallAngle = Math.asin( (Math.sin(A)*Math.min(b, c)) / a );
+        const largeAngle = Math.PI - smallAngle;
+
+        if (b < c) {
+            B = smallAngle;
+            C = largeAngle;
+        } else {
+            C = smallAngle;
+            B = largeAngle;
+        }
+
+        return {a: a, b: b, c: c, A: A, B: B, C: C};
+    }
 }
 
 class PolygonState implements ShapeStateInterface {
