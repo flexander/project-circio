@@ -11,6 +11,7 @@ import ControlPanel from "./panel";
 import CircleControl from "./shapes/circle";
 import {ControlModes} from "./mode";
 import {Brush} from "../brushes";
+import ShapeControl from "./shape";
 
 export default class CircControl implements CircControlInterface {
     protected circ: CircInterface;
@@ -33,7 +34,7 @@ export default class CircControl implements CircControlInterface {
                 if (shape instanceof Circle) {
                     shapeControl = new CircleControl(shape, this.mode);
                 }  else {
-                    throw `Unable to render control for shape of type: ` + shape.constructor.name;
+                    shapeControl = new ShapeControl(shape, this.mode);
                 }
 
                 this.panel.addControl(shapeControl)

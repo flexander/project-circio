@@ -27,7 +27,7 @@ interface CircStateInterface {
     totalSteps: number;
 }
 
-interface ShapeInterface extends ShapeConfigInterface {
+interface ShapeInterface extends ShapeConfigInterface, EventEmitterInterface {
     id: number;
     state: ShapeStateInterface;
     calculatePosition(parentCircle: ShapeInterface|null): void;
@@ -45,7 +45,6 @@ interface ShapeConfigInterface extends ModifiableInterface {
     stepMod: number;
     startAngle: number;
     isRoot: boolean;
-    radius: number;
 }
 
 interface ShapeStateInterface {
@@ -58,7 +57,10 @@ interface ShapeStateInterface {
     getAngle(): number;
 }
 
-interface CircleInterface extends ShapeInterface, EventEmitterInterface {
+interface CircleInterface extends ShapeInterface, CircleConfigInterface, EventEmitterInterface {
+}
+
+interface CircleConfigInterface extends ShapeConfigInterface {
     radius: number;
 }
 
@@ -235,6 +237,7 @@ export {
     ShapeStateInterface,
     ShapeConfigInterface,
     CircleInterface,
+    CircleConfigInterface,
     BrushInterface,
     BrushConfigInterface,
     EngineInterface,
