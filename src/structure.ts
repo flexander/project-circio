@@ -81,6 +81,7 @@ interface BrushConfigInterface {
 /** Engine **/
 
 interface EngineInterface extends EventEmitterInterface, EngineConfigInterface {
+    state: EngineStateInterface;
     import(circ: CircInterface): void;
     export(): CircInterface;
 
@@ -93,11 +94,16 @@ interface EngineInterface extends EventEmitterInterface, EngineConfigInterface {
     step(): void;
     reset(): void
     isPlaying(): boolean;
-    getRemainingStepsToRun(): number;
 }
 
 interface EngineConfigInterface {
     stepInterval: number;
+    stepsToRun: number;
+}
+
+interface EngineStateInterface {
+    totalStepsRun: number;
+    stepJumps: Promise<void>[];
 }
 
 
@@ -242,6 +248,7 @@ export {
     BrushConfigInterface,
     EngineInterface,
     EngineConfigInterface,
+    EngineStateInterface,
     PainterInterface,
     CircStoreInterface,
     CirclePainterInterface,
