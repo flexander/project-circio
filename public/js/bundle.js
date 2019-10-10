@@ -2211,11 +2211,17 @@ var Circle = /** @class */ (function (_super) {
         }
     };
     Circle.prototype.savePreviousState = function () {
-        this.state.previousState = cloneDeep(this.state);
-        delete this.state.previousState.previousState;
+        var previousState = cloneDeep(this.state);
+        delete previousState.initialState;
+        delete previousState.previousState;
+        this.state.previousState = previousState;
     };
     Circle.prototype.saveInitialState = function () {
-        this.state.initialState = cloneDeep(this.state);
+        var initialState = cloneDeep(this.state);
+        delete initialState.initialState;
+        delete initialState.previousState;
+        console.log('a');
+        this.state.initialState = initialState;
     };
     Circle.prototype.getArc = function () {
         if (this.steps === 0) {
@@ -3871,10 +3877,11 @@ exports.BlueprintStore = BlueprintStore;
 },{"./brushes":4,"./circ":5,"./circle":6}],24:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
