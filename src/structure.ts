@@ -5,38 +5,46 @@ interface PositionInterface {
     y: number;
 }
 
-interface CircInterface extends EventEmitterInterface {
-    name: string;
-    width: number;
-    height: number;
-    backgroundFill: string;
-    stepsToComplete: number;
-    state: CircStateInterface;
+interface ModifiableInterface {
+    modified: boolean;
+}
 
+interface CircInterface extends EventEmitterInterface, CircConfigInterface {
     addShape(shape: ShapeInterface): void;
     removeShape(id: number): void;
     getShapes(): ShapeInterface[];
+}
+
+interface CircConfigInterface extends ModifiableInterface{
+    name: string;
+    height: number;
+    width: number;
+    backgroundFill: string;
+    stepsToComplete: number;
 }
 
 interface CircStateInterface {
     totalSteps: number;
 }
 
-interface ShapeInterface {
+interface ShapeInterface extends ShapeConfigInterface, EventEmitterInterface {
     id: number;
+    state: ShapeStateInterface;
+    calculatePosition(parentCircle: ShapeInterface|null): void;
+    calculateAngle(): void;
+    reset(): void;
+    addBrush(brush: BrushInterface): void;
+    getBrushes(): BrushInterface[];
+}
+
+interface ShapeConfigInterface extends ModifiableInterface {
     steps: number;
     outside: boolean;
     fixed: boolean;
     clockwise: boolean;
     stepMod: number;
     startAngle: number;
-    brushes: BrushInterface[];
-    state: ShapeStateInterface;
     isRoot: boolean;
-
-    calculatePosition(parentCircle: ShapeInterface|null): void;
-    calculateAngle(): void;
-    reset(): void;
 }
 
 interface ShapeStateInterface {
@@ -49,11 +57,17 @@ interface ShapeStateInterface {
     getAngle(): number;
 }
 
-interface CircleInterface extends ShapeInterface, EventEmitterInterface {
+interface CircleInterface extends ShapeInterface, CircleConfigInterface, EventEmitterInterface {
+}
+
+interface CircleConfigInterface extends ShapeConfigInterface {
     radius: number;
 }
 
-interface BrushInterface extends EventEmitterInterface {
+interface BrushInterface extends EventEmitterInterface, BrushConfigInterface {
+}
+
+interface BrushConfigInterface {
     draw: boolean;
     color: string;
     colorWithAlpha: string;
@@ -66,7 +80,8 @@ interface BrushInterface extends EventEmitterInterface {
 
 /** Engine **/
 
-interface EngineInterface extends EventEmitterInterface {
+interface EngineInterface extends EventEmitterInterface, EngineConfigInterface {
+    state: EngineStateInterface;
     import(circ: CircInterface): void;
     export(): CircInterface;
 
@@ -79,9 +94,16 @@ interface EngineInterface extends EventEmitterInterface {
     step(): void;
     reset(): void
     isPlaying(): boolean;
-    getRemainingStepsToRun(): number;
-    setStepInterval(milliseconds: number): void;
-    getStepInterval(): number;
+}
+
+interface EngineConfigInterface {
+    stepInterval: number;
+    stepsToRun: number;
+}
+
+interface EngineStateInterface {
+    totalStepsRun: number;
+    stepJumps: Promise<void>[];
 }
 
 
@@ -216,11 +238,17 @@ export {
     PositionInterface,
     CircInterface,
     CircStateInterface,
+    CircConfigInterface,
     ShapeInterface,
     ShapeStateInterface,
+    ShapeConfigInterface,
     CircleInterface,
+    CircleConfigInterface,
     BrushInterface,
+    BrushConfigInterface,
     EngineInterface,
+    EngineConfigInterface,
+    EngineStateInterface,
     PainterInterface,
     CircStoreInterface,
     CirclePainterInterface,

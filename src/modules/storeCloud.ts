@@ -1,4 +1,4 @@
-import {CircInterface,CircStoreInterface} from "../structure";
+import {CircInterface, CircStoreInterface} from "../structure";
 import Serializer from "./serializer";
 
 export default class CloudStorage implements CircStoreInterface {

@@ -1,4 +1,3 @@
-import {EngineFactory} from './modules/engine';
 import Painter from "./modules/painter";
 import GuidePainter from "./modules/guidePainter";
 import {BlueprintStore} from "./modules/storeBlueprint";
@@ -13,6 +12,7 @@ import {BrushInterface, CircInterface, ShapeInterface} from "./structure";
 import CloudStorage from "./modules/storeCloud";
 import LocalStorage from "./modules/storeLocal";
 import {ControlModes, ModeControl} from "./modules/controls/mode";
+import {Engine} from "./modules/engine";
 import {StoreRandom} from "./modules/storeRandom";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
@@ -69,7 +69,7 @@ const initialiseEventListeners = (circ: CircInterface) => {
         guidePainter.draw(circ);
     });
     circ.getShapes().forEach((shape: ShapeInterface): void => {
-        shape.brushes.forEach((brush: BrushInterface): void => {
+        shape.getBrushes().forEach((brush: BrushInterface): void => {
             brush.addEventListener('change', (value) => {
                 guidePainter.draw(circ);
             });
@@ -78,7 +78,7 @@ const initialiseEventListeners = (circ: CircInterface) => {
 };
 
 
-const engine = EngineFactory();
+const engine = new Engine();
 const painter = new Painter(mainCanvasElement.getContext("2d"));
 const guidePainter = new GuidePainter(guideCanvasElement.getContext("2d"));
 const backgroundPainter = new BackgroundPainter(backgroundCanvasElement.getContext("2d"));

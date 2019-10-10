@@ -1,15 +1,20 @@
-import {CircInterface, EngineInterface, EventEmitter, ShapeInterface} from "../structure";
+import {
+    CircInterface,
+    EngineConfigInterface,
+    EngineInterface,
+    EngineStateInterface,
+    EventEmitter,
+    ShapeInterface
+} from "../structure";
 import {AttributeChangedEvent, EnginePauseEvent, EnginePlayEvent} from "./events";
 
 class Engine extends EventEmitter implements EngineInterface {
-    protected totalStepsRun: number = 0;
-    protected interval: number = 1;
+    public state: EngineStateInterface = new EngineState();
+    protected config: EngineConfigInterface = new EngineConfig();
     protected stepCallbacks: Array<Function> = [];
     protected resetCallbacks: Array<Function> = [];
     protected importCallbacks: Array<Function> = [];
     protected circ: CircInterface;
-    protected stepsToRun: number = 0;
-    protected stepJumps: Promise<void>[] = [];
 
     constructor() {
         super();
@@ -41,38 +46,32 @@ class Engine extends EventEmitter implements EngineInterface {
 
     public pause(): void {
         this.stepsToRun = 0;
-        this.dispatchEvent(new EnginePauseEvent());
     }
 
     public play(count?: number|null): void {
         this.stepsToRun = typeof count === 'number' ? count:Infinity;
-        this.dispatchEvent(new EnginePlayEvent());
     }
 
     public isPlaying(): boolean {
         return this.stepsToRun > 0;
     }
 
-    public getRemainingStepsToRun(): number {
-        return this.stepsToRun;
-    }
-
     public reset(): void {
         this.circ.getShapes().forEach(shape => shape.reset());
         this.runResetCallbacks();
 
-        this.totalStepsRun = 0;
+        this.state.totalStepsRun = 0;
 
         // Run a single step to correctly position and render the shapes
         this.step();
     }
 
     public stepFast(count: number): Promise<void> {
-        if (this.stepJumps.length > 0) {
+        if (this.state.stepJumps.length > 0) {
             throw `Step jump in progress`;
         }
 
-        const thenContinue = this.getRemainingStepsToRun();
+        const thenContinue = this.stepsToRun;
         this.pause();
 
         const stepGroup = 100;
@@ -82,15 +81,15 @@ class Engine extends EventEmitter implements EngineInterface {
             const stepsLeftToRun = count - stepsRun;
             const stepsToRun = (stepsLeftToRun < stepGroup) ? stepsLeftToRun:stepGroup;
 
-            this.stepJumps.push(this.stepJump(stepsToRun));
+            this.state.stepJumps.push(this.stepJump(stepsToRun));
 
             stepsRun += stepsToRun;
         }
 
-        return Promise.all(this.stepJumps)
+        return Promise.all(this.state.stepJumps)
             .then(_ => {
                 this.play(thenContinue);
-                this.stepJumps = [];
+                this.state.stepJumps = [];
             });
     }
 
@@ -111,7 +110,7 @@ class Engine extends EventEmitter implements EngineInterface {
             shape =>  {
                 shape.calculatePosition(parentShape);
 
-                if (shape.stepMod === 0 || this.totalStepsRun % shape.stepMod === 0) {
+                if (shape.stepMod === 0 || this.state.totalStepsRun % shape.stepMod === 0) {
                     shape.calculateAngle();
                 }
 
@@ -120,7 +119,7 @@ class Engine extends EventEmitter implements EngineInterface {
     }
 
     public step(): void {
-        this.totalStepsRun++;
+        this.state.totalStepsRun++;
         this.calculateShapes();
 
         this.runStepCallbacks();
@@ -153,32 +152,50 @@ class Engine extends EventEmitter implements EngineInterface {
                     }
                     this.run();
                 },
-            this.interval
+            this.stepInterval
         );
     }
 
-    getStepInterval(): number {
-        return this.interval;
+    get stepInterval(): number {
+        return this.config.stepInterval;
     }
 
-    setStepInterval(milliseconds: number): void {
-        this.interval = milliseconds;
+    set stepInterval(milliseconds: number) {
+        this.config.stepInterval = milliseconds;
+        this.dispatchEvent(new AttributeChangedEvent('stepInterval', this.stepInterval));
+    }
+
+    get stepsToRun(): number {
+        return this.config.stepsToRun;
+    }
+
+    set stepsToRun(steps: number) {
+        const stepsChangedBy = Math.abs(this.config.stepsToRun-steps);
+        this.config.stepsToRun = steps;
+
+        this.dispatchEvent(new AttributeChangedEvent('stepsToRun', this.stepsToRun));
+
+        if (stepsChangedBy !== 0) {
+            if (steps > 0) {
+                this.dispatchEvent(new EnginePlayEvent());
+            } else if (steps === 0) {
+                this.dispatchEvent(new EnginePauseEvent());
+            }
+        }
     }
 }
 
-const EngineProxyHandler = {
-    set: (target: Engine, propertyName: PropertyKey, value: any, receiver: any): boolean => {
-        target[propertyName] = value;
+class EngineConfig implements EngineConfigInterface {
+    stepInterval: number = 1;
+    stepsToRun: number = 0;
+}
 
-        target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
-
-        return true;
-    },
-};
-
-const EngineFactory = () => new Proxy<Engine>(new Engine(), EngineProxyHandler);
+class EngineState implements EngineStateInterface {
+    totalStepsRun: number = 0;
+    stepJumps: Promise<void>[] = [];
+}
 
 export {
     Engine,
-    EngineFactory,
+    EngineConfig,
 }

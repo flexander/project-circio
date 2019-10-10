@@ -1,7 +1,7 @@
 import {CircInterface, CircStoreInterface} from "../structure";
-import {CircleFactory} from "./circle";
-import {BrushFactory} from "./brushes";
-import {CircFactory} from "./circ";
+import {Circle} from "./circle";
+import {Brush} from "./brushes";
+import {Circ} from "./circ";
 
 export class StoreRandom implements CircStoreInterface {
     public name: string = 'Randomiser';
@@ -50,7 +50,7 @@ export class StoreRandom implements CircStoreInterface {
     }
 
     protected makeCirc(): CircInterface {
-        const circ = CircFactory();
+        const circ = new Circ();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
@@ -59,7 +59,7 @@ export class StoreRandom implements CircStoreInterface {
         const multiple = this.getRandomInt(2,10);
 
         for (let i=0;i<shapes;i++) {
-            const circle = CircleFactory();
+            const circle = new Circle();
             circle.steps = this.getRandomInt(10,100) * multiple;
             circle.outside = this.getRandomBool();
             circle.fixed = true;
@@ -71,14 +71,14 @@ export class StoreRandom implements CircStoreInterface {
             circ.addShape(circle);
         }
 
-        const brush = BrushFactory();
+        const brush = new Brush();
         brush.color = '#FFFFFF';
         brush.degrees = 0;
         brush.link = this.getRandomBool();
         brush.offset = 0;
         brush.point = 0.5;
 
-        circ.getShapes()[circ.getShapes().length-1].brushes.push(brush);
+        circ.getShapes()[circ.getShapes().length-1].getBrushes().push(brush);
 
         return circ;
     }

@@ -1,7 +1,79 @@
-import {BrushInterface, EventEmitter} from "../structure";
+import {BrushConfigInterface, BrushInterface, EventEmitter, ShapeConfigInterface} from "../structure";
 import {AttributeChangedEvent} from "./events";
+import {CircleConfig} from "./circle";
 
 class Brush extends EventEmitter implements BrushInterface {
+    protected config: BrushConfigInterface = new BrushConfig();
+    
+    get color(): string {
+        return this.config.color;
+    }
+    
+    set color(color: string) {
+        this.config.color = color;
+        this.dispatchEvent(new AttributeChangedEvent('color', this.color));
+    }
+    
+    get transparency(): number {
+        return this.config.transparency;
+    }
+    
+    set transparency(transparency: number) {
+        this.config.transparency = transparency;
+        this.dispatchEvent(new AttributeChangedEvent('transparency', this.transparency));
+    }
+    
+    get degrees(): number {
+        return this.config.degrees;
+    }
+    
+    set degrees(degrees: number) {
+        this.config.degrees = degrees;
+        this.dispatchEvent(new AttributeChangedEvent('degrees', this.degrees));
+    }
+    
+    get draw(): boolean {
+        return this.config.draw;
+    }
+    
+    set draw(draw: boolean) {
+        this.config.draw = draw;
+        this.dispatchEvent(new AttributeChangedEvent('draw', this.draw));
+    }
+    
+    get link(): boolean {
+        return this.config.link;
+    }
+    
+    set link(link: boolean) {
+        this.config.link = link;
+        this.dispatchEvent(new AttributeChangedEvent('link', this.link));
+    }
+    
+    get offset(): number {
+        return this.config.offset;
+    }
+    
+    set offset(offset: number) {
+        this.config.offset = offset;
+        this.dispatchEvent(new AttributeChangedEvent('offset', this.offset));
+    }
+    
+    get point(): number {
+        return this.config.point;
+    }
+    
+    set point(point: number) {
+        this.config.point = point;
+        this.dispatchEvent(new AttributeChangedEvent('point', this.point));
+    }
+
+    get colorWithAlpha(): string {
+        return this.config.colorWithAlpha;
+    }
+}
+
+class BrushConfig {
     color: string = '#FFFFFF';
     transparency: number = 0;
     degrees: number = 0;
@@ -10,24 +82,12 @@ class Brush extends EventEmitter implements BrushInterface {
     offset: number = 0;
     point: number = 0.5;
 
-    public get colorWithAlpha(): string {
+    get colorWithAlpha(): string {
         return this.color + ('00' + (255-this.transparency).toString(16)).substr(-2);
     }
 }
 
-const BrushProxyHandler = {
-    set: (target: Brush, propertyName: PropertyKey, value: any, receiver: any): boolean => {
-        target[propertyName] = value;
-
-        target.dispatchEvent(new AttributeChangedEvent(propertyName.toString(),value));
-
-        return true;
-    },
-};
-
-const BrushFactory = () => new Proxy<Brush>(new Brush(), BrushProxyHandler);
-
 export {
     Brush,
-    BrushFactory,
+    BrushConfig,
 }
