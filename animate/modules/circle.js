@@ -69,11 +69,17 @@ var Circle = /** @class */ (function (_super) {
         }
     };
     Circle.prototype.savePreviousState = function () {
-        this.state.previousState = cloneDeep(this.state);
-        delete this.state.previousState.previousState;
+        var previousState = cloneDeep(this.state);
+        delete previousState.initialState;
+        delete previousState.previousState;
+        this.state.previousState = previousState;
     };
     Circle.prototype.saveInitialState = function () {
-        this.state.initialState = cloneDeep(this.state);
+        var initialState = cloneDeep(this.state);
+        delete initialState.initialState;
+        delete initialState.previousState;
+        console.log('a');
+        this.state.initialState = initialState;
     };
     Circle.prototype.getArc = function () {
         if (this.steps === 0) {

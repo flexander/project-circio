@@ -71,12 +71,21 @@ class Circle extends EventEmitter implements CircleInterface {
     }
 
     protected savePreviousState() {
-        this.state.previousState = cloneDeep(this.state);
-        delete this.state.previousState.previousState;
+        const previousState = cloneDeep(this.state);
+        delete previousState.initialState;
+        delete previousState.previousState;
+
+        this.state.previousState = previousState;
     }
 
     protected saveInitialState() {
-        this.state.initialState = cloneDeep(this.state);
+        const initialState = cloneDeep(this.state);
+        delete initialState.initialState;
+        delete initialState.previousState;
+
+        console.log('a');
+
+        this.state.initialState = initialState;
     }
 
     protected getArc () {
