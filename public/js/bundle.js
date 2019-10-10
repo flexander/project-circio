@@ -1768,6 +1768,9 @@ var storeLocal_1 = require("./modules/storeLocal");
 var mode_1 = require("./modules/controls/mode");
 var engine_2 = require("./modules/engine");
 var storeRandom_1 = require("./modules/storeRandom");
+var circ_2 = require("./modules/circ");
+var circle_1 = require("./modules/circle");
+var brushes_1 = require("./modules/brushes");
 var canvasArea = document.querySelector('#circio .painter');
 var backgroundCanvasElement = canvasArea.querySelector('#background-canvas');
 var mainCanvasElement = canvasArea.querySelector('#main-canvas');
@@ -1832,21 +1835,92 @@ engine.addResetCallback(function (_) { return painter.clear(); });
 engine.addImportCallback(renderControls);
 engine.addImportCallback(initialiseEventListeners);
 engine.addImportCallback(function (circ) { backgroundPainter.draw(circ); });
-engine.play();
-blueprintStorage.get('twoCircles')
-    .then(function (circ) {
-    canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
-    canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
-    canvasArea.style.width = circ.width + 'px';
-    canvasArea.style.height = circ.height + 'px';
-    canvasArea.querySelectorAll('canvas').forEach(function (c) {
-        c.setAttribute('height', canvasArea.style.height);
-        c.setAttribute('width', canvasArea.style.width);
-    });
+// engine.play();
+// blueprintStorage.get('twoCircles')
+//     .then((circ: CircInterface) => {
+//         canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
+//         canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
+//         canvasArea.style.width = circ.width + 'px';
+//         canvasArea.style.height = circ.height + 'px';
+//
+//         canvasArea.querySelectorAll('canvas').forEach(c => {
+//             c.setAttribute('height', canvasArea.style.height);
+//             c.setAttribute('width', canvasArea.style.width);
+//         });
+//
+//         engine.import(circ);
+//     });
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function runRandom() {
+    var pr = 300;
+    var cr = getRandomInt(100, 400);
+    var cs = 500;
+    var ratio = pr / cr;
+    var multiple;
+    for (var i = 0; i < 10; i++) {
+        // console.log(pr,cr,i);
+        if ((ratio * i) % 1 === 0) {
+            multiple = i;
+            continue;
+        }
+        multiple = null;
+    }
+    if (multiple == null) {
+        runRandom();
+        return;
+    }
+    var stepsToComplete = cs * ratio * multiple;
+    console.log(pr, cr, multiple, stepsToComplete);
+    var circ = new circ_2.Circ();
+    circ.width = 1080;
+    circ.height = 1080;
+    circ.backgroundFill = '#1b5eec';
+    var circle = new circle_1.Circle();
+    circle.steps = 100;
+    circle.outside = true;
+    circle.fixed = true;
+    circle.clockwise = true;
+    circle.stepMod = 0;
+    circle.startAngle = 0;
+    circle.radius = pr;
+    var circle1 = new circle_1.Circle();
+    circle1.steps = cs;
+    circle1.outside = true;
+    circle1.fixed = true;
+    circle1.clockwise = true;
+    circle1.stepMod = 0;
+    circle1.startAngle = 0;
+    circle1.radius = cr;
+    var brush = new brushes_1.Brush();
+    brush.color = '#FFFFFF';
+    brush.degrees = 0;
+    brush.link = true;
+    brush.offset = 0;
+    brush.point = 0.5;
+    circle1.addBrush(brush);
+    circ.addShape(circle);
+    circ.addShape(circle1);
     engine.import(circ);
+    engine.stepFast(stepsToComplete)
+        .then(function (_) {
+        setTimeout(function (_) { return runRandom(); }, 3000);
+    });
+}
+canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
+canvasArea.style.transform = 'scale(' + window.innerHeight / 1080 + ')';
+canvasArea.style.width = 1080 + 'px';
+canvasArea.style.height = 1080 + 'px';
+canvasArea.querySelectorAll('canvas').forEach(function (c) {
+    c.setAttribute('height', canvasArea.style.height);
+    c.setAttribute('width', canvasArea.style.width);
 });
+runRandom();
 
-},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/mode":12,"./modules/controls/painter":13,"./modules/controls/panel":14,"./modules/controls/storage":17,"./modules/engine":18,"./modules/guidePainter":20,"./modules/painter":21,"./modules/storeBlueprint":23,"./modules/storeCloud":24,"./modules/storeLocal":25,"./modules/storeRandom":26}],3:[function(require,module,exports){
+},{"./modules/backgroundPainter":3,"./modules/brushes":4,"./modules/circ":5,"./modules/circle":6,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/mode":12,"./modules/controls/painter":13,"./modules/controls/panel":14,"./modules/controls/storage":17,"./modules/engine":18,"./modules/guidePainter":20,"./modules/painter":21,"./modules/storeBlueprint":23,"./modules/storeCloud":24,"./modules/storeLocal":25,"./modules/storeRandom":26}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundPainter = /** @class */ (function () {
@@ -4086,6 +4160,24 @@ var StoreRandom = /** @class */ (function () {
         return this.getRandomInt(0, 1) === 1;
     };
     StoreRandom.prototype.makeCirc = function () {
+        var j = 0;
+        while (j++ < 500) {
+            var pr = this.getRandomInt(10, 200);
+            var cr = this.getRandomInt(10, 200);
+            var ratio = pr / cr;
+            var multiple_1 = void 0;
+            for (var i = 0; i < 10; i++) {
+                // console.log(pr,cr,i);
+                if ((ratio * i) % 1 === 0) {
+                    multiple_1 = i;
+                    continue;
+                }
+                multiple_1 = null;
+            }
+            if (multiple_1 !== null) {
+                console.warn(pr, cr, multiple_1);
+            }
+        }
         var circ = new circ_1.Circ();
         circ.width = 1080;
         circ.height = 1080;

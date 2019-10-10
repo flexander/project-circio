@@ -50,6 +50,29 @@ export class StoreRandom implements CircStoreInterface {
     }
 
     protected makeCirc(): CircInterface {
+        let j = 0;
+        while(j++ < 500) {
+
+            const pr = this.getRandomInt(10, 200);
+            const cr = this.getRandomInt(10, 200);
+            const ratio = pr / cr;
+            let multiple;
+
+            for (let i = 0; i < 10; i++) {
+                // console.log(pr,cr,i);
+                if ((ratio * i) % 1 === 0) {
+                    multiple = i;
+                    continue;
+                }
+
+                multiple = null;
+            }
+
+            if (multiple !== null) {
+                console.warn(pr,cr,multiple);
+            }
+        }
+
         const circ = new Circ();
         circ.width = 1080;
         circ.height = 1080;
