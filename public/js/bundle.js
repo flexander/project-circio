@@ -2220,7 +2220,6 @@ var Circle = /** @class */ (function (_super) {
         var initialState = cloneDeep(this.state);
         delete initialState.initialState;
         delete initialState.previousState;
-        console.log('a');
         this.state.initialState = initialState;
     };
     Circle.prototype.getArc = function () {

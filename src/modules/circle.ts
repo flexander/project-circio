@@ -83,8 +83,6 @@ class Circle extends EventEmitter implements CircleInterface {
         delete initialState.initialState;
         delete initialState.previousState;
 
-        console.log('a');
-
         this.state.initialState = initialState;
     }
 
