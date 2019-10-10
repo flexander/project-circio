@@ -38,8 +38,9 @@ function getRandomCircs(i) {
   
   while (results < i && index < max) {
     results += getRandomCirc();
-  console.log(index);
     index++;
   }
+  
+  return 'complete';
 }
 
