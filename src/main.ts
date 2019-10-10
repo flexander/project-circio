@@ -119,16 +119,14 @@ function runRandom() {
     const cr = getRandomInt(100, 400);
     const cs = 500;
     const ratio = pr / cr;
-    let multiple;
+    let multiple = null;
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 1; i < 10; i++) {
         // console.log(pr,cr,i);
         if ((ratio * i) % 1 === 0) {
             multiple = i;
-            continue;
+            break;
         }
-
-        multiple = null;
     }
     if (multiple == null) {
         runRandom();
@@ -180,7 +178,7 @@ function runRandom() {
     engine.stepFast(stepsToComplete)
         .then(
         _ => {
-            setTimeout(_=>runRandom(),3000);
+            runRandom();
         });
 
 }

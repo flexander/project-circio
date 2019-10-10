@@ -1860,14 +1860,13 @@ function runRandom() {
     var cr = getRandomInt(100, 400);
     var cs = 500;
     var ratio = pr / cr;
-    var multiple;
-    for (var i = 0; i < 10; i++) {
+    var multiple = null;
+    for (var i = 1; i < 10; i++) {
         // console.log(pr,cr,i);
         if ((ratio * i) % 1 === 0) {
             multiple = i;
-            continue;
+            break;
         }
-        multiple = null;
     }
     if (multiple == null) {
         runRandom();
@@ -1907,7 +1906,7 @@ function runRandom() {
     engine.import(circ);
     engine.stepFast(stepsToComplete)
         .then(function (_) {
-        setTimeout(function (_) { return runRandom(); }, 3000);
+        runRandom();
     });
 }
 canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
