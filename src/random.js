@@ -14,15 +14,19 @@ function getRandomCirc() {
   let Pr = getRandomInt(PMin, PMax);
   let Cr = getRandomInt(CMin, CMax);
 
-  //console.log("Test -> Pr:" + Pr + " / Cr:" + Cr);
-  var result = 0;
+  var result = false;
   
   for (let i = 1; i < 50; i++) {
     let R = (Pr * i) / Cr;
-    // console.log('Ratio: ' + R + ' i: ' + i);
+
     if(R % 1 === 0) {
-      console.log("Test -> Pr:" + Pr + " / Cr:" + Cr + ' Result -> N:' + i + ' / M:' + R);
-      result = 1;
+ + i + ' / M:' + R);
+      result = {
+        Pr: Pr,
+        Cr: Cr,
+        N: i,
+        M: R
+      };
       
       break;
     }
@@ -33,14 +37,17 @@ function getRandomCirc() {
 
 function getRandomCircs(i) {
   const max = 9999;
-  let results = 0;
+  let results = [];
   let index = 0;
   
-  while (results < i && index < max) {
-    results += getRandomCirc();
+  while (results.length < i && index < max) {
+    result = getRandomCirc();
+    if (result !== false) {
+        results.push(result);
+    }
     index++;
   }
   
-  return 'complete';
+  return results;
 }
 
