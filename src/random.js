@@ -5,48 +5,65 @@ function getRandomInt(min, max) {
 }
 
 function getRandomCirc() {
-  const PMin = 100;
-  const PMax = 401;
+    const PMin = 50;
+    const PMax = 401;
+    const CMin = 50;
+    const CMax = 301;
 
-  const CMin = 50;
-  const CMax = 301;
+    let Pr = getRandomInt(PMin, PMax);
+    let Cr = getRandomInt(CMin, CMax);
+    let result = false;
 
-  let Pr = getRandomInt(PMin, PMax);
-  let Cr = getRandomInt(CMin, CMax);
+    for (let i = 1; i < 50; i++) {
+        let R = (Pr * i) / Cr;
 
-  var result = false;
-  
-  for (let i = 1; i < 50; i++) {
-    let R = (Pr * i) / Cr;
+        if(R % 1 === 0) {
+            result = {
+                Pr: Pr,
+                Cr: Cr,
+                N: i,
+                M: R
+            };
 
-    if(R % 1 === 0) {
-      result = {
-        Pr: Pr,
-        Cr: Cr,
-        N: i,
-        M: R
-      };
-      
-      break;
+            break;
+        }
     }
-  }
-  
-  return result;
+
+    return result;
 }
 
-function getRandomCircs(i) {
-  const max = 9999;
-  let results = [];
-  let index = 0;
-  
-  while (results.length < i && index < max) {
-    result = getRandomCirc();
-    if (result !== false) {
-        results.push(result);
+function getRandomCircs(count) {
+    const max = 9999;
+    let results = [];
+    let index = 0;
+
+    while (results.length < count && index < max) {
+        let result = getRandomCirc();
+        if (result !== false) {
+            results.push(result);
+        }
+        index++;
     }
-    index++;
-  }
-  
-  return results;
+
+    return results;
 }
 
+function getChainedCircs(circs) {
+    let chains = [];
+    for(let i = 0; i < circs.length; i++) {
+        for(let j = 0; j < circs.length; j++) {
+            if(i !== j) {
+                if (circs[i].Cr === circs[j].Pr) {
+                    let chain = {
+                        a: circs[i].Pr,
+                        b: circs[i].Cr,
+                        c: circs[j].Cr
+                    };
+                    chains.push(chain);
+                }
+            }
+        }
+    }
+
+    return chains;
+}

@@ -66,6 +66,10 @@ interface CircleInterface extends ShapeInterface, EventEmitterInterface {
 interface PolygonInterface extends ShapeInterface, EventEmitterInterface {
     faces: number;
     faceWidth: number;
+
+    getRadius(): number;
+    getOuterAngle(): number;
+    getExternalAngle(): number;
 }
 
 interface BrushInterface extends EventEmitterInterface, BrushConfigInterface {
