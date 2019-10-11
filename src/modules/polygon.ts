@@ -44,6 +44,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 this.getDistanceFromLastCorner(parentPolygon)
             );
 
+
+
             // TODO: calculate center relative to parent
 
         }
@@ -192,30 +194,27 @@ class Polygon extends EventEmitter implements PolygonInterface {
     }
 
     // Calculate values of a triangle where we know two sides and the angle between them
-    public getValuesFromSAS(side1, angle, side2): object {
-        const b = side1;
-        const A = angle;
-        const c = side2;
+    public getValuesFromSAS(sideB, angleA, sideC): object {
 
-        let a;
-        let B;
-        let C;
+        let sideA; // a
+        let angleB; // B
+        let angleC; // C
 
         // a^2 = b^2 + c^2 − 2bc cosA
-        a = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2) - (2 * b * c * Math.cos(A)));
+        sideA = Math.sqrt(Math.pow(sideB, 2) + Math.pow(sideC, 2) - (2 * sideB * sideC * Math.cos(angleA)));
 
-        const smallAngle = Math.asin( (Math.sin(A)*Math.min(b, c)) / a );
+        const smallAngle = Math.asin( (Math.sin(angleA)*Math.min(sideB, sideC)) / sideA );
         const largeAngle = Math.PI - smallAngle;
 
-        if (b < c) {
-            B = smallAngle;
-            C = largeAngle;
+        if (sideB < sideC) {
+            angleB = smallAngle;
+            angleC = largeAngle;
         } else {
-            C = smallAngle;
-            B = largeAngle;
+            angleC = smallAngle;
+            angleB = largeAngle;
         }
 
-        return {a: a, b: b, c: c, A: A, B: B, C: C};
+        return {a: sideA, b: sideB, c: sideC, A: angleA, B: angleB, C: angleC};
     }
 }
 
