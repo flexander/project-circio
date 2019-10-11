@@ -34,12 +34,18 @@ var Polygon = /** @class */ (function (_super) {
         var parentCentreX = this.state.centre.x;
         var parentCentreY = this.state.centre.y;
         if (parentPolygon !== null) {
-            // TODO: calculate contact point
+            // TODO: calculate parent centre contact point
             var parentSAS = this.getValuesFromSAS(parentPolygon.getRadius(), // b
             (parentPolygon.getOuterAngle() / 2), // A
-            this.getDistanceFromLastCorner(parentPolygon) // C
+            this.getDistanceFromContactToParentCorner(parentPolygon) // C
             );
             var parentCentreToContactPoint = parentSAS.a;
+            // TODO: calculate child centre contact point
+            var childSAS = this.getValuesFromSAS(this.getRadius(), // b
+            (this.getOuterAngle() / 2), // A
+            this.getDistanceFromContactToChildCorner(parentPolygon) // C
+            );
+            var childCentreToContactPoint = childSAS.a;
             // TODO: calculate center relative to parent
         }
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
@@ -107,17 +113,19 @@ var Polygon = /** @class */ (function (_super) {
     Polygon.prototype.getRadiansPerFace = function () {
         return this.getInnerAngle();
     };
-    Polygon.prototype.getRadiansToCompleteFace = function (parentPolygon) {
-        var facesPerParentFace = Math.ceil(parentPolygon.faceWidth / this.faceWidth);
-        return this.getInnerAngle() * facesPerParentFace;
+    Polygon.prototype.getFacesPerParentFace = function (parentPolygon) {
+        return Math.ceil(parentPolygon.faceWidth / this.faceWidth);
+    };
+    Polygon.prototype.getRadiansPerParentFace = function (parentPolygon) {
+        return this.getInnerAngle() * this.getFacesPerParentFace(parentPolygon);
     };
     Polygon.prototype.getCornersPassed = function (parentPolygon) {
         var offset = this.getOffsetRadians(parentPolygon);
-        return Math.floor((this.state.totalAngle - offset) / (this.getRadiansToCompleteFace(parentPolygon) + parentPolygon.getExternalAngle()));
+        return Math.floor((this.state.totalAngle - offset) / (this.getRadiansPerParentFace(parentPolygon) + parentPolygon.getExternalAngle()));
     };
     Polygon.prototype.isOnCorner = function (parentPolygon) {
-        var baseValue = this.getRadiansToCompleteFace(parentPolygon) + this.getOffsetRadians(parentPolygon);
-        var minRadians = baseValue + (this.getRadiansToCompleteFace(parentPolygon) * this.getCornersPassed(parentPolygon));
+        var baseValue = this.getRadiansPerParentFace(parentPolygon) + this.getOffsetRadians(parentPolygon);
+        var minRadians = baseValue + (this.getRadiansPerParentFace(parentPolygon) * this.getCornersPassed(parentPolygon));
         var maxRadians = minRadians + parentPolygon.getExternalAngle();
         return (this.state.totalAngle > minRadians && this.state.totalAngle < maxRadians);
     };
@@ -135,10 +143,8 @@ var Polygon = /** @class */ (function (_super) {
         }
         return offset;
     };
-    /** This will always be a multiple of either
-     * the child face width or parent face width
-     * */
     Polygon.prototype.getDistanceFromOrigin = function (parentPolygon) {
+        // TODO: Take offset into account
         var distance;
         if (this.isOnCorner(parentPolygon)) {
             distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
@@ -149,8 +155,11 @@ var Polygon = /** @class */ (function (_super) {
         }
         return distance;
     };
-    Polygon.prototype.getDistanceFromLastCorner = function (parentPolygon) {
+    Polygon.prototype.getDistanceFromContactToParentCorner = function (parentPolygon) {
         return this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;
+    };
+    Polygon.prototype.getDistanceFromContactToChildCorner = function (parentPolygon) {
+        return this.getDistanceFromOrigin(parentPolygon) % this.faceWidth;
     };
     // Calculate values of a triangle where we know two sides and the angle between them
     Polygon.prototype.getValuesFromSAS = function (sideB, angleA, sideC) {

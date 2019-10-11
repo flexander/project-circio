@@ -44,14 +44,23 @@ class Polygon extends EventEmitter implements PolygonInterface {
         let parentCentreY = this.state.centre.y;
 
         if (parentPolygon !== null) {
-            // TODO: calculate contact point
+            // TODO: calculate parent centre contact point
             const parentSAS = this.getValuesFromSAS(
-                parentPolygon.getRadius(),                      // b
-                (parentPolygon.getOuterAngle()/2),              // A
-                this.getDistanceFromLastCorner(parentPolygon)   // C
+                parentPolygon.getRadius(),                                  // b
+                (parentPolygon.getOuterAngle()/2),                          // A
+                this.getDistanceFromContactToParentCorner(parentPolygon)    // C
             );
 
             const parentCentreToContactPoint = parentSAS.a;
+
+            // TODO: calculate child centre contact point
+            const childSAS = this.getValuesFromSAS(
+            this.getRadius(),                                               // b
+                (this.getOuterAngle()/2),                                   // A
+                this.getDistanceFromContactToChildCorner(parentPolygon)     // C
+            );
+
+            const childCentreToContactPoint = childSAS.a;
 
             // TODO: calculate center relative to parent
 
@@ -140,21 +149,23 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return this.getInnerAngle();
     }
 
-    getRadiansToCompleteFace(parentPolygon: PolygonInterface): number {
-        const facesPerParentFace = Math.ceil(parentPolygon.faceWidth / this.faceWidth);
+    getFacesPerParentFace(parentPolygon: PolygonInterface): number {
+        return Math.ceil(parentPolygon.faceWidth / this.faceWidth);
+    }
 
-        return this.getInnerAngle() * facesPerParentFace;
+    getRadiansPerParentFace(parentPolygon: PolygonInterface): number {
+        return this.getInnerAngle() * this.getFacesPerParentFace(parentPolygon);
     }
 
     getCornersPassed(parentPolygon: PolygonInterface): number {
         const offset = this.getOffsetRadians(parentPolygon);
 
-        return Math.floor((this.state.totalAngle - offset) / (this.getRadiansToCompleteFace(parentPolygon) + parentPolygon.getExternalAngle()));
+        return Math.floor((this.state.totalAngle - offset) / (this.getRadiansPerParentFace(parentPolygon) + parentPolygon.getExternalAngle()));
     }
 
     isOnCorner(parentPolygon: PolygonInterface): boolean {
-        const baseValue = this.getRadiansToCompleteFace(parentPolygon) + this.getOffsetRadians(parentPolygon);
-        const minRadians = baseValue + (this.getRadiansToCompleteFace(parentPolygon) * this.getCornersPassed(parentPolygon));
+        const baseValue = this.getRadiansPerParentFace(parentPolygon) + this.getOffsetRadians(parentPolygon);
+        const minRadians = baseValue + (this.getRadiansPerParentFace(parentPolygon) * this.getCornersPassed(parentPolygon));
         const maxRadians = minRadians + parentPolygon.getExternalAngle();
 
         return (this.state.totalAngle > minRadians && this.state.totalAngle < maxRadians);
@@ -180,10 +191,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return offset;
     }
 
-    /** This will always be a multiple of either
-     * the child face width or parent face width
-     * */
     getDistanceFromOrigin(parentPolygon: PolygonInterface): number {
+        // TODO: Take offset into account
         let distance;
 
         if(this.isOnCorner(parentPolygon)) {
@@ -196,8 +205,12 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return distance;
     }
 
-    getDistanceFromLastCorner(parentPolygon: PolygonInterface): number {
+    getDistanceFromContactToParentCorner(parentPolygon: PolygonInterface): number {
         return this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;
+    }
+
+    getDistanceFromContactToChildCorner(parentPolygon: PolygonInterface): number {
+        return this.getDistanceFromOrigin(parentPolygon) % this.faceWidth;
     }
 
     // Calculate values of a triangle where we know two sides and the angle between them
