@@ -3650,6 +3650,7 @@ var Polygon = /** @class */ (function (_super) {
             var parentCentreToContactPoint = parentSAS.a;
             // todo : correct logic
             var childCentreToContactPoint = this.getRadius();
+            var parentSasB = 0;
             if (this.getDistanceFromChildCornerToContact(parentPolygon) !== 0) {
                 // calculate child centre contact point
                 var childSAS = this.getValuesFromSAS(this.getRadius(), // side b
@@ -3657,12 +3658,19 @@ var Polygon = /** @class */ (function (_super) {
                 this.getDistanceFromChildCornerToContact(parentPolygon) // side c
                 );
                 childCentreToContactPoint = childSAS.a;
+                parentSasB = childSAS.B;
             }
             // TODO: calculate center relative to parent
+            var relativeAngle = (
+            // TODO: this calc might be wrong
+            ((this.state.totalAngle - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle())) % this.getRadiansPerFace()) +
+                parentSAS.B +
+                parentSasB);
             var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
-            (this.getOuterAngle() / 2), // angle A
+            relativeAngle, // angle A
             childCentreToContactPoint // side c
             );
+            console.log(relativeSAS);
         }
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
         this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);

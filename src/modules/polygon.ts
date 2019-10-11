@@ -55,6 +55,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
             // todo : correct logic
             let childCentreToContactPoint = this.getRadius();
+            let parentSasB = 0;
             if(this.getDistanceFromChildCornerToContact(parentPolygon) !== 0) {
                 // calculate child centre contact point
                 const childSAS = this.getValuesFromSAS(
@@ -64,14 +65,24 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 );
 
                 childCentreToContactPoint = childSAS.a;
+                parentSasB = childSAS.B;
             }
 
             // TODO: calculate center relative to parent
-            const relativeSAS = this.getValuesFromSAS(
-                parentCentreToContactPoint,                              // side b
-                (this.getOuterAngle()/2),                                // angle A
-                childCentreToContactPoint                                // side c
+            const relativeAngle = (
+                // TODO: this calc might be wrong
+                ((this.state.totalAngle - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle())) % this.getRadiansPerFace()) +
+                parentSAS.B +
+                parentSasB
             );
+
+            const relativeSAS = this.getValuesFromSAS(
+                parentCentreToContactPoint,                 // side b
+                relativeAngle,                              // angle A
+                childCentreToContactPoint                   // side c
+            );
+
+            console.log(relativeSAS);
 
         }
 
