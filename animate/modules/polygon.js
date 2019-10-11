@@ -37,13 +37,13 @@ var Polygon = /** @class */ (function (_super) {
             // TODO: calculate parent centre contact point
             var parentSAS = this.getValuesFromSAS(parentPolygon.getRadius(), // b
             (parentPolygon.getOuterAngle() / 2), // A
-            this.getDistanceFromContactToParentCorner(parentPolygon) // C
+            this.getDistanceFromParentCornerToContact(parentPolygon) // C
             );
             var parentCentreToContactPoint = parentSAS.a;
             // TODO: calculate child centre contact point
             var childSAS = this.getValuesFromSAS(this.getRadius(), // b
             (this.getOuterAngle() / 2), // A
-            this.getDistanceFromContactToChildCorner(parentPolygon) // C
+            this.getDistanceFromChildCornerToContact(parentPolygon) // C
             );
             var childCentreToContactPoint = childSAS.a;
             // TODO: calculate center relative to parent
@@ -161,10 +161,10 @@ var Polygon = /** @class */ (function (_super) {
         }
         return distance;
     };
-    Polygon.prototype.getDistanceFromContactToParentCorner = function (parentPolygon) {
+    Polygon.prototype.getDistanceFromParentCornerToContact = function (parentPolygon) {
         return this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;
     };
-    Polygon.prototype.getDistanceFromContactToChildCorner = function (parentPolygon) {
+    Polygon.prototype.getDistanceFromChildCornerToContact = function (parentPolygon) {
         return this.getDistanceFromOrigin(parentPolygon) % this.faceWidth;
     };
     // Calculate values of a triangle where we know two sides and the angle between them
