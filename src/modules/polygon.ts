@@ -7,7 +7,7 @@ import {
     ShapeStateInterface,
     PolygonSasInterface
 } from "../structure";
-import {AttributeChangedEvent} from "./events";
+
 const cloneDeep = require('lodash.clonedeep');
 
 class Polygon extends EventEmitter implements PolygonInterface {
@@ -44,25 +44,34 @@ class Polygon extends EventEmitter implements PolygonInterface {
         let parentCentreY = this.state.centre.y;
 
         if (parentPolygon !== null) {
-            // TODO: calculate parent centre contact point
+            // calculate parent centre contact point
             const parentSAS = this.getValuesFromSAS(
-                parentPolygon.getRadius(),                                  // b
-                (parentPolygon.getOuterAngle()/2),                          // A
-                this.getDistanceFromParentCornerToContact(parentPolygon)    // C
+                parentPolygon.getRadius(),                                  // side b
+                (parentPolygon.getOuterAngle()/2),                          // angle A
+                this.getDistanceFromParentCornerToContact(parentPolygon)    // side c
             );
 
             const parentCentreToContactPoint = parentSAS.a;
 
-            // TODO: calculate child centre contact point
-            const childSAS = this.getValuesFromSAS(
-            this.getRadius(),                                               // b
-                (this.getOuterAngle()/2),                                   // A
-                this.getDistanceFromChildCornerToContact(parentPolygon)     // C
-            );
+            // todo : correct logic
+            let childCentreToContactPoint = this.getRadius();
+            if(this.getDistanceFromChildCornerToContact(parentPolygon) !== 0) {
+                // calculate child centre contact point
+                const childSAS = this.getValuesFromSAS(
+                    this.getRadius(),                                           // side b
+                    (this.getOuterAngle()/2),                                   // angle A
+                    this.getDistanceFromChildCornerToContact(parentPolygon)     // side c
+                );
 
-            const childCentreToContactPoint = childSAS.a;
+                childCentreToContactPoint = childSAS.a;
+            }
 
             // TODO: calculate center relative to parent
+            const relativeSAS = this.getValuesFromSAS(
+                parentCentreToContactPoint,                              // side b
+                (this.getOuterAngle()/2),                                // angle A
+                childCentreToContactPoint                                // side c
+            );
 
         }
 
@@ -170,7 +179,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return this.getExternalAngle() - initialAngle;
     }
 
-    getOffsetDistance(parentPolygon: PolygonInterface): number {
+    getOffsetDistance(): number {
         let offset = 0;
 
         if(this.faces % 2 !== 0) {
@@ -197,7 +206,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
     getDistanceFromOrigin(parentPolygon: PolygonInterface): number {
         const offsetRadians = this.getOffsetRadians(parentPolygon);
-        const offsetDistance = this.getOffsetDistance(parentPolygon);
+        const offsetDistance = this.getOffsetDistance();
         let distance;
 
         if(this.isOnCorner(parentPolygon)) {

@@ -3642,19 +3642,27 @@ var Polygon = /** @class */ (function (_super) {
         var parentCentreX = this.state.centre.x;
         var parentCentreY = this.state.centre.y;
         if (parentPolygon !== null) {
-            // TODO: calculate parent centre contact point
-            var parentSAS = this.getValuesFromSAS(parentPolygon.getRadius(), // b
-            (parentPolygon.getOuterAngle() / 2), // A
-            this.getDistanceFromParentCornerToContact(parentPolygon) // C
+            // calculate parent centre contact point
+            var parentSAS = this.getValuesFromSAS(parentPolygon.getRadius(), // side b
+            (parentPolygon.getOuterAngle() / 2), // angle A
+            this.getDistanceFromParentCornerToContact(parentPolygon) // side c
             );
             var parentCentreToContactPoint = parentSAS.a;
-            // TODO: calculate child centre contact point
-            var childSAS = this.getValuesFromSAS(this.getRadius(), // b
-            (this.getOuterAngle() / 2), // A
-            this.getDistanceFromChildCornerToContact(parentPolygon) // C
-            );
-            var childCentreToContactPoint = childSAS.a;
+            // todo : correct logic
+            var childCentreToContactPoint = this.getRadius();
+            if (this.getDistanceFromChildCornerToContact(parentPolygon) !== 0) {
+                // calculate child centre contact point
+                var childSAS = this.getValuesFromSAS(this.getRadius(), // side b
+                (this.getOuterAngle() / 2), // angle A
+                this.getDistanceFromChildCornerToContact(parentPolygon) // side c
+                );
+                childCentreToContactPoint = childSAS.a;
+            }
             // TODO: calculate center relative to parent
+            var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
+            (this.getOuterAngle() / 2), // angle A
+            childCentreToContactPoint // side c
+            );
         }
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
         this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
@@ -3738,7 +3746,7 @@ var Polygon = /** @class */ (function (_super) {
         }
         return this.getExternalAngle() - initialAngle;
     };
-    Polygon.prototype.getOffsetDistance = function (parentPolygon) {
+    Polygon.prototype.getOffsetDistance = function () {
         var offset = 0;
         if (this.faces % 2 !== 0) {
             offset = this.faceWidth / 2;
@@ -3758,7 +3766,7 @@ var Polygon = /** @class */ (function (_super) {
     };
     Polygon.prototype.getDistanceFromOrigin = function (parentPolygon) {
         var offsetRadians = this.getOffsetRadians(parentPolygon);
-        var offsetDistance = this.getOffsetDistance(parentPolygon);
+        var offsetDistance = this.getOffsetDistance();
         var distance;
         if (this.isOnCorner(parentPolygon)) {
             distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
