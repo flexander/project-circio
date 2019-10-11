@@ -68,6 +68,7 @@ interface PolygonInterface extends ShapeInterface, EventEmitterInterface {
     faceWidth: number;
 
     getRadius(): number;
+    getInnerAngle(): number;
     getOuterAngle(): number;
     getExternalAngle(): number;
 }

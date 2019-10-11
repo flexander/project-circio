@@ -190,7 +190,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
             distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
         } else {
             const flattenedTotalAngle = this.state.totalAngle - ((this.getCornersPassed(parentPolygon)) * parentPolygon.getExternalAngle());
-            const distance = (flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth;
+            distance = Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth;
         }
 
         return distance;

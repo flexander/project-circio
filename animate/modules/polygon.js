@@ -34,6 +34,13 @@ var Polygon = /** @class */ (function (_super) {
         var parentCentreX = this.state.centre.x;
         var parentCentreY = this.state.centre.y;
         if (parentPolygon !== null) {
+            // TODO: calculate contact point
+            var parentSAS = this.getValuesFromSAS(parentPolygon.getRadius(), // b
+            (parentPolygon.getOuterAngle() / 2), // A
+            this.getDistanceFromLastCorner(parentPolygon) // C
+            );
+            var parentCentreToContactPoint = parentSAS.a;
+            // TODO: calculate center relative to parent
         }
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
         this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
@@ -92,29 +99,84 @@ var Polygon = /** @class */ (function (_super) {
         return (2 * Math.PI) / this.faces;
     };
     Polygon.prototype.getOuterAngle = function () {
-        return Math.PI - (this.getInnerAngle());
+        return Math.PI - this.getInnerAngle();
     };
-    // Calculate values of a triangle where we know two sides and the angle between them
-    Polygon.prototype.getValuesFromSAS = function (side1, angle, side2) {
-        var b = side1;
-        var A = angle;
-        var c = side2;
-        var a;
-        var B;
-        var C;
-        // a^2 = b^2 + c^2 − 2bc cosA
-        a = Math.sqrt(Math.pow(b, 2) + Math.pow(c, 2) - (2 * b * c * Math.cos(A)));
-        var smallAngle = Math.asin((Math.sin(A) * Math.min(b, c)) / a);
-        var largeAngle = Math.PI - smallAngle;
-        if (b < c) {
-            B = smallAngle;
-            C = largeAngle;
+    Polygon.prototype.getExternalAngle = function () {
+        return this.getInnerAngle();
+    };
+    Polygon.prototype.getRadiansPerFace = function () {
+        return this.getInnerAngle();
+    };
+    Polygon.prototype.getRadiansToCompleteFace = function (parentPolygon) {
+        var facesPerParentFace = Math.ceil(parentPolygon.faceWidth / this.faceWidth);
+        return this.getInnerAngle() * facesPerParentFace;
+    };
+    Polygon.prototype.getCornersPassed = function (parentPolygon) {
+        var offset = this.getOffsetRadians(parentPolygon);
+        return Math.floor((this.state.totalAngle - offset) / (this.getRadiansToCompleteFace(parentPolygon) + parentPolygon.getExternalAngle()));
+    };
+    Polygon.prototype.isOnCorner = function (parentPolygon) {
+        var baseValue = this.getRadiansToCompleteFace(parentPolygon) + this.getOffsetRadians(parentPolygon);
+        var minRadians = baseValue + (this.getRadiansToCompleteFace(parentPolygon) * this.getCornersPassed(parentPolygon));
+        var maxRadians = minRadians + parentPolygon.getExternalAngle();
+        return (this.state.totalAngle > minRadians && this.state.totalAngle < maxRadians);
+    };
+    Polygon.prototype.getOffsetRadians = function (parentPolygon) {
+        var offset = 0;
+        if (this.faces % 2 !== 0) {
+            offset = (parentPolygon.getExternalAngle() / 2);
+        }
+        return offset;
+    };
+    Polygon.prototype.getOffsetDistance = function (parentPolygon) {
+        var offset = 0;
+        if (this.faces % 2 !== 0) {
+            offset = this.faceWidth / 2;
+        }
+        return offset;
+    };
+    /** This will always be a multiple of either
+     * the child face width or parent face width
+     * */
+    Polygon.prototype.getDistanceFromOrigin = function (parentPolygon) {
+        var distance;
+        if (this.isOnCorner(parentPolygon)) {
+            distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
         }
         else {
-            C = smallAngle;
-            B = largeAngle;
+            var flattenedTotalAngle = this.state.totalAngle - ((this.getCornersPassed(parentPolygon)) * parentPolygon.getExternalAngle());
+            distance = Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth;
         }
-        return { a: a, b: b, c: c, A: A, B: B, C: C };
+        return distance;
+    };
+    Polygon.prototype.getDistanceFromLastCorner = function (parentPolygon) {
+        return this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;
+    };
+    // Calculate values of a triangle where we know two sides and the angle between them
+    Polygon.prototype.getValuesFromSAS = function (sideB, angleA, sideC) {
+        var sideA; // a
+        var angleB; // B
+        var angleC; // C
+        // a^2 = b^2 + c^2 − 2bc cosA
+        sideA = Math.sqrt(Math.pow(sideB, 2) + Math.pow(sideC, 2) - (2 * sideB * sideC * Math.cos(angleA)));
+        var smallAngle = Math.asin((Math.sin(angleA) * Math.min(sideB, sideC)) / sideA);
+        var largeAngle = Math.PI - smallAngle;
+        if (sideB < sideC) {
+            angleB = smallAngle;
+            angleC = largeAngle;
+        }
+        else {
+            angleC = smallAngle;
+            angleB = largeAngle;
+        }
+        var polygonSas = new PolygonSas();
+        polygonSas.a = sideA;
+        polygonSas.b = sideB;
+        polygonSas.c = sideC;
+        polygonSas.A = angleA;
+        polygonSas.B = angleB;
+        polygonSas.C = angleC;
+        return polygonSas;
     };
     return Polygon;
 }(structure_1.EventEmitter));
@@ -149,3 +211,8 @@ var PolygonDrawPosition = /** @class */ (function () {
     return PolygonDrawPosition;
 }());
 exports.PolygonDrawPosition = PolygonDrawPosition;
+var PolygonSas = /** @class */ (function () {
+    function PolygonSas() {
+    }
+    return PolygonSas;
+}());

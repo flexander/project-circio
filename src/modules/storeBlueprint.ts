@@ -250,7 +250,7 @@ export class BlueprintStore implements CircStoreInterface {
         poly0.steps = 1000;
         poly0.outside = true;
         poly0.fixed = true;
-        poly0.clockwise = false;
+        poly0.clockwise = true;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
         poly0.faces = 5;
@@ -260,7 +260,7 @@ export class BlueprintStore implements CircStoreInterface {
         poly1.steps = 1000;
         poly1.outside = true;
         poly1.fixed = true;
-        poly1.clockwise = false;
+        poly1.clockwise = true;
         poly1.stepMod = 0;
         poly1.startAngle = 0;
         poly1.faces = 4;
