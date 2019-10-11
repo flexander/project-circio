@@ -37,6 +37,9 @@ class Polygon extends EventEmitter implements PolygonInterface {
         let parentCentreY = this.state.centre.y;
 
         if (parentPolygon !== null) {
+            // TODO: calculate contact point
+            // TODO: calculate center relative to parent
+
 
         }
 
@@ -112,7 +115,17 @@ class Polygon extends EventEmitter implements PolygonInterface {
     }
 
     getOuterAngle(): number {
-        return Math.PI - (this.getInnerAngle());
+        return Math.PI - this.getInnerAngle();
+    }
+
+    getExternalAngle(): number {
+        return this.getInnerAngle();
+    }
+
+    getRadiansToCompleteFace(shape: Polygon): number {
+        const facesPerParentFace = Math.ceil(shape.faceWidth / this.faceWidth);
+
+        return this.getInnerAngle() * facesPerParentFace;
     }
 
     // Calculate values of a triangle where we know two sides and the angle between them
