@@ -97,6 +97,14 @@ export default class EngineControl implements EngineControlInterface, QuickContr
             button.innerText = this.getPlayButtonLabel();
         });
 
+        this.engine.addEventListener('stepJump.start', _ => {
+            button.setAttribute('disabled', 'disabled');
+        });
+
+        this.engine.addEventListener('stepJump.end', _ => {
+            button.removeAttribute('disabled');
+        });
+
         return playFragment;
     }
 
@@ -127,11 +135,15 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         const stepJumpButton = stepJumpFragment.querySelector('button.stepThousand');
 
         stepJumpButton.addEventListener('click', e => {
+            this.engine.stepFast(1000);
+        });
+
+        this.engine.addEventListener('stepJump.start', _ => {
             stepJumpButton.setAttribute('disabled', 'disabled');
-            this.engine.stepFast(1000)
-                .then(_ => {
-                    stepJumpButton.removeAttribute('disabled');
-                });
+        });
+
+        this.engine.addEventListener('stepJump.end', _ => {
+            stepJumpButton.removeAttribute('disabled');
         });
 
         return stepJumpFragment;
@@ -149,11 +161,15 @@ export default class EngineControl implements EngineControlInterface, QuickContr
                 return;
             }
 
+            this.engine.stepFast(stepsToRun);
+        });
+
+        this.engine.addEventListener('stepJump.start', _ => {
             stepJumpByButton.setAttribute('disabled', 'disabled');
-            this.engine.stepFast(stepsToRun)
-                .then(_ => {
-                    stepJumpByButton.removeAttribute('disabled');
-                });
+        });
+
+        this.engine.addEventListener('stepJump.end', _ => {
+            stepJumpByButton.removeAttribute('disabled');
         });
 
         return stepJumpByFragment;

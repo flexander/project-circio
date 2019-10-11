@@ -65,6 +65,7 @@ var Engine = /** @class */ (function (_super) {
         if (this.state.stepJumps.length > 0) {
             throw "Step jump in progress";
         }
+        this.dispatchEvent(new EngineStepJumpStart());
         var thenContinue = this.stepsToRun;
         this.pause();
         var stepGroup = 100;
@@ -77,6 +78,7 @@ var Engine = /** @class */ (function (_super) {
         }
         return Promise.all(this.state.stepJumps)
             .then(function (_) {
+            _this.dispatchEvent(new EngineStepJumpEnd());
             _this.play(thenContinue);
             _this.state.stepJumps = [];
         });
@@ -208,3 +210,27 @@ var EnginePlayEvent = /** @class */ (function () {
     return EnginePlayEvent;
 }());
 exports.EnginePlayEvent = EnginePlayEvent;
+var EngineStepJumpStart = /** @class */ (function () {
+    function EngineStepJumpStart() {
+    }
+    EngineStepJumpStart.prototype.getName = function () {
+        return "stepJump.start";
+    };
+    EngineStepJumpStart.prototype.getContext = function () {
+        return [];
+    };
+    return EngineStepJumpStart;
+}());
+exports.EngineStepJumpStart = EngineStepJumpStart;
+var EngineStepJumpEnd = /** @class */ (function () {
+    function EngineStepJumpEnd() {
+    }
+    EngineStepJumpEnd.prototype.getName = function () {
+        return "stepJump.end";
+    };
+    EngineStepJumpEnd.prototype.getContext = function () {
+        return [];
+    };
+    return EngineStepJumpEnd;
+}());
+exports.EngineStepJumpEnd = EngineStepJumpEnd;

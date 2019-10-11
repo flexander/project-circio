@@ -71,6 +71,8 @@ class Engine extends EventEmitter implements EngineInterface {
             throw `Step jump in progress`;
         }
 
+        this.dispatchEvent(new EngineStepJumpStart());
+
         const thenContinue = this.stepsToRun;
         this.pause();
 
@@ -88,6 +90,7 @@ class Engine extends EventEmitter implements EngineInterface {
 
         return Promise.all(this.state.stepJumps)
             .then(_ => {
+                this.dispatchEvent(new EngineStepJumpEnd());
                 this.play(thenContinue);
                 this.state.stepJumps = [];
             });
@@ -215,9 +218,31 @@ class EnginePlayEvent implements EventInterface {
     }
 }
 
+class EngineStepJumpStart implements EventInterface {
+    getName(): string {
+        return "stepJump.start";
+    }
+
+    getContext(): any[] {
+        return [];
+    }
+}
+
+class EngineStepJumpEnd implements EventInterface {
+    getName(): string {
+        return "stepJump.end";
+    }
+
+    getContext(): any[] {
+        return [];
+    }
+}
+
 export {
     Engine,
     EngineConfig,
     EnginePlayEvent,
     EnginePauseEvent,
+    EngineStepJumpStart,
+    EngineStepJumpEnd,
 }

@@ -2669,6 +2669,12 @@ var EngineControl = /** @class */ (function () {
         this.engine.addEventListener('play', function (value) {
             button.innerText = _this.getPlayButtonLabel();
         });
+        this.engine.addEventListener('stepJump.start', function (_) {
+            button.setAttribute('disabled', 'disabled');
+        });
+        this.engine.addEventListener('stepJump.end', function (_) {
+            button.removeAttribute('disabled');
+        });
         return playFragment;
     };
     EngineControl.prototype.makeRandomFragment = function () {
@@ -2693,11 +2699,13 @@ var EngineControl = /** @class */ (function () {
         var stepJumpFragment = document.createRange().createContextualFragment(html);
         var stepJumpButton = stepJumpFragment.querySelector('button.stepThousand');
         stepJumpButton.addEventListener('click', function (e) {
+            _this.engine.stepFast(1000);
+        });
+        this.engine.addEventListener('stepJump.start', function (_) {
             stepJumpButton.setAttribute('disabled', 'disabled');
-            _this.engine.stepFast(1000)
-                .then(function (_) {
-                stepJumpButton.removeAttribute('disabled');
-            });
+        });
+        this.engine.addEventListener('stepJump.end', function (_) {
+            stepJumpButton.removeAttribute('disabled');
         });
         return stepJumpFragment;
     };
@@ -2711,11 +2719,13 @@ var EngineControl = /** @class */ (function () {
             if (isNaN(stepsToRun) === true || stepsToRun === null) {
                 return;
             }
+            _this.engine.stepFast(stepsToRun);
+        });
+        this.engine.addEventListener('stepJump.start', function (_) {
             stepJumpByButton.setAttribute('disabled', 'disabled');
-            _this.engine.stepFast(stepsToRun)
-                .then(function (_) {
-                stepJumpByButton.removeAttribute('disabled');
-            });
+        });
+        this.engine.addEventListener('stepJump.end', function (_) {
+            stepJumpByButton.removeAttribute('disabled');
         });
         return stepJumpByFragment;
     };
@@ -3341,6 +3351,7 @@ var Engine = /** @class */ (function (_super) {
         if (this.state.stepJumps.length > 0) {
             throw "Step jump in progress";
         }
+        this.dispatchEvent(new EngineStepJumpStart());
         var thenContinue = this.stepsToRun;
         this.pause();
         var stepGroup = 100;
@@ -3353,6 +3364,7 @@ var Engine = /** @class */ (function (_super) {
         }
         return Promise.all(this.state.stepJumps)
             .then(function (_) {
+            _this.dispatchEvent(new EngineStepJumpEnd());
             _this.play(thenContinue);
             _this.state.stepJumps = [];
         });
@@ -3484,6 +3496,30 @@ var EnginePlayEvent = /** @class */ (function () {
     return EnginePlayEvent;
 }());
 exports.EnginePlayEvent = EnginePlayEvent;
+var EngineStepJumpStart = /** @class */ (function () {
+    function EngineStepJumpStart() {
+    }
+    EngineStepJumpStart.prototype.getName = function () {
+        return "stepJump.start";
+    };
+    EngineStepJumpStart.prototype.getContext = function () {
+        return [];
+    };
+    return EngineStepJumpStart;
+}());
+exports.EngineStepJumpStart = EngineStepJumpStart;
+var EngineStepJumpEnd = /** @class */ (function () {
+    function EngineStepJumpEnd() {
+    }
+    EngineStepJumpEnd.prototype.getName = function () {
+        return "stepJump.end";
+    };
+    EngineStepJumpEnd.prototype.getContext = function () {
+        return [];
+    };
+    return EngineStepJumpEnd;
+}());
+exports.EngineStepJumpEnd = EngineStepJumpEnd;
 
 },{"../structure":28,"./events":19}],19:[function(require,module,exports){
 "use strict";
