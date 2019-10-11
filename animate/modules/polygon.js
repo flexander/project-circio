@@ -130,11 +130,15 @@ var Polygon = /** @class */ (function (_super) {
         return (this.state.totalAngle > minRadians && this.state.totalAngle < maxRadians);
     };
     Polygon.prototype.getOffsetRadians = function (parentPolygon) {
-        var offset = 0;
+        // The angle between the active parent face and active child face
+        var initialAngle = 0;
         if (this.faces % 2 !== 0) {
-            offset = (parentPolygon.getExternalAngle() / 2);
+            initialAngle = (180 - parentPolygon.getOuterAngle()) / 2;
         }
-        return offset;
+        else {
+            initialAngle = (360 - this.getOuterAngle() + parentPolygon.getOuterAngle()) / 2;
+        }
+        return this.getExternalAngle() - initialAngle;
     };
     Polygon.prototype.getOffsetDistance = function (parentPolygon) {
         var offset = 0;
