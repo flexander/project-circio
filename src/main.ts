@@ -81,6 +81,21 @@ const initialiseEventListeners = (circ: CircInterface) => {
     })
 };
 
+const transformCanvas = (circ: CircInterface) => {
+    if (circ.width !== parseInt(canvasArea.style.width, 10) || circ.height !== parseInt(canvasArea.style.height, 10)) {
+        console.log(circ.height, circ.width);
+        canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
+        canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
+        canvasArea.style.width = circ.width + 'px';
+        canvasArea.style.height = circ.height + 'px';
+
+        canvasArea.querySelectorAll('canvas').forEach(c => {
+            c.setAttribute('height', '' + circ.height);
+            c.setAttribute('width', '' + circ.width);
+        });
+    }
+};
+
 
 const engine = new Engine();
 const painter = new Painter(mainCanvasElement.getContext("2d"));
@@ -92,20 +107,11 @@ engine.addStepCallback(circ => guidePainter.draw(circ));
 engine.addResetCallback(_ => painter.clear());
 engine.addImportCallback(renderControls);
 engine.addImportCallback(initialiseEventListeners);
+engine.addImportCallback(transformCanvas);
 engine.addImportCallback((circ: CircInterface) => {backgroundPainter.draw(circ)});
 engine.play();
 
 blueprintStorage.get('twoCircles')
     .then((circ: CircInterface) => {
-        canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
-        canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
-        canvasArea.style.width = circ.width + 'px';
-        canvasArea.style.height = circ.height + 'px';
-
-        canvasArea.querySelectorAll('canvas').forEach(c => {
-            c.setAttribute('height', canvasArea.style.height);
-            c.setAttribute('width', canvasArea.style.width);
-        });
-
         engine.import(circ);
     });

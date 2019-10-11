@@ -1822,6 +1822,19 @@ var initialiseEventListeners = function (circ) {
         });
     });
 };
+var transformCanvas = function (circ) {
+    if (circ.width !== parseInt(canvasArea.style.width, 10) || circ.height !== parseInt(canvasArea.style.height, 10)) {
+        console.log(circ.height, circ.width);
+        canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
+        canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
+        canvasArea.style.width = circ.width + 'px';
+        canvasArea.style.height = circ.height + 'px';
+        canvasArea.querySelectorAll('canvas').forEach(function (c) {
+            c.setAttribute('height', '' + circ.height);
+            c.setAttribute('width', '' + circ.width);
+        });
+    }
+};
 var engine = new engine_2.Engine();
 var painter = new painter_1.default(mainCanvasElement.getContext("2d"));
 var guidePainter = new guidePainter_1.default(guideCanvasElement.getContext("2d"));
@@ -1831,18 +1844,11 @@ engine.addStepCallback(function (circ) { return guidePainter.draw(circ); });
 engine.addResetCallback(function (_) { return painter.clear(); });
 engine.addImportCallback(renderControls);
 engine.addImportCallback(initialiseEventListeners);
+engine.addImportCallback(transformCanvas);
 engine.addImportCallback(function (circ) { backgroundPainter.draw(circ); });
 engine.play();
 blueprintStorage.get('twoCircles')
     .then(function (circ) {
-    canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
-    canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
-    canvasArea.style.width = circ.width + 'px';
-    canvasArea.style.height = circ.height + 'px';
-    canvasArea.querySelectorAll('canvas').forEach(function (c) {
-        c.setAttribute('height', canvasArea.style.height);
-        c.setAttribute('width', canvasArea.style.width);
-    });
     engine.import(circ);
 });
 
@@ -1851,7 +1857,6 @@ blueprintStorage.get('twoCircles')
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundPainter = /** @class */ (function () {
     function BackgroundPainter(canvasContext) {
-        this.canvasCenter = new CanvasCenter();
         this.canvasContext = canvasContext;
     }
     BackgroundPainter.prototype.draw = function (circ) {
@@ -1860,16 +1865,8 @@ var BackgroundPainter = /** @class */ (function () {
         this.canvasContext.fillRect(-this.canvasContext.canvas.width / 2, -this.canvasContext.canvas.height / 2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
     };
     BackgroundPainter.prototype.centerCanvas = function (circ) {
-        if (this.canvasCenter.x !== (circ.width / 2)) {
-            this.canvasContext.translate(-this.canvasCenter.x, 0);
-            this.canvasContext.translate((circ.width / 2), 0);
-            this.canvasCenter.x = (circ.width / 2);
-        }
-        if (this.canvasCenter.y !== (circ.height / 2)) {
-            this.canvasContext.translate(0, -this.canvasCenter.y);
-            this.canvasContext.translate(0, (circ.height / 2));
-            this.canvasCenter.y = (circ.height / 2);
-        }
+        this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+        this.canvasContext.translate((circ.width / 2), (circ.height / 2));
     };
     BackgroundPainter.prototype.clear = function () {
         this.canvasContext.clearRect(-this.canvasContext.canvas.width / 2, -this.canvasContext.canvas.height / 2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
@@ -1880,13 +1877,6 @@ var BackgroundPainter = /** @class */ (function () {
     return BackgroundPainter;
 }());
 exports.default = BackgroundPainter;
-var CanvasCenter = /** @class */ (function () {
-    function CanvasCenter() {
-        this.x = 0;
-        this.y = 0;
-    }
-    return CanvasCenter;
-}());
 
 },{}],4:[function(require,module,exports){
 "use strict";
@@ -3572,7 +3562,6 @@ exports.ShapeDeleteEvent = ShapeDeleteEvent;
 Object.defineProperty(exports, "__esModule", { value: true });
 var GuidePainter = /** @class */ (function () {
     function GuidePainter(canvasContext) {
-        this.canvasCenter = new CanvasCenter();
         this.visible = true;
         this.guideColor = '#FFF';
         this.canvasContext = canvasContext;
@@ -3592,16 +3581,8 @@ var GuidePainter = /** @class */ (function () {
         this.canvasContext.clearRect(-this.canvasContext.canvas.width / 2, -this.canvasContext.canvas.height / 2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
     };
     GuidePainter.prototype.centerCanvas = function (circ) {
-        if (this.canvasCenter.x !== (circ.width / 2)) {
-            this.canvasContext.translate(-this.canvasCenter.x, 0);
-            this.canvasContext.translate((circ.width / 2), 0);
-            this.canvasCenter.x = (circ.width / 2);
-        }
-        if (this.canvasCenter.y !== (circ.height / 2)) {
-            this.canvasContext.translate(0, -this.canvasCenter.y);
-            this.canvasContext.translate(0, (circ.height / 2));
-            this.canvasCenter.y = (circ.height / 2);
-        }
+        this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+        this.canvasContext.translate((circ.width / 2), (circ.height / 2));
     };
     GuidePainter.prototype.draw = function (circ) {
         var _this = this;
@@ -3663,20 +3644,12 @@ var GuidePainter = /** @class */ (function () {
     return GuidePainter;
 }());
 exports.default = GuidePainter;
-var CanvasCenter = /** @class */ (function () {
-    function CanvasCenter() {
-        this.x = 0;
-        this.y = 0;
-    }
-    return CanvasCenter;
-}());
 
 },{}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Painter = /** @class */ (function () {
     function Painter(canvasContext) {
-        this.canvasCenter = new CanvasCenter();
         this.canvasContext = canvasContext;
     }
     Painter.prototype.clear = function () {
@@ -3693,16 +3666,8 @@ var Painter = /** @class */ (function () {
         });
     };
     Painter.prototype.centerCanvas = function (circ) {
-        if (this.canvasCenter.x !== (circ.width / 2)) {
-            this.canvasContext.translate(-this.canvasCenter.x, 0);
-            this.canvasContext.translate((circ.width / 2), 0);
-            this.canvasCenter.x = (circ.width / 2);
-        }
-        if (this.canvasCenter.y !== (circ.height / 2)) {
-            this.canvasContext.translate(0, -this.canvasCenter.y);
-            this.canvasContext.translate(0, (circ.height / 2));
-            this.canvasCenter.y = (circ.height / 2);
-        }
+        this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+        this.canvasContext.translate((circ.width / 2), (circ.height / 2));
     };
     Painter.prototype.exportImageAsDataURL = function () {
         return "";
@@ -3736,13 +3701,6 @@ var Painter = /** @class */ (function () {
     return Painter;
 }());
 exports.default = Painter;
-var CanvasCenter = /** @class */ (function () {
-    function CanvasCenter() {
-        this.x = 0;
-        this.y = 0;
-    }
-    return CanvasCenter;
-}());
 
 },{}],22:[function(require,module,exports){
 "use strict";
