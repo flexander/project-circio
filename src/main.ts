@@ -17,6 +17,7 @@ import {StoreRandom} from "./modules/storeRandom";
 import {Circ} from "./modules/circ";
 import {Circle} from "./modules/circle";
 import {Brush} from "./modules/brushes";
+import {Randomiser} from "./modules/randomiser";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
@@ -92,105 +93,19 @@ engine.addResetCallback(_ => painter.clear());
 engine.addImportCallback(renderControls);
 engine.addImportCallback(initialiseEventListeners);
 engine.addImportCallback((circ: CircInterface) => {backgroundPainter.draw(circ)});
-// engine.play();
+engine.play();
 
-// blueprintStorage.get('twoCircles')
-//     .then((circ: CircInterface) => {
-//         canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
-//         canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
-//         canvasArea.style.width = circ.width + 'px';
-//         canvasArea.style.height = circ.height + 'px';
-//
-//         canvasArea.querySelectorAll('canvas').forEach(c => {
-//             c.setAttribute('height', canvasArea.style.height);
-//             c.setAttribute('width', canvasArea.style.width);
-//         });
-//
-//         engine.import(circ);
-//     });
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+blueprintStorage.get('twoCircles')
+    .then((circ: CircInterface) => {
+        canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
+        canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
+        canvasArea.style.width = circ.width + 'px';
+        canvasArea.style.height = circ.height + 'px';
 
-function runRandom() {
-    const pr = 300;
-    const cr = getRandomInt(100, 400);
-    const cs = 500;
-    const ratio = pr / cr;
-    let multiple = null;
-
-    for (let i = 1; i < 10; i++) {
-        // console.log(pr,cr,i);
-        if ((ratio * i) % 1 === 0) {
-            multiple = i;
-            break;
-        }
-    }
-    if (multiple == null) {
-        runRandom();
-        return;
-    }
-    const stepsToComplete = cs*ratio*multiple;
-    console.log(pr,cr,multiple, stepsToComplete);
-
-    const circ = new Circ();
-    circ.width = 1080;
-    circ.height = 1080;
-    circ.backgroundFill = '#1b5eec';
-
-
-    const circle = new Circle();
-    circle.steps = 100;
-    circle.outside = true;
-    circle.fixed = true;
-    circle.clockwise = true;
-    circle.stepMod = 0;
-    circle.startAngle = 0;
-    circle.radius = pr;
-
-
-    const circle1 = new Circle();
-    circle1.steps = cs;
-    circle1.outside = true;
-    circle1.fixed = true;
-    circle1.clockwise = true;
-    circle1.stepMod = 0;
-    circle1.startAngle = 0;
-    circle1.radius = cr;
-
-    const brush = new Brush();
-    brush.color = '#FFFFFF';
-    brush.degrees = 0;
-    brush.link = true;
-    brush.offset = 0;
-    brush.point = 0.5;
-
-    circle1.addBrush(brush);
-
-    circ.addShape(circle);
-    circ.addShape(circle1);
-
-
-    engine.import(circ);
-
-    engine.stepFast(stepsToComplete)
-        .then(
-        _ => {
-            runRandom();
+        canvasArea.querySelectorAll('canvas').forEach(c => {
+            c.setAttribute('height', canvasArea.style.height);
+            c.setAttribute('width', canvasArea.style.width);
         });
 
-}
-canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
-canvasArea.style.transform = 'scale(' + window.innerHeight / 1080 + ')';
-canvasArea.style.width = 1080 + 'px';
-canvasArea.style.height = 1080 + 'px';
-
-canvasArea.querySelectorAll('canvas').forEach(c => {
-    c.setAttribute('height', canvasArea.style.height);
-    c.setAttribute('width', canvasArea.style.width);
-});
-
-runRandom();
-
+        engine.import(circ);
+    });

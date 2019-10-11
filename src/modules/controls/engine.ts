@@ -1,12 +1,13 @@
 import {
     BrushInterface,
-    CircControlInterface,
+    CircControlInterface, CircInterface,
     ControlInterface,
     EngineControlInterface,
     EngineInterface,
     QuickControlInterface
 } from "../../structure";
 import {ControlModes} from "./mode";
+import {Randomiser} from "../randomiser";
 
 export default class EngineControl implements EngineControlInterface, QuickControlInterface {
     protected circControl: CircControlInterface;
@@ -99,6 +100,26 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         return playFragment;
     }
 
+    protected makeRandomFragment(): DocumentFragment {
+        const html = `<button>Random</button>`;
+
+        const randomFragment = document.createRange().createContextualFragment(html);
+        const button = randomFragment.querySelector('button');
+
+        button.addEventListener('click', e => {
+            const randomiser = new Randomiser();
+
+            randomiser.make()
+                .then((circ: CircInterface) => {
+                    this.engine.pause();
+                    this.engine.import(circ);
+                    this.engine.stepFast(circ.stepsToComplete)
+                });
+        });
+
+        return randomFragment;
+    }
+
     protected makeStepJumpFragment(): DocumentFragment {
         const html = `<button class="stepThousand">Step 1000</button>`;
 
@@ -172,6 +193,11 @@ export default class EngineControl implements EngineControlInterface, QuickContr
             new class implements ControlInterface {
                 render(): DocumentFragment {
                     return self.makeResetFragment();
+                }
+            },
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeRandomFragment();
                 }
             },
         ];

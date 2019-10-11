@@ -150,6 +150,10 @@ interface SerializerInterface {
     unserialize(circJson: string): CircInterface;
 }
 
+interface CircGenerator {
+    make(): Promise<CircInterface>;
+}
+
 /** Controls **/
 interface ControlPanelInterface {
     addControl(control: ControlInterface): void;
@@ -239,6 +243,7 @@ export {
     CircInterface,
     CircStateInterface,
     CircConfigInterface,
+    CircGenerator,
     ShapeInterface,
     ShapeStateInterface,
     ShapeConfigInterface,
