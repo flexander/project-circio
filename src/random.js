@@ -20,7 +20,6 @@ function getRandomCirc() {
     let R = (Pr * i) / Cr;
 
     if(R % 1 === 0) {
- + i + ' / M:' + R);
       result = {
         Pr: Pr,
         Cr: Cr,
