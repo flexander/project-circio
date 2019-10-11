@@ -1,5 +1,12 @@
 import '../structure';
-import {BrushInterface, PolygonInterface, EventEmitter, PositionInterface, ShapeStateInterface} from "../structure";
+import {
+    BrushInterface,
+    PolygonInterface,
+    EventEmitter,
+    PositionInterface,
+    ShapeStateInterface,
+    PolygonSasInterface
+} from "../structure";
 import {AttributeChangedEvent} from "./events";
 const cloneDeep = require('lodash.clonedeep');
 
@@ -39,12 +46,12 @@ class Polygon extends EventEmitter implements PolygonInterface {
         if (parentPolygon !== null) {
             // TODO: calculate contact point
             const parentSAS = this.getValuesFromSAS(
-                parentPolygon.getRadius(),
-                (parentPolygon.getOuterAngle()/2),
-                this.getDistanceFromLastCorner(parentPolygon)
+                parentPolygon.getRadius(),                      // b
+                (parentPolygon.getOuterAngle()/2),              // A
+                this.getDistanceFromLastCorner(parentPolygon)   // C
             );
 
-
+            const parentCentreToContactPoint = parentSAS.a;
 
             // TODO: calculate center relative to parent
 
@@ -194,7 +201,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
     }
 
     // Calculate values of a triangle where we know two sides and the angle between them
-    public getValuesFromSAS(sideB, angleA, sideC): object {
+    public getValuesFromSAS(sideB, angleA, sideC): PolygonSas {
 
         let sideA; // a
         let angleB; // B
@@ -214,7 +221,15 @@ class Polygon extends EventEmitter implements PolygonInterface {
             angleB = largeAngle;
         }
 
-        return {a: sideA, b: sideB, c: sideC, A: angleA, B: angleB, C: angleC};
+        const polygonSas = new PolygonSas();
+        polygonSas.a = sideA;
+        polygonSas.b = sideB;
+        polygonSas.c = sideC;
+        polygonSas.A = angleA;
+        polygonSas.B = angleB;
+        polygonSas.C = angleC;
+
+        return polygonSas;
     }
 }
 
@@ -241,6 +256,15 @@ class PolygonCenterPosition implements PositionInterface {
 class PolygonDrawPosition implements PositionInterface {
     x: number;
     y: number;
+}
+
+class PolygonSas implements PolygonSasInterface {
+    a: number;
+    b: number;
+    c: number;
+    A: number;
+    B: number;
+    C: number;
 }
 
 export {
