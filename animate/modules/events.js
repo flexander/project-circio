@@ -14,30 +14,6 @@ var AttributeChangedEvent = /** @class */ (function () {
     return AttributeChangedEvent;
 }());
 exports.AttributeChangedEvent = AttributeChangedEvent;
-var EnginePauseEvent = /** @class */ (function () {
-    function EnginePauseEvent() {
-    }
-    EnginePauseEvent.prototype.getName = function () {
-        return "pause";
-    };
-    EnginePauseEvent.prototype.getContext = function () {
-        return [];
-    };
-    return EnginePauseEvent;
-}());
-exports.EnginePauseEvent = EnginePauseEvent;
-var EnginePlayEvent = /** @class */ (function () {
-    function EnginePlayEvent() {
-    }
-    EnginePlayEvent.prototype.getName = function () {
-        return "play";
-    };
-    EnginePlayEvent.prototype.getContext = function () {
-        return [];
-    };
-    return EnginePlayEvent;
-}());
-exports.EnginePlayEvent = EnginePlayEvent;
 var ShapeAddEvent = /** @class */ (function () {
     function ShapeAddEvent(shape) {
         this.shape = shape;

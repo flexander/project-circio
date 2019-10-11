@@ -3,10 +3,10 @@ import {
     EngineConfigInterface,
     EngineInterface,
     EngineStateInterface,
-    EventEmitter,
+    EventEmitter, EventInterface,
     ShapeInterface
 } from "../structure";
-import {AttributeChangedEvent, EnginePauseEvent, EnginePlayEvent} from "./events";
+import {AttributeChangedEvent} from "./events";
 
 class Engine extends EventEmitter implements EngineInterface {
     public state: EngineStateInterface = new EngineState();
@@ -195,7 +195,29 @@ class EngineState implements EngineStateInterface {
     stepJumps: Promise<void>[] = [];
 }
 
+class EnginePauseEvent implements EventInterface {
+    getName(): string {
+        return "pause";
+    }
+
+    getContext(): any[] {
+        return [];
+    }
+}
+
+class EnginePlayEvent implements EventInterface {
+    getName(): string {
+        return "play";
+    }
+
+    getContext(): any[] {
+        return [];
+    }
+}
+
 export {
     Engine,
     EngineConfig,
+    EnginePlayEvent,
+    EnginePauseEvent,
 }

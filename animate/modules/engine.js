@@ -156,10 +156,10 @@ var Engine = /** @class */ (function (_super) {
             this.dispatchEvent(new events_1.AttributeChangedEvent('stepsToRun', this.stepsToRun));
             if (stepsChangedBy !== 0) {
                 if (steps > 0) {
-                    this.dispatchEvent(new events_1.EnginePlayEvent());
+                    this.dispatchEvent(new EnginePlayEvent());
                 }
                 else if (steps === 0) {
-                    this.dispatchEvent(new events_1.EnginePauseEvent());
+                    this.dispatchEvent(new EnginePauseEvent());
                 }
             }
         },
@@ -184,3 +184,27 @@ var EngineState = /** @class */ (function () {
     }
     return EngineState;
 }());
+var EnginePauseEvent = /** @class */ (function () {
+    function EnginePauseEvent() {
+    }
+    EnginePauseEvent.prototype.getName = function () {
+        return "pause";
+    };
+    EnginePauseEvent.prototype.getContext = function () {
+        return [];
+    };
+    return EnginePauseEvent;
+}());
+exports.EnginePauseEvent = EnginePauseEvent;
+var EnginePlayEvent = /** @class */ (function () {
+    function EnginePlayEvent() {
+    }
+    EnginePlayEvent.prototype.getName = function () {
+        return "play";
+    };
+    EnginePlayEvent.prototype.getContext = function () {
+        return [];
+    };
+    return EnginePlayEvent;
+}());
+exports.EnginePlayEvent = EnginePlayEvent;

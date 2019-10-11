@@ -3432,10 +3432,10 @@ var Engine = /** @class */ (function (_super) {
             this.dispatchEvent(new events_1.AttributeChangedEvent('stepsToRun', this.stepsToRun));
             if (stepsChangedBy !== 0) {
                 if (steps > 0) {
-                    this.dispatchEvent(new events_1.EnginePlayEvent());
+                    this.dispatchEvent(new EnginePlayEvent());
                 }
                 else if (steps === 0) {
-                    this.dispatchEvent(new events_1.EnginePauseEvent());
+                    this.dispatchEvent(new EnginePauseEvent());
                 }
             }
         },
@@ -3460,24 +3460,6 @@ var EngineState = /** @class */ (function () {
     }
     return EngineState;
 }());
-
-},{"../structure":28,"./events":19}],19:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var AttributeChangedEvent = /** @class */ (function () {
-    function AttributeChangedEvent(name, value) {
-        this.name = name;
-        this.value = value;
-    }
-    AttributeChangedEvent.prototype.getName = function () {
-        return "change." + this.name;
-    };
-    AttributeChangedEvent.prototype.getContext = function () {
-        return [this.value, this.name];
-    };
-    return AttributeChangedEvent;
-}());
-exports.AttributeChangedEvent = AttributeChangedEvent;
 var EnginePauseEvent = /** @class */ (function () {
     function EnginePauseEvent() {
     }
@@ -3502,6 +3484,24 @@ var EnginePlayEvent = /** @class */ (function () {
     return EnginePlayEvent;
 }());
 exports.EnginePlayEvent = EnginePlayEvent;
+
+},{"../structure":28,"./events":19}],19:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var AttributeChangedEvent = /** @class */ (function () {
+    function AttributeChangedEvent(name, value) {
+        this.name = name;
+        this.value = value;
+    }
+    AttributeChangedEvent.prototype.getName = function () {
+        return "change." + this.name;
+    };
+    AttributeChangedEvent.prototype.getContext = function () {
+        return [this.value, this.name];
+    };
+    return AttributeChangedEvent;
+}());
+exports.AttributeChangedEvent = AttributeChangedEvent;
 var ShapeAddEvent = /** @class */ (function () {
     function ShapeAddEvent(shape) {
         this.shape = shape;
