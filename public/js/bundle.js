@@ -3340,7 +3340,9 @@ var Engine = /** @class */ (function (_super) {
         return this.stepsToRun > 0;
     };
     Engine.prototype.reset = function () {
-        this.circ.getShapes().forEach(function (shape) { return shape.reset(); });
+        if (typeof this.circ !== "undefined") {
+            this.circ.getShapes().forEach(function (shape) { return shape.reset(); });
+        }
         this.runResetCallbacks();
         this.state.totalStepsRun = 0;
         // Run a single step to correctly position and render the shapes

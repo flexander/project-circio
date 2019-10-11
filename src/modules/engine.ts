@@ -57,7 +57,10 @@ class Engine extends EventEmitter implements EngineInterface {
     }
 
     public reset(): void {
-        this.circ.getShapes().forEach(shape => shape.reset());
+        if (typeof this.circ !== "undefined") {
+            this.circ.getShapes().forEach(shape => shape.reset());
+        }
+
         this.runResetCallbacks();
 
         this.state.totalStepsRun = 0;
