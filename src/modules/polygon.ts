@@ -157,20 +157,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return this.getInnerAngle() * this.getFacesPerParentFace(parentPolygon);
     }
 
-    getCornersPassed(parentPolygon: PolygonInterface): number {
-        const offset = this.getOffsetRadians(parentPolygon);
-
-        return Math.floor((this.state.totalAngle - offset) / (this.getRadiansPerParentFace(parentPolygon) + parentPolygon.getExternalAngle()));
-    }
-
-    isOnCorner(parentPolygon: PolygonInterface): boolean {
-        const baseValue = this.getRadiansPerParentFace(parentPolygon) + this.getOffsetRadians(parentPolygon);
-        const minRadians = baseValue + (this.getRadiansPerParentFace(parentPolygon) * this.getCornersPassed(parentPolygon));
-        const maxRadians = minRadians + parentPolygon.getExternalAngle();
-
-        return (this.state.totalAngle > minRadians && this.state.totalAngle < maxRadians);
-    }
-
     getOffsetRadians(parentPolygon: PolygonInterface): number {
         // The angle between the active parent face and active child face
         let initialAngle = 0;
@@ -194,15 +180,31 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return offset;
     }
 
+    getCornersPassed(parentPolygon: PolygonInterface): number {
+        const offset = this.getOffsetRadians(parentPolygon);
+
+        return Math.floor((this.state.totalAngle + offset) / (this.getRadiansPerParentFace(parentPolygon) + parentPolygon.getExternalAngle()));
+    }
+
+    isOnCorner(parentPolygon: PolygonInterface): boolean {
+        const offset = this.getOffsetRadians(parentPolygon);
+        const baseValue = this.getRadiansPerParentFace(parentPolygon) - offset;
+        const minRadians = baseValue + (this.getRadiansPerParentFace(parentPolygon) * this.getCornersPassed(parentPolygon));
+        const maxRadians = minRadians + parentPolygon.getExternalAngle();
+
+        return (this.state.totalAngle > minRadians && this.state.totalAngle < maxRadians);
+    }
+
     getDistanceFromOrigin(parentPolygon: PolygonInterface): number {
-        // TODO: Take offset into account
+        const offsetRadians = this.getOffsetRadians(parentPolygon);
+        const offsetDistance = this.getOffsetDistance(parentPolygon);
         let distance;
 
         if(this.isOnCorner(parentPolygon)) {
             distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
         } else {
-            const flattenedTotalAngle = this.state.totalAngle - ((this.getCornersPassed(parentPolygon)) * parentPolygon.getExternalAngle());
-            distance = Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth;
+            const flattenedTotalAngle = (this.state.totalAngle + offsetRadians) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle());
+            distance = (Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth) - offsetDistance;
         }
 
         return distance;

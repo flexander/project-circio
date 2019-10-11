@@ -119,16 +119,6 @@ var Polygon = /** @class */ (function (_super) {
     Polygon.prototype.getRadiansPerParentFace = function (parentPolygon) {
         return this.getInnerAngle() * this.getFacesPerParentFace(parentPolygon);
     };
-    Polygon.prototype.getCornersPassed = function (parentPolygon) {
-        var offset = this.getOffsetRadians(parentPolygon);
-        return Math.floor((this.state.totalAngle - offset) / (this.getRadiansPerParentFace(parentPolygon) + parentPolygon.getExternalAngle()));
-    };
-    Polygon.prototype.isOnCorner = function (parentPolygon) {
-        var baseValue = this.getRadiansPerParentFace(parentPolygon) + this.getOffsetRadians(parentPolygon);
-        var minRadians = baseValue + (this.getRadiansPerParentFace(parentPolygon) * this.getCornersPassed(parentPolygon));
-        var maxRadians = minRadians + parentPolygon.getExternalAngle();
-        return (this.state.totalAngle > minRadians && this.state.totalAngle < maxRadians);
-    };
     Polygon.prototype.getOffsetRadians = function (parentPolygon) {
         // The angle between the active parent face and active child face
         var initialAngle = 0;
@@ -147,15 +137,27 @@ var Polygon = /** @class */ (function (_super) {
         }
         return offset;
     };
+    Polygon.prototype.getCornersPassed = function (parentPolygon) {
+        var offset = this.getOffsetRadians(parentPolygon);
+        return Math.floor((this.state.totalAngle + offset) / (this.getRadiansPerParentFace(parentPolygon) + parentPolygon.getExternalAngle()));
+    };
+    Polygon.prototype.isOnCorner = function (parentPolygon) {
+        var offset = this.getOffsetRadians(parentPolygon);
+        var baseValue = this.getRadiansPerParentFace(parentPolygon) - offset;
+        var minRadians = baseValue + (this.getRadiansPerParentFace(parentPolygon) * this.getCornersPassed(parentPolygon));
+        var maxRadians = minRadians + parentPolygon.getExternalAngle();
+        return (this.state.totalAngle > minRadians && this.state.totalAngle < maxRadians);
+    };
     Polygon.prototype.getDistanceFromOrigin = function (parentPolygon) {
-        // TODO: Take offset into account
+        var offsetRadians = this.getOffsetRadians(parentPolygon);
+        var offsetDistance = this.getOffsetDistance(parentPolygon);
         var distance;
         if (this.isOnCorner(parentPolygon)) {
             distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
         }
         else {
-            var flattenedTotalAngle = this.state.totalAngle - ((this.getCornersPassed(parentPolygon)) * parentPolygon.getExternalAngle());
-            distance = Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth;
+            var flattenedTotalAngle = (this.state.totalAngle + offsetRadians) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle());
+            distance = (Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth) - offsetDistance;
         }
         return distance;
     };
