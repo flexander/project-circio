@@ -3767,7 +3767,7 @@ var Randomiser = /** @class */ (function () {
         });
     };
     Randomiser.prototype.generate = function () {
-        var pr = 200;
+        var pr = 150;
         var cr = this.getRandomInt(10, 250);
         var ccr = this.getRandomInt(10, 250);
         var ps = 0;
@@ -3787,17 +3787,17 @@ var Randomiser = /** @class */ (function () {
         circle.radius = pr;
         var circle1 = new circle_1.Circle();
         circle1.steps = cs;
-        circle1.outside = true;
+        circle1.outside = this.getRandomBool();
         circle1.fixed = true;
-        circle1.clockwise = true;
+        circle1.clockwise = this.getRandomBool();
         circle1.stepMod = 0;
         circle1.startAngle = 0;
         circle1.radius = cr;
         var circle2 = new circle_1.Circle();
         circle2.steps = ccs;
-        circle2.outside = true;
+        circle2.outside = this.getRandomBool();
         circle2.fixed = true;
-        circle2.clockwise = true;
+        circle2.clockwise = this.getRandomBool();
         circle2.stepMod = 0;
         circle2.startAngle = 0;
         circle2.radius = ccr;
@@ -3835,6 +3835,9 @@ var Randomiser = /** @class */ (function () {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+    Randomiser.prototype.getRandomBool = function () {
+        return this.getRandomInt(0, 1) ? true : false;
     };
     return Randomiser;
 }());

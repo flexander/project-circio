@@ -23,7 +23,7 @@ class Randomiser implements CircGenerator {
     }
 
     protected generate(): CircInterface {
-        const pr = 200;
+        const pr = 150;
         const cr = this.getRandomInt(10, 250);
         const ccr = this.getRandomInt(10, 250);
         const ps = 0;
@@ -48,9 +48,9 @@ class Randomiser implements CircGenerator {
 
         const circle1 = new Circle();
         circle1.steps = cs;
-        circle1.outside = true;
+        circle1.outside = this.getRandomBool();
         circle1.fixed = true;
-        circle1.clockwise = true;
+        circle1.clockwise = this.getRandomBool();
         circle1.stepMod = 0;
         circle1.startAngle = 0;
         circle1.radius = cr;
@@ -58,9 +58,9 @@ class Randomiser implements CircGenerator {
 
         const circle2 = new Circle();
         circle2.steps = ccs;
-        circle2.outside = true;
+        circle2.outside = this.getRandomBool();
         circle2.fixed = true;
-        circle2.clockwise = true;
+        circle2.clockwise = this.getRandomBool();
         circle2.stepMod = 0;
         circle2.startAngle = 0;
         circle2.radius = ccr;
@@ -108,6 +108,10 @@ class Randomiser implements CircGenerator {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    protected getRandomBool(): boolean {
+        return this.getRandomInt(0,1) ? true:false;
     }
 }
 
