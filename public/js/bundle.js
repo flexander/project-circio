@@ -1852,7 +1852,7 @@ blueprintStorage.get('twoCircles')
     engine.import(circ);
 });
 
-},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/mode":12,"./modules/controls/painter":13,"./modules/controls/panel":14,"./modules/controls/storage":17,"./modules/engine":18,"./modules/guidePainter":20,"./modules/painter":21,"./modules/storeBlueprint":24,"./modules/storeCloud":25,"./modules/storeLocal":26,"./modules/storeRandom":27}],3:[function(require,module,exports){
+},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/mode":12,"./modules/controls/painter":13,"./modules/controls/panel":14,"./modules/controls/storage":17,"./modules/engine":18,"./modules/guidePainter":20,"./modules/painter":21,"./modules/storeBlueprint":23,"./modules/storeCloud":24,"./modules/storeLocal":25,"./modules/storeRandom":26}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundPainter = /** @class */ (function () {
@@ -2011,7 +2011,7 @@ var BrushConfig = /** @class */ (function () {
 }());
 exports.BrushConfig = BrushConfig;
 
-},{"../structure":28,"./events":19}],5:[function(require,module,exports){
+},{"../structure":27,"./events":19}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2166,7 +2166,7 @@ var CircConfig = /** @class */ (function () {
 }());
 exports.CircConfig = CircConfig;
 
-},{"../structure":28,"./events":19}],6:[function(require,module,exports){
+},{"../structure":27,"./events":19}],6:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2415,7 +2415,7 @@ var CircleDrawPosition = /** @class */ (function () {
 }());
 exports.CircleDrawPosition = CircleDrawPosition;
 
-},{"../structure":28,"./events":19,"lodash.clonedeep":1}],7:[function(require,module,exports){
+},{"../structure":27,"./events":19,"lodash.clonedeep":1}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundControl = /** @class */ (function () {
@@ -2595,7 +2595,7 @@ exports.default = CircControl;
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var mode_1 = require("./mode");
-var randomiser_1 = require("../randomiser");
+var storeRandom_1 = require("../storeRandom");
 var EngineControl = /** @class */ (function () {
     function EngineControl(engine, mode) {
         if (mode === void 0) { mode = mode_1.ControlModes.MODE_DEFAULT; }
@@ -2673,8 +2673,8 @@ var EngineControl = /** @class */ (function () {
         var randomFragment = document.createRange().createContextualFragment(html);
         var button = randomFragment.querySelector('button');
         button.addEventListener('click', function (e) {
-            var randomiser = new randomiser_1.Randomiser();
-            randomiser.make()
+            var randomStore = new storeRandom_1.StoreRandom();
+            randomStore.get()
                 .then(function (circ) {
                 _this.engine.pause();
                 _this.engine.import(circ);
@@ -2780,7 +2780,7 @@ var EngineControl = /** @class */ (function () {
 }());
 exports.default = EngineControl;
 
-},{"../randomiser":22,"./mode":12}],11:[function(require,module,exports){
+},{"../storeRandom":26,"./mode":12}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var GuidePainterControl = /** @class */ (function () {
@@ -2927,7 +2927,7 @@ var ControlModeEvent = /** @class */ (function () {
 }());
 exports.ControlModeEvent = ControlModeEvent;
 
-},{"../../structure":28}],13:[function(require,module,exports){
+},{"../../structure":27}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var PainterControl = /** @class */ (function () {
@@ -3513,7 +3513,7 @@ var EngineStepJumpEnd = /** @class */ (function () {
 }());
 exports.EngineStepJumpEnd = EngineStepJumpEnd;
 
-},{"../structure":28,"./events":19}],19:[function(require,module,exports){
+},{"../structure":27,"./events":19}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AttributeChangedEvent = /** @class */ (function () {
@@ -3705,107 +3705,6 @@ exports.default = Painter;
 },{}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var circ_1 = require("./circ");
-var circle_1 = require("./circle");
-var brushes_1 = require("./brushes");
-var Randomiser = /** @class */ (function () {
-    function Randomiser() {
-        this.maxSteps = 40000;
-    }
-    Randomiser.prototype.make = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var circ;
-            while (typeof circ === 'undefined') {
-                try {
-                    circ = _this.generate();
-                }
-                catch (_a) {
-                }
-            }
-            resolve(circ);
-        });
-    };
-    Randomiser.prototype.generate = function () {
-        var pr = 150;
-        var cr = this.getRandomInt(10, 250);
-        var ccr = this.getRandomInt(10, 250);
-        var ps = 0;
-        var cs = this.getRandomInt(500, 1500);
-        var ccs = this.getRandomInt(500, 1500);
-        var circ = new circ_1.Circ();
-        circ.width = 1080;
-        circ.height = 1080;
-        circ.backgroundFill = '#1b5eec';
-        var circle = new circle_1.Circle();
-        circle.steps = ps;
-        circle.outside = true;
-        circle.fixed = true;
-        circle.clockwise = true;
-        circle.stepMod = 0;
-        circle.startAngle = 0;
-        circle.radius = pr;
-        var circle1 = new circle_1.Circle();
-        circle1.steps = cs;
-        circle1.outside = this.getRandomBool();
-        circle1.fixed = true;
-        circle1.clockwise = this.getRandomBool();
-        circle1.stepMod = 0;
-        circle1.startAngle = 0;
-        circle1.radius = cr;
-        var circle2 = new circle_1.Circle();
-        circle2.steps = ccs;
-        circle2.outside = this.getRandomBool();
-        circle2.fixed = true;
-        circle2.clockwise = this.getRandomBool();
-        circle2.stepMod = 0;
-        circle2.startAngle = 0;
-        circle2.radius = ccr;
-        var brush = new brushes_1.Brush();
-        brush.color = '#FFFFFF';
-        brush.degrees = 0;
-        brush.link = true;
-        brush.offset = 0;
-        brush.point = 0.5;
-        circle2.addBrush(brush);
-        circ.addShape(circle);
-        circ.addShape(circle1);
-        circ.addShape(circle2);
-        var stepsToComplete = circ.stepsToComplete;
-        if (stepsToComplete > this.maxSteps) {
-            throw 'too many steps';
-        }
-        console.log(pr, cs, cr, cs, ccr, ccs, stepsToComplete);
-        return circ;
-    };
-    Randomiser.prototype.lcm = function (x, y) {
-        return Math.abs((x * y) / this.gcd(x, y));
-    };
-    Randomiser.prototype.gcd = function (x, y) {
-        x = Math.abs(x);
-        y = Math.abs(y);
-        while (y) {
-            var t = y;
-            y = x % y;
-            x = t;
-        }
-        return x;
-    };
-    Randomiser.prototype.getRandomInt = function (min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-    Randomiser.prototype.getRandomBool = function () {
-        return this.getRandomInt(0, 1) ? true : false;
-    };
-    return Randomiser;
-}());
-exports.Randomiser = Randomiser;
-
-},{"./brushes":4,"./circ":5,"./circle":6}],23:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = require("./circle");
 var circ_1 = require("./circ");
 var brushes_1 = require("./brushes");
@@ -3859,7 +3758,7 @@ var Serializer = /** @class */ (function () {
 }());
 exports.default = Serializer;
 
-},{"./brushes":4,"./circ":5,"./circle":6}],24:[function(require,module,exports){
+},{"./brushes":4,"./circ":5,"./circle":6}],23:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circ_1 = require("./circ");
@@ -4032,7 +3931,7 @@ var BlueprintStore = /** @class */ (function () {
 }());
 exports.BlueprintStore = BlueprintStore;
 
-},{"./brushes":4,"./circ":5,"./circle":6}],25:[function(require,module,exports){
+},{"./brushes":4,"./circ":5,"./circle":6}],24:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4075,7 +3974,7 @@ var serializer_1 = require("./serializer");
 var CloudStorage = /** @class */ (function () {
     function CloudStorage() {
         this.serializer = new serializer_1.default();
-        this.apiUrl = 'https://circio.mountainofcode.co.uk';
+        this.apiUrl = 'https://circio.mountainofcode.co.uk/cloud/';
         this.name = 'Cloud';
     }
     CloudStorage.prototype.get = function (name) {
@@ -4135,7 +4034,7 @@ var CloudStorage = /** @class */ (function () {
 }());
 exports.default = CloudStorage;
 
-},{"./serializer":23}],26:[function(require,module,exports){
+},{"./serializer":22}],25:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var serializer_1 = require("./serializer");
@@ -4196,102 +4095,96 @@ var LocalStorage = /** @class */ (function () {
 }());
 exports.default = LocalStorage;
 
-},{"./serializer":23}],27:[function(require,module,exports){
+},{"./serializer":22}],26:[function(require,module,exports){
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var circle_1 = require("./circle");
-var brushes_1 = require("./brushes");
-var circ_1 = require("./circ");
+var serializer_1 = require("./serializer");
 var StoreRandom = /** @class */ (function () {
     function StoreRandom() {
+        this.serializer = new serializer_1.default();
         this.name = 'Randomiser';
+        this.apiUrl = 'https://circio.mountainofcode.co.uk/random/';
     }
-    StoreRandom.prototype.get = function (name) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var circ = _this.makeCirc();
-            circ.name = 'Random Circ';
-            resolve(circ);
+    StoreRandom.prototype.get = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response, circJsonString, circ;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=get')];
+                    case 1:
+                        response = _a.sent();
+                        return [4 /*yield*/, response.text()];
+                    case 2:
+                        circJsonString = _a.sent();
+                        circ = this.serializer.unserialize(circJsonString);
+                        circ.name = 'Random';
+                        return [2 /*return*/, circ];
+                }
+            });
         });
     };
-    StoreRandom.prototype.getIndex = function (index) {
-        return this.get(index.toString());
+    StoreRandom.prototype.getIndex = function () {
+        return this.get();
     };
     StoreRandom.prototype.list = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            var circs = [];
-            for (var i = 0; i < 5; i++) {
-                var circ = _this.makeCirc();
-                circ.name = "Random Circ " + (i + 1);
-                circs.push(circ);
-            }
+            var circs = Promise.all([
+                _this.get(),
+                _this.get(),
+                _this.get(),
+                _this.get(),
+            ]);
             resolve(circs);
         });
     };
-    StoreRandom.prototype.store = function (name, circ) {
-    };
     StoreRandom.prototype.delete = function (name) {
-        throw new Error("Blueprints can't be deleted.");
+        throw new Error("Random Circs can't be deleted.");
     };
-    StoreRandom.prototype.getRandomInt = function (min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-    StoreRandom.prototype.getRandomBool = function () {
-        return this.getRandomInt(0, 1) === 1;
-    };
-    StoreRandom.prototype.makeCirc = function () {
-        var j = 0;
-        while (j++ < 500) {
-            var pr = this.getRandomInt(10, 200);
-            var cr = this.getRandomInt(10, 200);
-            var ratio = pr / cr;
-            var multiple_1 = void 0;
-            for (var i = 0; i < 10; i++) {
-                // console.log(pr,cr,i);
-                if ((ratio * i) % 1 === 0) {
-                    multiple_1 = i;
-                    continue;
-                }
-                multiple_1 = null;
-            }
-            if (multiple_1 !== null) {
-                console.warn(pr, cr, multiple_1);
-            }
-        }
-        var circ = new circ_1.Circ();
-        circ.width = 1080;
-        circ.height = 1080;
-        circ.backgroundFill = '#1b5eec';
-        var shapes = this.getRandomInt(2, 4);
-        var multiple = this.getRandomInt(2, 10);
-        for (var i = 0; i < shapes; i++) {
-            var circle = new circle_1.Circle();
-            circle.steps = this.getRandomInt(10, 100) * multiple;
-            circle.outside = this.getRandomBool();
-            circle.fixed = true;
-            circle.clockwise = this.getRandomBool();
-            circle.stepMod = 0;
-            circle.startAngle = 0;
-            circle.radius = this.getRandomInt(10, 100) * multiple;
-            circ.addShape(circle);
-        }
-        var brush = new brushes_1.Brush();
-        brush.color = '#FFFFFF';
-        brush.degrees = 0;
-        brush.link = this.getRandomBool();
-        brush.offset = 0;
-        brush.point = 0.5;
-        circ.getShapes()[circ.getShapes().length - 1].getBrushes().push(brush);
-        return circ;
+    StoreRandom.prototype.store = function (name, circ) {
+        throw new Error("Random Circs can't be stored.");
     };
     return StoreRandom;
 }());
 exports.StoreRandom = StoreRandom;
 
-},{"./brushes":4,"./circ":5,"./circle":6}],28:[function(require,module,exports){
+},{"./serializer":22}],27:[function(require,module,exports){
 "use strict";
 /** Data **/
 Object.defineProperty(exports, "__esModule", { value: true });

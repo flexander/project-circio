@@ -7,7 +7,7 @@ import {
     QuickControlInterface
 } from "../../structure";
 import {ControlModes} from "./mode";
-import {Randomiser} from "../randomiser";
+import {StoreRandom} from "../storeRandom";
 
 export default class EngineControl implements EngineControlInterface, QuickControlInterface {
     protected circControl: CircControlInterface;
@@ -115,9 +115,9 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         const button = randomFragment.querySelector('button');
 
         button.addEventListener('click', e => {
-            const randomiser = new Randomiser();
+            const randomStore = new StoreRandom();
 
-            randomiser.make()
+            randomStore.get()
                 .then((circ: CircInterface) => {
                     this.engine.pause();
                     this.engine.import(circ);
