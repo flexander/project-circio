@@ -1778,6 +1778,7 @@ var storageLocal = new storeLocal_1.default();
 var storageBlueprint = new storeBlueprint_1.BlueprintStore();
 var storageRandom = new storeRandom_1.StoreRandom();
 var controlMode = window.localStorage.getItem('config.controlMode') || mode_1.ControlModes.MODE_DEFAULT;
+var resizeDebounce;
 var renderControls = function (circ) {
     var controlPanel = new panel_1.default('Engine');
     var engineControl = new engine_1.default(engine, controlMode);
@@ -1823,11 +1824,11 @@ var initialiseEventListeners = function (circ) {
     });
 };
 var transformCanvas = function (circ) {
+    var scaleFactor = Math.min(window.innerHeight, window.innerWidth - 300) / Math.min(circ.height, circ.width);
+    canvasArea.style.transform = 'scale(' + Math.min(scaleFactor, 1) + ')';
     if (circ.width !== parseInt(canvasArea.style.width, 10) || circ.height !== parseInt(canvasArea.style.height, 10)) {
         console.log(circ.height, circ.width);
-        var scaleFactor = Math.min(window.innerHeight, window.innerWidth) / Math.min(circ.height, circ.width);
         canvasArea.style.transformOrigin = circ.width / 2 + " " + circ.height / 2;
-        canvasArea.style.transform = 'scale(' + Math.min(scaleFactor, 1) + ')';
         canvasArea.style.width = circ.width + 'px';
         canvasArea.style.height = circ.height + 'px';
         canvasArea.style.position = "absolute";
@@ -1850,6 +1851,12 @@ engine.addImportCallback(renderControls);
 engine.addImportCallback(initialiseEventListeners);
 engine.addImportCallback(transformCanvas);
 engine.addImportCallback(function (circ) { backgroundPainter.draw(circ); });
+engine.addImportCallback(function (circ) {
+    window.addEventListener('resize', function (e) {
+        clearTimeout(resizeDebounce);
+        resizeDebounce = setTimeout(function (_) { return transformCanvas(circ); }, 50);
+    });
+});
 engine.play();
 blueprintStorage.get('twoCircles')
     .then(function (circ) {
