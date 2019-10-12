@@ -9,11 +9,15 @@ const serialiser = new Serializer();
 const circJsonString = fs.readFileSync('randomCircStore.json');
 const circs = JSON.parse(circJsonString);
 
-randomiser.make()
-    .then((circ: CircInterface) => {
-        const items = serialiser.serialize(circ);
-        circs.push(items);
-        fs.writeFileSync('randomCircStore.json', JSON.stringify(circs));
-    });
+function makeManyRandom() {
+    randomiser.make()
+        .then((circ: CircInterface) => {
+            const items = serialiser.serialize(circ);
+            circs.push(items);
+            fs.writeFileSync('randomCircStore.json', JSON.stringify(circs, null,2));
+            makeManyRandom();
+        });
+}
+makeManyRandom();
 
 
