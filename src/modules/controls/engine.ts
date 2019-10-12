@@ -1,5 +1,4 @@
 import {
-    BrushInterface,
     CircControlInterface, CircInterface,
     ControlInterface,
     EngineControlInterface,

@@ -1,4 +1,4 @@
-import {BackgroundPainterInterface, CircInterface, PositionInterface} from "../structure";
+import {BackgroundPainterInterface, CircInterface} from "../structure";
 
 export default class BackgroundPainter implements BackgroundPainterInterface {
     protected canvasContext: CanvasRenderingContext2D;

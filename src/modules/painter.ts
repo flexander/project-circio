@@ -1,4 +1,4 @@
-import {BrushInterface, CircInterface, CircleInterface, CirclePainterInterface, PositionInterface} from "../structure";
+import {BrushInterface, CircInterface, CircleInterface, CirclePainterInterface} from "../structure";
 
 export default class Painter implements CirclePainterInterface {
     protected canvasContext: CanvasRenderingContext2D;

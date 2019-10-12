@@ -14,10 +14,6 @@ import LocalStorage from "./modules/storeLocal";
 import {ControlModes, ModeControl} from "./modules/controls/mode";
 import {Engine} from "./modules/engine";
 import {StoreRandom} from "./modules/storeRandom";
-import {Circ} from "./modules/circ";
-import {Circle} from "./modules/circle";
-import {Brush} from "./modules/brushes";
-import {Randomiser} from "./modules/randomiser";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');

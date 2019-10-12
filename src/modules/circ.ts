@@ -2,7 +2,6 @@ import {
     CircConfigInterface,
     CircInterface,
     CircleInterface,
-    CircStateInterface,
     EventEmitter,
     ShapeInterface
 } from "../structure";

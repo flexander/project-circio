@@ -1,4 +1,4 @@
-import {BrushInterface, CircInterface, CircleInterface, GuidePainterInterface, PositionInterface} from "../structure";
+import {BrushInterface, CircInterface, CircleInterface, GuidePainterInterface} from "../structure";
 
 export default class GuidePainter implements GuidePainterInterface {
     protected canvasContext: CanvasRenderingContext2D;

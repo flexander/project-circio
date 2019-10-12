@@ -1,4 +1,4 @@
-import {BrushControlInterface, BrushInterface, CircleInterface} from "../../structure";
+import {BrushControlInterface, BrushInterface} from "../../structure";
 import {ControlModes} from "./mode";
 
 export default class BrushControl implements BrushControlInterface {
