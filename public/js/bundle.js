@@ -1827,7 +1827,6 @@ var transformCanvas = function (circ) {
     var scaleFactor = Math.min(window.innerHeight, window.innerWidth - 300) / Math.min(circ.height, circ.width);
     canvasArea.style.transform = 'scale(' + Math.min(scaleFactor, 1) + ')';
     if (circ.width !== parseInt(canvasArea.style.width, 10) || circ.height !== parseInt(canvasArea.style.height, 10)) {
-        console.log(circ.height, circ.width);
         canvasArea.style.transformOrigin = circ.width / 2 + " " + circ.height / 2;
         canvasArea.style.width = circ.width + 'px';
         canvasArea.style.height = circ.height + 'px';
