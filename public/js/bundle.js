@@ -1769,7 +1769,7 @@ var mode_1 = require("./modules/controls/mode");
 var engine_2 = require("./modules/engine");
 var storeRandom_1 = require("./modules/storeRandom");
 var canvasArea = document.querySelector('#circio .painter');
-var backgroundCanvasElement = canvasArea.querySelector('#background-canvas');
+var backgroundCanvasElement = document.querySelector('#background-canvas');
 var mainCanvasElement = canvasArea.querySelector('#main-canvas');
 var guideCanvasElement = canvasArea.querySelector('#guide-canvas');
 var blueprintStorage = new storeBlueprint_1.BlueprintStore();
@@ -1825,10 +1825,14 @@ var initialiseEventListeners = function (circ) {
 var transformCanvas = function (circ) {
     if (circ.width !== parseInt(canvasArea.style.width, 10) || circ.height !== parseInt(canvasArea.style.height, 10)) {
         console.log(circ.height, circ.width);
-        canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
-        canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
+        var scaleFactor = Math.min(window.innerHeight, window.innerWidth) / Math.min(circ.height, circ.width);
+        canvasArea.style.transformOrigin = circ.width / 2 + " " + circ.height / 2;
+        canvasArea.style.transform = 'scale(' + Math.min(scaleFactor, 1) + ')';
         canvasArea.style.width = circ.width + 'px';
         canvasArea.style.height = circ.height + 'px';
+        canvasArea.style.position = "absolute";
+        canvasArea.style.left = "calc(50% - " + circ.width / 2 + "px - (300px / 2) )";
+        canvasArea.style.top = "calc(50% - " + circ.height / 2 + "px)";
         canvasArea.querySelectorAll('canvas').forEach(function (c) {
             c.setAttribute('height', '' + circ.height);
             c.setAttribute('width', '' + circ.width);
@@ -1860,13 +1864,13 @@ var BackgroundPainter = /** @class */ (function () {
         this.canvasContext = canvasContext;
     }
     BackgroundPainter.prototype.draw = function (circ) {
-        this.centerCanvas(circ);
+        this.centerCanvas();
         this.canvasContext.fillStyle = circ.backgroundFill;
         this.canvasContext.fillRect(-this.canvasContext.canvas.width / 2, -this.canvasContext.canvas.height / 2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
     };
-    BackgroundPainter.prototype.centerCanvas = function (circ) {
+    BackgroundPainter.prototype.centerCanvas = function () {
         this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-        this.canvasContext.translate((circ.width / 2), (circ.height / 2));
+        this.canvasContext.translate((this.canvasContext.canvas.width / 2), (this.canvasContext.canvas.height / 2));
     };
     BackgroundPainter.prototype.clear = function () {
         this.canvasContext.clearRect(-this.canvasContext.canvas.width / 2, -this.canvasContext.canvas.height / 2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
@@ -3580,13 +3584,13 @@ var GuidePainter = /** @class */ (function () {
     GuidePainter.prototype.clear = function () {
         this.canvasContext.clearRect(-this.canvasContext.canvas.width / 2, -this.canvasContext.canvas.height / 2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
     };
-    GuidePainter.prototype.centerCanvas = function (circ) {
+    GuidePainter.prototype.centerCanvas = function () {
         this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-        this.canvasContext.translate((circ.width / 2), (circ.height / 2));
+        this.canvasContext.translate((this.canvasContext.canvas.width / 2), (this.canvasContext.canvas.height / 2));
     };
     GuidePainter.prototype.draw = function (circ) {
         var _this = this;
-        this.centerCanvas(circ);
+        this.centerCanvas();
         this.clear();
         this.guideColor = '#' + this.generateContrastingColor(circ.backgroundFill);
         circ.getShapes().forEach(function (circle) {
@@ -3657,7 +3661,7 @@ var Painter = /** @class */ (function () {
     };
     Painter.prototype.draw = function (circ) {
         var _this = this;
-        this.centerCanvas(circ);
+        this.centerCanvas();
         circ.getShapes().forEach(function (circle) {
             if (circle.getBrushes().length === 0) {
                 return;
@@ -3665,9 +3669,9 @@ var Painter = /** @class */ (function () {
             _this.drawPoints(circle);
         });
     };
-    Painter.prototype.centerCanvas = function (circ) {
+    Painter.prototype.centerCanvas = function () {
         this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-        this.canvasContext.translate((circ.width / 2), (circ.height / 2));
+        this.canvasContext.translate((this.canvasContext.canvas.width / 2), (this.canvasContext.canvas.height / 2));
     };
     Painter.prototype.exportImageAsDataURL = function () {
         return "";

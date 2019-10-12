@@ -9,7 +9,7 @@ var Painter = /** @class */ (function () {
     };
     Painter.prototype.draw = function (circ) {
         var _this = this;
-        this.centerCanvas(circ);
+        this.centerCanvas();
         circ.getShapes().forEach(function (circle) {
             if (circle.getBrushes().length === 0) {
                 return;
@@ -17,9 +17,9 @@ var Painter = /** @class */ (function () {
             _this.drawPoints(circle);
         });
     };
-    Painter.prototype.centerCanvas = function (circ) {
+    Painter.prototype.centerCanvas = function () {
         this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-        this.canvasContext.translate((circ.width / 2), (circ.height / 2));
+        this.canvasContext.translate((this.canvasContext.canvas.width / 2), (this.canvasContext.canvas.height / 2));
     };
     Painter.prototype.exportImageAsDataURL = function () {
         return "";

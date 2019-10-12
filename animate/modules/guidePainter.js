@@ -20,13 +20,13 @@ var GuidePainter = /** @class */ (function () {
     GuidePainter.prototype.clear = function () {
         this.canvasContext.clearRect(-this.canvasContext.canvas.width / 2, -this.canvasContext.canvas.height / 2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
     };
-    GuidePainter.prototype.centerCanvas = function (circ) {
+    GuidePainter.prototype.centerCanvas = function () {
         this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-        this.canvasContext.translate((circ.width / 2), (circ.height / 2));
+        this.canvasContext.translate((this.canvasContext.canvas.width / 2), (this.canvasContext.canvas.height / 2));
     };
     GuidePainter.prototype.draw = function (circ) {
         var _this = this;
-        this.centerCanvas(circ);
+        this.centerCanvas();
         this.clear();
         this.guideColor = '#' + this.generateContrastingColor(circ.backgroundFill);
         circ.getShapes().forEach(function (circle) {

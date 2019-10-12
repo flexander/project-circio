@@ -20,7 +20,7 @@ import {Brush} from "./modules/brushes";
 import {Randomiser} from "./modules/randomiser";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
-const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
+const backgroundCanvasElement = <HTMLCanvasElement>document.querySelector('#background-canvas');
 const mainCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#main-canvas');
 const guideCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#guide-canvas');
 const blueprintStorage = new BlueprintStore();
@@ -84,10 +84,16 @@ const initialiseEventListeners = (circ: CircInterface) => {
 const transformCanvas = (circ: CircInterface) => {
     if (circ.width !== parseInt(canvasArea.style.width, 10) || circ.height !== parseInt(canvasArea.style.height, 10)) {
         console.log(circ.height, circ.width);
-        canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
-        canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
+
+        const scaleFactor = Math.min(window.innerHeight,window.innerWidth) / Math.min(circ.height,circ.width);
+
+        canvasArea.style.transformOrigin = `${circ.width/2} ${circ.height/2}`;
+        canvasArea.style.transform = 'scale(' + Math.min(scaleFactor, 1) + ')';
         canvasArea.style.width = circ.width + 'px';
         canvasArea.style.height = circ.height + 'px';
+        canvasArea.style.position = `absolute`;
+        canvasArea.style.left = `calc(50% - ${circ.width/2}px - (300px / 2) )`;
+        canvasArea.style.top = `calc(50% - ${circ.height/2}px)`;
 
         canvasArea.querySelectorAll('canvas').forEach(c => {
             c.setAttribute('height', '' + circ.height);
