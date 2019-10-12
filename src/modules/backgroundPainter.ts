@@ -8,15 +8,15 @@ export default class BackgroundPainter implements BackgroundPainterInterface {
     }
 
     public draw(circ: CircInterface): void {
-        this.centerCanvas(circ);
+        this.centerCanvas();
 
         this.canvasContext.fillStyle = circ.backgroundFill;
         this.canvasContext.fillRect(-this.canvasContext.canvas.width/2, -this.canvasContext.canvas.height/2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
     }
 
-    protected centerCanvas(circ: CircInterface) {
+    protected centerCanvas() {
         this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-        this.canvasContext.translate((circ.width/2), (circ.height/2));
+        this.canvasContext.translate((this.canvasContext.canvas.width/2), (this.canvasContext.canvas.height/2));
     }
 
     clear(): void {
