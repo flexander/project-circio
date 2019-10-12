@@ -29,6 +29,7 @@ const storageLocal = new LocalStorage();
 const storageBlueprint = new BlueprintStore();
 const storageRandom = new StoreRandom();
 let controlMode = window.localStorage.getItem('config.controlMode') || ControlModes.MODE_DEFAULT;
+let resizeDebounce;
 
 const renderControls = (circ: CircInterface) => {
     const controlPanel = new ControlPanel('Engine');
@@ -82,13 +83,13 @@ const initialiseEventListeners = (circ: CircInterface) => {
 };
 
 const transformCanvas = (circ: CircInterface) => {
+    const scaleFactor = Math.min(window.innerHeight,window.innerWidth-300) / Math.min(circ.height,circ.width);
+    canvasArea.style.transform = 'scale(' + Math.min(scaleFactor, 1) + ')';
+
     if (circ.width !== parseInt(canvasArea.style.width, 10) || circ.height !== parseInt(canvasArea.style.height, 10)) {
         console.log(circ.height, circ.width);
 
-        const scaleFactor = Math.min(window.innerHeight,window.innerWidth) / Math.min(circ.height,circ.width);
-
         canvasArea.style.transformOrigin = `${circ.width/2} ${circ.height/2}`;
-        canvasArea.style.transform = 'scale(' + Math.min(scaleFactor, 1) + ')';
         canvasArea.style.width = circ.width + 'px';
         canvasArea.style.height = circ.height + 'px';
         canvasArea.style.position = `absolute`;
@@ -115,6 +116,12 @@ engine.addImportCallback(renderControls);
 engine.addImportCallback(initialiseEventListeners);
 engine.addImportCallback(transformCanvas);
 engine.addImportCallback((circ: CircInterface) => {backgroundPainter.draw(circ)});
+engine.addImportCallback((circ: CircInterface) => {
+    window.addEventListener('resize', e => {
+        clearTimeout(resizeDebounce);
+        resizeDebounce = setTimeout(_ => transformCanvas(circ), 50);
+    });
+});
 engine.play();
 
 blueprintStorage.get('twoCircles')
