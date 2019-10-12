@@ -29,18 +29,20 @@ var Polygon = /** @class */ (function (_super) {
     Polygon.prototype.calculatePosition = function (parentPolygon) {
         this.savePreviousState();
         var arcToParentRadians = 0;
-        var parentRadians = parentPolygon !== null && this.fixed === true ? parentPolygon.state.getAngle() : 0;
+        var parentRadians = (parentPolygon !== null && this.fixed === true) ? parentPolygon.state.totalAngle : 0;
         var radiusRelative = 0;
         var parentCentreX = this.state.centre.x;
         var parentCentreY = this.state.centre.y;
         if (parentPolygon !== null) {
+            parentCentreX = parentPolygon.state.centre.x;
+            parentCentreY = parentPolygon.state.centre.y;
             // calculate parent centre contact point
             var parentSAS = this.getValuesFromSAS(parentPolygon.getRadius(), // side b
             (parentPolygon.getOuterAngle() / 2), // angle A
             this.getDistanceFromParentCornerToContact(parentPolygon) // side c
             );
             var parentCentreToContactPoint = parentSAS.a;
-            // todo : correct logic
+            // TODO : correct logic
             var childCentreToContactPoint = this.getRadius();
             var parentSasB = 0;
             if (this.getDistanceFromChildCornerToContact(parentPolygon) !== 0) {
@@ -52,7 +54,7 @@ var Polygon = /** @class */ (function (_super) {
                 childCentreToContactPoint = childSAS.a;
                 parentSasB = childSAS.B;
             }
-            // TODO: calculate center relative to parent
+            // TODO: calculate centre relative to parent
             var relativeAngle = (
             // TODO: this calc might be wrong
             ((this.state.totalAngle - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle())) % this.getRadiansPerFace()) +
@@ -62,10 +64,15 @@ var Polygon = /** @class */ (function (_super) {
             relativeAngle, // angle A
             childCentreToContactPoint // side c
             );
-            console.log(relativeSAS);
+            radiusRelative = relativeSAS.a;
+            arcToParentRadians = relativeSAS.C;
         }
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
         this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
+        console.log('pcx: ' + parentCentreX);
+        console.log('pcy: ' + parentCentreY);
+        console.log('cos: ' + Math.cos(parentRadians + arcToParentRadians));
+        console.log('sin: ' + Math.sin(parentRadians + arcToParentRadians));
         // New x1 & y1 to reflect change in radians
         this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
         this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
