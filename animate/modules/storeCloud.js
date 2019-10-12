@@ -40,7 +40,7 @@ var serializer_1 = require("./serializer");
 var CloudStorage = /** @class */ (function () {
     function CloudStorage() {
         this.serializer = new serializer_1.default();
-        this.apiUrl = 'https://circio.mountainofcode.co.uk';
+        this.apiUrl = 'https://circio.mountainofcode.co.uk/cloud/';
         this.name = 'Cloud';
     }
     CloudStorage.prototype.get = function (name) {

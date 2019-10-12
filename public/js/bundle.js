@@ -4075,7 +4075,7 @@ var serializer_1 = require("./serializer");
 var CloudStorage = /** @class */ (function () {
     function CloudStorage() {
         this.serializer = new serializer_1.default();
-        this.apiUrl = 'https://circio.mountainofcode.co.uk';
+        this.apiUrl = 'https://circio.mountainofcode.co.uk/cloud/';
         this.name = 'Cloud';
     }
     CloudStorage.prototype.get = function (name) {
@@ -4198,100 +4198,94 @@ exports.default = LocalStorage;
 
 },{"./serializer":23}],27:[function(require,module,exports){
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var circle_1 = require("./circle");
-var brushes_1 = require("./brushes");
-var circ_1 = require("./circ");
+var serializer_1 = require("./serializer");
 var StoreRandom = /** @class */ (function () {
     function StoreRandom() {
+        this.serializer = new serializer_1.default();
         this.name = 'Randomiser';
+        this.apiUrl = 'https://circio.mountainofcode.co.uk/random/';
     }
-    StoreRandom.prototype.get = function (name) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var circ = _this.makeCirc();
-            circ.name = 'Random Circ';
-            resolve(circ);
+    StoreRandom.prototype.get = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response, circJsonString, circ;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=get')];
+                    case 1:
+                        response = _a.sent();
+                        return [4 /*yield*/, response.text()];
+                    case 2:
+                        circJsonString = _a.sent();
+                        circ = this.serializer.unserialize(circJsonString);
+                        circ.name = 'Random';
+                        return [2 /*return*/, circ];
+                }
+            });
         });
     };
-    StoreRandom.prototype.getIndex = function (index) {
-        return this.get(index.toString());
+    StoreRandom.prototype.getIndex = function () {
+        return this.get();
     };
     StoreRandom.prototype.list = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            var circs = [];
-            for (var i = 0; i < 5; i++) {
-                var circ = _this.makeCirc();
-                circ.name = "Random Circ " + (i + 1);
-                circs.push(circ);
-            }
+            var circs = Promise.all([
+                _this.get(),
+                _this.get(),
+                _this.get(),
+                _this.get(),
+            ]);
             resolve(circs);
         });
     };
-    StoreRandom.prototype.store = function (name, circ) {
-    };
     StoreRandom.prototype.delete = function (name) {
-        throw new Error("Blueprints can't be deleted.");
+        throw new Error("Random Circs can't be deleted.");
     };
-    StoreRandom.prototype.getRandomInt = function (min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-    StoreRandom.prototype.getRandomBool = function () {
-        return this.getRandomInt(0, 1) === 1;
-    };
-    StoreRandom.prototype.makeCirc = function () {
-        var j = 0;
-        while (j++ < 500) {
-            var pr = this.getRandomInt(10, 200);
-            var cr = this.getRandomInt(10, 200);
-            var ratio = pr / cr;
-            var multiple_1 = void 0;
-            for (var i = 0; i < 10; i++) {
-                // console.log(pr,cr,i);
-                if ((ratio * i) % 1 === 0) {
-                    multiple_1 = i;
-                    continue;
-                }
-                multiple_1 = null;
-            }
-            if (multiple_1 !== null) {
-                console.warn(pr, cr, multiple_1);
-            }
-        }
-        var circ = new circ_1.Circ();
-        circ.width = 1080;
-        circ.height = 1080;
-        circ.backgroundFill = '#1b5eec';
-        var shapes = this.getRandomInt(2, 4);
-        var multiple = this.getRandomInt(2, 10);
-        for (var i = 0; i < shapes; i++) {
-            var circle = new circle_1.Circle();
-            circle.steps = this.getRandomInt(10, 100) * multiple;
-            circle.outside = this.getRandomBool();
-            circle.fixed = true;
-            circle.clockwise = this.getRandomBool();
-            circle.stepMod = 0;
-            circle.startAngle = 0;
-            circle.radius = this.getRandomInt(10, 100) * multiple;
-            circ.addShape(circle);
-        }
-        var brush = new brushes_1.Brush();
-        brush.color = '#FFFFFF';
-        brush.degrees = 0;
-        brush.link = this.getRandomBool();
-        brush.offset = 0;
-        brush.point = 0.5;
-        circ.getShapes()[circ.getShapes().length - 1].getBrushes().push(brush);
-        return circ;
+    StoreRandom.prototype.store = function (name, circ) {
+        throw new Error("Random Circs can't be stored.");
     };
     return StoreRandom;
 }());
 exports.StoreRandom = StoreRandom;
 
-},{"./brushes":4,"./circ":5,"./circle":6}],28:[function(require,module,exports){
+},{"./serializer":23}],28:[function(require,module,exports){
 "use strict";
 /** Data **/
 Object.defineProperty(exports, "__esModule", { value: true });
