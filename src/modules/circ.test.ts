@@ -7,7 +7,6 @@ describe('Circ', () => {
     });
 
     it('should create a valid circ', () => {
-        console.log('adf');
         expect(testCirc).not.toBe(null);
     });
 });
