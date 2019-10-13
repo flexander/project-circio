@@ -131,6 +131,10 @@ class Randomiser implements CircGenerator {
     protected getRandomBool(): boolean {
         return this.getRandomInt(0,1) ? true:false;
     }
+
+    protected getRandomHexColour(): string {
+        return `#${Math.floor(Math.random()*16777215).toString(16)}`;
+    }
 }
 
 export {
