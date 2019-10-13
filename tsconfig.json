@@ -1,8 +1,12 @@
 {
-  "files": [
+  "include": [
     "./src/animate.ts",
     "./src/structure.ts",
     "./src/modules/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "./src/**/*.test.ts"
   ],
   "compilerOptions": {
     /* Basic Options */
