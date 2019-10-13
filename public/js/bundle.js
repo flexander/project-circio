@@ -1856,10 +1856,10 @@ engine.addImportCallback(function (circ) {
         resizeDebounce = setTimeout(function (_) { return transformCanvas(circ); }, 50);
     });
 });
-engine.play();
-blueprintStorage.get('twoCircles')
+storageRandom.get()
     .then(function (circ) {
     engine.import(circ);
+    engine.stepFast(circ.stepsToComplete);
 });
 
 },{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/mode":12,"./modules/controls/painter":13,"./modules/controls/panel":14,"./modules/controls/storage":17,"./modules/engine":18,"./modules/guidePainter":20,"./modules/painter":21,"./modules/storeBlueprint":23,"./modules/storeCloud":24,"./modules/storeLocal":25,"./modules/storeRandom":26}],3:[function(require,module,exports){

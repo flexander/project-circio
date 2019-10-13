@@ -116,9 +116,9 @@ engine.addImportCallback((circ: CircInterface) => {
         resizeDebounce = setTimeout(_ => transformCanvas(circ), 50);
     });
 });
-engine.play();
 
-blueprintStorage.get('twoCircles')
+storageRandom.get()
     .then((circ: CircInterface) => {
         engine.import(circ);
+        engine.stepFast(circ.stepsToComplete);
     });
