@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $filteredCircStrings = array_filter($circsData, function ($circJsonString) use ($circName) {
             $circ = json_decode($circJsonString);
-            return ($circ->name === $circName);
+            return ($circ->config->name === $circName);
         });
 
         if (count($filteredCircStrings) === 0) {
