@@ -149,4 +149,79 @@ describe('Circ', () => {
             });
         });
     });
+
+    describe('get/set width', () => {
+        let circ;
+        const width = 123;
+
+        beforeEach(() => {
+            circ = new Circ();
+            circ.dispatchEvent = jest.fn();
+        });
+
+        describe('set width', () => {
+            it('should set the width', () => {
+                circ.width = width;
+                expect(circ.config.width).toEqual(width);
+            });
+
+            it('should call the dispatchEvent exactly once with the correct AttributeChangedEvent', () => {
+                circ.width = width;
+                expect(circ.dispatchEvent).toHaveBeenCalledTimes(1);
+                expect(circ.dispatchEvent).toHaveBeenCalledWith(new AttributeChangedEvent('width', width));
+            });
+        });
+
+        describe('get width', () => {
+            it('should get the width', () => {
+                circ.config.width = width;
+                expect(circ.width).toEqual(width);
+            });
+        });
+    });
+
+    describe('get/set backgroundFill', () => {
+        let circ;
+        const backgroundFill = '#black';
+
+        beforeEach(() => {
+            circ = new Circ();
+            circ.dispatchEvent = jest.fn();
+        });
+
+        describe('set backgroundFill', () => {
+            it('should set the backgroundFill', () => {
+                circ.backgroundFill = backgroundFill;
+                expect(circ.config.backgroundFill).toEqual(backgroundFill);
+            });
+
+            it('should call the dispatchEvent exactly once with the correct AttributeChangedEvent', () => {
+                circ.backgroundFill = backgroundFill;
+                expect(circ.dispatchEvent).toHaveBeenCalledTimes(1);
+                expect(circ.dispatchEvent).toHaveBeenCalledWith(new AttributeChangedEvent('backgroundFill', backgroundFill));
+            });
+        });
+
+        describe('get backgroundFill', () => {
+            it('should get the backgroundFill', () => {
+                circ.config.backgroundFill = backgroundFill;
+                expect(circ.backgroundFill).toEqual(backgroundFill);
+            });
+        });
+    });
+
+    describe('get modified', () => {
+        let circ;
+        const modified = true;
+
+        beforeEach(() => {
+            circ = new Circ();
+            circ.dispatchEvent = jest.fn();
+        });
+
+        it('should get the modified value', () => {
+            circ.config.modified = modified;
+            expect(circ.modified).toEqual(modified);
+        });
+    });
 });
