@@ -116,6 +116,15 @@ export default class GuidePainter implements GuidePainterInterface {
         }
 
         this.canvasContext.stroke();
+
+        this.drawContactPoint(polygon);
+    }
+
+    protected drawContactPoint (polygon: PolygonInterface): void {
+        this.canvasContext.beginPath();
+        this.canvasContext.fillStyle = this.guideColor;
+        this.canvasContext.arc(polygon.state.contactPoint.x, polygon.state.contactPoint.y, Math.max(2), 0, 2*Math.PI);
+        this.canvasContext.fill();
     }
 
     protected drawRotationIndicator (circle: CircleInterface): void {

@@ -53,6 +53,7 @@ interface ShapeStateInterface {
     totalAngle: number;
     centre: PositionInterface;
     drawPoint: PositionInterface;
+    contactPoint: PositionInterface;
     initialState: ShapeStateInterface;
     previousState: ShapeStateInterface;
 

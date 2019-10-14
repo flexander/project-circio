@@ -87,6 +87,13 @@ var GuidePainter = /** @class */ (function () {
             this.canvasContext.lineTo(polygon.state.centre.x + polygon.faceWidth * Math.cos((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.faceWidth * Math.sin((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)));
         }
         this.canvasContext.stroke();
+        this.drawContactPoint(polygon);
+    };
+    GuidePainter.prototype.drawContactPoint = function (polygon) {
+        this.canvasContext.beginPath();
+        this.canvasContext.fillStyle = this.guideColor;
+        this.canvasContext.arc(polygon.state.contactPoint.x, polygon.state.contactPoint.y, Math.max(2), 0, 2 * Math.PI);
+        this.canvasContext.fill();
     };
     GuidePainter.prototype.drawRotationIndicator = function (circle) {
         this.canvasContext.fillStyle = this.guideColor;

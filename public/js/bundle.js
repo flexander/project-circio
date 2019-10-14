@@ -3501,6 +3501,13 @@ var GuidePainter = /** @class */ (function () {
             this.canvasContext.lineTo(polygon.state.centre.x + polygon.faceWidth * Math.cos((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.faceWidth * Math.sin((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)));
         }
         this.canvasContext.stroke();
+        this.drawContactPoint(polygon);
+    };
+    GuidePainter.prototype.drawContactPoint = function (polygon) {
+        this.canvasContext.beginPath();
+        this.canvasContext.fillStyle = this.guideColor;
+        this.canvasContext.arc(polygon.state.contactPoint.x, polygon.state.contactPoint.y, Math.max(2), 0, 2 * Math.PI);
+        this.canvasContext.fill();
     };
     GuidePainter.prototype.drawRotationIndicator = function (circle) {
         this.canvasContext.fillStyle = this.guideColor;
@@ -3650,6 +3657,9 @@ var Polygon = /** @class */ (function (_super) {
             this.getDistanceFromParentCornerToContact(parentPolygon) // side c
             );
             var parentCentreToContactPoint = parentSAS.a;
+            var angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
+            var contactPointX = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreX;
+            var contactPointY = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreY;
             // TODO : correct logic
             var childCentreToContactPoint = this.getRadius();
             var parentSasB = 0;
@@ -3674,13 +3684,11 @@ var Polygon = /** @class */ (function (_super) {
             );
             radiusRelative = relativeSAS.a;
             arcToParentRadians = relativeSAS.C;
+            this.state.contactPoint.x = contactPointX;
+            this.state.contactPoint.y = contactPointY;
         }
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
         this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
-        console.log('pcx: ' + parentCentreX);
-        console.log('pcy: ' + parentCentreY);
-        console.log('cos: ' + Math.cos(parentRadians + arcToParentRadians));
-        console.log('sin: ' + Math.sin(parentRadians + arcToParentRadians));
         // New x1 & y1 to reflect change in radians
         this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
         this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
@@ -3831,6 +3839,7 @@ var PolygonState = /** @class */ (function () {
     function PolygonState() {
         this.centre = new PolygonCenterPosition();
         this.drawPoint = new PolygonDrawPosition();
+        this.contactPoint = new PolygonContactPosition();
         this.initialState = Object.create(this);
         this.previousState = null;
         this.totalAngle = 0;
@@ -3857,6 +3866,11 @@ var PolygonDrawPosition = /** @class */ (function () {
     return PolygonDrawPosition;
 }());
 exports.PolygonDrawPosition = PolygonDrawPosition;
+var PolygonContactPosition = /** @class */ (function () {
+    function PolygonContactPosition() {
+    }
+    return PolygonContactPosition;
+}());
 var PolygonSas = /** @class */ (function () {
     function PolygonSas() {
     }
@@ -4140,13 +4154,13 @@ var BlueprintStore = /** @class */ (function () {
         poly0.faces = 5;
         poly0.faceWidth = 200;
         var poly1 = new polygon_1.Polygon();
-        poly1.steps = 4;
+        poly1.steps = 16;
         poly1.outside = true;
         poly1.fixed = true;
         poly1.clockwise = true;
         poly1.stepMod = 0;
         poly1.startAngle = 0;
-        poly1.faces = 4;
+        poly1.faces = 5;
         poly1.faceWidth = 75;
         var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';

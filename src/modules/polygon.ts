@@ -55,6 +55,9 @@ class Polygon extends EventEmitter implements PolygonInterface {
             );
 
             const parentCentreToContactPoint = parentSAS.a;
+            const angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
+            const contactPointX = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreX;
+            const contactPointY = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreY;
 
             // TODO : correct logic
             let childCentreToContactPoint = this.getRadius();
@@ -87,14 +90,13 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
             radiusRelative = relativeSAS.a;
             arcToParentRadians = relativeSAS.C;
-        }
 
+            this.state.contactPoint.x = contactPointX;
+            this.state.contactPoint.y = contactPointY;
+        }
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
         this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
-console.log('pcx: '+parentCentreX);
-console.log('pcy: '+parentCentreY);
-console.log('cos: '+Math.cos(parentRadians + arcToParentRadians));
-console.log('sin: ' + Math.sin(parentRadians + arcToParentRadians));
+
         // New x1 & y1 to reflect change in radians
         this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
         this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
@@ -280,6 +282,7 @@ console.log('sin: ' + Math.sin(parentRadians + arcToParentRadians));
 class PolygonState implements ShapeStateInterface {
     centre: PositionInterface = new PolygonCenterPosition();
     drawPoint: PositionInterface = new PolygonDrawPosition();
+    contactPoint: PositionInterface = new PolygonContactPosition();
     initialState: ShapeStateInterface = Object.create(this);
     previousState: ShapeStateInterface = null;
     totalAngle: number = 0;
@@ -298,6 +301,11 @@ class PolygonCenterPosition implements PositionInterface {
 }
 
 class PolygonDrawPosition implements PositionInterface {
+    x: number;
+    y: number;
+}
+
+class PolygonContactPosition implements PositionInterface {
     x: number;
     y: number;
 }

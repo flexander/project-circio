@@ -42,6 +42,9 @@ var Polygon = /** @class */ (function (_super) {
             this.getDistanceFromParentCornerToContact(parentPolygon) // side c
             );
             var parentCentreToContactPoint = parentSAS.a;
+            var angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
+            var contactPointX = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreX;
+            var contactPointY = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreY;
             // TODO : correct logic
             var childCentreToContactPoint = this.getRadius();
             var parentSasB = 0;
@@ -66,13 +69,11 @@ var Polygon = /** @class */ (function (_super) {
             );
             radiusRelative = relativeSAS.a;
             arcToParentRadians = relativeSAS.C;
+            this.state.contactPoint.x = contactPointX;
+            this.state.contactPoint.y = contactPointY;
         }
         this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
         this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
-        console.log('pcx: ' + parentCentreX);
-        console.log('pcy: ' + parentCentreY);
-        console.log('cos: ' + Math.cos(parentRadians + arcToParentRadians));
-        console.log('sin: ' + Math.sin(parentRadians + arcToParentRadians));
         // New x1 & y1 to reflect change in radians
         this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
         this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
@@ -223,6 +224,7 @@ var PolygonState = /** @class */ (function () {
     function PolygonState() {
         this.centre = new PolygonCenterPosition();
         this.drawPoint = new PolygonDrawPosition();
+        this.contactPoint = new PolygonContactPosition();
         this.initialState = Object.create(this);
         this.previousState = null;
         this.totalAngle = 0;
@@ -249,6 +251,11 @@ var PolygonDrawPosition = /** @class */ (function () {
     return PolygonDrawPosition;
 }());
 exports.PolygonDrawPosition = PolygonDrawPosition;
+var PolygonContactPosition = /** @class */ (function () {
+    function PolygonContactPosition() {
+    }
+    return PolygonContactPosition;
+}());
 var PolygonSas = /** @class */ (function () {
     function PolygonSas() {
     }
