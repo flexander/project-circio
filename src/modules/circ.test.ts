@@ -1,21 +1,24 @@
 import { Circ } from './Circ';
 import { Circle } from './Circle';
-import { ShapeAddEvent } from './events';
+import { ShapeAddEvent, ShapeDeleteEvent } from './events';
 
 describe('Circ', () => {
-    let circ;
-    let shape1;
-    beforeEach(() => {
-        circ = new Circ();
-        circ.dispatchEvent = jest.fn();
-        shape1 = new Circle();
-    });
-
-    it('should create a valid circ', () => {
-        expect(circ).not.toBe(null);
+    describe('constructor', () => {
+        it('should create a valid circ', () => {
+            const circ = new Circ();
+            expect(circ).not.toBe(null);
+        });
     });
 
     describe('addShape', () => {
+        let circ;
+        let shape1;
+        beforeEach(() => {
+            circ = new Circ();
+            circ.dispatchEvent = jest.fn();
+            shape1 = new Circle();
+        });
+
         beforeEach(() => {
             circ.addShape(shape1);
         });
@@ -38,6 +41,38 @@ describe('Circ', () => {
         it('should call the dispatchEvent exactly once with the shape', () => {
             expect(circ.dispatchEvent).toHaveBeenCalledTimes(1);
             expect(circ.dispatchEvent).toHaveBeenCalledWith(new ShapeAddEvent(shape1));
+        });
+    });
+
+    describe('removeShape', () => {
+        let circ;
+        let shape1;
+        beforeEach(() => {
+            circ = new Circ();
+            circ.dispatchEvent = jest.fn();
+            shape1 = new Circle();
+        });
+
+        it('should not call the dispatchEvent', () => {
+            circ.shapes.push(shape1);
+            circ.removeShape(shape1.id);
+            expect(circ.dispatchEvent).not.toHaveBeenCalled();
+        });
+
+        it('should call the dispatchEvent exactly once with the shape', () => {
+            circ.shapes.push(shape1);
+            circ.removeShape(shape1.id+1);
+            expect(circ.dispatchEvent).toHaveBeenCalledTimes(1);
+            expect(circ.dispatchEvent).toHaveBeenCalledWith(new ShapeDeleteEvent(shape1));
+        });
+
+        it('should call the dispatchEvent twice with the shapes', () => {
+            const shape2 = new Circle();
+            circ.shapes.push(...[shape1, shape2]);
+            circ.removeShape(shape1.id+1);
+            expect(circ.dispatchEvent).toHaveBeenCalledTimes(2);
+            expect(circ.dispatchEvent).toHaveBeenCalledWith(new ShapeDeleteEvent(shape1));
+            expect(circ.dispatchEvent).toHaveBeenCalledWith(new ShapeDeleteEvent(shape2));
         });
     });
 });
