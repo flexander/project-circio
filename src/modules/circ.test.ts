@@ -1,6 +1,6 @@
 import { Circ } from './Circ';
 import { Circle } from './Circle';
-import { ShapeAddEvent, ShapeDeleteEvent } from './events';
+import { ShapeAddEvent, ShapeDeleteEvent, AttributeChangedEvent } from './events';
 
 describe('Circ', () => {
     describe('constructor', () => {
@@ -73,6 +73,50 @@ describe('Circ', () => {
             expect(circ.dispatchEvent).toHaveBeenCalledTimes(2);
             expect(circ.dispatchEvent).toHaveBeenCalledWith(new ShapeDeleteEvent(shape1));
             expect(circ.dispatchEvent).toHaveBeenCalledWith(new ShapeDeleteEvent(shape2));
+        });
+    });
+
+    describe('getShapes', () => {
+        let circ;
+        let shape1;
+        beforeEach(() => {
+            circ = new Circ();
+            shape1 = new Circle();
+        });
+
+        it('should return the shapes', () => {
+            circ.shapes.push(shape1);
+            expect(circ.getShapes()).toEqual([shape1]);
+        });
+    });
+
+    describe('get/set name', () => {
+        let circ;
+        const name = 'testName';
+
+        beforeEach(() => {
+            circ = new Circ();
+            circ.dispatchEvent = jest.fn();
+        });
+
+        describe('set name', () => {
+            it('should set the name', () => {
+                circ.name = name;
+                expect(circ.config.name).toEqual(name);
+            });
+
+            it('should call the dispatchEvent exactly once with the correct AttributeChangedEvent', () => {
+                circ.name = name;
+                expect(circ.dispatchEvent).toHaveBeenCalledTimes(1);
+                expect(circ.dispatchEvent).toHaveBeenCalledWith(new AttributeChangedEvent('name', name));
+            });
+        });
+
+        describe('get name', () => {
+            it('should get the name', () => {
+                circ.config.name = name;
+                expect(circ.name).toEqual(name);
+            });
         });
     });
 });
