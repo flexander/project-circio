@@ -119,4 +119,34 @@ describe('Circ', () => {
             });
         });
     });
+
+    describe('get/set height', () => {
+        let circ;
+        const height = 9000;
+
+        beforeEach(() => {
+            circ = new Circ();
+            circ.dispatchEvent = jest.fn();
+        });
+
+        describe('set height', () => {
+            it('should set the height', () => {
+                circ.height = height;
+                expect(circ.config.height).toEqual(height);
+            });
+
+            it('should call the dispatchEvent exactly once with the correct AttributeChangedEvent', () => {
+                circ.height = height;
+                expect(circ.dispatchEvent).toHaveBeenCalledTimes(1);
+                expect(circ.dispatchEvent).toHaveBeenCalledWith(new AttributeChangedEvent('height', height));
+            });
+        });
+
+        describe('get height', () => {
+            it('should get the height', () => {
+                circ.config.height = height;
+                expect(circ.height).toEqual(height);
+            });
+        });
+    });
 });
