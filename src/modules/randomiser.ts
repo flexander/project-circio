@@ -38,30 +38,19 @@ class Randomiser implements CircGenerator {
 
         const circle = new Circle();
         circle.steps = ps;
-        circle.outside = true;
-        circle.fixed = true;
-        circle.clockwise = true;
-        circle.stepMod = 0;
-        circle.startAngle = 0;
         circle.radius = pr;
 
 
         const circle1 = new Circle();
         circle1.steps = cs;
-        circle1.fixed = true;
         circle1.clockwise = this.getRandomBool();
-        circle1.stepMod = 0;
-        circle1.startAngle = 0;
         circle1.radius = cr;
         circle1.outside = circle.radius === circle1.radius ? true:this.getRandomBool();
 
 
         const circle2 = new Circle();
         circle2.steps = ccs;
-        circle2.fixed = true;
         circle2.clockwise = this.getRandomBool();
-        circle2.stepMod = 0;
-        circle2.startAngle = 0;
         circle2.radius = ccr;
         circle1.outside = circle1.radius === circle2.radius ? true:this.getRandomBool();
 

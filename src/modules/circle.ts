@@ -204,16 +204,25 @@ class Circle extends EventEmitter implements CircleInterface {
     }
 }
 
-class CircleConfig implements CircleConfigInterface {
-    steps: number;
-    outside: boolean;
-    fixed: boolean;
-    clockwise: boolean;
-    stepMod: number;
-    startAngle: number;
-    isRoot: boolean;
+class CircleConfigDefault implements CircleConfigInterface {
+    steps: number = 500;
+    outside: boolean = true;
+    fixed: boolean = true;
+    clockwise: boolean = true;
+    stepMod: number = 0;
+    startAngle: number = 0;
+    isRoot: boolean = false;
     modified: boolean;
-    radius: number;
+    radius: number = 100;
+
+    constructor() {
+        if (new.target === CircleConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+}
+
+class CircleConfig extends CircleConfigDefault implements CircleConfigInterface {
 }
 
 class CircleState implements ShapeStateInterface {

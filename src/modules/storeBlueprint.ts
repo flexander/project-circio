@@ -58,20 +58,11 @@ export class BlueprintStore implements CircStoreInterface {
 
         const circle0 = new Circle();
         circle0.steps = 500;
-        circle0.outside = false;
-        circle0.fixed = true;
         circle0.clockwise = false;
-        circle0.stepMod = 0;
-        circle0.startAngle = 0;
         circle0.radius = 300;
 
         const circle1 = new Circle();
         circle1.steps = 500;
-        circle1.outside = true;
-        circle1.fixed = true;
-        circle1.clockwise = true;
-        circle1.stepMod = 0;
-        circle1.startAngle = 0;
         circle1.radius = 100;
 
         const circle1Brush = new Brush();
@@ -92,29 +83,16 @@ export class BlueprintStore implements CircStoreInterface {
 
         const circle0 = new Circle();
         circle0.steps = 500;
-        circle0.outside = false;
-        circle0.fixed = true;
         circle0.clockwise = false;
-        circle0.stepMod = 0;
-        circle0.startAngle = 0;
         circle0.radius = 100;
 
         const circle1 = new Circle();
         circle1.steps = 500;
-        circle1.outside = true;
-        circle1.fixed = true;
-        circle1.clockwise = true;
-        circle1.stepMod = 0;
-        circle1.startAngle = 0;
         circle1.radius = 50;
 
         const circle2 = new Circle();
         circle2.steps = 500;
-        circle2.outside = true;
-        circle2.fixed = true;
         circle2.clockwise = false;
-        circle2.stepMod = 0;
-        circle2.startAngle = 0;
         circle2.radius = 25;
 
         const circle2Brush = new Brush();
@@ -137,37 +115,20 @@ export class BlueprintStore implements CircStoreInterface {
         const circle0 = new Circle();
         circle0.steps = 1000;
         circle0.outside = false;
-        circle0.fixed = true;
         circle0.clockwise = false;
-        circle0.stepMod = 0;
-        circle0.startAngle = 0;
         circle0.radius = 120;
 
         const circle1 = new Circle();
         circle1.steps = 500;
-        circle1.outside = true;
-        circle1.fixed = true;
-        circle1.clockwise = true;
-        circle1.stepMod = 0;
-        circle1.startAngle = 0;
         circle1.radius = 60;
 
         const circle2 = new Circle();
         circle2.steps = 250;
-        circle2.outside = true;
-        circle2.fixed = true;
         circle2.clockwise = false;
-        circle2.stepMod = 0;
-        circle2.startAngle = 0;
         circle2.radius = 30;
 
         const circle3 = new Circle();
         circle3.steps = 125;
-        circle3.outside = true;
-        circle3.fixed = true;
-        circle3.clockwise = true;
-        circle3.stepMod = 0;
-        circle3.startAngle = 0;
         circle3.radius = 15;
 
         const circle3Brush = new Brush();

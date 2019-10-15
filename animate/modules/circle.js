@@ -209,11 +209,30 @@ var Circle = /** @class */ (function (_super) {
     return Circle;
 }(structure_1.EventEmitter));
 exports.Circle = Circle;
-var CircleConfig = /** @class */ (function () {
+var CircleConfigDefault = /** @class */ (function () {
+    function CircleConfigDefault() {
+        var _newTarget = this.constructor;
+        this.steps = 500;
+        this.outside = true;
+        this.fixed = true;
+        this.clockwise = true;
+        this.stepMod = 0;
+        this.startAngle = 0;
+        this.isRoot = false;
+        this.radius = 100;
+        if (_newTarget === CircleConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+    return CircleConfigDefault;
+}());
+var CircleConfig = /** @class */ (function (_super) {
+    __extends(CircleConfig, _super);
     function CircleConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return CircleConfig;
-}());
+}(CircleConfigDefault));
 exports.CircleConfig = CircleConfig;
 var CircleState = /** @class */ (function () {
     function CircleState() {
