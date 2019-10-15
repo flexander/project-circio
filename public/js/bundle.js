@@ -1856,13 +1856,13 @@ engine.addImportCallback(function (circ) {
         resizeDebounce = setTimeout(function (_) { return transformCanvas(circ); }, 50);
     });
 });
-storageRandom.get()
+blueprintStorage.get('twoPolygons')
     .then(function (circ) {
     engine.import(circ);
-    engine.stepFast(circ.stepsToComplete);
+    engine.play();
 });
 
-},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/mode":12,"./modules/controls/painter":13,"./modules/controls/panel":14,"./modules/controls/storage":17,"./modules/engine":18,"./modules/guidePainter":20,"./modules/painter":21,"./modules/storeBlueprint":23,"./modules/storeCloud":24,"./modules/storeLocal":25,"./modules/storeRandom":26}],3:[function(require,module,exports){
+},{"./modules/backgroundPainter":3,"./modules/controls/circ":9,"./modules/controls/engine":10,"./modules/controls/guidePainter":11,"./modules/controls/mode":12,"./modules/controls/painter":13,"./modules/controls/panel":14,"./modules/controls/storage":17,"./modules/engine":18,"./modules/guidePainter":20,"./modules/painter":21,"./modules/storeBlueprint":24,"./modules/storeCloud":25,"./modules/storeLocal":26,"./modules/storeRandom":27}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundPainter = /** @class */ (function () {
@@ -2033,7 +2033,7 @@ var BrushConfig = /** @class */ (function (_super) {
 }(BrushConfigDefault));
 exports.BrushConfig = BrushConfig;
 
-},{"../structure":27,"./events":19}],5:[function(require,module,exports){
+},{"../structure":28,"./events":19}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2188,7 +2188,7 @@ var CircConfig = /** @class */ (function () {
 }());
 exports.CircConfig = CircConfig;
 
-},{"../structure":27,"./events":19}],6:[function(require,module,exports){
+},{"../structure":28,"./events":19}],6:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -2430,6 +2430,7 @@ var CircleState = /** @class */ (function () {
     function CircleState() {
         this.centre = new CircleCenterPosition();
         this.drawPoint = new CircleDrawPosition();
+        this.contactPoint = new CircleDrawPosition();
         this.initialState = Object.create(this);
         this.previousState = null;
         this.totalAngle = 0;
@@ -2457,7 +2458,7 @@ var CircleDrawPosition = /** @class */ (function () {
 }());
 exports.CircleDrawPosition = CircleDrawPosition;
 
-},{"../structure":27,"./events":19,"lodash.clonedeep":1}],7:[function(require,module,exports){
+},{"../structure":28,"./events":19,"lodash.clonedeep":1}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundControl = /** @class */ (function () {
@@ -2815,7 +2816,7 @@ var EngineControl = /** @class */ (function () {
 }());
 exports.default = EngineControl;
 
-},{"../storeRandom":26,"./mode":12}],11:[function(require,module,exports){
+},{"../storeRandom":27,"./mode":12}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var GuidePainterControl = /** @class */ (function () {
@@ -2962,7 +2963,7 @@ var ControlModeEvent = /** @class */ (function () {
 }());
 exports.ControlModeEvent = ControlModeEvent;
 
-},{"../../structure":27}],13:[function(require,module,exports){
+},{"../../structure":28}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var PainterControl = /** @class */ (function () {
@@ -3560,7 +3561,7 @@ var EngineStepJumpEnd = /** @class */ (function () {
 }());
 exports.EngineStepJumpEnd = EngineStepJumpEnd;
 
-},{"../structure":27,"./events":19}],19:[function(require,module,exports){
+},{"../structure":28,"./events":19}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AttributeChangedEvent = /** @class */ (function () {
@@ -3607,6 +3608,8 @@ exports.ShapeDeleteEvent = ShapeDeleteEvent;
 },{}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var circle_1 = require("./circle");
+var polygon_1 = require("./polygon");
 var GuidePainter = /** @class */ (function () {
     function GuidePainter(canvasContext) {
         this.visible = true;
@@ -3636,8 +3639,13 @@ var GuidePainter = /** @class */ (function () {
         this.centerCanvas();
         this.clear();
         this.guideColor = '#' + this.generateContrastingColor(circ.backgroundFill);
-        circ.getShapes().forEach(function (circle) {
-            _this.drawCircle(circle);
+        circ.getShapes().forEach(function (shape) {
+            if (shape instanceof circle_1.Circle) {
+                _this.drawCircle(shape);
+            }
+            else if (shape instanceof polygon_1.Polygon) {
+                _this.drawPolygon(shape);
+            }
         });
     };
     GuidePainter.prototype.generateContrastingColor = function (color) {
@@ -3669,6 +3677,33 @@ var GuidePainter = /** @class */ (function () {
         this.drawRotationIndicator(circle);
         circle.getBrushes().forEach(function (brush) { return _this.drawBrushPoint(circle, brush); });
     };
+    GuidePainter.prototype.drawPolygon = function (polygon) {
+        this.canvasContext.strokeStyle = this.guideColor;
+        this.canvasContext.beginPath();
+        this.canvasContext.moveTo(polygon.state.centre.x + polygon.getRadius() * Math.cos(polygon.state.totalAngle), polygon.state.centre.y + polygon.getRadius() * Math.sin(polygon.state.totalAngle));
+        for (var i = 1; i <= polygon.faces; i += 1) {
+            this.canvasContext.lineTo(polygon.state.centre.x + polygon.getRadius() * Math.cos((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.getRadius() * Math.sin((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)));
+        }
+        this.canvasContext.stroke();
+        this.drawPoint(polygon.state.contactPoint);
+        this.drawPoint(polygon.state.centre);
+        this.drawPointToPoint(polygon.state.centre, polygon.state.contactPoint);
+        if (typeof polygon.parent !== "undefined") {
+            this.drawPointToPoint(polygon.parent.state.centre, polygon.state.contactPoint);
+            this.drawPointToPoint(polygon.parent.state.centre, polygon.state.centre);
+        }
+    };
+    GuidePainter.prototype.drawPoint = function (point) {
+        this.canvasContext.beginPath();
+        this.canvasContext.fillStyle = this.guideColor;
+        this.canvasContext.arc(point.x, point.y, Math.max(2), 0, 2 * Math.PI);
+        this.canvasContext.fill();
+    };
+    GuidePainter.prototype.drawPointToPoint = function (pointA, pointB) {
+        this.canvasContext.moveTo(pointA.x, pointA.y);
+        this.canvasContext.lineTo(pointB.x, pointB.y);
+        this.canvasContext.stroke();
+    };
     GuidePainter.prototype.drawRotationIndicator = function (circle) {
         this.canvasContext.fillStyle = this.guideColor;
         this.canvasContext.beginPath();
@@ -3692,7 +3727,7 @@ var GuidePainter = /** @class */ (function () {
 }());
 exports.default = GuidePainter;
 
-},{}],21:[function(require,module,exports){
+},{"./circle":6,"./polygon":22}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Painter = /** @class */ (function () {
@@ -3751,6 +3786,273 @@ exports.default = Painter;
 
 },{}],22:[function(require,module,exports){
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+require("../structure");
+var structure_1 = require("../structure");
+var cloneDeep = require('lodash.clonedeep');
+var Polygon = /** @class */ (function (_super) {
+    __extends(Polygon, _super);
+    function Polygon() {
+        var _this = _super.call(this) || this;
+        _this.brushes = [];
+        _this.state = new PolygonState();
+        _this.id = Math.floor(Math.random() * 100000);
+        _this.saveInitialState();
+        return _this;
+    }
+    Polygon.prototype.calculatePosition = function (parentPolygon) {
+        this.savePreviousState();
+        var arcToParentRadians = 0;
+        var parentRadians = (parentPolygon !== null && this.fixed === true) ? parentPolygon.state.totalAngle : 0;
+        var radiusRelative = 0;
+        var parentCentreX = this.state.centre.x;
+        var parentCentreY = this.state.centre.y;
+        if (parentPolygon !== null) {
+            this.parent = parentPolygon;
+            parentCentreX = parentPolygon.state.centre.x;
+            parentCentreY = parentPolygon.state.centre.y;
+            // calculate parent centre contact point
+            var parentSAS = this.getValuesFromSAS(parentPolygon.getRadius(), // side b
+            (parentPolygon.getOuterAngle() / 2), // angle A
+            this.getDistanceFromParentCornerToContact(parentPolygon) // side c
+            );
+            var parentCentreToContactPoint = parentSAS.a;
+            var angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
+            var angleRelativeToParent = this.getCornersPassed(parentPolygon) * parentPolygon.getInnerAngle();
+            var contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
+            var contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
+            // TODO : correct logic
+            var childCentreToContactPoint = this.getRadius();
+            var parentSasB = 0;
+            if (this.getDistanceFromChildCornerToContact(parentPolygon) !== 0) {
+                // calculate child centre contact point
+                var childSAS = this.getValuesFromSAS(this.getRadius(), // side b
+                (this.getOuterAngle() / 2), // angle A
+                this.getDistanceFromChildCornerToContact(parentPolygon) // side c
+                );
+                childCentreToContactPoint = childSAS.a;
+                parentSasB = childSAS.B;
+            }
+            // TODO: calculate centre relative to parent
+            var relativeAngle = (
+            // TODO: this calc might be wrong
+            ((this.state.totalAngle - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle())) % this.getRadiansPerFace()) +
+                parentSAS.B +
+                parentSasB);
+            var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
+            relativeAngle, // angle A
+            childCentreToContactPoint // side c
+            );
+            radiusRelative = relativeSAS.a;
+            arcToParentRadians = relativeSAS.C;
+            this.state.contactPoint.x = contactPointX;
+            this.state.contactPoint.y = contactPointY;
+        }
+        this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
+        this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
+        // New x1 & y1 to reflect change in radians
+        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
+        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
+    };
+    Polygon.prototype.calculateAngle = function () {
+        this.state.previousState.totalAngle = this.state.totalAngle;
+        if (this.clockwise === true) {
+            this.state.totalAngle += this.getStepRadians();
+        }
+        else {
+            this.state.totalAngle -= this.getStepRadians();
+        }
+    };
+    Polygon.prototype.savePreviousState = function () {
+        this.state.previousState = cloneDeep(this.state);
+        delete this.state.previousState.previousState;
+    };
+    Polygon.prototype.saveInitialState = function () {
+        this.state.initialState = cloneDeep(this.state);
+    };
+    Polygon.prototype.getStepRadians = function () {
+        var stepRadian = 0;
+        if (this.steps > 0) {
+            stepRadian = (Math.PI * 2) / this.steps;
+        }
+        return stepRadian;
+    };
+    Polygon.prototype.getStepCount = function () {
+        var stepCount = 0;
+        if (this.steps > 0) {
+            stepCount = this.state.totalAngle / this.getStepRadians();
+        }
+        return stepCount;
+    };
+    Polygon.prototype.reset = function () {
+        this.state = cloneDeep(this.state.initialState);
+        // Create a new initial state object
+        this.saveInitialState();
+    };
+    Polygon.prototype.addBrush = function (brush) {
+        this.brushes.push(brush);
+    };
+    Polygon.prototype.getBrushes = function () {
+        return this.brushes;
+    };
+    Polygon.prototype.getRadius = function () {
+        return this.faceWidth / (2 * Math.sin(Math.PI / this.faces));
+    };
+    Polygon.prototype.getInRadius = function () {
+        return this.faceWidth / (2 * Math.tan(Math.PI / this.faces));
+    };
+    Polygon.prototype.getInnerAngle = function () {
+        return (2 * Math.PI) / this.faces;
+    };
+    Polygon.prototype.getOuterAngle = function () {
+        return Math.PI - this.getInnerAngle();
+    };
+    Polygon.prototype.getExternalAngle = function () {
+        return this.getInnerAngle();
+    };
+    Polygon.prototype.getRadiansPerFace = function () {
+        return this.getInnerAngle();
+    };
+    Polygon.prototype.getFacesPerParentFace = function (parentPolygon) {
+        return Math.ceil(parentPolygon.faceWidth / this.faceWidth);
+    };
+    Polygon.prototype.getRadiansPerParentFace = function (parentPolygon) {
+        return this.getInnerAngle() * this.getFacesPerParentFace(parentPolygon);
+    };
+    Polygon.prototype.getOffsetRadians = function (parentPolygon) {
+        // The angle between the active parent face and active child face
+        var initialAngle = 0;
+        if (this.faces % 2 !== 0) {
+            initialAngle = (Math.PI - parentPolygon.getOuterAngle()) / 2;
+        }
+        else {
+            initialAngle = ((Math.PI * 2) - this.getOuterAngle() + parentPolygon.getOuterAngle()) / 2;
+        }
+        return this.getExternalAngle() - initialAngle;
+    };
+    Polygon.prototype.getOffsetDistance = function () {
+        var offset = 0;
+        if (this.faces % 2 !== 0) {
+            offset = this.faceWidth / 2;
+        }
+        return offset;
+    };
+    Polygon.prototype.getCornersPassed = function (parentPolygon) {
+        var offset = this.getOffsetRadians(parentPolygon);
+        return Math.floor((this.state.totalAngle + offset) / (this.getRadiansPerParentFace(parentPolygon) + parentPolygon.getExternalAngle()));
+    };
+    Polygon.prototype.isOnCorner = function (parentPolygon) {
+        var offset = this.getOffsetRadians(parentPolygon);
+        var baseValue = this.getRadiansPerParentFace(parentPolygon) - offset;
+        var minRadians = baseValue + (this.getRadiansPerParentFace(parentPolygon) * this.getCornersPassed(parentPolygon));
+        var maxRadians = minRadians + parentPolygon.getExternalAngle();
+        return (this.state.totalAngle > minRadians && this.state.totalAngle < maxRadians);
+    };
+    Polygon.prototype.getDistanceFromOrigin = function (parentPolygon) {
+        var offsetRadians = this.getOffsetRadians(parentPolygon);
+        var offsetDistance = this.getOffsetDistance();
+        var distance;
+        if (this.isOnCorner(parentPolygon)) {
+            distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
+        }
+        else {
+            var flattenedTotalAngle = (this.state.totalAngle + offsetRadians) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle());
+            distance = (Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth) - offsetDistance;
+        }
+        return distance > 0 ? distance : 0;
+    };
+    Polygon.prototype.getDistanceFromParentCornerToContact = function (parentPolygon) {
+        return this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;
+    };
+    Polygon.prototype.getDistanceFromChildCornerToContact = function (parentPolygon) {
+        return this.getDistanceFromOrigin(parentPolygon) % this.faceWidth;
+    };
+    // Calculate values of a triangle where we know two sides and the angle between them
+    Polygon.prototype.getValuesFromSAS = function (sideB, angleA, sideC) {
+        var sideA; // a
+        var angleB; // B
+        var angleC; // C
+        // a^2 = b^2 + c^2 − 2bc cosA
+        sideA = Math.sqrt(Math.pow(sideB, 2) + Math.pow(sideC, 2) - (2 * sideB * sideC * Math.cos(angleA)));
+        var smallAngle = Math.asin((Math.sin(angleA) * Math.min(sideB, sideC)) / sideA);
+        var largeAngle = Math.PI - smallAngle;
+        if (sideB < sideC) {
+            angleB = smallAngle;
+            angleC = largeAngle;
+        }
+        else {
+            angleC = smallAngle;
+            angleB = largeAngle;
+        }
+        var polygonSas = new PolygonSas();
+        polygonSas.a = sideA;
+        polygonSas.b = sideB;
+        polygonSas.c = sideC;
+        polygonSas.A = angleA;
+        polygonSas.B = angleB;
+        polygonSas.C = angleC;
+        return polygonSas;
+    };
+    return Polygon;
+}(structure_1.EventEmitter));
+exports.Polygon = Polygon;
+var PolygonState = /** @class */ (function () {
+    function PolygonState() {
+        this.centre = new PolygonCenterPosition();
+        this.drawPoint = new PolygonDrawPosition();
+        this.contactPoint = new PolygonContactPosition();
+        this.initialState = Object.create(this);
+        this.previousState = null;
+        this.totalAngle = 0;
+    }
+    PolygonState.prototype.getAngle = function () {
+        return Math.atan2((this.drawPoint.y - this.centre.y), // Delta Y
+        (this.drawPoint.x - this.centre.x) // Delta X
+        );
+    };
+    return PolygonState;
+}());
+exports.PolygonState = PolygonState;
+var PolygonCenterPosition = /** @class */ (function () {
+    function PolygonCenterPosition() {
+        this.x = 0;
+        this.y = 0;
+    }
+    return PolygonCenterPosition;
+}());
+exports.PolygonCenterPosition = PolygonCenterPosition;
+var PolygonDrawPosition = /** @class */ (function () {
+    function PolygonDrawPosition() {
+    }
+    return PolygonDrawPosition;
+}());
+exports.PolygonDrawPosition = PolygonDrawPosition;
+var PolygonContactPosition = /** @class */ (function () {
+    function PolygonContactPosition() {
+    }
+    return PolygonContactPosition;
+}());
+var PolygonSas = /** @class */ (function () {
+    function PolygonSas() {
+    }
+    return PolygonSas;
+}());
+
+},{"../structure":28,"lodash.clonedeep":1}],23:[function(require,module,exports){
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = require("./circle");
 var circ_1 = require("./circ");
@@ -3805,18 +4107,21 @@ var Serializer = /** @class */ (function () {
 }());
 exports.default = Serializer;
 
-},{"./brushes":4,"./circ":5,"./circle":6}],23:[function(require,module,exports){
+},{"./brushes":4,"./circ":5,"./circle":6}],24:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circ_1 = require("./circ");
 var circle_1 = require("./circle");
 var brushes_1 = require("./brushes");
+var polygon_1 = require("./polygon");
 var BlueprintStore = /** @class */ (function () {
     function BlueprintStore() {
         this.blueprintsStore = {
             'twoCircles': this.makeTwoCircles,
             'threeCircles': this.makeThreeCircles,
             'fourCircles': this.makeFourCircles,
+            'twoSquares': this.makeTwoSquares,
+            'twoPolygons': this.makeTwoPolygons,
         };
         this.name = 'Blueprints';
     }
@@ -3920,11 +4225,79 @@ var BlueprintStore = /** @class */ (function () {
         circ.addShape(circle3);
         return circ;
     };
+    BlueprintStore.prototype.makeTwoSquares = function () {
+        var circ = new circ_1.Circ();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#1b5eec';
+        var square0 = new polygon_1.Polygon();
+        square0.steps = 1000;
+        square0.outside = true;
+        square0.fixed = true;
+        square0.clockwise = false;
+        square0.stepMod = 0;
+        square0.startAngle = 0;
+        square0.faces = 4;
+        square0.faceWidth = 200;
+        var square1 = new polygon_1.Polygon();
+        square1.steps = 1000;
+        square1.outside = true;
+        square1.fixed = true;
+        square1.clockwise = false;
+        square1.stepMod = 0;
+        square1.startAngle = 0;
+        square1.faces = 4;
+        square1.faceWidth = 75;
+        var circle1Brush = new brushes_1.Brush();
+        circle1Brush.color = '#FFFFFF';
+        circle1Brush.degrees = 0;
+        circle1Brush.link = false;
+        circle1Brush.offset = 0;
+        circle1Brush.point = 0.5;
+        square0.addBrush(circle1Brush);
+        circ.addShape(square0);
+        circ.addShape(square1);
+        return circ;
+    };
+    BlueprintStore.prototype.makeTwoPolygons = function () {
+        var circ = new circ_1.Circ();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#1b5eec';
+        var poly0 = new polygon_1.Polygon();
+        poly0.steps = 0;
+        poly0.outside = true;
+        poly0.fixed = true;
+        poly0.clockwise = true;
+        poly0.stepMod = 0;
+        poly0.startAngle = 0;
+        poly0.faces = 5;
+        poly0.faceWidth = 200;
+        var poly1 = new polygon_1.Polygon();
+        poly1.steps = 0;
+        poly1.outside = true;
+        poly1.fixed = true;
+        poly1.clockwise = true;
+        poly1.stepMod = 0;
+        poly1.startAngle = 0;
+        poly1.faces = 5;
+        poly1.faceWidth = 75;
+        var circle1Brush = new brushes_1.Brush();
+        circle1Brush.color = '#FFFFFF';
+        circle1Brush.degrees = 0;
+        circle1Brush.link = false;
+        circle1Brush.offset = 0;
+        circle1Brush.point = 0.5;
+        poly0.addBrush(circle1Brush);
+        circ.addShape(poly0);
+        circ.addShape(poly1);
+        return circ;
+    };
     return BlueprintStore;
 }());
 exports.BlueprintStore = BlueprintStore;
 
-},{"./brushes":4,"./circ":5,"./circle":6}],24:[function(require,module,exports){
+},{"./brushes":4,"./circ":5,"./circle":6,"./polygon":22}],25:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4027,7 +4400,7 @@ var CloudStorage = /** @class */ (function () {
 }());
 exports.default = CloudStorage;
 
-},{"./serializer":22}],25:[function(require,module,exports){
+},{"./serializer":23}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var serializer_1 = require("./serializer");
@@ -4088,7 +4461,7 @@ var LocalStorage = /** @class */ (function () {
 }());
 exports.default = LocalStorage;
 
-},{"./serializer":22}],26:[function(require,module,exports){
+},{"./serializer":23}],27:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -4177,7 +4550,7 @@ var StoreRandom = /** @class */ (function () {
 }());
 exports.StoreRandom = StoreRandom;
 
-},{"./serializer":22}],27:[function(require,module,exports){
+},{"./serializer":23}],28:[function(require,module,exports){
 "use strict";
 /** Data **/
 Object.defineProperty(exports, "__esModule", { value: true });

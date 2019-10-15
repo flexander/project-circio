@@ -117,8 +117,8 @@ engine.addImportCallback((circ: CircInterface) => {
     });
 });
 
-storageRandom.get()
+blueprintStorage.get('twoPolygons')
     .then((circ: CircInterface) => {
         engine.import(circ);
-        engine.stepFast(circ.stepsToComplete);
+        engine.play();
     });
