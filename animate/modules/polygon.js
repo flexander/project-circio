@@ -34,6 +34,7 @@ var Polygon = /** @class */ (function (_super) {
         var parentCentreX = this.state.centre.x;
         var parentCentreY = this.state.centre.y;
         if (parentPolygon !== null) {
+            this.parent = parentPolygon;
             parentCentreX = parentPolygon.state.centre.x;
             parentCentreY = parentPolygon.state.centre.y;
             // calculate parent centre contact point
@@ -43,8 +44,9 @@ var Polygon = /** @class */ (function (_super) {
             );
             var parentCentreToContactPoint = parentSAS.a;
             var angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
-            var contactPointX = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreX;
-            var contactPointY = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreY;
+            var angleRelativeToParent = this.getCornersPassed(parentPolygon) * parentPolygon.getInnerAngle();
+            var contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
+            var contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
             // TODO : correct logic
             var childCentreToContactPoint = this.getRadius();
             var parentSasB = 0;
@@ -147,10 +149,10 @@ var Polygon = /** @class */ (function (_super) {
         // The angle between the active parent face and active child face
         var initialAngle = 0;
         if (this.faces % 2 !== 0) {
-            initialAngle = (180 - parentPolygon.getOuterAngle()) / 2;
+            initialAngle = (Math.PI - parentPolygon.getOuterAngle()) / 2;
         }
         else {
-            initialAngle = (360 - this.getOuterAngle() + parentPolygon.getOuterAngle()) / 2;
+            initialAngle = ((Math.PI * 2) - this.getOuterAngle() + parentPolygon.getOuterAngle()) / 2;
         }
         return this.getExternalAngle() - initialAngle;
     };
@@ -183,7 +185,7 @@ var Polygon = /** @class */ (function (_super) {
             var flattenedTotalAngle = (this.state.totalAngle + offsetRadians) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle());
             distance = (Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth) - offsetDistance;
         }
-        return distance;
+        return distance > 0 ? distance : 0;
     };
     Polygon.prototype.getDistanceFromParentCornerToContact = function (parentPolygon) {
         return this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;

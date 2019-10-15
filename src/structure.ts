@@ -67,6 +67,7 @@ interface CircleInterface extends ShapeInterface, EventEmitterInterface {
 interface PolygonInterface extends ShapeInterface, EventEmitterInterface {
     faces: number;
     faceWidth: number;
+    parent?: PolygonInterface;
 
     getRadius(): number;
     getInnerAngle(): number;

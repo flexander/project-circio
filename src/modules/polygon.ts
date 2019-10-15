@@ -25,6 +25,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
     faces: number;
     faceWidth: number;
     modified: boolean;
+    parent?: PolygonInterface;
 
     constructor() {
         super();
@@ -44,6 +45,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
         let parentCentreY = this.state.centre.y;
 
         if (parentPolygon !== null) {
+            this.parent = parentPolygon;
             parentCentreX = parentPolygon.state.centre.x;
             parentCentreY = parentPolygon.state.centre.y;
 
@@ -56,8 +58,9 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
             const parentCentreToContactPoint = parentSAS.a;
             const angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
-            const contactPointX = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreX;
-            const contactPointY = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreY;
+            const angleRelativeToParent = this.getCornersPassed(parentPolygon) * parentPolygon.getInnerAngle();
+            const contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
+            const contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
 
             // TODO : correct logic
             let childCentreToContactPoint = this.getRadius();
@@ -190,9 +193,9 @@ class Polygon extends EventEmitter implements PolygonInterface {
         let initialAngle = 0;
 
         if (this.faces % 2 !== 0) {
-            initialAngle = (180 - parentPolygon.getOuterAngle()) / 2;
+            initialAngle = (Math.PI - parentPolygon.getOuterAngle()) / 2;
         } else {
-            initialAngle = (360 - this.getOuterAngle() + parentPolygon.getOuterAngle()) / 2;
+            initialAngle = ((Math.PI * 2) - this.getOuterAngle() + parentPolygon.getOuterAngle()) / 2;
         }
 
         return this.getExternalAngle() - initialAngle;
@@ -235,7 +238,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
             distance = (Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth) - offsetDistance;
         }
 
-        return distance;
+        return distance > 0 ? distance: 0;
     }
 
     getDistanceFromParentCornerToContact(parentPolygon: PolygonInterface): number {

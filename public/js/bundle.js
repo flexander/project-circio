@@ -3495,19 +3495,29 @@ var GuidePainter = /** @class */ (function () {
     GuidePainter.prototype.drawPolygon = function (polygon) {
         this.canvasContext.strokeStyle = this.guideColor;
         this.canvasContext.beginPath();
-        // TODO: Draw polygon
         this.canvasContext.moveTo(polygon.state.centre.x + polygon.faceWidth * Math.cos(polygon.state.totalAngle), polygon.state.centre.y + polygon.faceWidth * Math.sin(polygon.state.totalAngle));
         for (var i = 1; i <= polygon.faces; i += 1) {
             this.canvasContext.lineTo(polygon.state.centre.x + polygon.faceWidth * Math.cos((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.faceWidth * Math.sin((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)));
         }
         this.canvasContext.stroke();
-        this.drawContactPoint(polygon);
+        this.drawPoint(polygon.state.contactPoint);
+        this.drawPoint(polygon.state.centre);
+        this.drawPointToPoint(polygon.state.centre, polygon.state.contactPoint);
+        if (typeof polygon.parent !== "undefined") {
+            this.drawPointToPoint(polygon.parent.state.centre, polygon.state.contactPoint);
+            this.drawPointToPoint(polygon.parent.state.centre, polygon.state.centre);
+        }
     };
-    GuidePainter.prototype.drawContactPoint = function (polygon) {
+    GuidePainter.prototype.drawPoint = function (point) {
         this.canvasContext.beginPath();
         this.canvasContext.fillStyle = this.guideColor;
-        this.canvasContext.arc(polygon.state.contactPoint.x, polygon.state.contactPoint.y, Math.max(2), 0, 2 * Math.PI);
+        this.canvasContext.arc(point.x, point.y, Math.max(2), 0, 2 * Math.PI);
         this.canvasContext.fill();
+    };
+    GuidePainter.prototype.drawPointToPoint = function (pointA, pointB) {
+        this.canvasContext.moveTo(pointA.x, pointA.y);
+        this.canvasContext.lineTo(pointB.x, pointB.y);
+        this.canvasContext.stroke();
     };
     GuidePainter.prototype.drawRotationIndicator = function (circle) {
         this.canvasContext.fillStyle = this.guideColor;
@@ -3649,6 +3659,7 @@ var Polygon = /** @class */ (function (_super) {
         var parentCentreX = this.state.centre.x;
         var parentCentreY = this.state.centre.y;
         if (parentPolygon !== null) {
+            this.parent = parentPolygon;
             parentCentreX = parentPolygon.state.centre.x;
             parentCentreY = parentPolygon.state.centre.y;
             // calculate parent centre contact point
@@ -3658,8 +3669,9 @@ var Polygon = /** @class */ (function (_super) {
             );
             var parentCentreToContactPoint = parentSAS.a;
             var angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
-            var contactPointX = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreX;
-            var contactPointY = parentCentreToContactPoint * Math.cos(angleFromOrigin) + parentCentreY;
+            var angleRelativeToParent = this.getCornersPassed(parentPolygon) * parentPolygon.getInnerAngle();
+            var contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
+            var contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
             // TODO : correct logic
             var childCentreToContactPoint = this.getRadius();
             var parentSasB = 0;
@@ -3762,10 +3774,10 @@ var Polygon = /** @class */ (function (_super) {
         // The angle between the active parent face and active child face
         var initialAngle = 0;
         if (this.faces % 2 !== 0) {
-            initialAngle = (180 - parentPolygon.getOuterAngle()) / 2;
+            initialAngle = (Math.PI - parentPolygon.getOuterAngle()) / 2;
         }
         else {
-            initialAngle = (360 - this.getOuterAngle() + parentPolygon.getOuterAngle()) / 2;
+            initialAngle = ((Math.PI * 2) - this.getOuterAngle() + parentPolygon.getOuterAngle()) / 2;
         }
         return this.getExternalAngle() - initialAngle;
     };
@@ -3798,7 +3810,7 @@ var Polygon = /** @class */ (function (_super) {
             var flattenedTotalAngle = (this.state.totalAngle + offsetRadians) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle());
             distance = (Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth) - offsetDistance;
         }
-        return distance;
+        return distance > 0 ? distance : 0;
     };
     Polygon.prototype.getDistanceFromParentCornerToContact = function (parentPolygon) {
         return this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;
@@ -4154,7 +4166,7 @@ var BlueprintStore = /** @class */ (function () {
         poly0.faces = 5;
         poly0.faceWidth = 200;
         var poly1 = new polygon_1.Polygon();
-        poly1.steps = 16;
+        poly1.steps = 160;
         poly1.outside = true;
         poly1.fixed = true;
         poly1.clockwise = true;
