@@ -10,7 +10,8 @@ body {
   right: 0;
   top: 0;
   height: 100vh;
-  overflow-y: auto; }
+  overflow-y: auto;
+  background-color: #FFFFFF; }
   .controls-container .controls {
     padding-top: 60px; }
   .controls-container .actions {

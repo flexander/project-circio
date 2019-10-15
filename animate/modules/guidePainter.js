@@ -4,7 +4,6 @@ var circle_1 = require("./circle");
 var polygon_1 = require("./polygon");
 var GuidePainter = /** @class */ (function () {
     function GuidePainter(canvasContext) {
-        this.canvasCenter = new CanvasCenter();
         this.visible = true;
         this.guideColor = '#FFF';
         this.canvasContext = canvasContext;
@@ -23,21 +22,13 @@ var GuidePainter = /** @class */ (function () {
     GuidePainter.prototype.clear = function () {
         this.canvasContext.clearRect(-this.canvasContext.canvas.width / 2, -this.canvasContext.canvas.height / 2, this.canvasContext.canvas.width, this.canvasContext.canvas.height);
     };
-    GuidePainter.prototype.centerCanvas = function (circ) {
-        if (this.canvasCenter.x !== (circ.width / 2)) {
-            this.canvasContext.translate(-this.canvasCenter.x, 0);
-            this.canvasContext.translate((circ.width / 2), 0);
-            this.canvasCenter.x = (circ.width / 2);
-        }
-        if (this.canvasCenter.y !== (circ.height / 2)) {
-            this.canvasContext.translate(0, -this.canvasCenter.y);
-            this.canvasContext.translate(0, (circ.height / 2));
-            this.canvasCenter.y = (circ.height / 2);
-        }
+    GuidePainter.prototype.centerCanvas = function () {
+        this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+        this.canvasContext.translate((this.canvasContext.canvas.width / 2), (this.canvasContext.canvas.height / 2));
     };
     GuidePainter.prototype.draw = function (circ) {
         var _this = this;
-        this.centerCanvas(circ);
+        this.centerCanvas();
         this.clear();
         this.guideColor = '#' + this.generateContrastingColor(circ.backgroundFill);
         circ.getShapes().forEach(function (shape) {
@@ -127,10 +118,3 @@ var GuidePainter = /** @class */ (function () {
     return GuidePainter;
 }());
 exports.default = GuidePainter;
-var CanvasCenter = /** @class */ (function () {
-    function CanvasCenter() {
-        this.x = 0;
-        this.y = 0;
-    }
-    return CanvasCenter;
-}());

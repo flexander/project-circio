@@ -69,11 +69,16 @@ var Circle = /** @class */ (function (_super) {
         }
     };
     Circle.prototype.savePreviousState = function () {
-        this.state.previousState = cloneDeep(this.state);
-        delete this.state.previousState.previousState;
+        var previousState = cloneDeep(this.state);
+        delete previousState.initialState;
+        delete previousState.previousState;
+        this.state.previousState = previousState;
     };
     Circle.prototype.saveInitialState = function () {
-        this.state.initialState = cloneDeep(this.state);
+        var initialState = cloneDeep(this.state);
+        delete initialState.initialState;
+        delete initialState.previousState;
+        this.state.initialState = initialState;
     };
     Circle.prototype.getArc = function () {
         if (this.steps === 0) {
@@ -204,11 +209,31 @@ var Circle = /** @class */ (function (_super) {
     return Circle;
 }(structure_1.EventEmitter));
 exports.Circle = Circle;
-var CircleConfig = /** @class */ (function () {
+var CircleConfigDefault = /** @class */ (function () {
+    function CircleConfigDefault() {
+        var _newTarget = this.constructor;
+        this.steps = 500;
+        this.outside = true;
+        this.fixed = true;
+        this.clockwise = true;
+        this.stepMod = 0;
+        this.startAngle = 0;
+        this.isRoot = false;
+        this.radius = 100;
+        if (_newTarget === CircleConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+    return CircleConfigDefault;
+}());
+exports.CircleConfigDefault = CircleConfigDefault;
+var CircleConfig = /** @class */ (function (_super) {
+    __extends(CircleConfig, _super);
     function CircleConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return CircleConfig;
-}());
+}(CircleConfigDefault));
 exports.CircleConfig = CircleConfig;
 var CircleState = /** @class */ (function () {
     function CircleState() {

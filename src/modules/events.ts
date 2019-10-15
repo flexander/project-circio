@@ -19,26 +19,6 @@ class AttributeChangedEvent implements AttributeChangedEventInterface {
 
 }
 
-class EnginePauseEvent implements EventInterface {
-    getName(): string {
-        return "pause";
-    }
-
-    getContext(): any[] {
-        return [];
-    }
-}
-
-class EnginePlayEvent implements EventInterface {
-    getName(): string {
-        return "play";
-    }
-
-    getContext(): any[] {
-        return [];
-    }
-}
-
 class ShapeAddEvent implements EventInterface {
     protected shape: ShapeInterface;
 
@@ -73,8 +53,6 @@ class ShapeDeleteEvent implements EventInterface {
 
 export {
     AttributeChangedEvent,
-    EnginePauseEvent,
-    EnginePlayEvent,
     ShapeAddEvent,
     ShapeDeleteEvent,
 }

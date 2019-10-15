@@ -89,17 +89,6 @@ var Circ = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Circ.prototype, "stepsToComplete", {
-        get: function () {
-            return this.config.stepsToComplete;
-        },
-        set: function (stepsToComplete) {
-            this.config.stepsToComplete = stepsToComplete;
-            this.dispatchEvent(new events_1.AttributeChangedEvent('stepsToComplete', this.stepsToComplete));
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(Circ.prototype, "modified", {
         get: function () {
             return this.config.modified;
@@ -107,6 +96,52 @@ var Circ = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Circ.prototype, "stepsToComplete", {
+        get: function () {
+            if (this.getShapes().length !== 3) {
+                throw 'currently only works for 3 shape circs';
+            }
+            if (this.getShapes()[0].steps !== 0) {
+                throw 'currently only works for motionless root shape';
+            }
+            var pr = this.getShapes()[0].radius;
+            var cr = this.getShapes()[1].radius;
+            var ccr = this.getShapes()[2].radius;
+            var ps = this.getShapes()[0].steps;
+            var cs = this.getShapes()[1].steps;
+            var ccs = this.getShapes()[2].steps;
+            var prCrRatio = pr / cr;
+            var CrCcrRatio = cr / ccr;
+            var multiple = null;
+            for (var i = 1; i < 20; i++) {
+                if ((prCrRatio * i) % 1 === 0 && (CrCcrRatio * i) % 1 === 0) {
+                    multiple = i;
+                    break;
+                }
+            }
+            if (multiple == null) {
+                return Infinity;
+            }
+            var childStepsToComplete = cs * prCrRatio * multiple;
+            var childchildStepsToComplete = ccs * CrCcrRatio * multiple;
+            return this.lcm(childStepsToComplete, childchildStepsToComplete);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Circ.prototype.lcm = function (x, y) {
+        return Math.abs((x * y) / this.gcd(x, y));
+    };
+    Circ.prototype.gcd = function (x, y) {
+        x = Math.abs(x);
+        y = Math.abs(y);
+        while (y) {
+            var t = y;
+            y = x % y;
+            x = t;
+        }
+        return x;
+    };
     return Circ;
 }(structure_1.EventEmitter));
 exports.Circ = Circ;

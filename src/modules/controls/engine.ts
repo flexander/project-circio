@@ -1,12 +1,13 @@
 import {
     BrushInterface,
-    CircControlInterface,
+    CircControlInterface, CircInterface,
     ControlInterface,
     EngineControlInterface,
     EngineInterface,
     QuickControlInterface
 } from "../../structure";
 import {ControlModes} from "./mode";
+import {StoreRandom} from "../storeRandom";
 
 export default class EngineControl implements EngineControlInterface, QuickControlInterface {
     protected circControl: CircControlInterface;
@@ -96,7 +97,35 @@ export default class EngineControl implements EngineControlInterface, QuickContr
             button.innerText = this.getPlayButtonLabel();
         });
 
+        this.engine.addEventListener('stepJump.start', _ => {
+            button.setAttribute('disabled', 'disabled');
+        });
+
+        this.engine.addEventListener('stepJump.end', _ => {
+            button.removeAttribute('disabled');
+        });
+
         return playFragment;
+    }
+
+    protected makeRandomFragment(): DocumentFragment {
+        const html = `<button>Random</button>`;
+
+        const randomFragment = document.createRange().createContextualFragment(html);
+        const button = randomFragment.querySelector('button');
+
+        button.addEventListener('click', e => {
+            const randomStore = new StoreRandom();
+
+            randomStore.get()
+                .then((circ: CircInterface) => {
+                    this.engine.pause();
+                    this.engine.import(circ);
+                    this.engine.stepFast(circ.stepsToComplete)
+                });
+        });
+
+        return randomFragment;
     }
 
     protected makeStepJumpFragment(): DocumentFragment {
@@ -106,11 +135,15 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         const stepJumpButton = stepJumpFragment.querySelector('button.stepThousand');
 
         stepJumpButton.addEventListener('click', e => {
+            this.engine.stepFast(1000);
+        });
+
+        this.engine.addEventListener('stepJump.start', _ => {
             stepJumpButton.setAttribute('disabled', 'disabled');
-            this.engine.stepFast(1000)
-                .then(_ => {
-                    stepJumpButton.removeAttribute('disabled');
-                });
+        });
+
+        this.engine.addEventListener('stepJump.end', _ => {
+            stepJumpButton.removeAttribute('disabled');
         });
 
         return stepJumpFragment;
@@ -128,11 +161,15 @@ export default class EngineControl implements EngineControlInterface, QuickContr
                 return;
             }
 
+            this.engine.stepFast(stepsToRun);
+        });
+
+        this.engine.addEventListener('stepJump.start', _ => {
             stepJumpByButton.setAttribute('disabled', 'disabled');
-            this.engine.stepFast(stepsToRun)
-                .then(_ => {
-                    stepJumpByButton.removeAttribute('disabled');
-                });
+        });
+
+        this.engine.addEventListener('stepJump.end', _ => {
+            stepJumpByButton.removeAttribute('disabled');
         });
 
         return stepJumpByFragment;
@@ -172,6 +209,11 @@ export default class EngineControl implements EngineControlInterface, QuickContr
             new class implements ControlInterface {
                 render(): DocumentFragment {
                     return self.makeResetFragment();
+                }
+            },
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeRandomFragment();
                 }
             },
         ];

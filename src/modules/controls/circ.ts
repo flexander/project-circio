@@ -11,12 +11,11 @@ import ControlPanel from "./panel";
 import CircleControl from "./shapes/circle";
 import {ControlModes} from "./mode";
 import {Brush} from "../brushes";
+import ShapeControl from "./shape";
 
 export default class CircControl implements CircControlInterface {
     protected circ: CircInterface;
-    protected shapeControls: ShapeControlInterface[] = [];
     protected panel: ControlPanelInterface;
-    protected simplified: boolean = true;
     protected mode: string;
 
     constructor(circ: CircInterface, mode: string = ControlModes.MODE_DEFAULT) {
@@ -33,8 +32,7 @@ export default class CircControl implements CircControlInterface {
                 if (shape instanceof Circle) {
                     shapeControl = new CircleControl(shape, this.mode);
                 }  else {
-                    // TODO: add polygon controls
-                    return;
+                    shapeControl = new ShapeControl(shape, this.mode);
                 }
 
                 this.panel.addControl(shapeControl)
@@ -56,13 +54,6 @@ export default class CircControl implements CircControlInterface {
 
                 addShapeFragment.querySelector('button').addEventListener('click', e => {
                     const newShape = new Circle();
-                    newShape.steps = 500;
-                    newShape.outside = true;
-                    newShape.fixed = true;
-                    newShape.clockwise = true;
-                    newShape.stepMod = 0;
-                    newShape.startAngle = 0;
-                    newShape.radius = 100;
 
                     newShape.addBrush(new Brush());
 

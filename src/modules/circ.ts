@@ -1,4 +1,11 @@
-import {CircConfigInterface, CircInterface, CircStateInterface, EventEmitter, ShapeInterface} from "../structure";
+import {
+    CircConfigInterface,
+    CircInterface,
+    CircleInterface,
+    CircStateInterface,
+    EventEmitter,
+    ShapeInterface
+} from "../structure";
 import {AttributeChangedEvent, ShapeAddEvent, ShapeDeleteEvent} from "./events";
 
 class Circ extends EventEmitter implements CircInterface {
@@ -68,17 +75,61 @@ class Circ extends EventEmitter implements CircInterface {
         this.dispatchEvent(new AttributeChangedEvent('backgroundFill', this.backgroundFill));
     }
 
-    get stepsToComplete(): number {
-        return this.config.stepsToComplete;
-    }
-
-    set stepsToComplete(stepsToComplete: number) {
-        this.config.stepsToComplete = stepsToComplete;
-        this.dispatchEvent(new AttributeChangedEvent('stepsToComplete', this.stepsToComplete));
-    }
-
     get modified(): boolean {
         return this.config.modified;
+    }
+
+    get stepsToComplete(): number {
+        if (this.getShapes().length !== 3) {
+            throw 'currently only works for 3 shape circs'
+        }
+
+        if (this.getShapes()[0].steps !== 0) {
+            throw 'currently only works for motionless root shape'
+        }
+
+        const pr = (this.getShapes()[0] as CircleInterface).radius;
+        const cr = (this.getShapes()[1] as CircleInterface).radius;
+        const ccr = (this.getShapes()[2] as CircleInterface).radius;
+
+        const ps = this.getShapes()[0].steps;
+        const cs = this.getShapes()[1].steps;
+        const ccs = this.getShapes()[2].steps;
+
+        const prCrRatio = pr / cr;
+        const CrCcrRatio = cr / ccr;
+        let multiple = null;
+
+        for (let i = 1; i < 20; i++) {
+            if ((prCrRatio * i) % 1 === 0 && (CrCcrRatio * i) % 1 === 0) {
+                multiple = i;
+                break;
+            }
+        }
+
+        if (multiple == null) {
+            return Infinity;
+        }
+
+        const childStepsToComplete = cs*prCrRatio*multiple;
+        const childchildStepsToComplete = ccs*CrCcrRatio*multiple;
+
+        return this.lcm(childStepsToComplete,childchildStepsToComplete);
+    }
+
+    protected lcm(x, y) {
+        return Math.abs((x * y) / this.gcd(x, y));
+    }
+
+    protected gcd(x, y) {
+        x = Math.abs(x);
+        y = Math.abs(y);
+        while(y) {
+            var t = y;
+            y = x % y;
+            x = t;
+        }
+        return x;
     }
 }
 

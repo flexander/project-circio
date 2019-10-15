@@ -27,7 +27,7 @@ interface CircStateInterface {
     totalSteps: number;
 }
 
-interface ShapeInterface extends ShapeConfigInterface {
+interface ShapeInterface extends ShapeConfigInterface, EventEmitterInterface {
     id: number;
     state: ShapeStateInterface;
     calculatePosition(parentCircle: ShapeInterface|null): void;
@@ -60,7 +60,10 @@ interface ShapeStateInterface {
     getAngle(): number;
 }
 
-interface CircleInterface extends ShapeInterface, EventEmitterInterface {
+interface CircleInterface extends ShapeInterface, CircleConfigInterface, EventEmitterInterface {
+}
+
+interface CircleConfigInterface extends ShapeConfigInterface {
     radius: number;
 }
 
@@ -101,6 +104,7 @@ interface BrushConfigInterface {
 /** Engine **/
 
 interface EngineInterface extends EventEmitterInterface, EngineConfigInterface {
+    state: EngineStateInterface;
     import(circ: CircInterface): void;
     export(): CircInterface;
 
@@ -113,11 +117,16 @@ interface EngineInterface extends EventEmitterInterface, EngineConfigInterface {
     step(): void;
     reset(): void
     isPlaying(): boolean;
-    getRemainingStepsToRun(): number;
 }
 
 interface EngineConfigInterface {
     stepInterval: number;
+    stepsToRun: number;
+}
+
+interface EngineStateInterface {
+    totalStepsRun: number;
+    stepJumps: Promise<void>[];
 }
 
 
@@ -162,6 +171,10 @@ interface CircStoreInterface {
 interface SerializerInterface {
     serialize(circ: CircInterface): string;
     unserialize(circJson: string): CircInterface;
+}
+
+interface CircGenerator {
+    make(): Promise<CircInterface>;
 }
 
 /** Controls **/
@@ -253,15 +266,18 @@ export {
     CircInterface,
     CircStateInterface,
     CircConfigInterface,
+    CircGenerator,
     ShapeInterface,
     ShapeStateInterface,
     ShapeConfigInterface,
     CircleInterface,
     PolygonInterface,
+    CircleConfigInterface,
     BrushInterface,
     BrushConfigInterface,
     EngineInterface,
     EngineConfigInterface,
+    EngineStateInterface,
     PainterInterface,
     CircStoreInterface,
     CirclePainterInterface,

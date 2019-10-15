@@ -37,65 +37,51 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var serializer_1 = require("./serializer");
-var CloudStorage = /** @class */ (function () {
-    function CloudStorage() {
+var StoreRandom = /** @class */ (function () {
+    function StoreRandom() {
         this.serializer = new serializer_1.default();
-        this.apiUrl = 'https://circio.mountainofcode.co.uk/cloud/';
-        this.name = 'Cloud';
+        this.name = 'Randomiser';
+        this.apiUrl = 'https://circio.mountainofcode.co.uk/random/';
     }
-    CloudStorage.prototype.get = function (name) {
+    StoreRandom.prototype.get = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var response, circJsonString;
+            var response, circJsonString, circ;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=getByName&name=' + encodeURIComponent(name))];
+                    case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=get')];
                     case 1:
                         response = _a.sent();
                         return [4 /*yield*/, response.text()];
                     case 2:
                         circJsonString = _a.sent();
-                        return [2 /*return*/, this.serializer.unserialize(circJsonString)];
+                        circ = this.serializer.unserialize(circJsonString);
+                        circ.name = 'Random';
+                        return [2 /*return*/, circ];
                 }
             });
         });
     };
-    CloudStorage.prototype.getIndex = function (index) {
-        return __awaiter(this, void 0, void 0, function () {
-            var response, circJsonString;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=getByIndex&index=' + encodeURIComponent(index))];
-                    case 1:
-                        response = _a.sent();
-                        return [4 /*yield*/, response.text()];
-                    case 2:
-                        circJsonString = _a.sent();
-                        return [2 /*return*/, this.serializer.unserialize(circJsonString)];
-                }
-            });
-        });
+    StoreRandom.prototype.getIndex = function () {
+        return this.get();
     };
-    CloudStorage.prototype.list = function () {
+    StoreRandom.prototype.list = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            fetch(_this.apiUrl + '?action=list')
-                .then(function (response) {
-                response.json()
-                    .then(function (circJsonStrings) {
-                    var circs = circJsonStrings.map(function (circJsonString) {
-                        return _this.serializer.unserialize(circJsonString);
-                    });
-                    resolve(circs);
-                });
-            });
+            var circs = Promise.all([
+                _this.get(),
+                _this.get(),
+                _this.get(),
+                _this.get(),
+            ]);
+            resolve(circs);
         });
     };
-    CloudStorage.prototype.store = function (name, circ) {
-        var circJson = this.serializer.serialize(circ);
-        fetch(this.apiUrl, { method: 'POST', body: circJson });
+    StoreRandom.prototype.delete = function (name) {
+        throw new Error("Random Circs can't be deleted.");
     };
-    CloudStorage.prototype.delete = function (name) {
+    StoreRandom.prototype.store = function (name, circ) {
+        throw new Error("Random Circs can't be stored.");
     };
-    return CloudStorage;
+    return StoreRandom;
 }());
-exports.default = CloudStorage;
+exports.StoreRandom = StoreRandom;

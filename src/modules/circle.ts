@@ -1,9 +1,10 @@
 import '../structure';
 import {
     BrushInterface,
+    CircleConfigInterface,
     CircleInterface,
     EventEmitter,
-    PositionInterface, ShapeConfigInterface,
+    PositionInterface,
     ShapeStateInterface
 } from "../structure";
 import {AttributeChangedEvent} from "./events";
@@ -72,12 +73,19 @@ class Circle extends EventEmitter implements CircleInterface {
     }
 
     protected savePreviousState() {
-        this.state.previousState = cloneDeep(this.state);
-        delete this.state.previousState.previousState;
+        const previousState = cloneDeep(this.state);
+        delete previousState.initialState;
+        delete previousState.previousState;
+
+        this.state.previousState = previousState;
     }
 
     protected saveInitialState() {
-        this.state.initialState = cloneDeep(this.state);
+        const initialState = cloneDeep(this.state);
+        delete initialState.initialState;
+        delete initialState.previousState;
+
+        this.state.initialState = initialState;
     }
 
     protected getArc () {
@@ -198,23 +206,33 @@ class Circle extends EventEmitter implements CircleInterface {
     }
 }
 
-class CircleConfig implements ShapeConfigInterface {
-    steps: number;
-    outside: boolean;
-    fixed: boolean;
-    clockwise: boolean;
-    stepMod: number;
-    startAngle: number;
-    isRoot: boolean;
+class CircleConfigDefault implements CircleConfigInterface {
+    steps: number = 500;
+    outside: boolean = true;
+    fixed: boolean = true;
+    clockwise: boolean = true;
+    stepMod: number = 0;
+    startAngle: number = 0;
+    isRoot: boolean = false;
     modified: boolean;
-    radius: number;
+    radius: number = 100;
     faceWidth: number;
     faces: number;
+
+    constructor() {
+        if (new.target === CircleConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+}
+
+class CircleConfig extends CircleConfigDefault implements CircleConfigInterface {
 }
 
 class CircleState implements ShapeStateInterface {
     centre: PositionInterface = new CircleCenterPosition();
     drawPoint: PositionInterface = new CircleDrawPosition();
+    contactPoint: PositionInterface = new CircleDrawPosition();
     initialState: ShapeStateInterface = Object.create(this);
     previousState: ShapeStateInterface = null;
     totalAngle: number = 0;
@@ -242,5 +260,6 @@ export {
     CircleState,
     CircleCenterPosition,
     CircleConfig,
+    CircleConfigDefault,
     CircleDrawPosition,
 }

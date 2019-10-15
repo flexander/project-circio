@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Painter = /** @class */ (function () {
     function Painter(canvasContext) {
-        this.canvasCenter = new CanvasCenter();
         this.canvasContext = canvasContext;
     }
     Painter.prototype.clear = function () {
@@ -10,7 +9,7 @@ var Painter = /** @class */ (function () {
     };
     Painter.prototype.draw = function (circ) {
         var _this = this;
-        this.centerCanvas(circ);
+        this.centerCanvas();
         circ.getShapes().forEach(function (circle) {
             if (circle.getBrushes().length === 0) {
                 return;
@@ -18,17 +17,9 @@ var Painter = /** @class */ (function () {
             _this.drawPoints(circle);
         });
     };
-    Painter.prototype.centerCanvas = function (circ) {
-        if (this.canvasCenter.x !== (circ.width / 2)) {
-            this.canvasContext.translate(-this.canvasCenter.x, 0);
-            this.canvasContext.translate((circ.width / 2), 0);
-            this.canvasCenter.x = (circ.width / 2);
-        }
-        if (this.canvasCenter.y !== (circ.height / 2)) {
-            this.canvasContext.translate(0, -this.canvasCenter.y);
-            this.canvasContext.translate(0, (circ.height / 2));
-            this.canvasCenter.y = (circ.height / 2);
-        }
+    Painter.prototype.centerCanvas = function () {
+        this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+        this.canvasContext.translate((this.canvasContext.canvas.width / 2), (this.canvasContext.canvas.height / 2));
     };
     Painter.prototype.exportImageAsDataURL = function () {
         return "";
@@ -62,10 +53,3 @@ var Painter = /** @class */ (function () {
     return Painter;
 }());
 exports.default = Painter;
-var CanvasCenter = /** @class */ (function () {
-    function CanvasCenter() {
-        this.x = 0;
-        this.y = 0;
-    }
-    return CanvasCenter;
-}());
