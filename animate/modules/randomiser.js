@@ -57,11 +57,6 @@ var Randomiser = /** @class */ (function () {
         circle2.radius = ccr;
         circle1.outside = circle1.radius === circle2.radius ? true : this.getRandomBool();
         var brush = new brushes_1.Brush();
-        brush.color = '#FFFFFF';
-        brush.degrees = 0;
-        brush.link = true;
-        brush.offset = 0;
-        brush.point = 0.5;
         circle2.addBrush(brush);
         circ.addShape(circle);
         circ.addShape(circle1);

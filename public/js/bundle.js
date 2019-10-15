@@ -1906,11 +1906,12 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var structure_1 = require("../structure");
 var events_1 = require("./events");
+var cloneDeep = require('lodash.clonedeep');
 var Brush = /** @class */ (function (_super) {
     __extends(Brush, _super);
     function Brush() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.config = new BrushConfig();
+        _this.config = cloneDeep(new BrushConfigDefault());
         return _this;
     }
     Object.defineProperty(Brush.prototype, "color", {
@@ -2000,28 +2001,40 @@ var Brush = /** @class */ (function (_super) {
     return Brush;
 }(structure_1.EventEmitter));
 exports.Brush = Brush;
-var BrushConfig = /** @class */ (function () {
-    function BrushConfig() {
+var BrushConfigDefault = /** @class */ (function () {
+    function BrushConfigDefault() {
+        var _newTarget = this.constructor;
         this.color = '#FFFFFF';
-        this.transparency = 0;
         this.degrees = 0;
         this.draw = true;
         this.link = false;
         this.offset = 0;
         this.point = 0.5;
+        this.transparency = 0;
+        if (_newTarget === BrushConfigDefault) {
+            Object.freeze(this);
+        }
     }
-    Object.defineProperty(BrushConfig.prototype, "colorWithAlpha", {
+    Object.defineProperty(BrushConfigDefault.prototype, "colorWithAlpha", {
         get: function () {
             return this.color + ('00' + (255 - this.transparency).toString(16)).substr(-2);
         },
         enumerable: true,
         configurable: true
     });
-    return BrushConfig;
+    return BrushConfigDefault;
 }());
+exports.BrushConfigDefault = BrushConfigDefault;
+var BrushConfig = /** @class */ (function (_super) {
+    __extends(BrushConfig, _super);
+    function BrushConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return BrushConfig;
+}(BrushConfigDefault));
 exports.BrushConfig = BrushConfig;
 
-},{"../structure":27,"./events":19}],5:[function(require,module,exports){
+},{"../structure":27,"./events":19,"lodash.clonedeep":1}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -3836,11 +3849,6 @@ var BlueprintStore = /** @class */ (function () {
         circle1.startAngle = 0;
         circle1.radius = 100;
         var circle1Brush = new brushes_1.Brush();
-        circle1Brush.color = '#FFFFFF';
-        circle1Brush.degrees = 0;
-        circle1Brush.link = false;
-        circle1Brush.offset = 0;
-        circle1Brush.point = 0.5;
         circle1.addBrush(circle1Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
@@ -3876,11 +3884,6 @@ var BlueprintStore = /** @class */ (function () {
         circle2.startAngle = 0;
         circle2.radius = 25;
         var circle2Brush = new brushes_1.Brush();
-        circle2Brush.color = '#FFFFFF';
-        circle2Brush.degrees = 0;
-        circle2Brush.link = false;
-        circle2Brush.offset = 0;
-        circle2Brush.point = 0.5;
         circle2.addBrush(circle2Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
@@ -3925,11 +3928,6 @@ var BlueprintStore = /** @class */ (function () {
         circle3.startAngle = 0;
         circle3.radius = 15;
         var circle3Brush = new brushes_1.Brush();
-        circle3Brush.color = '#FFFFFF';
-        circle3Brush.degrees = 0;
-        circle3Brush.link = false;
-        circle3Brush.offset = 0;
-        circle3Brush.point = 0.5;
         circle3.addBrush(circle3Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);

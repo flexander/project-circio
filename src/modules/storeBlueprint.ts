@@ -75,11 +75,6 @@ export class BlueprintStore implements CircStoreInterface {
         circle1.radius = 100;
 
         const circle1Brush = new Brush();
-        circle1Brush.color = '#FFFFFF';
-        circle1Brush.degrees = 0;
-        circle1Brush.link = false;
-        circle1Brush.offset = 0;
-        circle1Brush.point = 0.5;
 
         circle1.addBrush(circle1Brush);
 
@@ -123,11 +118,6 @@ export class BlueprintStore implements CircStoreInterface {
         circle2.radius = 25;
 
         const circle2Brush = new Brush();
-        circle2Brush.color = '#FFFFFF';
-        circle2Brush.degrees = 0;
-        circle2Brush.link = false;
-        circle2Brush.offset = 0;
-        circle2Brush.point = 0.5;
 
         circle2.addBrush(circle2Brush);
 
@@ -181,11 +171,6 @@ export class BlueprintStore implements CircStoreInterface {
         circle3.radius = 15;
 
         const circle3Brush = new Brush();
-        circle3Brush.color = '#FFFFFF';
-        circle3Brush.degrees = 0;
-        circle3Brush.link = false;
-        circle3Brush.offset = 0;
-        circle3Brush.point = 0.5;
 
         circle3.addBrush(circle3Brush);
 

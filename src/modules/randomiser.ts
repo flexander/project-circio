@@ -66,11 +66,6 @@ class Randomiser implements CircGenerator {
         circle1.outside = circle1.radius === circle2.radius ? true:this.getRandomBool();
 
         const brush = new Brush();
-        brush.color = '#FFFFFF';
-        brush.degrees = 0;
-        brush.link = true;
-        brush.offset = 0;
-        brush.point = 0.5;
 
         circle2.addBrush(brush);
 

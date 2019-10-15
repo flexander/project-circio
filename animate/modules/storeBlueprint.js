@@ -65,11 +65,6 @@ var BlueprintStore = /** @class */ (function () {
         circle1.startAngle = 0;
         circle1.radius = 100;
         var circle1Brush = new brushes_1.Brush();
-        circle1Brush.color = '#FFFFFF';
-        circle1Brush.degrees = 0;
-        circle1Brush.link = false;
-        circle1Brush.offset = 0;
-        circle1Brush.point = 0.5;
         circle1.addBrush(circle1Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
@@ -105,11 +100,6 @@ var BlueprintStore = /** @class */ (function () {
         circle2.startAngle = 0;
         circle2.radius = 25;
         var circle2Brush = new brushes_1.Brush();
-        circle2Brush.color = '#FFFFFF';
-        circle2Brush.degrees = 0;
-        circle2Brush.link = false;
-        circle2Brush.offset = 0;
-        circle2Brush.point = 0.5;
         circle2.addBrush(circle2Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
@@ -154,11 +144,6 @@ var BlueprintStore = /** @class */ (function () {
         circle3.startAngle = 0;
         circle3.radius = 15;
         var circle3Brush = new brushes_1.Brush();
-        circle3Brush.color = '#FFFFFF';
-        circle3Brush.degrees = 0;
-        circle3Brush.link = false;
-        circle3Brush.offset = 0;
-        circle3Brush.point = 0.5;
         circle3.addBrush(circle3Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
