@@ -54,13 +54,6 @@ export default class CircControl implements CircControlInterface {
 
                 addShapeFragment.querySelector('button').addEventListener('click', e => {
                     const newShape = new Circle();
-                    newShape.steps = 500;
-                    newShape.outside = true;
-                    newShape.fixed = true;
-                    newShape.clockwise = true;
-                    newShape.stepMod = 0;
-                    newShape.startAngle = 0;
-                    newShape.radius = 100;
 
                     newShape.addBrush(new Brush());
 

@@ -2000,25 +2000,37 @@ var Brush = /** @class */ (function (_super) {
     return Brush;
 }(structure_1.EventEmitter));
 exports.Brush = Brush;
-var BrushConfig = /** @class */ (function () {
-    function BrushConfig() {
+var BrushConfigDefault = /** @class */ (function () {
+    function BrushConfigDefault() {
+        var _newTarget = this.constructor;
         this.color = '#FFFFFF';
-        this.transparency = 0;
         this.degrees = 0;
         this.draw = true;
         this.link = false;
         this.offset = 0;
         this.point = 0.5;
+        this.transparency = 0;
+        if (_newTarget === BrushConfigDefault) {
+            Object.freeze(this);
+        }
     }
-    Object.defineProperty(BrushConfig.prototype, "colorWithAlpha", {
+    Object.defineProperty(BrushConfigDefault.prototype, "colorWithAlpha", {
         get: function () {
             return this.color + ('00' + (255 - this.transparency).toString(16)).substr(-2);
         },
         enumerable: true,
         configurable: true
     });
-    return BrushConfig;
+    return BrushConfigDefault;
 }());
+exports.BrushConfigDefault = BrushConfigDefault;
+var BrushConfig = /** @class */ (function (_super) {
+    __extends(BrushConfig, _super);
+    function BrushConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return BrushConfig;
+}(BrushConfigDefault));
 exports.BrushConfig = BrushConfig;
 
 },{"../structure":27,"./events":19}],5:[function(require,module,exports){
@@ -2388,11 +2400,31 @@ var Circle = /** @class */ (function (_super) {
     return Circle;
 }(structure_1.EventEmitter));
 exports.Circle = Circle;
-var CircleConfig = /** @class */ (function () {
+var CircleConfigDefault = /** @class */ (function () {
+    function CircleConfigDefault() {
+        var _newTarget = this.constructor;
+        this.steps = 500;
+        this.outside = true;
+        this.fixed = true;
+        this.clockwise = true;
+        this.stepMod = 0;
+        this.startAngle = 0;
+        this.isRoot = false;
+        this.radius = 100;
+        if (_newTarget === CircleConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+    return CircleConfigDefault;
+}());
+exports.CircleConfigDefault = CircleConfigDefault;
+var CircleConfig = /** @class */ (function (_super) {
+    __extends(CircleConfig, _super);
     function CircleConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return CircleConfig;
-}());
+}(CircleConfigDefault));
 exports.CircleConfig = CircleConfig;
 var CircleState = /** @class */ (function () {
     function CircleState() {
@@ -2569,13 +2601,6 @@ var CircControl = /** @class */ (function () {
                 var addShapeFragment = document.createRange().createContextualFragment(addShapeFragmentHtml);
                 addShapeFragment.querySelector('button').addEventListener('click', function (e) {
                     var newShape = new circle_1.Circle();
-                    newShape.steps = 500;
-                    newShape.outside = true;
-                    newShape.fixed = true;
-                    newShape.clockwise = true;
-                    newShape.stepMod = 0;
-                    newShape.startAngle = 0;
-                    newShape.radius = 100;
                     newShape.addBrush(new brushes_1.Brush());
                     self.circ.addShape(newShape);
                 });
@@ -3459,13 +3484,25 @@ var Engine = /** @class */ (function (_super) {
     return Engine;
 }(structure_1.EventEmitter));
 exports.Engine = Engine;
-var EngineConfig = /** @class */ (function () {
-    function EngineConfig() {
+var EngineConfigDefault = /** @class */ (function () {
+    function EngineConfigDefault() {
+        var _newTarget = this.constructor;
         this.stepInterval = 1;
         this.stepsToRun = 0;
+        if (_newTarget === EngineConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+    return EngineConfigDefault;
+}());
+exports.EngineConfigDefault = EngineConfigDefault;
+var EngineConfig = /** @class */ (function (_super) {
+    __extends(EngineConfig, _super);
+    function EngineConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return EngineConfig;
-}());
+}(EngineConfigDefault));
 exports.EngineConfig = EngineConfig;
 var EngineState = /** @class */ (function () {
     function EngineState() {
@@ -3821,26 +3858,12 @@ var BlueprintStore = /** @class */ (function () {
         circ.backgroundFill = '#1b5eec';
         var circle0 = new circle_1.Circle();
         circle0.steps = 500;
-        circle0.outside = false;
-        circle0.fixed = true;
         circle0.clockwise = false;
-        circle0.stepMod = 0;
-        circle0.startAngle = 0;
         circle0.radius = 300;
         var circle1 = new circle_1.Circle();
         circle1.steps = 500;
-        circle1.outside = true;
-        circle1.fixed = true;
-        circle1.clockwise = true;
-        circle1.stepMod = 0;
-        circle1.startAngle = 0;
         circle1.radius = 100;
         var circle1Brush = new brushes_1.Brush();
-        circle1Brush.color = '#FFFFFF';
-        circle1Brush.degrees = 0;
-        circle1Brush.link = false;
-        circle1Brush.offset = 0;
-        circle1Brush.point = 0.5;
         circle1.addBrush(circle1Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
@@ -3853,34 +3876,16 @@ var BlueprintStore = /** @class */ (function () {
         circ.backgroundFill = '#1b5eec';
         var circle0 = new circle_1.Circle();
         circle0.steps = 500;
-        circle0.outside = false;
-        circle0.fixed = true;
         circle0.clockwise = false;
-        circle0.stepMod = 0;
-        circle0.startAngle = 0;
         circle0.radius = 100;
         var circle1 = new circle_1.Circle();
         circle1.steps = 500;
-        circle1.outside = true;
-        circle1.fixed = true;
-        circle1.clockwise = true;
-        circle1.stepMod = 0;
-        circle1.startAngle = 0;
         circle1.radius = 50;
         var circle2 = new circle_1.Circle();
         circle2.steps = 500;
-        circle2.outside = true;
-        circle2.fixed = true;
         circle2.clockwise = false;
-        circle2.stepMod = 0;
-        circle2.startAngle = 0;
         circle2.radius = 25;
         var circle2Brush = new brushes_1.Brush();
-        circle2Brush.color = '#FFFFFF';
-        circle2Brush.degrees = 0;
-        circle2Brush.link = false;
-        circle2Brush.offset = 0;
-        circle2Brush.point = 0.5;
         circle2.addBrush(circle2Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);
@@ -3895,41 +3900,19 @@ var BlueprintStore = /** @class */ (function () {
         var circle0 = new circle_1.Circle();
         circle0.steps = 1000;
         circle0.outside = false;
-        circle0.fixed = true;
         circle0.clockwise = false;
-        circle0.stepMod = 0;
-        circle0.startAngle = 0;
         circle0.radius = 120;
         var circle1 = new circle_1.Circle();
         circle1.steps = 500;
-        circle1.outside = true;
-        circle1.fixed = true;
-        circle1.clockwise = true;
-        circle1.stepMod = 0;
-        circle1.startAngle = 0;
         circle1.radius = 60;
         var circle2 = new circle_1.Circle();
         circle2.steps = 250;
-        circle2.outside = true;
-        circle2.fixed = true;
         circle2.clockwise = false;
-        circle2.stepMod = 0;
-        circle2.startAngle = 0;
         circle2.radius = 30;
         var circle3 = new circle_1.Circle();
         circle3.steps = 125;
-        circle3.outside = true;
-        circle3.fixed = true;
-        circle3.clockwise = true;
-        circle3.stepMod = 0;
-        circle3.startAngle = 0;
         circle3.radius = 15;
         var circle3Brush = new brushes_1.Brush();
-        circle3Brush.color = '#FFFFFF';
-        circle3Brush.degrees = 0;
-        circle3Brush.link = false;
-        circle3Brush.offset = 0;
-        circle3Brush.point = 0.5;
         circle3.addBrush(circle3Brush);
         circ.addShape(circle0);
         circ.addShape(circle1);

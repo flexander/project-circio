@@ -1,4 +1,5 @@
 import {
+    BrushConfigInterface,
     CircInterface,
     EngineConfigInterface,
     EngineInterface,
@@ -191,9 +192,19 @@ class Engine extends EventEmitter implements EngineInterface {
     }
 }
 
-class EngineConfig implements EngineConfigInterface {
+class EngineConfigDefault implements EngineConfigInterface {
     stepInterval: number = 1;
     stepsToRun: number = 0;
+
+    constructor() {
+        if (new.target === EngineConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+
+}
+
+class EngineConfig extends EngineConfigDefault implements EngineConfigInterface {
 }
 
 class EngineState implements EngineStateInterface {
@@ -244,6 +255,7 @@ class EngineStepJumpEnd implements EventInterface {
 export {
     Engine,
     EngineConfig,
+    EngineConfigDefault,
     EnginePlayEvent,
     EnginePauseEvent,
     EngineStepJumpStart,
