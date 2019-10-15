@@ -79,16 +79,17 @@ var GuidePainter = /** @class */ (function () {
         this.canvasContext.stroke();
         this.drawPoint(polygon.state.contactPoint);
         this.drawPoint(polygon.state.centre);
+        this.drawPoint(polygon.state.drawPoint, '#33ff11');
         this.drawPointToPoint(polygon.state.centre, polygon.state.contactPoint);
         if (typeof polygon.parent !== "undefined") {
             this.drawPointToPoint(polygon.parent.state.centre, polygon.state.contactPoint);
             this.drawPointToPoint(polygon.parent.state.centre, polygon.state.centre);
         }
     };
-    GuidePainter.prototype.drawPoint = function (point) {
+    GuidePainter.prototype.drawPoint = function (point, colour) {
         this.canvasContext.beginPath();
-        this.canvasContext.fillStyle = this.guideColor;
-        this.canvasContext.arc(point.x, point.y, Math.max(2), 0, 2 * Math.PI);
+        this.canvasContext.fillStyle = colour ? colour : this.guideColor;
+        this.canvasContext.arc(point.x, point.y, Math.max(4), 0, 2 * Math.PI);
         this.canvasContext.fill();
     };
     GuidePainter.prototype.drawPointToPoint = function (pointA, pointB) {

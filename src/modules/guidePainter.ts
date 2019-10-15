@@ -109,6 +109,7 @@ export default class GuidePainter implements GuidePainterInterface {
 
         this.drawPoint(polygon.state.contactPoint);
         this.drawPoint(polygon.state.centre);
+        this.drawPoint(polygon.state.drawPoint, '#33ff11');
 
         this.drawPointToPoint(polygon.state.centre, polygon.state.contactPoint);
         if(typeof polygon.parent !== "undefined") {
@@ -117,10 +118,10 @@ export default class GuidePainter implements GuidePainterInterface {
         }
     }
 
-    protected drawPoint (point: PositionInterface): void {
+    protected drawPoint (point: PositionInterface, colour?: string): void {
         this.canvasContext.beginPath();
-        this.canvasContext.fillStyle = this.guideColor;
-        this.canvasContext.arc(point.x, point.y, Math.max(2), 0, 2*Math.PI);
+        this.canvasContext.fillStyle = colour? colour: this.guideColor;
+        this.canvasContext.arc(point.x, point.y, Math.max(4), 0, 2*Math.PI);
         this.canvasContext.fill();
     }
 

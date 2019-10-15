@@ -62,27 +62,22 @@ class Polygon extends EventEmitter implements PolygonInterface {
             const contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
             const contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
 
-            // TODO : correct logic
-            let childCentreToContactPoint = this.getRadius();
-            let parentSasB = 0;
-            if(this.getDistanceFromChildCornerToContact(parentPolygon) !== 0) {
-                // calculate child centre contact point
-                const childSAS = this.getValuesFromSAS(
-                    this.getRadius(),                                           // side b
-                    (this.getOuterAngle()/2),                                   // angle A
-                    this.getDistanceFromChildCornerToContact(parentPolygon)     // side c
-                );
+            // calculate child centre contact point
+            const childSAS = this.getValuesFromSAS(
+                this.getRadius(),                                                   // side b
+                (this.getOuterAngle()/2),                                           // angle A
+                Math.abs(this.getDistanceFromChildCornerToContact(parentPolygon))   // side c
+            );
 
-                childCentreToContactPoint = childSAS.a;
-                parentSasB = childSAS.B;
-            }
+            const childCentreToContactPoint = childSAS.a;
+            // If parentSasC = 0 then the child is on a corner
+            const parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
 
-            // TODO: calculate centre relative to parent
             const relativeAngle = (
                 // TODO: this calc might be wrong
-                ((this.state.totalAngle - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle())) % this.getRadiansPerFace()) +
-                parentSAS.B +
-                parentSasB
+                (((this.state.totalAngle + this.getOffsetRadians(parentPolygon)) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle())) % this.getRadiansPerFace()) +
+                childSAS.B +
+                parentSASB
             );
 
             const relativeSAS = this.getValuesFromSAS(
@@ -90,7 +85,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 relativeAngle,                              // angle A
                 childCentreToContactPoint                   // side c
             );
-
             radiusRelative = relativeSAS.a;
             arcToParentRadians = relativeSAS.C;
 
@@ -101,10 +95,9 @@ class Polygon extends EventEmitter implements PolygonInterface {
         this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
 
         // New x1 & y1 to reflect change in radians
-        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
-        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.radius);
+        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.getRadius());
+        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.getRadius());
     }
-
     public calculateAngle(): void {
         this.state.previousState.totalAngle = this.state.totalAngle;
         if (this.clockwise === true) {
@@ -229,8 +222,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
     getDistanceFromOrigin(parentPolygon: PolygonInterface): number {
         const offsetRadians = this.getOffsetRadians(parentPolygon);
         const offsetDistance = this.getOffsetDistance();
-        let distance;
-
+        let distance: number;
+        
         if(this.isOnCorner(parentPolygon)) {
             distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
         } else {
@@ -238,11 +231,14 @@ class Polygon extends EventEmitter implements PolygonInterface {
             distance = (Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth) - offsetDistance;
         }
 
-        return distance > 0 ? distance: 0;
+        return distance;
     }
 
     getDistanceFromParentCornerToContact(parentPolygon: PolygonInterface): number {
-        return this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;
+        const distance = this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;
+        const absoluteDistance = distance > 0 ? distance : 0;
+
+        return absoluteDistance;
     }
 
     getDistanceFromChildCornerToContact(parentPolygon: PolygonInterface): number {
@@ -250,7 +246,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
     }
 
     // Calculate values of a triangle where we know two sides and the angle between them
-    public getValuesFromSAS(sideB, angleA, sideC): PolygonSas {
+    public getValuesFromSAS(sideB: number, angleA: number, sideC: number): PolygonSas {
 
         let sideA; // a
         let angleB; // B
@@ -260,7 +256,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
         sideA = Math.sqrt(Math.pow(sideB, 2) + Math.pow(sideC, 2) - (2 * sideB * sideC * Math.cos(angleA)));
 
         const smallAngle = Math.asin( (Math.sin(angleA)*Math.min(sideB, sideC)) / sideA );
-        const largeAngle = Math.PI - smallAngle;
+        const largeAngle = Math.PI - smallAngle - angleA;
 
         if (sideB < sideC) {
             angleB = smallAngle;
