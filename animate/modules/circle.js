@@ -226,6 +226,7 @@ var CircleConfigDefault = /** @class */ (function () {
     }
     return CircleConfigDefault;
 }());
+exports.CircleConfigDefault = CircleConfigDefault;
 var CircleConfig = /** @class */ (function (_super) {
     __extends(CircleConfig, _super);
     function CircleConfig() {

@@ -255,6 +255,7 @@ class EngineStepJumpEnd implements EventInterface {
 export {
     Engine,
     EngineConfig,
+    EngineConfigDefault,
     EnginePlayEvent,
     EnginePauseEvent,
     EngineStepJumpStart,

@@ -255,5 +255,6 @@ export {
     CircleState,
     CircleCenterPosition,
     CircleConfig,
+    CircleConfigDefault,
     CircleDrawPosition,
 }

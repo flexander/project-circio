@@ -184,6 +184,7 @@ var EngineConfigDefault = /** @class */ (function () {
     }
     return EngineConfigDefault;
 }());
+exports.EngineConfigDefault = EngineConfigDefault;
 var EngineConfig = /** @class */ (function (_super) {
     __extends(EngineConfig, _super);
     function EngineConfig() {
