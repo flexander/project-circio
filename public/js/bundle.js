@@ -3483,13 +3483,24 @@ var Engine = /** @class */ (function (_super) {
     return Engine;
 }(structure_1.EventEmitter));
 exports.Engine = Engine;
-var EngineConfig = /** @class */ (function () {
-    function EngineConfig() {
+var EngineConfigDefault = /** @class */ (function () {
+    function EngineConfigDefault() {
+        var _newTarget = this.constructor;
         this.stepInterval = 1;
         this.stepsToRun = 0;
+        if (_newTarget === EngineConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+    return EngineConfigDefault;
+}());
+var EngineConfig = /** @class */ (function (_super) {
+    __extends(EngineConfig, _super);
+    function EngineConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return EngineConfig;
-}());
+}(EngineConfigDefault));
 exports.EngineConfig = EngineConfig;
 var EngineState = /** @class */ (function () {
     function EngineState() {
