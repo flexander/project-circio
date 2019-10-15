@@ -1,10 +1,9 @@
 import {BrushConfigInterface, BrushInterface, EventEmitter, ShapeConfigInterface} from "../structure";
 import {AttributeChangedEvent} from "./events";
 import {CircleConfig} from "./circle";
-const cloneDeep = require('lodash.clonedeep');
 
 class Brush extends EventEmitter implements BrushInterface {
-    protected config: BrushConfigInterface = cloneDeep(new BrushConfigDefault());
+    protected config: BrushConfigInterface = new BrushConfig();
     
     get color(): string {
         return this.config.color;

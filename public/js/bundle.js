@@ -1906,12 +1906,11 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var structure_1 = require("../structure");
 var events_1 = require("./events");
-var cloneDeep = require('lodash.clonedeep');
 var Brush = /** @class */ (function (_super) {
     __extends(Brush, _super);
     function Brush() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.config = cloneDeep(new BrushConfigDefault());
+        _this.config = new BrushConfig();
         return _this;
     }
     Object.defineProperty(Brush.prototype, "color", {
@@ -2034,7 +2033,7 @@ var BrushConfig = /** @class */ (function (_super) {
 }(BrushConfigDefault));
 exports.BrushConfig = BrushConfig;
 
-},{"../structure":27,"./events":19,"lodash.clonedeep":1}],5:[function(require,module,exports){
+},{"../structure":27,"./events":19}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {

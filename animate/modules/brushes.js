@@ -15,12 +15,11 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var structure_1 = require("../structure");
 var events_1 = require("./events");
-var cloneDeep = require('lodash.clonedeep');
 var Brush = /** @class */ (function (_super) {
     __extends(Brush, _super);
     function Brush() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.config = cloneDeep(new BrushConfigDefault());
+        _this.config = new BrushConfig();
         return _this;
     }
     Object.defineProperty(Brush.prototype, "color", {
