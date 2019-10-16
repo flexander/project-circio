@@ -3963,6 +3963,7 @@ var Polygon = /** @class */ (function (_super) {
         var distance;
         if (this.isOnCorner(parentPolygon)) {
             distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
+            console.log('on corner dist: ' + distance);
         }
         else {
             var flattenedTotalAngle = (this.state.totalAngle + offsetRadians) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle());
