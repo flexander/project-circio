@@ -235,10 +235,10 @@ class Polygon extends EventEmitter implements PolygonInterface {
     }
 
     getDistanceFromParentCornerToContact(parentPolygon: PolygonInterface): number {
-        const distance = this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;
-        const absoluteDistance = distance > 0 ? distance : 0;
-
-        return absoluteDistance;
+        console.log(this.getDistanceFromOrigin(parentPolygon));
+        const distance = this.getDistanceFromOrigin(parentPolygon) - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
+console.log('distance: '+distance);
+        return distance;
     }
 
     getDistanceFromChildCornerToContact(parentPolygon: PolygonInterface): number {

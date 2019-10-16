@@ -183,9 +183,10 @@ var Polygon = /** @class */ (function (_super) {
         return distance;
     };
     Polygon.prototype.getDistanceFromParentCornerToContact = function (parentPolygon) {
-        var distance = this.getDistanceFromOrigin(parentPolygon) % parentPolygon.faceWidth;
-        var absoluteDistance = distance > 0 ? distance : 0;
-        return absoluteDistance;
+        console.log(this.getDistanceFromOrigin(parentPolygon));
+        var distance = this.getDistanceFromOrigin(parentPolygon) - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
+        console.log('distance: ' + distance);
+        return distance;
     };
     Polygon.prototype.getDistanceFromChildCornerToContact = function (parentPolygon) {
         return this.getDistanceFromOrigin(parentPolygon) % this.faceWidth;
