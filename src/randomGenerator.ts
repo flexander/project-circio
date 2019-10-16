@@ -5,6 +5,11 @@ import * as fs from "fs";
 
 const outputFile = process.argv[2];
 
+if (outputFile == null) {
+    console.error('A file path must be specified');
+    process.exit(1);
+}
+
 const randomiser = new Randomiser();
 const serialiser = new Serializer();
 
