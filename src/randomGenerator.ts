@@ -13,7 +13,7 @@ if (outputFile == null) {
 const randomiser = new Randomiser();
 const serialiser = new Serializer();
 
-const circJsonString = fs.readFileSync(outputFile);
+const circJsonString = (fs.existsSync(outputFile) === true) ? fs.readFileSync(outputFile):'[]';
 const circs = JSON.parse(circJsonString.toString());
 
 function makeManyRandom() {

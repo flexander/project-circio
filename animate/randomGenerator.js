@@ -10,7 +10,7 @@ if (outputFile == null) {
 }
 var randomiser = new randomiser_1.Randomiser();
 var serialiser = new serializer_1.default();
-var circJsonString = fs.readFileSync(outputFile);
+var circJsonString = (fs.existsSync(outputFile) === true) ? fs.readFileSync(outputFile) : '[]';
 var circs = JSON.parse(circJsonString.toString());
 function makeManyRandom() {
     randomiser.make()
