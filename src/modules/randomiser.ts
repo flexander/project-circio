@@ -2,27 +2,45 @@ import {Circ} from "./circ";
 import {Circle} from "./circle";
 import {Brush} from "./brushes";
 import {CircGenerator, CircInterface} from "../structure";
+import * as seedrandom from 'seedrandom';
 
 
 class Randomiser implements CircGenerator {
     protected maxSteps = 40000;
+    protected randomSeed;
+
+    constructor(seed?: string) {
+        seed && (
+            this.randomSeed = seed,
+            this.maxSteps = 400000
+        );
+    }
 
     public make(): Promise<CircInterface> {
         return new Promise((resolve, reject) => {
             let circ;
+            let count = 0;
+
             while(typeof circ === 'undefined') {
                 try {
-                    circ = this.generate()
+                    circ = this.randomSeed ? this.generate(`${this.randomSeed}${count}`) : this.generate();
                 } catch {
-
+                    
                 }
+                count++;
             }
 
+            this.randomSeed && (
+                console.log(`found a valid seed: ${this.randomSeed}${count}`)
+            )
             resolve(circ);
         });
     }
 
-    protected generate(): CircInterface {
+    protected generate(seed?: string): CircInterface {
+        seed && (
+            seedrandom(seed, { global: true })
+        )
         const pr = 150;
         const cr = this.getRandomInt(10, 250);
         const ccr = this.getRandomInt(10, 250);
@@ -96,6 +114,10 @@ class Randomiser implements CircGenerator {
 
     protected getRandomBool(): boolean {
         return this.getRandomInt(0,1) ? true:false;
+    }
+
+    protected getRandomHexColour(): string {
+        return `#${Math.floor(Math.random()*16777215).toString(16)}`;
     }
 }
 

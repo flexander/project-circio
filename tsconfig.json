@@ -1,9 +1,13 @@
 {
-  "files": [
+  "include": [
     "./src/animate.ts",
     "./src/randomGenerator.ts",
     "./src/structure.ts",
     "./src/modules/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "./src/**/*.test.ts"
   ],
   "compilerOptions": {
     /* Basic Options */

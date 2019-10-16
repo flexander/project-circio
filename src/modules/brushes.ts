@@ -1,6 +1,5 @@
-import {BrushConfigInterface, BrushInterface, EventEmitter, ShapeConfigInterface} from "../structure";
+import {BrushConfigInterface, BrushInterface, EventEmitter} from "../structure";
 import {AttributeChangedEvent} from "./events";
-import {CircleConfig} from "./circle";
 
 class Brush extends EventEmitter implements BrushInterface {
     protected config: BrushConfigInterface = new BrushConfig();

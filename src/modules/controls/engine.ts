@@ -1,5 +1,4 @@
 import {
-    BrushInterface,
     CircControlInterface, CircInterface,
     ControlInterface,
     EngineControlInterface,
@@ -128,6 +127,32 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         return randomFragment;
     }
 
+    protected makeSeededRandomFragment(): DocumentFragment {
+        const html = `
+            Seed: <input id="seededRandomInput" type="text" name="seed">
+            <button>Seeded Random</button>
+        `;
+
+        const seededRandomFragment = document.createRange().createContextualFragment(html);
+        const button = seededRandomFragment.querySelector('button');
+
+        button.addEventListener('click', e => {
+            const textArea: HTMLInputElement = document.querySelector('#seededRandomInput') as HTMLInputElement;
+            const textAreaValue = textArea.value;
+
+            const randomiser = new Randomiser(textAreaValue);
+
+            randomiser.make()
+                .then((circ: CircInterface) => {
+                    this.engine.pause();
+                    this.engine.import(circ);
+                    this.engine.stepFast(circ.stepsToComplete)
+                });
+        });
+
+        return seededRandomFragment;
+    }
+
     protected makeStepJumpFragment(): DocumentFragment {
         const html = `<button class="stepThousand">Step 1000</button>`;
 
@@ -214,6 +239,11 @@ export default class EngineControl implements EngineControlInterface, QuickContr
             new class implements ControlInterface {
                 render(): DocumentFragment {
                     return self.makeRandomFragment();
+                }
+            },
+            new class implements ControlInterface {
+                render(): DocumentFragment {
+                    return self.makeSeededRandomFragment();
                 }
             },
         ];
