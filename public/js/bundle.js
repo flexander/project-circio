@@ -2757,9 +2757,11 @@ var renderControls = function (circ) {
     engineControls.addControls(engineControl.getQuickControls());
     var controlActionsEl = document.querySelector('.controls-container .actions');
     var controlsEl = document.querySelector('.controls-container .controls');
+    var quickControlsEl = document.querySelector('.quick-controls');
     controlActionsEl.innerHTML = null;
     controlsEl.innerHTML = null;
-    document.querySelector('.quick-controls').appendChild(engineControls.render());
+    quickControlsEl.innerHTML = null;
+    quickControlsEl.appendChild(engineControls.render());
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
     modeControl.addEventListener('controls.mode', function (newMode) {

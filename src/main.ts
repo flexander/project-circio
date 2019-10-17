@@ -52,11 +52,13 @@ const renderControls = (circ: CircInterface) => {
 
     const controlActionsEl = document.querySelector('.controls-container .actions');
     const controlsEl = document.querySelector('.controls-container .controls');
+    const quickControlsEl = document.querySelector('.quick-controls');
 
     controlActionsEl.innerHTML = null;
     controlsEl.innerHTML = null;
+    quickControlsEl.innerHTML = null;
 
-    document.querySelector('.quick-controls').appendChild(engineControls.render());
+    quickControlsEl.appendChild(engineControls.render());
 
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
