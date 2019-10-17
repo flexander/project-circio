@@ -7,9 +7,9 @@ var seedrandom = require("seedrandom");
 var Randomiser = /** @class */ (function () {
     function Randomiser(seed) {
         this.maxSteps = 40000;
-        if (seed !== null) {
-            this.randomSeed = seed,
-                this.maxSteps = 400000;
+        if (typeof seed !== 'undefined') {
+            this.randomSeed = seed;
+            this.maxSteps = 400000;
         }
     }
     Randomiser.prototype.make = function () {
@@ -32,7 +32,7 @@ var Randomiser = /** @class */ (function () {
         });
     };
     Randomiser.prototype.generate = function (seed) {
-        if (seed !== null) {
+        if (typeof seed !== 'undefined') {
             seedrandom(seed, { global: true });
         }
         var pr = 150;
