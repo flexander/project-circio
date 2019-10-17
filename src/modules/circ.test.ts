@@ -1,5 +1,5 @@
-import { Circ } from './Circ';
-import { Circle } from './Circle';
+import { Circ } from './circ';
+import { Circle } from './circle';
 import { ShapeAddEvent, ShapeDeleteEvent, AttributeChangedEvent } from './events';
 
 describe('Circ', () => {
