@@ -3835,11 +3835,13 @@ var Polygon = /** @class */ (function (_super) {
             var angleRelativeToParent = this.getCornersPassed(parentPolygon) * parentPolygon.getInnerAngle();
             var contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
             var contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
+            console.log('------');
             // calculate child centre contact point
             var childSAS = this.getValuesFromSAS(this.getRadius(), // side b
             (this.getOuterAngle() / 2), // angle A
             Math.abs(this.getDistanceFromChildCornerToContact(parentPolygon)) // side c
             );
+            console.log('------');
             var childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
             var parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
@@ -3957,28 +3959,57 @@ var Polygon = /** @class */ (function (_super) {
         var maxRadians = minRadians + parentPolygon.getExternalAngle();
         return (this.state.totalAngle > minRadians && this.state.totalAngle < maxRadians);
     };
-    Polygon.prototype.getDistanceFromOrigin = function (parentPolygon) {
+    Polygon.prototype.getParentDistanceFromOriginToContact = function (parentPolygon) {
         var offsetRadians = this.getOffsetRadians(parentPolygon);
         var offsetDistance = this.getOffsetDistance();
         var distance;
-        if (this.isOnCorner(parentPolygon)) {
+        // Initial corner
+        if (offsetRadians > this.state.totalAngle) {
+            return true;
+        }
+        else if (this.isOnCorner(parentPolygon)) {
             distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
             console.log('on corner dist: ' + distance);
         }
         else {
             var flattenedTotalAngle = (this.state.totalAngle + offsetRadians) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle());
             distance = (Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth) - offsetDistance;
+            console.log('not on corner dist: ' + distance);
+        }
+        return distance;
+    };
+    Polygon.prototype.getChildDistanceFromOriginToContact = function (parentPolygon) {
+        var offsetRadians = this.getOffsetRadians(parentPolygon);
+        var offsetDistance = this.getOffsetDistance();
+        var distance;
+        // Initial corner
+        if (offsetRadians > this.state.totalAngle) {
+            return true;
+        }
+        else if (this.isOnCorner(parentPolygon)) {
+            distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
+            console.log('on corner dist: ' + distance);
+        }
+        else {
+            var flattenedTotalAngle = (this.state.totalAngle + offsetRadians) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle());
+            distance = (Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth) - offsetDistance;
+            console.log('not on corner dist: ' + distance);
         }
         return distance;
     };
     Polygon.prototype.getDistanceFromParentCornerToContact = function (parentPolygon) {
-        console.log(this.getDistanceFromOrigin(parentPolygon));
-        var distance = this.getDistanceFromOrigin(parentPolygon) - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
-        console.log('distance: ' + distance);
+        var originDistance = this.getParentDistanceFromOriginToContact(parentPolygon);
+        console.log('parent dist from origin: ' + originDistance);
+        var distance = originDistance - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
+        console.log('parent distance: ' + distance);
         return distance;
     };
     Polygon.prototype.getDistanceFromChildCornerToContact = function (parentPolygon) {
-        return this.getDistanceFromOrigin(parentPolygon) % this.faceWidth;
+        var originDistance = this.getChildDistanceFromOriginToContact(parentPolygon);
+        console.log('child dist from origin: ' + originDistance);
+        var distance = originDistance - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
+        console.log('child distance: ' + distance);
+        return distance;
     };
     // Calculate values of a triangle where we know two sides and the angle between them
     Polygon.prototype.getValuesFromSAS = function (sideB, angleA, sideC) {
