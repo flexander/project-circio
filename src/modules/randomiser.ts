@@ -10,9 +10,9 @@ class Randomiser implements CircGenerator {
     protected randomSeed;
 
     constructor(seed?: string) {
-        if (seed !== null) {
-            this.randomSeed = seed,
-            this.maxSteps = 400000
+        if (typeof seed !== 'undefined') {
+            this.randomSeed = seed;
+            this.maxSteps = 400000;
         }
     }
 
@@ -39,7 +39,7 @@ class Randomiser implements CircGenerator {
     }
 
     protected generate(seed?: string): CircInterface {
-        if (seed !== null) {
+        if (typeof seed !== 'undefined') {
             seedrandom(seed, {global: true})
         }
 
