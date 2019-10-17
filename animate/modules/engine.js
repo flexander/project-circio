@@ -46,6 +46,7 @@ var Engine = /** @class */ (function (_super) {
     };
     Engine.prototype.pause = function () {
         this.stepsToRun = 0;
+        this.stopStepJumping();
     };
     Engine.prototype.play = function (count) {
         this.stepsToRun = typeof count === 'number' ? count : Infinity;
@@ -54,6 +55,7 @@ var Engine = /** @class */ (function (_super) {
         return this.stepsToRun > 0;
     };
     Engine.prototype.reset = function () {
+        this.stopStepJumping();
         if (typeof this.circ !== "undefined") {
             this.circ.getShapes().forEach(function (shape) { return shape.reset(); });
         }
@@ -61,6 +63,17 @@ var Engine = /** @class */ (function (_super) {
         this.state.totalStepsRun = 0;
         // Run a single step to correctly position and render the shapes
         this.step();
+    };
+    Engine.prototype.stopStepJumping = function () {
+        if (this.state.stepJumps.length === 0) {
+            return;
+        }
+        this.state.stepJumpTimers.forEach(function (timeId) {
+            clearTimeout(timeId);
+        });
+        this.state.stepJumpTimers = [];
+        this.state.stepJumps = [];
+        this.dispatchEvent(new EngineStepJumpEnd());
     };
     Engine.prototype.stepFast = function (count) {
         var _this = this;
@@ -88,12 +101,13 @@ var Engine = /** @class */ (function (_super) {
     Engine.prototype.stepJump = function (number) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            setTimeout(function (_) {
+            var id = setTimeout(function (_) {
                 for (var step = 0; step < number; step++) {
                     _this.step();
                 }
                 resolve();
             }, 0);
+            _this.state.stepJumpTimers.push(id);
         });
     };
     Engine.prototype.calculateShapes = function () {
@@ -197,6 +211,7 @@ var EngineState = /** @class */ (function () {
     function EngineState() {
         this.totalStepsRun = 0;
         this.stepJumps = [];
+        this.stepJumpTimers = [];
     }
     return EngineState;
 }());
