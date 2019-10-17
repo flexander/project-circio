@@ -41,18 +41,22 @@ const renderControls = (circ: CircInterface) => {
     engineControl.addCircControl(circControl);
 
     const quickControls = new ControlPanel();
-    quickControls.addControls(guidePainterControl.getQuickControls());
-    quickControls.addControls(engineControl.getQuickControls());
     quickControls.addControls(painterControl.getQuickControls());
-    quickControls.addControls(painterControl.getQuickControls());
-    quickControls.addControls(storageControl.getQuickControls());
     quickControls.addControls(modeControl.getQuickControls());
+    quickControls.addControls(storageControl.getQuickControls());
+
+    const engineControls = new ControlPanel();
+    engineControls.addControls(guidePainterControl.getQuickControls());
+    engineControls.addControls(engineControl.getQuickControls());
+
 
     const controlActionsEl = document.querySelector('.controls-container .actions');
     const controlsEl = document.querySelector('.controls-container .controls');
 
     controlActionsEl.innerHTML = null;
     controlsEl.innerHTML = null;
+
+    document.querySelector('.quick-controls').appendChild(engineControls.render());
 
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());

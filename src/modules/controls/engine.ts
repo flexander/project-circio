@@ -237,16 +237,16 @@ export default class EngineControl implements EngineControlInterface, QuickContr
                     return self.makeResetFragment();
                 }
             },
-            new class implements ControlInterface {
-                render(): DocumentFragment {
-                    return self.makeRandomFragment();
-                }
-            },
-            new class implements ControlInterface {
-                render(): DocumentFragment {
-                    return self.makeSeededRandomFragment();
-                }
-            },
+            // new class implements ControlInterface {
+            //     render(): DocumentFragment {
+            //         return self.makeRandomFragment();
+            //     }
+            // },
+            // new class implements ControlInterface {
+            //     render(): DocumentFragment {
+            //         return self.makeSeededRandomFragment();
+            //     }
+            // },
         ];
     }
 

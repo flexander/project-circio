@@ -2749,16 +2749,17 @@ var renderControls = function (circ) {
     controlPanel.addControl(engineControl);
     engineControl.addCircControl(circControl);
     var quickControls = new panel_1.default();
-    quickControls.addControls(guidePainterControl.getQuickControls());
-    quickControls.addControls(engineControl.getQuickControls());
     quickControls.addControls(painterControl.getQuickControls());
-    quickControls.addControls(painterControl.getQuickControls());
-    quickControls.addControls(storageControl.getQuickControls());
     quickControls.addControls(modeControl.getQuickControls());
+    quickControls.addControls(storageControl.getQuickControls());
+    var engineControls = new panel_1.default();
+    engineControls.addControls(guidePainterControl.getQuickControls());
+    engineControls.addControls(engineControl.getQuickControls());
     var controlActionsEl = document.querySelector('.controls-container .actions');
     var controlsEl = document.querySelector('.controls-container .controls');
     controlActionsEl.innerHTML = null;
     controlsEl.innerHTML = null;
+    document.querySelector('.quick-controls').appendChild(engineControls.render());
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
     modeControl.addEventListener('controls.mode', function (newMode) {
@@ -3774,22 +3775,6 @@ var EngineControl = /** @class */ (function () {
                     return self.makeResetFragment();
                 };
                 return class_4;
-            }()),
-            new /** @class */ (function () {
-                function class_5() {
-                }
-                class_5.prototype.render = function () {
-                    return self.makeRandomFragment();
-                };
-                return class_5;
-            }()),
-            new /** @class */ (function () {
-                function class_6() {
-                }
-                class_6.prototype.render = function () {
-                    return self.makeSeededRandomFragment();
-                };
-                return class_6;
             }()),
         ];
     };
