@@ -2726,6 +2726,7 @@ var storeLocal_1 = require("./modules/storeLocal");
 var mode_1 = require("./modules/controls/mode");
 var engine_2 = require("./modules/engine");
 var storeRandom_1 = require("./modules/storeRandom");
+var random_1 = require("./modules/controls/random");
 var canvasArea = document.querySelector('#circio .painter');
 var backgroundCanvasElement = document.querySelector('#background-canvas');
 var mainCanvasElement = canvasArea.querySelector('#main-canvas');
@@ -2745,6 +2746,7 @@ var renderControls = function (circ) {
     var painterControl = new painter_2.default(painter);
     var storageControl = new storage_1.default([storageCloud, storageLocal, storageBlueprint, storageRandom], engine);
     var modeControl = new mode_1.ModeControl(controlMode);
+    var randomControl = new random_1.default(engine, controlMode);
     controlPanel.addControl(guidePainterControl);
     controlPanel.addControl(engineControl);
     engineControl.addCircControl(circControl);
@@ -2752,6 +2754,7 @@ var renderControls = function (circ) {
     quickControls.addControls(painterControl.getQuickControls());
     quickControls.addControls(modeControl.getQuickControls());
     quickControls.addControls(storageControl.getQuickControls());
+    quickControls.addControls(randomControl.getQuickControls());
     var engineControls = new panel_1.default();
     engineControls.addControls(guidePainterControl.getQuickControls());
     engineControls.addControls(engineControl.getQuickControls());
@@ -2823,7 +2826,7 @@ storageRandom.get()
     engine.stepFast(circ.stepsToComplete);
 });
 
-},{"./modules/backgroundPainter":12,"./modules/controls/circ":18,"./modules/controls/engine":19,"./modules/controls/guidePainter":20,"./modules/controls/mode":21,"./modules/controls/painter":22,"./modules/controls/panel":23,"./modules/controls/storage":26,"./modules/engine":27,"./modules/guidePainter":29,"./modules/painter":30,"./modules/storeBlueprint":33,"./modules/storeCloud":34,"./modules/storeLocal":35,"./modules/storeRandom":36}],12:[function(require,module,exports){
+},{"./modules/backgroundPainter":12,"./modules/controls/circ":18,"./modules/controls/engine":19,"./modules/controls/guidePainter":20,"./modules/controls/mode":21,"./modules/controls/painter":22,"./modules/controls/panel":23,"./modules/controls/random":24,"./modules/controls/storage":27,"./modules/engine":28,"./modules/guidePainter":30,"./modules/painter":31,"./modules/storeBlueprint":34,"./modules/storeCloud":35,"./modules/storeLocal":36,"./modules/storeRandom":37}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundPainter = /** @class */ (function () {
@@ -2994,7 +2997,7 @@ var BrushConfig = /** @class */ (function (_super) {
 }(BrushConfigDefault));
 exports.BrushConfig = BrushConfig;
 
-},{"../structure":37,"./events":28}],14:[function(require,module,exports){
+},{"../structure":38,"./events":29}],14:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -3149,7 +3152,7 @@ var CircConfig = /** @class */ (function () {
 }());
 exports.CircConfig = CircConfig;
 
-},{"../structure":37,"./events":28}],15:[function(require,module,exports){
+},{"../structure":38,"./events":29}],15:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -3418,7 +3421,7 @@ var CircleDrawPosition = /** @class */ (function () {
 }());
 exports.CircleDrawPosition = CircleDrawPosition;
 
-},{"../structure":37,"./events":28,"lodash.clonedeep":2}],16:[function(require,module,exports){
+},{"../structure":38,"./events":29,"lodash.clonedeep":2}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundControl = /** @class */ (function () {
@@ -3587,7 +3590,7 @@ var CircControl = /** @class */ (function () {
 }());
 exports.default = CircControl;
 
-},{"../brushes":13,"../circle":15,"./background":16,"./mode":21,"./panel":23,"./shape":24,"./shapes/circle":25}],19:[function(require,module,exports){
+},{"../brushes":13,"../circle":15,"./background":16,"./mode":21,"./panel":23,"./shape":25,"./shapes/circle":26}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var mode_1 = require("./mode");
@@ -3787,7 +3790,7 @@ var EngineControl = /** @class */ (function () {
 }());
 exports.default = EngineControl;
 
-},{"../randomiser":31,"../storeRandom":36,"./mode":21}],20:[function(require,module,exports){
+},{"../randomiser":32,"../storeRandom":37,"./mode":21}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var GuidePainterControl = /** @class */ (function () {
@@ -3934,7 +3937,7 @@ var ControlModeEvent = /** @class */ (function () {
 }());
 exports.ControlModeEvent = ControlModeEvent;
 
-},{"../../structure":37}],22:[function(require,module,exports){
+},{"../../structure":38}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var PainterControl = /** @class */ (function () {
@@ -3993,6 +3996,81 @@ var ControlPanel = /** @class */ (function () {
 exports.default = ControlPanel;
 
 },{}],24:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var mode_1 = require("./mode");
+var storeRandom_1 = require("../storeRandom");
+var randomiser_1 = require("../randomiser");
+var RandomControl = /** @class */ (function () {
+    function RandomControl(engine, mode) {
+        if (mode === void 0) { mode = mode_1.ControlModes.MODE_DEFAULT; }
+        this.engine = engine;
+        this.mode = mode;
+    }
+    RandomControl.prototype.render = function () {
+        var randomFragment = document.createDocumentFragment();
+        return randomFragment;
+    };
+    RandomControl.prototype.makeRandomFragment = function () {
+        var _this = this;
+        var html = "<button>Random</button>";
+        var randomFragment = document.createRange().createContextualFragment(html);
+        var button = randomFragment.querySelector('button');
+        button.addEventListener('click', function (e) {
+            var randomStore = new storeRandom_1.StoreRandom();
+            randomStore.get()
+                .then(function (circ) {
+                _this.engine.pause();
+                _this.engine.import(circ);
+                _this.engine.stepFast(circ.stepsToComplete);
+            });
+        });
+        return randomFragment;
+    };
+    RandomControl.prototype.makeSeededRandomFragment = function () {
+        var _this = this;
+        var html = "\n            Seed: <input id=\"seededRandomInput\" type=\"text\" name=\"seed\">\n            <button>Seeded Random</button>\n        ";
+        var seededRandomFragment = document.createRange().createContextualFragment(html);
+        var button = seededRandomFragment.querySelector('button');
+        button.addEventListener('click', function (e) {
+            var textArea = document.querySelector('#seededRandomInput');
+            var textAreaValue = textArea.value;
+            var randomiser = new randomiser_1.Randomiser(textAreaValue);
+            randomiser.make()
+                .then(function (circ) {
+                _this.engine.pause();
+                _this.engine.import(circ);
+                _this.engine.stepFast(circ.stepsToComplete);
+            });
+        });
+        return seededRandomFragment;
+    };
+    RandomControl.prototype.getQuickControls = function () {
+        var self = this;
+        return [
+            new /** @class */ (function () {
+                function class_1() {
+                }
+                class_1.prototype.render = function () {
+                    return self.makeRandomFragment();
+                };
+                return class_1;
+            }()),
+            new /** @class */ (function () {
+                function class_2() {
+                }
+                class_2.prototype.render = function () {
+                    return self.makeSeededRandomFragment();
+                };
+                return class_2;
+            }()),
+        ];
+    };
+    return RandomControl;
+}());
+exports.default = RandomControl;
+
+},{"../randomiser":32,"../storeRandom":37,"./mode":21}],25:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var brush_1 = require("./brush");
@@ -4119,7 +4197,7 @@ var ShapeControl = /** @class */ (function () {
 }());
 exports.default = ShapeControl;
 
-},{"./brush":17,"./mode":21}],25:[function(require,module,exports){
+},{"./brush":17,"./mode":21}],26:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -4165,7 +4243,7 @@ var CircleControl = /** @class */ (function (_super) {
 }(shape_1.default));
 exports.default = CircleControl;
 
-},{"../mode":21,"../shape":24}],26:[function(require,module,exports){
+},{"../mode":21,"../shape":25}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var painter_1 = require("../painter");
@@ -4280,7 +4358,7 @@ var StorageControl = /** @class */ (function () {
 }());
 exports.default = StorageControl;
 
-},{"../backgroundPainter":12,"../engine":27,"../painter":30}],27:[function(require,module,exports){
+},{"../backgroundPainter":12,"../engine":28,"../painter":31}],28:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -4532,7 +4610,7 @@ var EngineStepJumpEnd = /** @class */ (function () {
 }());
 exports.EngineStepJumpEnd = EngineStepJumpEnd;
 
-},{"../structure":37,"./events":28}],28:[function(require,module,exports){
+},{"../structure":38,"./events":29}],29:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AttributeChangedEvent = /** @class */ (function () {
@@ -4576,7 +4654,7 @@ var ShapeDeleteEvent = /** @class */ (function () {
 }());
 exports.ShapeDeleteEvent = ShapeDeleteEvent;
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var GuidePainter = /** @class */ (function () {
@@ -4664,7 +4742,7 @@ var GuidePainter = /** @class */ (function () {
 }());
 exports.default = GuidePainter;
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Painter = /** @class */ (function () {
@@ -4721,7 +4799,7 @@ var Painter = /** @class */ (function () {
 }());
 exports.default = Painter;
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circ_1 = require("./circ");
@@ -4822,7 +4900,7 @@ var Randomiser = /** @class */ (function () {
 }());
 exports.Randomiser = Randomiser;
 
-},{"./brushes":13,"./circ":14,"./circle":15,"seedrandom":3}],32:[function(require,module,exports){
+},{"./brushes":13,"./circ":14,"./circle":15,"seedrandom":3}],33:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = require("./circle");
@@ -4878,7 +4956,7 @@ var Serializer = /** @class */ (function () {
 }());
 exports.default = Serializer;
 
-},{"./brushes":13,"./circ":14,"./circle":15}],33:[function(require,module,exports){
+},{"./brushes":13,"./circ":14,"./circle":15}],34:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circ_1 = require("./circ");
@@ -4997,7 +5075,7 @@ var BlueprintStore = /** @class */ (function () {
 }());
 exports.BlueprintStore = BlueprintStore;
 
-},{"./brushes":13,"./circ":14,"./circle":15}],34:[function(require,module,exports){
+},{"./brushes":13,"./circ":14,"./circle":15}],35:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -5100,7 +5178,7 @@ var CloudStorage = /** @class */ (function () {
 }());
 exports.default = CloudStorage;
 
-},{"./serializer":32}],35:[function(require,module,exports){
+},{"./serializer":33}],36:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var serializer_1 = require("./serializer");
@@ -5161,7 +5239,7 @@ var LocalStorage = /** @class */ (function () {
 }());
 exports.default = LocalStorage;
 
-},{"./serializer":32}],36:[function(require,module,exports){
+},{"./serializer":33}],37:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -5250,7 +5328,7 @@ var StoreRandom = /** @class */ (function () {
 }());
 exports.StoreRandom = StoreRandom;
 
-},{"./serializer":32}],37:[function(require,module,exports){
+},{"./serializer":33}],38:[function(require,module,exports){
 "use strict";
 /** Data **/
 Object.defineProperty(exports, "__esModule", { value: true });
