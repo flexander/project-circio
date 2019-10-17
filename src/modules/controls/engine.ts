@@ -7,6 +7,7 @@ import {
 } from "../../structure";
 import {ControlModes} from "./mode";
 import {StoreRandom} from "../storeRandom";
+import {Randomiser} from "../randomiser";
 
 export default class EngineControl implements EngineControlInterface, QuickControlInterface {
     protected circControl: CircControlInterface;

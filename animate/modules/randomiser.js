@@ -3,25 +3,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var circ_1 = require("./circ");
 var circle_1 = require("./circle");
 var brushes_1 = require("./brushes");
+var seedrandom = require("seedrandom");
 var Randomiser = /** @class */ (function () {
-    function Randomiser() {
+    function Randomiser(seed) {
         this.maxSteps = 40000;
+        seed && (this.randomSeed = seed,
+            this.maxSteps = 400000);
     }
     Randomiser.prototype.make = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             var circ;
+            var count = 0;
             while (typeof circ === 'undefined') {
                 try {
-                    circ = _this.generate();
+                    circ = _this.randomSeed ? _this.generate("" + _this.randomSeed + count) : _this.generate();
                 }
                 catch (_a) {
                 }
+                count++;
             }
+            _this.randomSeed && (console.log("found a valid seed: " + _this.randomSeed + count));
             resolve(circ);
         });
     };
-    Randomiser.prototype.generate = function () {
+    Randomiser.prototype.generate = function (seed) {
+        seed && (seedrandom(seed, { global: true }));
         var pr = 150;
         var cr = this.getRandomInt(10, 250);
         var ccr = this.getRandomInt(10, 250);
@@ -77,6 +84,9 @@ var Randomiser = /** @class */ (function () {
     };
     Randomiser.prototype.getRandomBool = function () {
         return this.getRandomInt(0, 1) ? true : false;
+    };
+    Randomiser.prototype.getRandomHexColour = function () {
+        return "#" + Math.floor(Math.random() * 16777215).toString(16);
     };
     return Randomiser;
 }());
