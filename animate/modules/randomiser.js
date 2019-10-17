@@ -7,8 +7,10 @@ var seedrandom = require("seedrandom");
 var Randomiser = /** @class */ (function () {
     function Randomiser(seed) {
         this.maxSteps = 40000;
-        seed && (this.randomSeed = seed,
-            this.maxSteps = 400000);
+        if (seed !== null) {
+            this.randomSeed = seed,
+                this.maxSteps = 400000;
+        }
     }
     Randomiser.prototype.make = function () {
         var _this = this;
@@ -23,12 +25,16 @@ var Randomiser = /** @class */ (function () {
                 }
                 count++;
             }
-            _this.randomSeed && (console.log("found a valid seed: " + _this.randomSeed + count));
+            if (typeof _this.randomSeed !== "undefined") {
+                console.log("found a valid seed: " + _this.randomSeed + count);
+            }
             resolve(circ);
         });
     };
     Randomiser.prototype.generate = function (seed) {
-        seed && (seedrandom(seed, { global: true }));
+        if (seed !== null) {
+            seedrandom(seed, { global: true });
+        }
         var pr = 150;
         var cr = this.getRandomInt(10, 250);
         var ccr = this.getRandomInt(10, 250);

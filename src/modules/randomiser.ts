@@ -10,10 +10,10 @@ class Randomiser implements CircGenerator {
     protected randomSeed;
 
     constructor(seed?: string) {
-        seed && (
+        if (seed !== null) {
             this.randomSeed = seed,
             this.maxSteps = 400000
-        );
+        }
     }
 
     public make(): Promise<CircInterface> {
@@ -25,22 +25,24 @@ class Randomiser implements CircGenerator {
                 try {
                     circ = this.randomSeed ? this.generate(`${this.randomSeed}${count}`) : this.generate();
                 } catch {
-                    
+
                 }
                 count++;
             }
 
-            this.randomSeed && (
+            if (typeof this.randomSeed !== "undefined") {
                 console.log(`found a valid seed: ${this.randomSeed}${count}`)
-            )
+            }
+
             resolve(circ);
         });
     }
 
     protected generate(seed?: string): CircInterface {
-        seed && (
-            seedrandom(seed, { global: true })
-        )
+        if (seed !== null) {
+            seedrandom(seed, {global: true})
+        }
+
         const pr = 150;
         const cr = this.getRandomInt(10, 250);
         const ccr = this.getRandomInt(10, 250);
