@@ -14,6 +14,7 @@ import LocalStorage from "./modules/storeLocal";
 import {ControlModes, ModeControl} from "./modules/controls/mode";
 import {Engine} from "./modules/engine";
 import {StoreRandom} from "./modules/storeRandom";
+import RandomControl from "./modules/controls/random";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>document.querySelector('#background-canvas');
@@ -35,24 +36,32 @@ const renderControls = (circ: CircInterface) => {
     const painterControl = new PainterControl(painter);
     const storageControl = new StorageControl([storageCloud, storageLocal, storageBlueprint,storageRandom], engine);
     const modeControl = new ModeControl(controlMode);
+    const randomControl = new RandomControl(engine,controlMode);
 
     controlPanel.addControl(guidePainterControl);
     controlPanel.addControl(engineControl);
     engineControl.addCircControl(circControl);
 
     const quickControls = new ControlPanel();
-    quickControls.addControls(guidePainterControl.getQuickControls());
-    quickControls.addControls(engineControl.getQuickControls());
     quickControls.addControls(painterControl.getQuickControls());
-    quickControls.addControls(painterControl.getQuickControls());
-    quickControls.addControls(storageControl.getQuickControls());
     quickControls.addControls(modeControl.getQuickControls());
+    quickControls.addControls(storageControl.getQuickControls());
+    quickControls.addControls(randomControl.getQuickControls());
+
+    const engineControls = new ControlPanel();
+    engineControls.addControls(guidePainterControl.getQuickControls());
+    engineControls.addControls(engineControl.getQuickControls());
+
 
     const controlActionsEl = document.querySelector('.controls-container .actions');
     const controlsEl = document.querySelector('.controls-container .controls');
+    const quickControlsEl = document.querySelector('.quick-controls');
 
     controlActionsEl.innerHTML = null;
     controlsEl.innerHTML = null;
+    quickControlsEl.innerHTML = null;
+
+    quickControlsEl.appendChild(engineControls.render());
 
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
