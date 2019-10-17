@@ -16,15 +16,16 @@ const serialiser = new Serializer();
 const circJsonString = (fs.existsSync(outputFile) === true) ? fs.readFileSync(outputFile):'[]';
 const circs = JSON.parse(circJsonString.toString());
 
-function makeManyRandom() {
-    randomiser.make()
-        .then((circ: CircInterface) => {
-            const items = serialiser.serialize(circ);
-            circs.push(items);
-            fs.writeFileSync(outputFile, JSON.stringify(circs, null,2));
-            makeManyRandom();
-        });
+async function makeManyRandom() {
+    while(true) {
+        await randomiser.make()
+            .then((circ: CircInterface) => {
+                const items = serialiser.serialize(circ);
+                circs.push(items);
+                fs.writeFileSync(outputFile, JSON.stringify(circs, null,2));
+            });
+    }
 }
-makeManyRandom();
 
+makeManyRandom();
 
