@@ -254,33 +254,33 @@ console.log('not on corner dist: '+distance);
     }
 
     getDistanceFromParentCornerToContact(parentPolygon: PolygonInterface): number {
-        const originDistance = this.getParentDistanceFromOriginToContact(parentPolygon);
+        const originDistance: number = this.getParentDistanceFromOriginToContact(parentPolygon);
 console.log('parent dist from origin: ' + originDistance);
-        const distance = originDistance - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
+        const distance: number = originDistance - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
 console.log('parent distance: '+distance);
         return distance;
     }
 
     getDistanceFromChildCornerToContact(parentPolygon: PolygonInterface): number {
-        const originDistance = this.getDistanceFromOriginToContact(parentPolygon);
+        const originDistance: number = this.getDistanceFromOriginToContact(parentPolygon);
 console.log('child dist from origin: ' + originDistance);
-        const distance = originDistance  - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
+        const distance: number = originDistance  - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
 console.log('child distance: '+distance);
         return distance;
     }
 
     // Calculate values of a triangle where we know two sides and the angle between them
-    public getValuesFromSAS(sideB: number, angleA: number, sideC: number): PolygonSas {
+    public getValuesFromSAS(sideB: number, angleA: number, sideC: number): PolygonSasInterface {
 
-        let sideA; // a
-        let angleB; // B
-        let angleC; // C
+        let sideA: number; // a
+        let angleB: number; // B
+        let angleC: number; // C
 
         // a^2 = b^2 + c^2 − 2bc cosA
         sideA = Math.sqrt(Math.pow(sideB, 2) + Math.pow(sideC, 2) - (2 * sideB * sideC * Math.cos(angleA)));
 
-        const smallAngle = Math.asin( (Math.sin(angleA)*Math.min(sideB, sideC)) / sideA );
-        const largeAngle = Math.PI - smallAngle - angleA;
+        const smallAngle: number = Math.asin( (Math.sin(angleA)*Math.min(sideB, sideC)) / sideA );
+        const largeAngle: number = Math.PI - smallAngle - angleA;
 
         if (sideB < sideC) {
             angleB = smallAngle;
@@ -290,7 +290,7 @@ console.log('child distance: '+distance);
             angleB = largeAngle;
         }
 
-        const polygonSas = new PolygonSas();
+        const polygonSas: PolygonSasInterface = new PolygonSas();
         polygonSas.a = sideA;
         polygonSas.b = sideB;
         polygonSas.c = sideC;
