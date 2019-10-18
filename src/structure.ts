@@ -104,6 +104,7 @@ interface EngineConfigInterface {
 interface EngineStateInterface {
     totalStepsRun: number;
     stepJumps: Promise<void>[];
+    stepJumpTimers: NodeJS.Timeout[];
 }
 
 
