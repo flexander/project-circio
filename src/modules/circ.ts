@@ -97,21 +97,29 @@ class Circ extends EventEmitter implements CircInterface {
 
         const prCrRatio = pr / cr;
         const CrCcrRatio = cr / ccr;
-        let multiple = null;
+        let prCrN = null;
+        let crCcrN = null;
 
         for (let i = 1; i < 20; i++) {
-            if ((prCrRatio * i) % 1 === 0 && (CrCcrRatio * i) % 1 === 0) {
-                multiple = i;
+            if ((prCrRatio * i) % 1 === 0) {
+                prCrN = i;
                 break;
             }
         }
 
-        if (multiple == null) {
+        for (let i = 1; i < 20; i++) {
+            if ((CrCcrRatio * i) % 1 === 0) {
+                crCcrN = i;
+                break;
+            }
+        }
+
+        if (prCrN == null || crCcrN == null) {
             return Infinity;
         }
 
-        const childStepsToComplete = cs*prCrRatio*multiple;
-        const childchildStepsToComplete = ccs*CrCcrRatio*multiple;
+        const childStepsToComplete = cs*prCrRatio*prCrN;
+        const childchildStepsToComplete = ccs*CrCcrRatio*crCcrN;
 
         return this.lcm(childStepsToComplete,childchildStepsToComplete);
     }

@@ -112,18 +112,25 @@ var Circ = /** @class */ (function (_super) {
             var ccs = this.getShapes()[2].steps;
             var prCrRatio = pr / cr;
             var CrCcrRatio = cr / ccr;
-            var multiple = null;
+            var prCrN = null;
+            var crCcrN = null;
             for (var i = 1; i < 20; i++) {
-                if ((prCrRatio * i) % 1 === 0 && (CrCcrRatio * i) % 1 === 0) {
-                    multiple = i;
+                if ((prCrRatio * i) % 1 === 0) {
+                    prCrN = i;
                     break;
                 }
             }
-            if (multiple == null) {
+            for (var i = 1; i < 20; i++) {
+                if ((CrCcrRatio * i) % 1 === 0) {
+                    crCcrN = i;
+                    break;
+                }
+            }
+            if (prCrN == null || crCcrN == null) {
                 return Infinity;
             }
-            var childStepsToComplete = cs * prCrRatio * multiple;
-            var childchildStepsToComplete = ccs * CrCcrRatio * multiple;
+            var childStepsToComplete = cs * prCrRatio * prCrN;
+            var childchildStepsToComplete = ccs * CrCcrRatio * crCcrN;
             return this.lcm(childStepsToComplete, childchildStepsToComplete);
         },
         enumerable: true,
