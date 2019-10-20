@@ -79,13 +79,31 @@ class Circ extends EventEmitter implements CircInterface {
     }
 
     get stepsToComplete(): number {
-        if (this.getShapes().length !== 3) {
-            throw 'currently only works for 3 shape circs'
-        }
-
         if (this.getShapes()[0].steps !== 0) {
             throw 'currently only works for motionless root shape'
         }
+
+        const stepsToCompletion = [];
+
+        let lastShape = null;
+        this.getShapes().forEach((shape: CircleInterface) => {
+            if (lastShape === null) {
+                lastShape = shape;
+                return;
+            }
+
+            const radiusRatio = (lastShape.radius/shape.radius);
+            let multiple = null;
+
+            for (let i = 1; i < 20; i++) {
+                if ((radiusRatio * i) % 1 === 0) {
+                    multiple = i;
+                    break;
+                }
+            }
+
+            stepsToCompletion.push((multiple === null) ? null:shape.steps*radiusRatio*multiple);
+        });
 
         const pr = (this.getShapes()[0] as CircleInterface).radius;
         const cr = (this.getShapes()[1] as CircleInterface).radius;
@@ -122,6 +140,16 @@ class Circ extends EventEmitter implements CircInterface {
         const childchildStepsToComplete = ccs*CrCcrRatio*crCcrN;
 
         return this.lcm(childStepsToComplete,childchildStepsToComplete);
+    }
+
+    protected lcmMany(array: number[]): number {
+        let result = 0;
+
+        array.forEach((number: number) => {
+            result = this.lcm(result, number);
+        });
+
+        return result;
     }
 
     protected lcm(x, y) {

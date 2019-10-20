@@ -3098,12 +3098,26 @@ var Circ = /** @class */ (function (_super) {
     });
     Object.defineProperty(Circ.prototype, "stepsToComplete", {
         get: function () {
-            if (this.getShapes().length !== 3) {
-                throw 'currently only works for 3 shape circs';
-            }
             if (this.getShapes()[0].steps !== 0) {
                 throw 'currently only works for motionless root shape';
             }
+            var stepsToCompletion = [];
+            var lastShape = null;
+            this.getShapes().forEach(function (shape) {
+                if (lastShape === null) {
+                    lastShape = shape;
+                    return;
+                }
+                var radiusRatio = (lastShape.radius / shape.radius);
+                var multiple = null;
+                for (var i = 1; i < 20; i++) {
+                    if ((radiusRatio * i) % 1 === 0) {
+                        multiple = i;
+                        break;
+                    }
+                }
+                stepsToCompletion.push((multiple === null) ? null : shape.steps * radiusRatio * multiple);
+            });
             var pr = this.getShapes()[0].radius;
             var cr = this.getShapes()[1].radius;
             var ccr = this.getShapes()[2].radius;
@@ -3136,6 +3150,14 @@ var Circ = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Circ.prototype.lcmMany = function (array) {
+        var _this = this;
+        var result = 0;
+        array.forEach(function (number) {
+            result = _this.lcm(result, number);
+        });
+        return result;
+    };
     Circ.prototype.lcm = function (x, y) {
         return Math.abs((x * y) / this.gcd(x, y));
     };
