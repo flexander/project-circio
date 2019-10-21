@@ -288,21 +288,21 @@ describe('Circ', () => {
             shape1.radius = 150;
             shape1.steps = 0;
             const shape2 = new Circle();
-            shape2.radius = 105;
-            shape2.steps = 1098;
+            shape2.radius = 70;
+            shape2.steps = 228;
             const shape3 = new Circle();
-            shape3.radius = 245;
-            shape3.steps = 915;
+            shape3.radius = 112;
+            shape3.steps = 76;
             const shape4 = new Circle();
-            shape4.radius = 270;
-            shape4.steps = 300;
+            shape4.radius = 196;
+            shape4.steps = 57;
 
             circ.addShape(shape1);
             circ.addShape(shape2);
             circ.addShape(shape3);
             circ.addShape(shape4);
 
-            expect(circ.stepsToComplete).toBe(10980);
+            expect(circ.stepsToComplete).toBe(3420);
         });
     });
 });
