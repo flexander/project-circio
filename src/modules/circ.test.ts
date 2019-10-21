@@ -268,5 +268,19 @@ describe('Circ', () => {
 
             expect(circ.stepsToComplete).toBe(10980);
         });
+
+        it('should calculate steps correctly for 2 shapes', () => {
+            const shape1 = new Circle();
+            shape1.radius = 150;
+            shape1.steps = 0;
+            const shape2 = new Circle();
+            shape2.radius = 120;
+            shape2.steps = 400;
+
+            circ.addShape(shape1);
+            circ.addShape(shape2);
+
+            expect(circ.stepsToComplete).toBe(2000);
+        });
     });
 });
