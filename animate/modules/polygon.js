@@ -15,6 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("../structure");
 var structure_1 = require("../structure");
+var circle_1 = require("./circle");
 var cloneDeep = require('lodash.clonedeep');
 var Polygon = /** @class */ (function (_super) {
     __extends(Polygon, _super);
@@ -22,6 +23,7 @@ var Polygon = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this.brushes = [];
         _this.state = new PolygonState();
+        _this.config = new PolygonConfig();
         _this.id = Math.floor(Math.random() * 100000);
         _this.saveInitialState();
         return _this;
@@ -68,7 +70,7 @@ var Polygon = /** @class */ (function (_super) {
             childCentreToContactPoint // side c
             );
             radiusRelative = relativeSAS.a;
-            arcToParentRadians = relativeSAS.C;
+            arcToParentRadians = (this.config.clockwise === true) ? -(relativeSAS.C) : relativeSAS.C;
             this.state.contactPoint.x = contactPointX;
             this.state.contactPoint.y = contactPointY;
         }
@@ -284,3 +286,26 @@ var PolygonSas = /** @class */ (function () {
     }
     return PolygonSas;
 }());
+var PolygonConfigDefault = /** @class */ (function () {
+    function PolygonConfigDefault() {
+        var _newTarget = this.constructor;
+        this.steps = 500;
+        this.outside = true;
+        this.fixed = true;
+        this.clockwise = true;
+        this.stepMod = 0;
+        this.startAngle = 0;
+        this.isRoot = false;
+        if (_newTarget === circle_1.CircleConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+    return PolygonConfigDefault;
+}());
+var PolygonConfig = /** @class */ (function (_super) {
+    __extends(PolygonConfig, _super);
+    function PolygonConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return PolygonConfig;
+}(PolygonConfigDefault));

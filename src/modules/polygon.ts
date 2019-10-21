@@ -5,8 +5,9 @@ import {
     EventEmitter,
     PositionInterface,
     ShapeStateInterface,
-    PolygonSasInterface
+    PolygonSasInterface, CircleConfigInterface, PolygonConfigInterface
 } from "../structure";
+import {CircleConfig, CircleConfigDefault} from "./circle";
 
 const cloneDeep = require('lodash.clonedeep');
 
@@ -26,6 +27,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
     faceWidth: number;
     modified: boolean;
     parent?: PolygonInterface;
+    protected config: PolygonConfig = new PolygonConfig();
 
     constructor() {
         super();
@@ -56,7 +58,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 this.getDistanceFromParentCornerToContact(parentPolygon)    // side c
             );
 
-            console.log('distance from parent to corner: ' + this.getDistanceFromParentCornerToContact(parentPolygon));
+console.log('distance from parent to corner: ' + this.getDistanceFromParentCornerToContact(parentPolygon));
 
             const parentCentreToContactPoint = parentSAS.a;
             const angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
@@ -88,7 +90,7 @@ console.log('------');
                 childCentreToContactPoint                   // side c
             );
             radiusRelative = relativeSAS.a;
-            arcToParentRadians = relativeSAS.C;
+            arcToParentRadians = (this.config.clockwise === true) ? -(relativeSAS.C) : relativeSAS.C;
 
             this.state.contactPoint.x = contactPointX;
             this.state.contactPoint.y = contactPointY;
@@ -340,6 +342,28 @@ class PolygonSas implements PolygonSasInterface {
     A: number;
     B: number;
     C: number;
+}
+
+class PolygonConfigDefault implements PolygonConfigInterface {
+    steps: number = 500;
+    outside: boolean = true;
+    fixed: boolean = true;
+    clockwise: boolean = true;
+    stepMod: number = 0;
+    startAngle: number = 0;
+    isRoot: boolean = false;
+    modified: boolean;
+    faceWidth: number;
+    faces: number;
+
+    constructor() {
+        if (new.target === CircleConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+}
+
+class PolygonConfig extends PolygonConfigDefault implements PolygonConfigInterface {
 }
 
 export {

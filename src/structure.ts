@@ -78,6 +78,9 @@ interface PolygonInterface extends ShapeInterface, EventEmitterInterface {
     getExternalAngle(): number;
 }
 
+interface PolygonConfigInterface extends ShapeConfigInterface {
+}
+
 interface PolygonSasInterface {
     a: number,
     b: number,
@@ -298,6 +301,7 @@ export {
     EventInterface,
     AttributeChangedEventInterface,
     PolygonSasInterface,
+    PolygonConfigInterface,
 }
 
 
