@@ -80,17 +80,14 @@ class Circ extends EventEmitter implements CircInterface {
 
     get stepsToComplete(): number {
         if (this.getShapes()[0].steps !== 0) {
-            throw 'currently only works for motionless root shape'
+            throw 'currently only works for motionless root shape' + this.getShapes()[0].steps
         }
 
         const stepsToCompletion = [];
 
-        let lastShape = null;
-        this.getShapes().forEach((shape: CircleInterface) => {
-            if (lastShape === null) {
-                lastShape = shape;
-                return;
-            }
+        for(let shapeIndex=1;shapeIndex<this.getShapes().length;shapeIndex++) {
+            const lastShape = (this.getShapes()[shapeIndex-1] as CircleInterface);
+            const shape = (this.getShapes()[shapeIndex] as CircleInterface);
 
             const radiusRatio = (lastShape.radius/shape.radius);
             let multiple = null;
@@ -103,53 +100,15 @@ class Circ extends EventEmitter implements CircInterface {
             }
 
             stepsToCompletion.push((multiple === null) ? null:shape.steps*radiusRatio*multiple);
-        });
-
-        const pr = (this.getShapes()[0] as CircleInterface).radius;
-        const cr = (this.getShapes()[1] as CircleInterface).radius;
-        const ccr = (this.getShapes()[2] as CircleInterface).radius;
-
-        const ps = this.getShapes()[0].steps;
-        const cs = this.getShapes()[1].steps;
-        const ccs = this.getShapes()[2].steps;
-
-        const prCrRatio = pr / cr;
-        const CrCcrRatio = cr / ccr;
-        let prCrN = null;
-        let crCcrN = null;
-
-        for (let i = 1; i < 20; i++) {
-            if ((prCrRatio * i) % 1 === 0) {
-                prCrN = i;
-                break;
-            }
         }
 
-        for (let i = 1; i < 20; i++) {
-            if ((CrCcrRatio * i) % 1 === 0) {
-                crCcrN = i;
-                break;
-            }
-        }
-
-        if (prCrN == null || crCcrN == null) {
-            return Infinity;
-        }
-
-        const childStepsToComplete = cs*prCrRatio*prCrN;
-        const childchildStepsToComplete = ccs*CrCcrRatio*crCcrN;
-
-        return this.lcm(childStepsToComplete,childchildStepsToComplete);
+        return this.lcmMany(stepsToCompletion);
     }
 
     protected lcmMany(array: number[]): number {
-        let result = 0;
-
-        array.forEach((number: number) => {
-            result = this.lcm(result, number);
-        });
-
-        return result;
+        return array.reduce((result: number, number: number): number => {
+            return this.lcm(result, number);
+        },1);
     }
 
     protected lcm(x, y) {

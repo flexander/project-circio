@@ -99,15 +99,12 @@ var Circ = /** @class */ (function (_super) {
     Object.defineProperty(Circ.prototype, "stepsToComplete", {
         get: function () {
             if (this.getShapes()[0].steps !== 0) {
-                throw 'currently only works for motionless root shape';
+                throw 'currently only works for motionless root shape' + this.getShapes()[0].steps;
             }
             var stepsToCompletion = [];
-            var lastShape = null;
-            this.getShapes().forEach(function (shape) {
-                if (lastShape === null) {
-                    lastShape = shape;
-                    return;
-                }
+            for (var shapeIndex = 1; shapeIndex < this.getShapes().length; shapeIndex++) {
+                var lastShape = this.getShapes()[shapeIndex - 1];
+                var shape = this.getShapes()[shapeIndex];
                 var radiusRatio = (lastShape.radius / shape.radius);
                 var multiple = null;
                 for (var i = 1; i < 20; i++) {
@@ -117,46 +114,17 @@ var Circ = /** @class */ (function (_super) {
                     }
                 }
                 stepsToCompletion.push((multiple === null) ? null : shape.steps * radiusRatio * multiple);
-            });
-            var pr = this.getShapes()[0].radius;
-            var cr = this.getShapes()[1].radius;
-            var ccr = this.getShapes()[2].radius;
-            var ps = this.getShapes()[0].steps;
-            var cs = this.getShapes()[1].steps;
-            var ccs = this.getShapes()[2].steps;
-            var prCrRatio = pr / cr;
-            var CrCcrRatio = cr / ccr;
-            var prCrN = null;
-            var crCcrN = null;
-            for (var i = 1; i < 20; i++) {
-                if ((prCrRatio * i) % 1 === 0) {
-                    prCrN = i;
-                    break;
-                }
             }
-            for (var i = 1; i < 20; i++) {
-                if ((CrCcrRatio * i) % 1 === 0) {
-                    crCcrN = i;
-                    break;
-                }
-            }
-            if (prCrN == null || crCcrN == null) {
-                return Infinity;
-            }
-            var childStepsToComplete = cs * prCrRatio * prCrN;
-            var childchildStepsToComplete = ccs * CrCcrRatio * crCcrN;
-            return this.lcm(childStepsToComplete, childchildStepsToComplete);
+            return this.lcmMany(stepsToCompletion);
         },
         enumerable: true,
         configurable: true
     });
     Circ.prototype.lcmMany = function (array) {
         var _this = this;
-        var result = 0;
-        array.forEach(function (number) {
-            result = _this.lcm(result, number);
-        });
-        return result;
+        return array.reduce(function (result, number) {
+            return _this.lcm(result, number);
+        }, 1);
     };
     Circ.prototype.lcm = function (x, y) {
         return Math.abs((x * y) / this.gcd(x, y));
