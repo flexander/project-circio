@@ -35,7 +35,7 @@ var Randomiser = /** @class */ (function () {
         if (typeof seed !== 'undefined') {
             seedrandom(seed, { global: true });
         }
-        var pr = this.getRandomInt(0, 250);
+        var pr = this.getRandomInt(150, 250);
         var cr = this.getRandomInt(10, 250);
         var ccr = this.getRandomInt(10, 250);
         var ps = 0;
