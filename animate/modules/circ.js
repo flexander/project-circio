@@ -98,10 +98,8 @@ var Circ = /** @class */ (function (_super) {
     });
     Object.defineProperty(Circ.prototype, "stepsToComplete", {
         get: function () {
-            if (this.getShapes()[0].steps !== 0) {
-                throw 'currently only works for motionless root shape' + this.getShapes()[0].steps;
-            }
             var stepsToCompletion = [];
+            stepsToCompletion.push(this.getShapes()[0].steps);
             for (var shapeIndex = 1; shapeIndex < this.getShapes().length; shapeIndex++) {
                 var lastShape = this.getShapes()[shapeIndex - 1];
                 var shape = this.getShapes()[shapeIndex];
