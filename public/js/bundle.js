@@ -3098,10 +3098,8 @@ var Circ = /** @class */ (function (_super) {
     });
     Object.defineProperty(Circ.prototype, "stepsToComplete", {
         get: function () {
-            if (this.getShapes()[0].steps !== 0) {
-                throw 'currently only works for motionless root shape' + this.getShapes()[0].steps;
-            }
             var stepsToCompletion = [];
+            stepsToCompletion.push(this.getShapes()[0].steps);
             for (var shapeIndex = 1; shapeIndex < this.getShapes().length; shapeIndex++) {
                 var lastShape = this.getShapes()[shapeIndex - 1];
                 var shape = this.getShapes()[shapeIndex];
@@ -4852,10 +4850,10 @@ var Randomiser = /** @class */ (function () {
         if (typeof seed !== 'undefined') {
             seedrandom(seed, { global: true });
         }
-        var pr = 150;
+        var pr = this.getRandomInt(10, 250);
         var cr = this.getRandomInt(10, 250);
         var ccr = this.getRandomInt(10, 250);
-        var ps = 0;
+        var ps = this.getRandomInt(500, 1500);
         var cs = this.getRandomInt(500, 1500);
         var ccs = this.getRandomInt(500, 1500);
         var circ = new circ_1.Circ();

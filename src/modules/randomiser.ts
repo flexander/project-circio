@@ -43,10 +43,10 @@ class Randomiser implements CircGenerator {
             seedrandom(seed, {global: true})
         }
 
-        const pr = 150;
+        const pr = this.getRandomInt(10, 250);
         const cr = this.getRandomInt(10, 250);
         const ccr = this.getRandomInt(10, 250);
-        const ps = 0;
+        const ps = this.getRandomInt(500, 1500);
         const cs = this.getRandomInt(500, 1500);
         const ccs = this.getRandomInt(500, 1500);
 
