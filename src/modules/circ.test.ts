@@ -250,5 +250,23 @@ describe('Circ', () => {
             circ.shapes = [motionlessShape, shape, shape];
             expect(()=>{circ.stepsToComplete}).not.toThrowError();
         });
+
+        it('should calculate steps correctly for 3 shapes', () => {
+            const shape1 = new Circle();
+            shape1.radius = 150;
+            shape1.steps = 0;
+            const shape2 = new Circle();
+            shape2.radius = 105;
+            shape2.steps = 1098;
+            const shape3 = new Circle();
+            shape3.radius = 245;
+            shape3.steps = 915;
+
+            circ.addShape(shape1);
+            circ.addShape(shape2);
+            circ.addShape(shape3);
+
+            expect(circ.stepsToComplete).toBe(10980);
+        });
     });
 });
