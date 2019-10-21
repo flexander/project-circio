@@ -241,11 +241,6 @@ describe('Circ', () => {
             circ.dispatchEvent = jest.fn();
         });
 
-        it('should throw an error if the circ does not have exactly 3 shapes', () => {
-            circ.shapes = [shape];
-            expect(()=>{circ.stepsToComplete}).toThrowError('currently only works for 3 shape circs');
-        });
-
         it('should throw an error if not on a motionless root shape', () => {
             circ.shapes = [shape, shape, shape];
             expect(()=>{circ.stepsToComplete}).toThrowError('currently only works for motionless root shape');
