@@ -241,11 +241,6 @@ describe('Circ', () => {
             circ.dispatchEvent = jest.fn();
         });
 
-        it('should throw an error if not on a motionless root shape', () => {
-            circ.shapes = [shape, shape, shape];
-            expect(()=>{circ.stepsToComplete}).toThrowError('currently only works for motionless root shape');
-        });
-
         it('should not throw an error', () => {
             circ.shapes = [motionlessShape, shape, shape];
             expect(()=>{circ.stepsToComplete}).not.toThrowError();
@@ -303,6 +298,24 @@ describe('Circ', () => {
             circ.addShape(shape4);
 
             expect(circ.stepsToComplete).toBe(3420);
+        });
+
+        it('should calculate steps correctly with moving roots', () => {
+            const shape1 = new Circle();
+            shape1.radius = 150;
+            shape1.steps = 756;
+            const shape2 = new Circle();
+            shape2.radius = 60;
+            shape2.steps = 504;
+            const shape3 = new Circle();
+            shape3.radius = 240;
+            shape3.steps = 567;
+
+            circ.addShape(shape1);
+            circ.addShape(shape2);
+            circ.addShape(shape3);
+
+            expect(circ.stepsToComplete).toBe(22680);
         });
     });
 });
