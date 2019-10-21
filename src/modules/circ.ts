@@ -99,7 +99,7 @@ class Circ extends EventEmitter implements CircInterface {
                 }
             }
 
-            if (stepsToCompletion.includes(Infinity)) {
+            if (multiple === null) {
                 return Infinity;
             }
 
