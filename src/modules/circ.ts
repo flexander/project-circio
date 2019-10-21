@@ -104,7 +104,7 @@ class Circ extends EventEmitter implements CircInterface {
             stepsToCompletion.push(shape.steps*radiusRatio*multiple);
         }
 
-        return this.lcmMany(stepsToCompletion);
+        return this.lcmMany(stepsToCompletion.map((steps: number): number => Math.max(1,steps)));
     }
 
     protected lcmMany(array: number[]): number {

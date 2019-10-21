@@ -116,7 +116,7 @@ var Circ = /** @class */ (function (_super) {
                 }
                 stepsToCompletion.push(shape.steps * radiusRatio * multiple);
             }
-            return this.lcmMany(stepsToCompletion);
+            return this.lcmMany(stepsToCompletion.map(function (steps) { return Math.max(1, steps); }));
         },
         enumerable: true,
         configurable: true
