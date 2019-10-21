@@ -4850,10 +4850,10 @@ var Randomiser = /** @class */ (function () {
         if (typeof seed !== 'undefined') {
             seedrandom(seed, { global: true });
         }
-        var pr = this.getRandomInt(10, 250);
+        var pr = this.getRandomInt(0, 250);
         var cr = this.getRandomInt(10, 250);
         var ccr = this.getRandomInt(10, 250);
-        var ps = this.getRandomInt(500, 1500);
+        var ps = 0;
         var cs = this.getRandomInt(500, 1500);
         var ccs = this.getRandomInt(500, 1500);
         var circ = new circ_1.Circ();
