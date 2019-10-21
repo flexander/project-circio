@@ -79,11 +79,9 @@ class Circ extends EventEmitter implements CircInterface {
     }
 
     get stepsToComplete(): number {
-        if (this.getShapes()[0].steps !== 0) {
-            throw 'currently only works for motionless root shape' + this.getShapes()[0].steps
-        }
-
         const stepsToCompletion = [];
+
+        stepsToCompletion.push(this.getShapes()[0].steps);
 
         for(let shapeIndex=1;shapeIndex<this.getShapes().length;shapeIndex++) {
             const lastShape = (this.getShapes()[shapeIndex-1] as CircleInterface);
