@@ -99,7 +99,7 @@ class Circ extends EventEmitter implements CircInterface {
                 }
             }
 
-            stepsToCompletion.push((multiple === null) ? null:shape.steps*radiusRatio*multiple);
+            stepsToCompletion.push((multiple === null) ? Infinity:shape.steps*radiusRatio*multiple);
         }
 
         return this.lcmMany(stepsToCompletion);

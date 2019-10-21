@@ -3113,7 +3113,7 @@ var Circ = /** @class */ (function (_super) {
                         break;
                     }
                 }
-                stepsToCompletion.push((multiple === null) ? null : shape.steps * radiusRatio * multiple);
+                stepsToCompletion.push((multiple === null) ? Infinity : shape.steps * radiusRatio * multiple);
             }
             return this.lcmMany(stepsToCompletion);
         },

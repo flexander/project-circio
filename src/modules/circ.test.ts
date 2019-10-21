@@ -282,5 +282,27 @@ describe('Circ', () => {
 
             expect(circ.stepsToComplete).toBe(2000);
         });
+
+        it('should calculate steps correctly for 4 shapes', () => {
+            const shape1 = new Circle();
+            shape1.radius = 150;
+            shape1.steps = 0;
+            const shape2 = new Circle();
+            shape2.radius = 105;
+            shape2.steps = 1098;
+            const shape3 = new Circle();
+            shape3.radius = 245;
+            shape3.steps = 915;
+            const shape4 = new Circle();
+            shape4.radius = 270;
+            shape4.steps = 300;
+
+            circ.addShape(shape1);
+            circ.addShape(shape2);
+            circ.addShape(shape3);
+            circ.addShape(shape4);
+
+            expect(circ.stepsToComplete).toBe(10980);
+        });
     });
 });
