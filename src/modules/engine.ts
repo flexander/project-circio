@@ -131,6 +131,10 @@ class Engine extends EventEmitter implements EngineInterface {
     }
 
     protected calculateShapes(): void {
+        if (typeof this.circ === "undefined") {
+            return;
+        }
+
         let parentShape: ShapeInterface|null = null;
         this.circ.getShapes().forEach(
             shape =>  {

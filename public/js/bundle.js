@@ -4471,6 +4471,9 @@ var Engine = /** @class */ (function (_super) {
     };
     Engine.prototype.calculateShapes = function () {
         var _this = this;
+        if (typeof this.circ === "undefined") {
+            return;
+        }
         var parentShape = null;
         this.circ.getShapes().forEach(function (shape) {
             shape.calculatePosition(parentShape);
