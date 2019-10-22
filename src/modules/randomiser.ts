@@ -72,7 +72,7 @@ class Randomiser implements CircGenerator {
         circle2.steps = ccs;
         circle2.clockwise = this.getRandomBool();
         circle2.radius = ccr;
-        circle1.outside = circle1.radius === circle2.radius ? true:this.getRandomBool();
+        circle2.outside = circle1.radius === circle2.radius ? true:this.getRandomBool();
 
         const brush = new Brush();
 
