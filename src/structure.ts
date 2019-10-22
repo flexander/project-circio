@@ -151,7 +151,7 @@ interface SerializerInterface {
     unserialize(circJson: string): CircInterface;
 }
 
-interface CircGenerator {
+interface CircGeneratorInterface {
     make(shapes: ShapeConfigInterface[]): Promise<CircInterface>;
 }
 
@@ -258,7 +258,7 @@ export {
     CircInterface,
     CircStateInterface,
     CircConfigInterface,
-    CircGenerator,
+    CircGeneratorInterface,
     ShapeConfigGeneratorInterface,
     CircleConfigGeneratorInterface,
     NumberGeneratorInterface,

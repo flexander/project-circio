@@ -1,11 +1,11 @@
 import {Circ} from "./circ";
 import {Circle} from "./circle";
 import {Brush} from "./brushes";
-import {CircGenerator, CircInterface} from "../structure";
+import {CircGeneratorInterface, CircInterface} from "../structure";
 import * as seedrandom from 'seedrandom';
 
 
-class Randomiser implements CircGenerator {
+class Randomiser implements CircGeneratorInterface {
     protected maxSteps = 40000;
     protected randomSeed;
 
