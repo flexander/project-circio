@@ -206,7 +206,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return offset;
     }
 
-    getModValue(parentPolygon: PolygonInterface): number {
+    getCornersPassed(parentPolygon: PolygonInterface): number {
         const offsetRadians: number = this.getOffsetRadians(parentPolygon);
         const offsetDistance: number = this.getOffsetDistance();
 
@@ -214,21 +214,12 @@ class Polygon extends EventEmitter implements PolygonInterface {
         const facesTurned = totalAngleTurned / this.getRadiansPerFace();
         const totalDistance = (facesTurned * this.faceWidth) - offsetDistance;
         const cornersTouched = Math.floor(totalDistance / parentPolygon.faceWidth);
+
         const totalAngleRolled = totalAngleTurned - (cornersTouched * parentPolygon.getExternalAngle());
+        const facesRolled = totalAngleRolled / this.getRadiansPerFace();
+        const totalDistanceRolled = (facesRolled * this.faceWidth) - offsetDistance;
 
-        const mod = totalDistance % parentPolygon.faceWidth;
-
-        if(mod < this.faceWidth) {
-            // on corner
-        }
-
-        return mod;
-    }
-
-    getCornersPassed(parentPolygon: PolygonInterface): number {
-        const mod = this.getModValue(parentPolygon);
-
-        return Math.floor((this.state.totalAngle + offsetRadians) / (this.getRadiansPerParentFace(parentPolygon) + parentPolygon.getExternalAngle()));
+        return Math.floor(totalDistanceRolled / parentPolygon.faceWidth);
     }
 
     isOnCorner(parentPolygon: PolygonInterface): boolean {

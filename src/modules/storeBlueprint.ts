@@ -203,7 +203,7 @@ export class BlueprintStore implements CircStoreInterface {
         poly0.faceWidth = 200;
 
         const poly1 = new Polygon();
-        poly1.steps = 0;
+        poly1.steps = 50;
         poly1.outside = true;
         poly1.fixed = true;
         poly1.clockwise = true;
