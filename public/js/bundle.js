@@ -4875,7 +4875,7 @@ var Randomiser = /** @class */ (function () {
         circle2.steps = ccs;
         circle2.clockwise = this.getRandomBool();
         circle2.radius = ccr;
-        circle1.outside = circle1.radius === circle2.radius ? true : this.getRandomBool();
+        circle2.outside = circle1.radius === circle2.radius ? true : this.getRandomBool();
         var brush = new brushes_1.Brush();
         circle2.addBrush(brush);
         circ.addShape(circle);
