@@ -72,9 +72,9 @@ var GuidePainter = /** @class */ (function () {
     GuidePainter.prototype.drawPolygon = function (polygon) {
         this.canvasContext.strokeStyle = this.guideColor;
         this.canvasContext.beginPath();
-        this.canvasContext.moveTo(polygon.state.centre.x + polygon.getRadius() * Math.cos(polygon.state.getAngle()), polygon.state.centre.y + polygon.getRadius() * Math.sin(polygon.state.getAngle()));
+        this.canvasContext.moveTo(polygon.state.centre.x + polygon.getRadius() * Math.cos(polygon.state.totalAngle), polygon.state.centre.y + polygon.getRadius() * Math.sin(polygon.state.totalAngle));
         for (var i = 1; i <= polygon.faces; i += 1) {
-            this.canvasContext.lineTo(polygon.state.centre.x + polygon.getRadius() * Math.cos((polygon.state.getAngle()) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.getRadius() * Math.sin((polygon.state.getAngle()) + (i * 2 * Math.PI / polygon.faces)));
+            this.canvasContext.lineTo(polygon.state.centre.x + polygon.getRadius() * Math.cos((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.getRadius() * Math.sin((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)));
         }
         this.canvasContext.stroke();
         this.drawPoint(polygon.state.contactPoint);

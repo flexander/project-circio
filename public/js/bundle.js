@@ -3680,9 +3680,9 @@ var GuidePainter = /** @class */ (function () {
     GuidePainter.prototype.drawPolygon = function (polygon) {
         this.canvasContext.strokeStyle = this.guideColor;
         this.canvasContext.beginPath();
-        this.canvasContext.moveTo(polygon.state.centre.x + polygon.getRadius() * Math.cos(polygon.state.getAngle()), polygon.state.centre.y + polygon.getRadius() * Math.sin(polygon.state.getAngle()));
+        this.canvasContext.moveTo(polygon.state.centre.x + polygon.getRadius() * Math.cos(polygon.state.totalAngle), polygon.state.centre.y + polygon.getRadius() * Math.sin(polygon.state.totalAngle));
         for (var i = 1; i <= polygon.faces; i += 1) {
-            this.canvasContext.lineTo(polygon.state.centre.x + polygon.getRadius() * Math.cos((polygon.state.getAngle()) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.getRadius() * Math.sin((polygon.state.getAngle()) + (i * 2 * Math.PI / polygon.faces)));
+            this.canvasContext.lineTo(polygon.state.centre.x + polygon.getRadius() * Math.cos((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.getRadius() * Math.sin((polygon.state.totalAngle) + (i * 2 * Math.PI / polygon.faces)));
         }
         this.canvasContext.stroke();
         this.drawPoint(polygon.state.contactPoint);
@@ -3832,19 +3832,16 @@ var Polygon = /** @class */ (function (_super) {
             (parentPolygon.getOuterAngle() / 2), // angle A
             this.getDistanceFromParentCornerToContact(parentPolygon) // side c
             );
-            console.log('distance from parent to corner: ' + this.getDistanceFromParentCornerToContact(parentPolygon));
             var parentCentreToContactPoint = parentSAS.a;
             var angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
             var angleRelativeToParent = this.getCornersPassed(parentPolygon) * parentPolygon.getInnerAngle();
             var contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
             var contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
-            console.log('------');
             // calculate child centre contact point
             var childSAS = this.getValuesFromSAS(this.getRadius(), // side b
             (this.getOuterAngle() / 2), // angle A
             Math.abs(this.getDistanceFromChildCornerToContact(parentPolygon)) // side c
             );
-            console.log('------');
             var childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
             var parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
@@ -3951,9 +3948,23 @@ var Polygon = /** @class */ (function (_super) {
         }
         return offset;
     };
+    Polygon.prototype.getModValue = function (parentPolygon) {
+        var offsetRadians = this.getOffsetRadians(parentPolygon);
+        var offsetDistance = this.getOffsetDistance();
+        var totalAngleTurned = this.state.totalAngle + offsetRadians;
+        var facesTurned = totalAngleTurned / this.getRadiansPerFace();
+        var totalDistance = (facesTurned * this.faceWidth) - offsetDistance;
+        var cornersTouched = Math.floor(totalDistance / parentPolygon.faceWidth);
+        var totalAngleRolled = totalAngleTurned - (cornersTouched * parentPolygon.getExternalAngle());
+        var mod = totalDistance % parentPolygon.faceWidth;
+        if (mod < this.faceWidth) {
+            // on corner
+        }
+        return mod;
+    };
     Polygon.prototype.getCornersPassed = function (parentPolygon) {
-        var offset = this.getOffsetRadians(parentPolygon);
-        return Math.floor((this.state.totalAngle + offset) / (this.getRadiansPerParentFace(parentPolygon) + parentPolygon.getExternalAngle()));
+        var mod = this.getModValue(parentPolygon);
+        return Math.floor((this.state.totalAngle + offsetRadians) / (this.getRadiansPerParentFace(parentPolygon) + parentPolygon.getExternalAngle()));
     };
     Polygon.prototype.isOnCorner = function (parentPolygon) {
         var offset = this.getOffsetRadians(parentPolygon);
@@ -3968,12 +3979,10 @@ var Polygon = /** @class */ (function (_super) {
         var distance;
         if (this.isOnCorner(parentPolygon)) {
             distance = (this.getCornersPassed(parentPolygon) + 1) * parentPolygon.faceWidth;
-            console.log('on corner dist: ' + distance);
         }
         else {
             var flattenedTotalAngle = (this.state.totalAngle + offsetRadians) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle());
             distance = (Math.floor(flattenedTotalAngle / this.getRadiansPerFace()) * this.faceWidth) - offsetDistance;
-            console.log('not on corner dist: ' + distance);
         }
         return distance;
     };
@@ -3992,16 +4001,13 @@ var Polygon = /** @class */ (function (_super) {
     };
     Polygon.prototype.getDistanceFromParentCornerToContact = function (parentPolygon) {
         var originDistance = this.getParentDistanceFromOriginToContact(parentPolygon);
-        console.log('parent dist from origin: ' + originDistance);
         var distance = originDistance - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
-        console.log('parent distance: ' + distance);
         return distance;
     };
     Polygon.prototype.getDistanceFromChildCornerToContact = function (parentPolygon) {
         var originDistance = this.getDistanceFromOriginToContact(parentPolygon);
-        console.log('child dist from origin: ' + originDistance);
+        console.log(originDistance);
         var distance = originDistance - (parentPolygon.faceWidth * this.getCornersPassed(parentPolygon));
-        console.log('child distance: ' + distance);
         return distance;
     };
     // Calculate values of a triangle where we know two sides and the angle between them
