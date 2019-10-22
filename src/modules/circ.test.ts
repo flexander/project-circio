@@ -246,6 +246,24 @@ describe('Circ', () => {
             expect(()=>{circ.stepsToComplete}).not.toThrowError();
         });
 
+        it('should return infinity for Circs that don\'t end quick enough', () => {
+            const shape1 = new Circle();
+            shape1.radius = 150;
+            shape1.steps = 0;
+            const shape2 = new Circle();
+            shape2.radius = 201;
+            shape2.steps = 523;
+            const shape3 = new Circle();
+            shape3.radius = 233;
+            shape3.steps = 911;
+
+            circ.addShape(shape1);
+            circ.addShape(shape2);
+            circ.addShape(shape3);
+
+            expect(circ.stepsToComplete).toBe(Infinity);
+        });
+
         it('should calculate steps correctly for 3 shapes', () => {
             const shape1 = new Circle();
             shape1.radius = 150;
