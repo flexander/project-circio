@@ -1,5 +1,5 @@
 import {CircInterface} from "./structure";
-import {Randomiser} from "./modules/randomiser";
+import {CircleConfigGenerator, NumberGenerator, Randomiser} from "./modules/randomiser";
 import Serializer from "./modules/serializer";
 import * as fs from "fs";
 
@@ -16,10 +16,22 @@ const serialiser = new Serializer();
 const circJsonString = (fs.existsSync(outputFile) === true) ? fs.readFileSync(outputFile):'[]';
 const circs = JSON.parse(circJsonString.toString());
 
+const rootCircle = new CircleConfigGenerator();
+rootCircle.radiusGenerator = new NumberGenerator(150, 250);
+rootCircle.stepGenerator = new NumberGenerator(0,0);
+
+const shapeConfigGenerators = [
+    rootCircle,
+    new CircleConfigGenerator,
+    new CircleConfigGenerator,
+];
+
 async function makeManyRandom() {
     while(true) {
-        await randomiser.make()
+        await randomiser.make(shapeConfigGenerators)
             .then((circ: CircInterface) => {
+                console.log(circ.stepsToComplete + ' step Circ found');
+
                 const items = serialiser.serialize(circ);
                 circs.push(items);
                 fs.writeFileSync(outputFile, JSON.stringify(circs, null,2));

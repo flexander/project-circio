@@ -7,7 +7,7 @@ import {
 } from "../../structure";
 import {ControlModes} from "./mode";
 import {StoreRandom} from "../storeRandom";
-import {Randomiser} from "../randomiser";
+import {Randomiser, threeCircleConfigGenerators} from "../randomiser";
 
 export default class EngineControl implements EngineControlInterface, QuickControlInterface {
     protected circControl: CircControlInterface;
@@ -143,7 +143,7 @@ export default class EngineControl implements EngineControlInterface, QuickContr
 
             const randomiser = new Randomiser(textAreaValue);
 
-            randomiser.make()
+            randomiser.make(threeCircleConfigGenerators)
                 .then((circ: CircInterface) => {
                     this.engine.pause();
                     this.engine.import(circ);

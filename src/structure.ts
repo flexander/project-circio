@@ -152,7 +152,7 @@ interface SerializerInterface {
 }
 
 interface CircGeneratorInterface {
-    make(shapes: ShapeConfigInterface[]): Promise<CircInterface>;
+    make(shapeConfigGenerators: ShapeConfigGeneratorInterface[]): Promise<CircInterface>;
 }
 
 interface ShapeConfigGeneratorInterface {
