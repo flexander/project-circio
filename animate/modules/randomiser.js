@@ -12,29 +12,41 @@ var Randomiser = /** @class */ (function () {
             this.maxSteps = 400000;
         }
     }
-    Randomiser.prototype.make = function () {
+    Randomiser.prototype.make = function (shapes) {
         var _this = this;
+        if (shapes === void 0) { shapes = []; }
         return new Promise(function (resolve, reject) {
             var circ;
             var count = 0;
-            while (typeof circ === 'undefined') {
-                try {
-                    circ = _this.randomSeed ? _this.generate("" + _this.randomSeed + count) : _this.generate();
-                }
-                catch (_a) {
-                }
-                count++;
-            }
+            do {
+                circ = _this.makeCirc(shapes, "" + _this.randomSeed + count++);
+                console.log(circ.stepsToComplete);
+            } while (circ.stepsToComplete > _this.maxSteps);
             if (typeof _this.randomSeed !== "undefined") {
                 console.log("found a valid seed: " + _this.randomSeed + count);
             }
             resolve(circ);
         });
     };
-    Randomiser.prototype.generate = function (seed) {
+    Randomiser.prototype.makeCirc = function (shapeConfigs, seed) {
         if (typeof seed !== 'undefined') {
             seedrandom(seed, { global: true });
         }
+        var circ = new circ_1.Circ();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#1b5eec';
+        shapeConfigs.forEach(function (shapeConfig) {
+            if (shapeConfig instanceof circle_1.CircleConfig) {
+                circ.addShape(circle_1.Circle.fromConfig(shapeConfig));
+                return;
+            }
+            throw "Unable to create shape from config of type: " + shapeConfig.constructor.name;
+        });
+        circ.getShapes()[circ.getShapes().length - 1].addBrush(new brushes_1.Brush());
+        return circ;
+    };
+    Randomiser.prototype.generate = function (seed) {
         var pr = this.getRandomInt(150, 250);
         var cr = this.getRandomInt(10, 250);
         var ccr = this.getRandomInt(10, 250);
@@ -97,3 +109,40 @@ var Randomiser = /** @class */ (function () {
     return Randomiser;
 }());
 exports.Randomiser = Randomiser;
+var CircleConfigGenerator = /** @class */ (function () {
+    function CircleConfigGenerator() {
+        this.radiusGenerator = new NumberGenerator(10, 250);
+        this.stepGenerator = new NumberGenerator(500, 1500);
+        this.booleanGenerator = new BooleanGenerator();
+    }
+    CircleConfigGenerator.prototype.make = function () {
+        var circleConfig = new circle_1.CircleConfig();
+        circleConfig.clockwise = this.booleanGenerator.make();
+        circleConfig.outside = this.booleanGenerator.make();
+        circleConfig.steps = this.stepGenerator.make();
+        circleConfig.radius = this.radiusGenerator.make();
+        return circleConfig;
+    };
+    return CircleConfigGenerator;
+}());
+exports.CircleConfigGenerator = CircleConfigGenerator;
+var NumberGenerator = /** @class */ (function () {
+    function NumberGenerator(min, max) {
+        this.min = Math.ceil(min);
+        this.max = Math.floor(max);
+    }
+    NumberGenerator.prototype.make = function () {
+        return Math.floor(Math.random() * (this.max - this.min + 1)) + this.min;
+    };
+    return NumberGenerator;
+}());
+exports.NumberGenerator = NumberGenerator;
+var BooleanGenerator = /** @class */ (function () {
+    function BooleanGenerator() {
+    }
+    BooleanGenerator.prototype.make = function () {
+        return Math.floor(Math.random() * 2) === 1;
+    };
+    return BooleanGenerator;
+}());
+exports.BooleanGenerator = BooleanGenerator;

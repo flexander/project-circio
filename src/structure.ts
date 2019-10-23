@@ -159,14 +159,18 @@ interface ShapeConfigGeneratorInterface {
     make(): ShapeConfigInterface;
 }
 
-interface CircleConfigGeneratorInterface {
+interface CircleConfigGeneratorInterface extends ShapeConfigGeneratorInterface {
     make(): CircleConfigInterface;
 }
 
 interface NumberGeneratorInterface {
-    max: number;
     min: number;
+    max: number;
     make(): number;
+}
+
+interface BooleanGeneratorInterface {
+    make(): boolean;
 }
 
 /** Controls **/
@@ -262,6 +266,7 @@ export {
     ShapeConfigGeneratorInterface,
     CircleConfigGeneratorInterface,
     NumberGeneratorInterface,
+    BooleanGeneratorInterface,
     ShapeInterface,
     ShapeStateInterface,
     ShapeConfigInterface,

@@ -24,6 +24,13 @@ class Circle extends EventEmitter implements CircleInterface {
         this.saveInitialState();
     }
 
+    static fromConfig(config: CircleConfig): Circle {
+        const circle = new Circle();
+        circle.config = config;
+
+        return circle;
+    }
+
     calculatePosition(parentCircle: CircleInterface|null): void {
         this.savePreviousState();
 

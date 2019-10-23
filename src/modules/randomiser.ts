@@ -1,7 +1,14 @@
 import {Circ} from "./circ";
-import {Circle} from "./circle";
+import {Circle, CircleConfig} from "./circle";
 import {Brush} from "./brushes";
-import {CircGeneratorInterface, CircInterface} from "../structure";
+import {
+    BooleanGeneratorInterface,
+    CircGeneratorInterface,
+    CircInterface,
+    CircleConfigGeneratorInterface,
+    CircleConfigInterface,
+    CircleInterface, NumberGeneratorInterface, ShapeConfigInterface, ShapeInterface
+} from "../structure";
 import * as seedrandom from 'seedrandom';
 
 
@@ -16,19 +23,15 @@ class Randomiser implements CircGeneratorInterface {
         }
     }
 
-    public make(): Promise<CircInterface> {
+    public make(shapes: ShapeConfigInterface[] = []): Promise<CircInterface> {
         return new Promise((resolve, reject) => {
-            let circ;
+            let circ: CircInterface;
             let count = 0;
 
-            while(typeof circ === 'undefined') {
-                try {
-                    circ = this.randomSeed ? this.generate(`${this.randomSeed}${count}`) : this.generate();
-                } catch {
-
-                }
-                count++;
-            }
+            do {
+                circ = this.makeCirc(shapes, `${this.randomSeed}${count++}`);
+                console.log(circ.stepsToComplete);
+            } while (circ.stepsToComplete > this.maxSteps);
 
             if (typeof this.randomSeed !== "undefined") {
                 console.log(`found a valid seed: ${this.randomSeed}${count}`)
@@ -38,10 +41,32 @@ class Randomiser implements CircGeneratorInterface {
         });
     }
 
-    protected generate(seed?: string): CircInterface {
+    protected makeCirc(shapeConfigs: ShapeConfigInterface[], seed?: string): CircInterface {
         if (typeof seed !== 'undefined') {
             seedrandom(seed, {global: true})
         }
+
+        const circ = new Circ();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#1b5eec';
+
+        shapeConfigs.forEach((shapeConfig: ShapeConfigInterface): void => {
+            if (shapeConfig instanceof CircleConfig) {
+                circ.addShape(Circle.fromConfig(shapeConfig));
+
+                return;
+            }
+
+            throw `Unable to create shape from config of type: ${shapeConfig.constructor.name}`;
+        });
+
+        circ.getShapes()[circ.getShapes().length - 1].addBrush(new Brush());
+
+        return circ;
+    }
+
+    protected generate(seed?: string): CircInterface {
 
         const pr = this.getRandomInt(150, 250);
         const cr = this.getRandomInt(10, 250);
@@ -123,6 +148,46 @@ class Randomiser implements CircGeneratorInterface {
     }
 }
 
+class CircleConfigGenerator implements CircleConfigGeneratorInterface {
+    radiusGenerator: NumberGeneratorInterface = new NumberGenerator(10, 250);
+    stepGenerator: NumberGeneratorInterface = new NumberGenerator(500, 1500);
+    booleanGenerator: BooleanGeneratorInterface = new BooleanGenerator();
+
+    make(): CircleConfigInterface {
+        const circleConfig = new CircleConfig();
+        circleConfig.clockwise = this.booleanGenerator.make();
+        circleConfig.outside = this.booleanGenerator.make();
+        circleConfig.steps = this.stepGenerator.make();
+        circleConfig.radius = this.radiusGenerator.make();
+
+        return circleConfig;
+    }
+
+}
+
+class NumberGenerator implements NumberGeneratorInterface {
+    min: number;
+    max: number;
+
+    constructor(min: number,max: number) {
+        this.min = Math.ceil(min);
+        this.max = Math.floor(max);
+    }
+
+    make(): number {
+        return Math.floor(Math.random() * (this.max - this.min + 1)) + this.min;
+    }
+}
+
+class BooleanGenerator implements BooleanGeneratorInterface {
+    make(): boolean {
+        return Math.floor(Math.random() * 2) === 1;
+    }
+}
+
 export {
     Randomiser,
+    NumberGenerator,
+    CircleConfigGenerator,
+    BooleanGenerator,
 };

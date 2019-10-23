@@ -15,6 +15,7 @@ import {ControlModes, ModeControl} from "./modules/controls/mode";
 import {Engine} from "./modules/engine";
 import {StoreRandom} from "./modules/storeRandom";
 import RandomControl from "./modules/controls/random";
+import {CircleConfigGenerator, Randomiser} from "./modules/randomiser";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
 const backgroundCanvasElement = <HTMLCanvasElement>document.querySelector('#background-canvas');
@@ -126,8 +127,16 @@ engine.addImportCallback((circ: CircInterface) => {
     });
 });
 
-storageRandom.get()
+const shapes = [
+    (new CircleConfigGenerator).make(),
+    (new CircleConfigGenerator).make(),
+];
+
+(new Randomiser())
+    .make(shapes)
+// storageRandom.get()
     .then((circ: CircInterface) => {
+        console.log(circ);
         engine.import(circ);
-        engine.stepFast(circ.stepsToComplete);
+        // engine.stepFast(circ.stepsToComplete);
     });

@@ -28,6 +28,11 @@ var Circle = /** @class */ (function (_super) {
         _this.saveInitialState();
         return _this;
     }
+    Circle.fromConfig = function (config) {
+        var circle = new Circle();
+        circle.config = config;
+        return circle;
+    };
     Circle.prototype.calculatePosition = function (parentCircle) {
         this.savePreviousState();
         var arc = this.getArc();

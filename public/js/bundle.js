@@ -2727,6 +2727,7 @@ var mode_1 = require("./modules/controls/mode");
 var engine_2 = require("./modules/engine");
 var storeRandom_1 = require("./modules/storeRandom");
 var random_1 = require("./modules/controls/random");
+var randomiser_1 = require("./modules/randomiser");
 var canvasArea = document.querySelector('#circio .painter');
 var backgroundCanvasElement = document.querySelector('#background-canvas');
 var mainCanvasElement = canvasArea.querySelector('#main-canvas');
@@ -2820,13 +2821,20 @@ engine.addImportCallback(function (circ) {
         resizeDebounce = setTimeout(function (_) { return transformCanvas(circ); }, 50);
     });
 });
-storageRandom.get()
+var shapes = [
+    (new randomiser_1.CircleConfigGenerator).make(),
+    (new randomiser_1.CircleConfigGenerator).make(),
+];
+(new randomiser_1.Randomiser())
+    .make(shapes)
+    // storageRandom.get()
     .then(function (circ) {
+    console.log(circ);
     engine.import(circ);
-    engine.stepFast(circ.stepsToComplete);
+    // engine.stepFast(circ.stepsToComplete);
 });
 
-},{"./modules/backgroundPainter":12,"./modules/controls/circ":18,"./modules/controls/engine":19,"./modules/controls/guidePainter":20,"./modules/controls/mode":21,"./modules/controls/painter":22,"./modules/controls/panel":23,"./modules/controls/random":24,"./modules/controls/storage":27,"./modules/engine":28,"./modules/guidePainter":30,"./modules/painter":31,"./modules/storeBlueprint":34,"./modules/storeCloud":35,"./modules/storeLocal":36,"./modules/storeRandom":37}],12:[function(require,module,exports){
+},{"./modules/backgroundPainter":12,"./modules/controls/circ":18,"./modules/controls/engine":19,"./modules/controls/guidePainter":20,"./modules/controls/mode":21,"./modules/controls/painter":22,"./modules/controls/panel":23,"./modules/controls/random":24,"./modules/controls/storage":27,"./modules/engine":28,"./modules/guidePainter":30,"./modules/painter":31,"./modules/randomiser":32,"./modules/storeBlueprint":34,"./modules/storeCloud":35,"./modules/storeLocal":36,"./modules/storeRandom":37}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundPainter = /** @class */ (function () {
@@ -3181,6 +3189,11 @@ var Circle = /** @class */ (function (_super) {
         _this.saveInitialState();
         return _this;
     }
+    Circle.fromConfig = function (config) {
+        var circle = new Circle();
+        circle.config = config;
+        return circle;
+    };
     Circle.prototype.calculatePosition = function (parentCircle) {
         this.savePreviousState();
         var arc = this.getArc();
@@ -4830,29 +4843,41 @@ var Randomiser = /** @class */ (function () {
             this.maxSteps = 400000;
         }
     }
-    Randomiser.prototype.make = function () {
+    Randomiser.prototype.make = function (shapes) {
         var _this = this;
+        if (shapes === void 0) { shapes = []; }
         return new Promise(function (resolve, reject) {
             var circ;
             var count = 0;
-            while (typeof circ === 'undefined') {
-                try {
-                    circ = _this.randomSeed ? _this.generate("" + _this.randomSeed + count) : _this.generate();
-                }
-                catch (_a) {
-                }
-                count++;
-            }
+            do {
+                circ = _this.makeCirc(shapes, "" + _this.randomSeed + count++);
+                console.log(circ.stepsToComplete);
+            } while (circ.stepsToComplete > _this.maxSteps);
             if (typeof _this.randomSeed !== "undefined") {
                 console.log("found a valid seed: " + _this.randomSeed + count);
             }
             resolve(circ);
         });
     };
-    Randomiser.prototype.generate = function (seed) {
+    Randomiser.prototype.makeCirc = function (shapeConfigs, seed) {
         if (typeof seed !== 'undefined') {
             seedrandom(seed, { global: true });
         }
+        var circ = new circ_1.Circ();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#1b5eec';
+        shapeConfigs.forEach(function (shapeConfig) {
+            if (shapeConfig instanceof circle_1.CircleConfig) {
+                circ.addShape(circle_1.Circle.fromConfig(shapeConfig));
+                return;
+            }
+            throw "Unable to create shape from config of type: " + shapeConfig.constructor.name;
+        });
+        circ.getShapes()[circ.getShapes().length - 1].addBrush(new brushes_1.Brush());
+        return circ;
+    };
+    Randomiser.prototype.generate = function (seed) {
         var pr = this.getRandomInt(150, 250);
         var cr = this.getRandomInt(10, 250);
         var ccr = this.getRandomInt(10, 250);
@@ -4915,6 +4940,43 @@ var Randomiser = /** @class */ (function () {
     return Randomiser;
 }());
 exports.Randomiser = Randomiser;
+var CircleConfigGenerator = /** @class */ (function () {
+    function CircleConfigGenerator() {
+        this.radiusGenerator = new NumberGenerator(10, 250);
+        this.stepGenerator = new NumberGenerator(500, 1500);
+        this.booleanGenerator = new BooleanGenerator();
+    }
+    CircleConfigGenerator.prototype.make = function () {
+        var circleConfig = new circle_1.CircleConfig();
+        circleConfig.clockwise = this.booleanGenerator.make();
+        circleConfig.outside = this.booleanGenerator.make();
+        circleConfig.steps = this.stepGenerator.make();
+        circleConfig.radius = this.radiusGenerator.make();
+        return circleConfig;
+    };
+    return CircleConfigGenerator;
+}());
+exports.CircleConfigGenerator = CircleConfigGenerator;
+var NumberGenerator = /** @class */ (function () {
+    function NumberGenerator(min, max) {
+        this.min = Math.ceil(min);
+        this.max = Math.floor(max);
+    }
+    NumberGenerator.prototype.make = function () {
+        return Math.floor(Math.random() * (this.max - this.min + 1)) + this.min;
+    };
+    return NumberGenerator;
+}());
+exports.NumberGenerator = NumberGenerator;
+var BooleanGenerator = /** @class */ (function () {
+    function BooleanGenerator() {
+    }
+    BooleanGenerator.prototype.make = function () {
+        return Math.floor(Math.random() * 2) === 1;
+    };
+    return BooleanGenerator;
+}());
+exports.BooleanGenerator = BooleanGenerator;
 
 },{"./brushes":13,"./circ":14,"./circle":15,"seedrandom":3}],33:[function(require,module,exports){
 "use strict";
