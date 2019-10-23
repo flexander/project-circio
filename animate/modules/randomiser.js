@@ -12,63 +12,38 @@ var Randomiser = /** @class */ (function () {
             this.maxSteps = 400000;
         }
     }
-    Randomiser.prototype.make = function () {
+    Randomiser.prototype.make = function (shapeConfigGenerators) {
         var _this = this;
+        if (typeof this.randomSeed !== 'undefined') {
+            seedrandom(this.randomSeed, { global: true });
+        }
         return new Promise(function (resolve, reject) {
+            if (typeof _this.randomSeed !== 'undefined') {
+                seedrandom(_this.randomSeed, { global: true });
+            }
             var circ;
             var count = 0;
-            while (typeof circ === 'undefined') {
-                try {
-                    circ = _this.randomSeed ? _this.generate("" + _this.randomSeed + count) : _this.generate();
-                }
-                catch (_a) {
-                }
-                count++;
-            }
+            do {
+                circ = new circ_1.Circ();
+                circ.width = 1080;
+                circ.height = 1080;
+                circ.backgroundFill = '#1b5eec';
+                shapeConfigGenerators.forEach(function (shapeConfigGenerator) {
+                    if (shapeConfigGenerator instanceof CircleConfigGenerator) {
+                        var config = shapeConfigGenerator.make();
+                        var circle = circle_1.Circle.fromConfig(config);
+                        circ.addShape(circle);
+                        return;
+                    }
+                    throw "Unable to create shape from config of type: " + shapeConfigGenerator.constructor.name;
+                });
+            } while (circ.stepsToComplete > _this.maxSteps);
+            circ.getShapes()[circ.getShapes().length - 1].addBrush(new brushes_1.Brush());
             if (typeof _this.randomSeed !== "undefined") {
                 console.log("found a valid seed: " + _this.randomSeed + count);
             }
             resolve(circ);
         });
-    };
-    Randomiser.prototype.generate = function (seed) {
-        if (typeof seed !== 'undefined') {
-            seedrandom(seed, { global: true });
-        }
-        var pr = this.getRandomInt(150, 250);
-        var cr = this.getRandomInt(10, 250);
-        var ccr = this.getRandomInt(10, 250);
-        var ps = 0;
-        var cs = this.getRandomInt(500, 1500);
-        var ccs = this.getRandomInt(500, 1500);
-        var circ = new circ_1.Circ();
-        circ.width = 1080;
-        circ.height = 1080;
-        circ.backgroundFill = '#1b5eec';
-        var circle = new circle_1.Circle();
-        circle.steps = ps;
-        circle.radius = pr;
-        var circle1 = new circle_1.Circle();
-        circle1.steps = cs;
-        circle1.clockwise = this.getRandomBool();
-        circle1.radius = cr;
-        circle1.outside = circle.radius === circle1.radius ? true : this.getRandomBool();
-        var circle2 = new circle_1.Circle();
-        circle2.steps = ccs;
-        circle2.clockwise = this.getRandomBool();
-        circle2.radius = ccr;
-        circle2.outside = circle1.radius === circle2.radius ? true : this.getRandomBool();
-        var brush = new brushes_1.Brush();
-        circle2.addBrush(brush);
-        circ.addShape(circle);
-        circ.addShape(circle1);
-        circ.addShape(circle2);
-        var stepsToComplete = circ.stepsToComplete;
-        if (stepsToComplete > this.maxSteps) {
-            throw 'too many steps';
-        }
-        console.log(pr, cs, cr, cs, ccr, ccs, stepsToComplete);
-        return circ;
     };
     Randomiser.prototype.lcm = function (x, y) {
         return Math.abs((x * y) / this.gcd(x, y));
@@ -83,17 +58,55 @@ var Randomiser = /** @class */ (function () {
         }
         return x;
     };
-    Randomiser.prototype.getRandomInt = function (min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-    Randomiser.prototype.getRandomBool = function () {
-        return this.getRandomInt(0, 1) ? true : false;
-    };
     Randomiser.prototype.getRandomHexColour = function () {
         return "#" + Math.floor(Math.random() * 16777215).toString(16);
     };
     return Randomiser;
 }());
 exports.Randomiser = Randomiser;
+var CircleConfigGenerator = /** @class */ (function () {
+    function CircleConfigGenerator() {
+        this.radiusGenerator = new NumberGenerator(10, 250);
+        this.stepGenerator = new NumberGenerator(500, 1500);
+        this.booleanGenerator = new BooleanGenerator();
+    }
+    CircleConfigGenerator.prototype.make = function () {
+        var circleConfig = new circle_1.CircleConfig();
+        circleConfig.clockwise = this.booleanGenerator.make();
+        circleConfig.outside = this.booleanGenerator.make();
+        circleConfig.steps = this.stepGenerator.make();
+        circleConfig.radius = this.radiusGenerator.make();
+        return circleConfig;
+    };
+    return CircleConfigGenerator;
+}());
+exports.CircleConfigGenerator = CircleConfigGenerator;
+var NumberGenerator = /** @class */ (function () {
+    function NumberGenerator(min, max) {
+        this.min = Math.ceil(min);
+        this.max = Math.floor(max);
+    }
+    NumberGenerator.prototype.make = function () {
+        return Math.floor(Math.random() * (this.max - this.min + 1)) + this.min;
+    };
+    return NumberGenerator;
+}());
+exports.NumberGenerator = NumberGenerator;
+var BooleanGenerator = /** @class */ (function () {
+    function BooleanGenerator() {
+    }
+    BooleanGenerator.prototype.make = function () {
+        return Math.floor(Math.random() * 2) === 1;
+    };
+    return BooleanGenerator;
+}());
+exports.BooleanGenerator = BooleanGenerator;
+var rootCircle = new CircleConfigGenerator();
+rootCircle.radiusGenerator = new NumberGenerator(150, 250);
+rootCircle.stepGenerator = new NumberGenerator(0, 0);
+var threeCircleConfigGenerators = [
+    rootCircle,
+    new CircleConfigGenerator,
+    new CircleConfigGenerator,
+];
+exports.threeCircleConfigGenerators = threeCircleConfigGenerators;
