@@ -55,7 +55,7 @@ class Engine extends EventEmitter implements EngineInterface {
     }
 
     public isPlaying(): boolean {
-        return this.stepsToRun > 0;
+        return this.stepsToRun > 0 ||  this.state.stepJumps.length > 0;
     }
 
     public reset(): void {
@@ -92,8 +92,6 @@ class Engine extends EventEmitter implements EngineInterface {
             throw `Step jump in progress`;
         }
 
-        this.dispatchEvent(new EngineStepJumpStart());
-
         const thenContinue = this.stepsToRun;
         this.pause();
 
@@ -108,6 +106,8 @@ class Engine extends EventEmitter implements EngineInterface {
 
             stepsRun += stepsToRun;
         }
+
+        this.dispatchEvent(new EngineStepJumpStart());
 
         return Promise.all(this.state.stepJumps)
             .then(_ => {

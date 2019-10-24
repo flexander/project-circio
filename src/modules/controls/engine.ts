@@ -89,20 +89,8 @@ export default class EngineControl implements EngineControlInterface, QuickContr
             }
         });
 
-        this.engine.addEventListener('pause', (value) => {
+        this.engine.addEventListeners(['pause','play','stepJump.start','stepJump.end'], (value) => {
             button.innerText = this.getPlayButtonLabel();
-        });
-
-        this.engine.addEventListener('play', (value) => {
-            button.innerText = this.getPlayButtonLabel();
-        });
-
-        this.engine.addEventListener('stepJump.start', _ => {
-            button.setAttribute('disabled', 'disabled');
-        });
-
-        this.engine.addEventListener('stepJump.end', _ => {
-            button.removeAttribute('disabled');
         });
 
         return playFragment;
