@@ -46,8 +46,6 @@ if (outputFile == null) {
 }
 var randomiser = new randomiser_1.Randomiser();
 var serialiser = new serializer_1.default();
-var circJsonString = (fs.existsSync(outputFile) === true) ? fs.readFileSync(outputFile) : '[]';
-var circs = JSON.parse(circJsonString.toString());
 var rootCircle = new randomiser_1.CircleConfigGenerator();
 rootCircle.radiusGenerator = new randomiser_1.NumberGenerator(150, 250);
 rootCircle.stepGenerator = new randomiser_1.NumberGenerator(0, 0);
@@ -65,8 +63,9 @@ function makeManyRandom() {
                     return [4 /*yield*/, randomiser.make(shapeConfigGenerators)
                             .then(function (circ) {
                             console.log(circ.stepsToComplete + ' step Circ found');
-                            var items = serialiser.serialize(circ);
-                            circs.push(items);
+                            var circJsonString = (fs.existsSync(outputFile) === true) ? fs.readFileSync(outputFile) : '[]';
+                            var circs = JSON.parse(circJsonString.toString());
+                            circs.push(serialiser.serialize(circ));
                             fs.writeFileSync(outputFile, JSON.stringify(circs, null, 2));
                         })];
                 case 1:
