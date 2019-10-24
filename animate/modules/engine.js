@@ -52,7 +52,7 @@ var Engine = /** @class */ (function (_super) {
         this.stepsToRun = typeof count === 'number' ? count : Infinity;
     };
     Engine.prototype.isPlaying = function () {
-        return this.stepsToRun > 0;
+        return this.stepsToRun > 0 || this.state.stepJumps.length > 0;
     };
     Engine.prototype.reset = function () {
         this.stopStepJumping();
@@ -80,7 +80,6 @@ var Engine = /** @class */ (function (_super) {
         if (this.state.stepJumps.length > 0) {
             throw "Step jump in progress";
         }
-        this.dispatchEvent(new EngineStepJumpStart());
         var thenContinue = this.stepsToRun;
         this.pause();
         var stepGroup = 100;
@@ -91,6 +90,7 @@ var Engine = /** @class */ (function (_super) {
             this.state.stepJumps.push(this.stepJump(stepsToRun));
             stepsRun += stepsToRun;
         }
+        this.dispatchEvent(new EngineStepJumpStart());
         return Promise.all(this.state.stepJumps)
             .then(function (_) {
             _this.dispatchEvent(new EngineStepJumpEnd());
