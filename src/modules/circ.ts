@@ -38,7 +38,7 @@ class Circ extends EventEmitter implements CircInterface {
         return this.shapes;
     }
 
-    getLastShape(): ShapeInterface {
+    getEndShape(): ShapeInterface {
         return this.getShapes()[this.getShapes().length-1];
     }
 
