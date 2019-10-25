@@ -55,7 +55,7 @@ class Randomiser implements CircGeneratorInterface {
                 });
             } while (circ.stepsToComplete > this.maxSteps);
 
-            circ.getShapes()[circ.getShapes().length - 1].addBrush(new Brush());
+            circ.getLastShape().addBrush(new Brush());
 
             if (typeof this.randomSeed !== "undefined") {
                 console.log(`found a valid seed: ${this.randomSeed}${count}`)
