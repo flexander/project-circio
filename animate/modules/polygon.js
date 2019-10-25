@@ -149,7 +149,7 @@ var Polygon = /** @class */ (function (_super) {
             initialAngle = (Math.PI - parentPolygon.getOuterAngle()) / 2;
         }
         else {
-            initialAngle = ((Math.PI * 2) - this.getOuterAngle() + parentPolygon.getOuterAngle()) / 2;
+            initialAngle = ((Math.PI * 2) - this.getOuterAngle() - parentPolygon.getOuterAngle()) / 2;
         }
         return this.getExternalAngle() - initialAngle;
     };
@@ -160,6 +160,23 @@ var Polygon = /** @class */ (function (_super) {
         }
         return offset;
     };
+    Polygon.prototype.getCornersPassed = function (parentPolygon) {
+        var offsetRadians = this.getOffsetRadians(parentPolygon);
+        var offsetDistance = this.getOffsetDistance();
+        var relativeRadians = this.state.totalAngle + offsetRadians;
+        var radiansToCompleteParentFace = this.getRadiansPerParentFace(parentPolygon); // + parentPolygon.getExternalAngle();
+        var parentFacesRolled = Math.floor((relativeRadians) / radiansToCompleteParentFace);
+        var childFacesRolled = relativeRadians / this.getRadiansPerFace();
+        var distanceCovered = (childFacesRolled * this.faceWidth) - offsetDistance;
+        var cornersTouched = Math.floor(distanceCovered / parentPolygon.faceWidth);
+        console.log('Offset Rads: ' + offsetRadians);
+        console.log('Total: ' + this.state.totalAngle);
+        console.log('Rads per parent Face: ' + radiansToCompleteParentFace);
+        console.log(parentFacesRolled);
+        console.log('----');
+        var cornersPassed = 0;
+        return cornersPassed;
+    };
     Polygon.prototype.getDistanceFromOriginToContact = function (parentPolygon) {
         return 0;
     };
@@ -167,6 +184,7 @@ var Polygon = /** @class */ (function (_super) {
         return 0;
     };
     Polygon.prototype.getDistanceFromParentCornerToContact = function (parentPolygon) {
+        var cornersPassed = this.getCornersPassed(parentPolygon);
         return 0;
     };
     Polygon.prototype.getDistanceFromChildCornerToContact = function (parentPolygon) {

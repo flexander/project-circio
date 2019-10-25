@@ -190,7 +190,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
         if (this.faces % 2 !== 0) {
             initialAngle = (Math.PI - parentPolygon.getOuterAngle()) / 2;
         } else {
-            initialAngle = ((Math.PI * 2) - this.getOuterAngle() + parentPolygon.getOuterAngle()) / 2;
+            initialAngle = ((Math.PI * 2) - this.getOuterAngle() - parentPolygon.getOuterAngle()) / 2;
         }
 
         return this.getExternalAngle() - initialAngle;
@@ -206,9 +206,28 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return offset;
     }
 
-    getCornersPasser(parentPolygon: PolygonInterface): number {
+    getCornersPassed(parentPolygon: PolygonInterface): number {
         const offsetRadians = this.getOffsetRadians(parentPolygon);
-        const cornersPassed = (this.state.getAngle() + offsetRadians) / this.getRadiansPerParentFace(parentPolygon);
+        const offsetDistance = this.getOffsetDistance();
+
+        const relativeRadians = this.state.totalAngle + offsetRadians;
+
+        const radiansToCompleteParentFace = this.getRadiansPerParentFace(parentPolygon); // + parentPolygon.getExternalAngle();
+        const parentFacesRolled = Math.floor((relativeRadians) / radiansToCompleteParentFace);
+        const childFacesRolled = relativeRadians / this.getRadiansPerFace();
+
+        const distanceCovered = (childFacesRolled * this.faceWidth) - offsetDistance;
+        const cornersTouched = Math.floor(distanceCovered / parentPolygon.faceWidth);
+
+
+
+        console.log('Offset Rads: '+ offsetRadians);
+        console.log('Total: '+  this.state.totalAngle );
+        console.log('Rads per parent Face: ' + radiansToCompleteParentFace);
+        console.log(parentFacesRolled);
+        console.log('----');
+
+        const cornersPassed = 0;
 
         return cornersPassed;
     }
@@ -222,6 +241,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
     }
 
     getDistanceFromParentCornerToContact(parentPolygon: PolygonInterface): number {
+        const cornersPassed = this.getCornersPassed(parentPolygon);
+
         return 0;
     }
 
