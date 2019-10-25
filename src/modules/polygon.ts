@@ -206,6 +206,13 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return offset;
     }
 
+    getCornersPasser(parentPolygon: PolygonInterface): number {
+        const offsetRadians = this.getOffsetRadians(parentPolygon);
+        const cornersPassed = (this.state.getAngle() + offsetRadians) / this.getRadiansPerParentFace(parentPolygon);
+
+        return cornersPassed;
+    }
+
     getDistanceFromOriginToContact(parentPolygon: PolygonInterface): number {
         return 0;
     }
