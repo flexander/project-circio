@@ -3045,6 +3045,9 @@ var Circ = /** @class */ (function (_super) {
     Circ.prototype.getShapes = function () {
         return this.shapes;
     };
+    Circ.prototype.getEndShape = function () {
+        return this.getShapes()[this.getShapes().length - 1];
+    };
     Object.defineProperty(Circ.prototype, "name", {
         get: function () {
             return this.config['name'];
@@ -4852,7 +4855,7 @@ var Randomiser = /** @class */ (function () {
                     throw "Unable to create shape from config of type: " + shapeConfigGenerator.constructor.name;
                 });
             } while (circ.stepsToComplete > _this.maxSteps);
-            circ.getShapes()[circ.getShapes().length - 1].addBrush(new brushes_1.Brush());
+            circ.getEndShape().addBrush(new brushes_1.Brush());
             if (typeof _this.randomSeed !== "undefined") {
                 console.log("found a valid seed: " + _this.randomSeed + count);
             }

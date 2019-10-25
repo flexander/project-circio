@@ -45,6 +45,9 @@ var Circ = /** @class */ (function (_super) {
     Circ.prototype.getShapes = function () {
         return this.shapes;
     };
+    Circ.prototype.getEndShape = function () {
+        return this.getShapes()[this.getShapes().length - 1];
+    };
     Object.defineProperty(Circ.prototype, "name", {
         get: function () {
             return this.config['name'];

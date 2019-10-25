@@ -38,6 +38,10 @@ class Circ extends EventEmitter implements CircInterface {
         return this.shapes;
     }
 
+    getEndShape(): ShapeInterface {
+        return this.getShapes()[this.getShapes().length-1];
+    }
+
     get name(): string {
         return this.config['name'];
     }

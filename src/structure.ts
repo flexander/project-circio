@@ -13,6 +13,7 @@ interface CircInterface extends EventEmitterInterface, CircConfigInterface {
     addShape(shape: ShapeInterface): void;
     removeShape(id: number): void;
     getShapes(): ShapeInterface[];
+    getEndShape(): ShapeInterface;
 }
 
 interface CircConfigInterface extends ModifiableInterface{
