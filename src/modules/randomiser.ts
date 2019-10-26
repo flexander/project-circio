@@ -47,6 +47,15 @@ class Randomiser implements CircGeneratorInterface {
                     if (shapeConfigGenerator instanceof CircleConfigGenerator) {
                         const config = shapeConfigGenerator.make();
                         const circle = Circle.fromConfig(config);
+
+                        if (circ.getShapes().length > 0) {
+                            const lastShape = circ.getEndShape();
+
+                            if (lastShape instanceof Circle && lastShape.radius === circle.radius && circle.outside === false) {
+                                throw `Invalid Circ generated`;
+                            }
+                        }
+
                         circ.addShape(circle);
                         return;
                     }
