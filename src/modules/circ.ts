@@ -85,6 +85,11 @@ class Circ extends EventEmitter implements CircInterface {
     get stepsToComplete(): number {
         const stepsToCompletion = [];
 
+        // This currently doesn't work if stepmod is used
+        if (this.getShapes().some((shape: ShapeInterface): boolean => shape.stepMod > 0)) {
+            return Infinity;
+        }
+
         stepsToCompletion.push(this.getShapes()[0].steps);
 
         for(let shapeIndex=1;shapeIndex<this.getShapes().length;shapeIndex++) {

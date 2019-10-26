@@ -102,6 +102,10 @@ var Circ = /** @class */ (function (_super) {
     Object.defineProperty(Circ.prototype, "stepsToComplete", {
         get: function () {
             var stepsToCompletion = [];
+            // This currently doesn't work if stepmod is used
+            if (this.getShapes().some(function (shape) { return shape.stepMod > 0; })) {
+                return Infinity;
+            }
             stepsToCompletion.push(this.getShapes()[0].steps);
             for (var shapeIndex = 1; shapeIndex < this.getShapes().length; shapeIndex++) {
                 var lastShape = this.getShapes()[shapeIndex - 1];
