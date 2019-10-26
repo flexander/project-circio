@@ -4316,7 +4316,10 @@ var StorageControl = /** @class */ (function () {
                             });
                         });
                         tile.querySelector('.circ').addEventListener('mouseenter', function (e) {
-                            previewEngine.play();
+                            var stepsLeftToRun = Math.min(1000000, circ.stepsToComplete - previewEngine.state.totalStepsRun);
+                            if (stepsLeftToRun > 0) {
+                                previewEngine.stepFast(stepsLeftToRun);
+                            }
                         });
                         tile.querySelector('.circ').addEventListener('mouseleave', function (e) {
                             previewEngine.pause();
