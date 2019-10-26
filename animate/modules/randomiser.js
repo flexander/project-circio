@@ -9,7 +9,7 @@ var Randomiser = /** @class */ (function () {
         this.maxSteps = 40000;
         if (typeof seed !== 'undefined') {
             this.randomSeed = seed;
-            this.maxSteps = 400000;
+            this.maxSteps = 40000;
         }
     }
     Randomiser.prototype.make = function (shapeConfigGenerators) {
@@ -22,12 +22,13 @@ var Randomiser = /** @class */ (function () {
                 seedrandom(_this.randomSeed, { global: true });
             }
             var circ;
-            var count = 0;
+            var circValid;
             do {
                 circ = new circ_1.Circ();
                 circ.width = 1080;
                 circ.height = 1080;
                 circ.backgroundFill = '#1b5eec';
+                circValid = true;
                 shapeConfigGenerators.forEach(function (shapeConfigGenerator) {
                     if (shapeConfigGenerator instanceof CircleConfigGenerator) {
                         var config = shapeConfigGenerator.make();
@@ -35,7 +36,7 @@ var Randomiser = /** @class */ (function () {
                         if (circ.getShapes().length > 0) {
                             var lastShape = circ.getEndShape();
                             if (lastShape instanceof circle_1.Circle && lastShape.radius === circle.radius && circle.outside === false) {
-                                throw "Invalid Circ generated";
+                                circValid = false;
                             }
                         }
                         circ.addShape(circle);
@@ -43,11 +44,8 @@ var Randomiser = /** @class */ (function () {
                     }
                     throw "Unable to create shape from config of type: " + shapeConfigGenerator.constructor.name;
                 });
-            } while (circ.stepsToComplete > _this.maxSteps);
+            } while (circ.stepsToComplete > _this.maxSteps && circValid === true);
             circ.getEndShape().addBrush(new brushes_1.Brush());
-            if (typeof _this.randomSeed !== "undefined") {
-                console.log("found a valid seed: " + _this.randomSeed + count);
-            }
             resolve(circ);
         });
     };

@@ -20,7 +20,7 @@ class Randomiser implements CircGeneratorInterface {
     constructor(seed?: string) {
         if (typeof seed !== 'undefined') {
             this.randomSeed = seed;
-            this.maxSteps = 400000;
+            this.maxSteps = 40000;
         }
     }
 
@@ -35,15 +35,17 @@ class Randomiser implements CircGeneratorInterface {
             }
 
             let circ: CircInterface;
-            let count = 0;
+            let circValid;
 
             do {
                 circ = new Circ();
                 circ.width = 1080;
                 circ.height = 1080;
                 circ.backgroundFill = '#1b5eec';
+                circValid = true;
 
                 shapeConfigGenerators.forEach((shapeConfigGenerator: ShapeConfigGeneratorInterface): void => {
+
                     if (shapeConfigGenerator instanceof CircleConfigGenerator) {
                         const config = shapeConfigGenerator.make();
                         const circle = Circle.fromConfig(config);
@@ -52,7 +54,7 @@ class Randomiser implements CircGeneratorInterface {
                             const lastShape = circ.getEndShape();
 
                             if (lastShape instanceof Circle && lastShape.radius === circle.radius && circle.outside === false) {
-                                throw `Invalid Circ generated`;
+                                circValid = false;
                             }
                         }
 
@@ -62,13 +64,9 @@ class Randomiser implements CircGeneratorInterface {
 
                     throw `Unable to create shape from config of type: ${shapeConfigGenerator.constructor.name}`;
                 });
-            } while (circ.stepsToComplete > this.maxSteps);
+            } while (circ.stepsToComplete > this.maxSteps && circValid === true);
 
             circ.getEndShape().addBrush(new Brush());
-
-            if (typeof this.randomSeed !== "undefined") {
-                console.log(`found a valid seed: ${this.randomSeed}${count}`)
-            }
 
             resolve(circ);
         });
