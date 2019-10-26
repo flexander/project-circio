@@ -4856,6 +4856,12 @@ var Randomiser = /** @class */ (function () {
                     if (shapeConfigGenerator instanceof CircleConfigGenerator) {
                         var config = shapeConfigGenerator.make();
                         var circle = circle_1.Circle.fromConfig(config);
+                        if (circ.getShapes().length > 0) {
+                            var lastShape = circ.getEndShape();
+                            if (lastShape instanceof circle_1.Circle && lastShape.radius === circle.radius && circle.outside === false) {
+                                throw "Invalid Circ generated";
+                            }
+                        }
                         circ.addShape(circle);
                         return;
                     }
