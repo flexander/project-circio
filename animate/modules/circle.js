@@ -198,6 +198,9 @@ var Circle = /** @class */ (function (_super) {
             return this.config.radius;
         },
         set: function (radius) {
+            if (isNaN(radius) || radius <= 0) {
+                throw new Error("Radius must be a positive, non-zero integer");
+            }
             this.config.radius = radius;
             this.dispatchEvent(new events_1.AttributeChangedEvent('radius', this.radius));
         },
