@@ -202,6 +202,11 @@ class Circle extends EventEmitter implements CircleInterface {
     }
 
     set radius(radius: number) {
+
+        if (isNaN(radius) || radius <= 0) {
+            throw new Error(`Radius must be a positive, non-zero integer`);
+        }
+
         this.config.radius = radius;
         this.dispatchEvent(new AttributeChangedEvent('radius', this.radius));
     }
