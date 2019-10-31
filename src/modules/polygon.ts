@@ -5,8 +5,12 @@ import {
     EventEmitter,
     PositionInterface,
     ShapeStateInterface,
-    PolygonSasInterface, CircleConfigInterface, PolygonConfigInterface
+    PolygonSasInterface,
+    CircleConfigInterface,
+    PolygonConfigInterface
 } from "../structure";
+import {fraction, mod, add, MathType} from 'mathjs';
+import {Fraction} from 'mathjs';
 import {CircleConfig, CircleConfigDefault} from "./circle";
 
 const cloneDeep = require('lodash.clonedeep');
@@ -175,12 +179,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return this.getInnerAngle();
     }
 
-    getFacesPerParentFace(parentPolygon: PolygonInterface): number {
-        return Math.ceil(parentPolygon.faceWidth / this.faceWidth);
-    }
-
-    getRadiansPerParentFace(parentPolygon: PolygonInterface): number {
-        return this.getInnerAngle() * this.getFacesPerParentFace(parentPolygon);
+    getRatio(parentPolygon: PolygonInterface): Fraction {
+        return <Fraction> fraction(parentPolygon.faceWidth, this.faceWidth);
     }
 
     getOffsetRadians(parentPolygon: PolygonInterface): number {
@@ -206,29 +206,27 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return offset;
     }
 
+    /**  */
+    getSequenceLength(parentPolygon: PolygonInterface): number {
+        const ratio = this.getRatio(parentPolygon);
+
+        let length = 1;
+        let accumulator = ratio;
+
+        while (mod(accumulator, 1) !== 0 && length < 1000) {
+            console.log(accumulator);
+            accumulator = add(accumulator, ratio);
+            length ++;
+        }
+
+        return length;
+    }
+
     getCornersPassed(parentPolygon: PolygonInterface): number {
-        const offsetRadians = this.getOffsetRadians(parentPolygon);
-        const offsetDistance = this.getOffsetDistance();
-
-        const relativeRadians = this.state.totalAngle + offsetRadians;
-
-        const radiansToCompleteParentFace = this.getRadiansPerParentFace(parentPolygon); // + parentPolygon.getExternalAngle();
-        const parentFacesRolled = Math.floor((relativeRadians) / radiansToCompleteParentFace);
-        const childFacesRolled = relativeRadians / this.getRadiansPerFace();
-
-        const distanceCovered = (childFacesRolled * this.faceWidth) - offsetDistance;
-        const cornersTouched = Math.floor(distanceCovered / parentPolygon.faceWidth);
-
-
-
-        console.log('Offset Rads: '+ offsetRadians);
-        console.log('Total: '+  this.state.totalAngle );
-        console.log('Rads per parent Face: ' + radiansToCompleteParentFace);
-        console.log(parentFacesRolled);
-        console.log('----');
-
         const cornersPassed = 0;
 
+        const sequenceLength = this.getSequenceLength(parentPolygon);
+console.log('swq: '+sequenceLength);
         return cornersPassed;
     }
 
