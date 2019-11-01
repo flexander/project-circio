@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("../structure");
 var structure_1 = require("../structure");
-var mathjs_1 = require("mathjs");
+var math = require("mathjs");
 var circle_1 = require("./circle");
 var cloneDeep = require('lodash.clonedeep');
 var Polygon = /** @class */ (function (_super) {
@@ -138,7 +138,7 @@ var Polygon = /** @class */ (function (_super) {
         return this.getInnerAngle();
     };
     Polygon.prototype.getRatio = function (parentPolygon) {
-        return mathjs_1.fraction(parentPolygon.faceWidth, this.faceWidth);
+        return math.fraction(parentPolygon.faceWidth, this.faceWidth);
     };
     Polygon.prototype.getOffsetRadians = function (parentPolygon) {
         // The angle between the active parent face and active child face
@@ -158,17 +158,18 @@ var Polygon = /** @class */ (function (_super) {
         }
         return offset;
     };
-    /**  */
-    Polygon.prototype.getSequenceLength = function (parentPolygon) {
+    Polygon.prototype.getSequenceGroupRadians = function (parentPolygon) {
         var ratio = this.getRatio(parentPolygon);
-        var length = 1;
-        var accumulator = ratio;
-        while (mathjs_1.mod(accumulator, 1) !== 0 && length < 1000) {
-            console.log(accumulator);
-            accumulator = mathjs_1.add(accumulator, ratio);
-            length++;
-        }
-        return length;
+        var childFacesInGroup = ratio.n;
+        var groupSize = ratio.d;
+        var cornerRadians = parentPolygon.getExternalAngle() * groupSize;
+        var faceRadians = this.getRadiansPerFace() * childFacesInGroup;
+        return cornerRadians + faceRadians;
+    };
+    Polygon.prototype.getSequenceGroup = function (parentPolygon) {
+        return math.floor(this.state.totalAngle / this.getSequenceGroupRadians(parentPolygon));
+    };
+    Polygon.prototype.getActiveParentFace = function (parentPolygon) {
     };
     Polygon.prototype.getCornersPassed = function (parentPolygon) {
         var cornersPassed = 0;

@@ -9,8 +9,7 @@ import {
     CircleConfigInterface,
     PolygonConfigInterface
 } from "../structure";
-import {fraction, mod, add, MathType} from 'mathjs';
-import {Fraction} from 'mathjs';
+import * as math from 'mathjs';
 import {CircleConfig, CircleConfigDefault} from "./circle";
 
 const cloneDeep = require('lodash.clonedeep');
@@ -179,8 +178,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return this.getInnerAngle();
     }
 
-    getRatio(parentPolygon: PolygonInterface): Fraction {
-        return <Fraction> fraction(parentPolygon.faceWidth, this.faceWidth);
+    getRatio(parentPolygon: PolygonInterface): math.Fraction {
+        return <math.Fraction> math.fraction(parentPolygon.faceWidth, this.faceWidth);
     }
 
     getOffsetRadians(parentPolygon: PolygonInterface): number {
@@ -206,20 +205,24 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return offset;
     }
 
-    /**  */
-    getSequenceLength(parentPolygon: PolygonInterface): number {
+    getSequenceGroupRadians(parentPolygon: PolygonInterface): number {
         const ratio = this.getRatio(parentPolygon);
 
-        let length = 1;
-        let accumulator = ratio;
+        const childFacesInGroup = ratio.n;
+        const groupSize = ratio.d;
 
-        while (mod(accumulator, 1) !== 0 && length < 1000) {
-            console.log(accumulator);
-            accumulator = add(accumulator, ratio);
-            length ++;
-        }
+        const cornerRadians = parentPolygon.getExternalAngle() * groupSize;
+        const faceRadians = this.getRadiansPerFace() * childFacesInGroup;
 
-        return length;
+        return cornerRadians + faceRadians;
+    }
+
+    getSequenceGroup(parentPolygon: PolygonInterface): number {
+        return math.floor(this.state.totalAngle / this.getSequenceGroupRadians(parentPolygon));
+    }
+
+    getActiveParentFace(parentPolygon: PolygonInterface): number {
+
     }
 
     getCornersPassed(parentPolygon: PolygonInterface): number {
