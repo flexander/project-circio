@@ -221,7 +221,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return math.floor(this.state.totalAngle / this.getSequenceGroupRadians(parentPolygon));
     }
 
-    getSequence(parentPolygon: PolygonInterface): [] {
+    getSequence(parentPolygon: PolygonInterface): number[] {
         const ratio: math.Fraction = this.getRatio(parentPolygon);
         const sequence: number[] = [];
         const maxValue = math.ceil(math.number(ratio));
@@ -230,18 +230,18 @@ class Polygon extends EventEmitter implements PolygonInterface {
         let offsetDistance: number = offset;
 
         for (let parentIndex = 0; parentIndex < ratio.d; parentIndex++) {
-            for (let childIndex = 0; childIndex < maxValue; childIndex++) {
+            sequence_loop:
+            for (let childIndex = 0; childIndex <= maxValue; childIndex++) {
                 const distance = offsetDistance + (childIndex * this.faceWidth);
                 if (distance > ((parentIndex + 1) * parentPolygon.faceWidth)) {
                     sequence.push(childIndex);
-                    const sequenceSum = sequence.reduce((sum, value) => { return sum + value});
+                    const sequenceSum = sequence.reduce((sum, value) => { return sum + value}, 0);
                     offsetDistance = offset + (sequenceSum * this.faceWidth);
 
-                    break;
+                    break sequence_loop;
                 }
             }
         }
-console.log('seq: '+sequence);
 
         return sequence;
     }

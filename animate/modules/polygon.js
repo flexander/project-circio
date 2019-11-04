@@ -176,17 +176,16 @@ var Polygon = /** @class */ (function (_super) {
         var offset = this.getOffsetDistance();
         var offsetDistance = offset;
         for (var parentIndex = 0; parentIndex < ratio.d; parentIndex++) {
-            for (var childIndex = 0; childIndex < maxValue; childIndex++) {
+            sequence_loop: for (var childIndex = 0; childIndex <= maxValue; childIndex++) {
                 var distance = offsetDistance + (childIndex * this.faceWidth);
                 if (distance > ((parentIndex + 1) * parentPolygon.faceWidth)) {
                     sequence.push(childIndex);
-                    var sequenceSum = sequence.reduce(function (sum, value) { return sum + value; });
+                    var sequenceSum = sequence.reduce(function (sum, value) { return sum + value; }, 0);
                     offsetDistance = offset + (sequenceSum * this.faceWidth);
-                    break;
+                    break sequence_loop;
                 }
             }
         }
-        console.log('seq: ' + sequence);
         return sequence;
     };
     Polygon.prototype.getCornersPassed = function (parentPolygon) {
