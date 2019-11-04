@@ -87902,9 +87902,9 @@ var Polygon = /** @class */ (function (_super) {
         return this.getExternalAngle() - initialAngle;
     };
     Polygon.prototype.getOffsetDistance = function () {
-        var offset = 0;
+        var offset = this.faceWidth;
         if (this.faces % 2 !== 0) {
-            offset = this.faceWidth / 2;
+            offset /= 2;
         }
         return offset;
     };
@@ -87919,12 +87919,29 @@ var Polygon = /** @class */ (function (_super) {
     Polygon.prototype.getSequenceGroup = function (parentPolygon) {
         return math.floor(this.state.totalAngle / this.getSequenceGroupRadians(parentPolygon));
     };
-    Polygon.prototype.getActiveParentFace = function (parentPolygon) {
+    Polygon.prototype.getSequence = function (parentPolygon) {
+        var ratio = this.getRatio(parentPolygon);
+        var sequence = [];
+        var maxValue = math.ceil(math.number(ratio));
+        var offset = this.getOffsetDistance();
+        var offsetDistance = offset;
+        for (var parentIndex = 0; parentIndex < ratio.d; parentIndex++) {
+            for (var childIndex = 0; childIndex < maxValue; childIndex++) {
+                var distance = offsetDistance + (childIndex * this.faceWidth);
+                if (distance > ((parentIndex + 1) * parentPolygon.faceWidth)) {
+                    sequence.push(childIndex);
+                    var sequenceSum = sequence.reduce(function (sum, value) { return sum + value; });
+                    offsetDistance = offset + (sequenceSum * this.faceWidth);
+                    break;
+                }
+            }
+        }
+        console.log('seq: ' + sequence);
+        return sequence;
     };
     Polygon.prototype.getCornersPassed = function (parentPolygon) {
         var cornersPassed = 0;
-        var sequenceLength = this.getSequenceLength(parentPolygon);
-        console.log('swq: ' + sequenceLength);
+        var sequence = this.getSequence(parentPolygon);
         return cornersPassed;
     };
     Polygon.prototype.getDistanceFromOriginToContact = function (parentPolygon) {

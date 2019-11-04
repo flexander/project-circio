@@ -184,7 +184,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
     getOffsetRadians(parentPolygon: PolygonInterface): number {
         // The angle between the active parent face and active child face
-        let initialAngle = 0;
+        let initialAngle: number = 0;
 
         if (this.faces % 2 !== 0) {
             initialAngle = (Math.PI - parentPolygon.getOuterAngle()) / 2;
@@ -196,23 +196,23 @@ class Polygon extends EventEmitter implements PolygonInterface {
     }
 
     getOffsetDistance(): number {
-        let offset = 0;
+        let offset: number = this.faceWidth;
 
-        if(this.faces % 2 !== 0) {
-            offset = this.faceWidth / 2;
+        if (this.faces % 2 !== 0) {
+            offset /= 2;
         }
 
         return offset;
     }
 
     getSequenceGroupRadians(parentPolygon: PolygonInterface): number {
-        const ratio = this.getRatio(parentPolygon);
+        const ratio: math.Fraction = this.getRatio(parentPolygon);
 
-        const childFacesInGroup = ratio.n;
-        const groupSize = ratio.d;
+        const childFacesInGroup: number = ratio.n;
+        const groupSize: number = ratio.d;
 
-        const cornerRadians = parentPolygon.getExternalAngle() * groupSize;
-        const faceRadians = this.getRadiansPerFace() * childFacesInGroup;
+        const cornerRadians: number = parentPolygon.getExternalAngle() * groupSize;
+        const faceRadians: number = this.getRadiansPerFace() * childFacesInGroup;
 
         return cornerRadians + faceRadians;
     }
@@ -221,15 +221,36 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return math.floor(this.state.totalAngle / this.getSequenceGroupRadians(parentPolygon));
     }
 
-    getActiveParentFace(parentPolygon: PolygonInterface): number {
+    getSequence(parentPolygon: PolygonInterface): [] {
+        const ratio: math.Fraction = this.getRatio(parentPolygon);
+        const sequence: number[] = [];
+        const maxValue = math.ceil(math.number(ratio));
+        const offset: number = this.getOffsetDistance();
 
+        let offsetDistance: number = offset;
+
+        for (let parentIndex = 0; parentIndex < ratio.d; parentIndex++) {
+            for (let childIndex = 0; childIndex < maxValue; childIndex++) {
+                const distance = offsetDistance + (childIndex * this.faceWidth);
+                if (distance > ((parentIndex + 1) * parentPolygon.faceWidth)) {
+                    sequence.push(childIndex);
+                    const sequenceSum = sequence.reduce((sum, value) => { return sum + value});
+                    offsetDistance = offset + (sequenceSum * this.faceWidth);
+
+                    break;
+                }
+            }
+        }
+console.log('seq: '+sequence);
+
+        return sequence;
     }
 
     getCornersPassed(parentPolygon: PolygonInterface): number {
         const cornersPassed = 0;
 
-        const sequenceLength = this.getSequenceLength(parentPolygon);
-console.log('swq: '+sequenceLength);
+        const sequence = this.getSequence(parentPolygon);
+
         return cornersPassed;
     }
 
