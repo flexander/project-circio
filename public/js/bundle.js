@@ -87790,6 +87790,7 @@ var Polygon = /** @class */ (function (_super) {
             this.parent = parentPolygon;
             parentCentreX = parentPolygon.state.centre.x;
             parentCentreY = parentPolygon.state.centre.y;
+            this.getDistanceFromOriginToContact(parentPolygon);
             // calculate parent centre contact point
             var parentSAS = this.getValuesFromSAS(parentPolygon.getRadius(), // side b
             (parentPolygon.getOuterAngle() / 2), // angle A
@@ -87926,13 +87927,13 @@ var Polygon = /** @class */ (function (_super) {
         var offset = this.getOffsetDistance();
         var offsetDistance = offset;
         for (var parentIndex = 0; parentIndex < ratio.d; parentIndex++) {
-            sequence_loop: for (var childIndex = 0; childIndex <= maxValue; childIndex++) {
+            for (var childIndex = 0; childIndex <= maxValue; childIndex++) {
                 var distance = offsetDistance + (childIndex * this.faceWidth);
                 if (distance > ((parentIndex + 1) * parentPolygon.faceWidth)) {
                     sequence.push(childIndex);
                     var sequenceSum = sequence.reduce(function (sum, value) { return sum + value; }, 0);
                     offsetDistance = offset + (sequenceSum * this.faceWidth);
-                    break sequence_loop;
+                    break;
                 }
             }
         }
@@ -87944,7 +87945,34 @@ var Polygon = /** @class */ (function (_super) {
         return cornersPassed;
     };
     Polygon.prototype.getDistanceFromOriginToContact = function (parentPolygon) {
-        return 0;
+        var offsetRadians = this.getOffsetRadians(parentPolygon);
+        var distance = 0;
+        if (this.state.totalAngle < offsetRadians) {
+            return distance;
+        }
+        var sequence = this.getSequence(parentPolygon);
+        var ratio = this.getRatio(parentPolygon);
+        var sequenceGroup = this.getSequenceGroup(parentPolygon);
+        var offsetGroupRadians = sequenceGroup * this.getSequenceGroupRadians(parentPolygon);
+        var relativeRadians = this.state.totalAngle - offsetRadians - offsetGroupRadians;
+        // Find the active parent face in the sequence
+        var parentActiveFace;
+        var childFacesRolled = 0;
+        for (parentActiveFace = 0; parentActiveFace < sequence.length; parentActiveFace++) {
+            childFacesRolled += sequence[parentActiveFace];
+            var radiansRolled = (childFacesRolled * this.getRadiansPerFace());
+            var CornerRadians = parentPolygon.getExternalAngle() * (parentActiveFace + 1);
+            if ((relativeRadians - (radiansRolled + CornerRadians)) < 0) {
+                break;
+            }
+        }
+        console.log('sequence: ' + sequence);
+        console.log('sequenceGroup: ' + sequenceGroup);
+        console.log('relativeRadians: ' + relativeRadians);
+        console.log('offsetGroupRadians: ' + offsetGroupRadians);
+        console.log('parentActiveFace: ' + parentActiveFace);
+        console.log(' - - - -');
+        return distance;
     };
     Polygon.prototype.getParentDistanceFromOriginToContact = function (parentPolygon) {
         return 0;
@@ -88273,7 +88301,7 @@ var BlueprintStore = /** @class */ (function () {
         poly0.faces = 5;
         poly0.faceWidth = 200;
         var poly1 = new polygon_1.Polygon();
-        poly1.steps = 5000;
+        poly1.steps = 20;
         poly1.outside = true;
         poly1.fixed = true;
         poly1.clockwise = true;

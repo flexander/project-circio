@@ -54,6 +54,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
             parentCentreX = parentPolygon.state.centre.x;
             parentCentreY = parentPolygon.state.centre.y;
 
+            this.getDistanceFromOriginToContact(parentPolygon);
+
             // calculate parent centre contact point
             const parentSAS = this.getValuesFromSAS(
                 parentPolygon.getRadius(),                                  // side b
@@ -230,7 +232,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
         let offsetDistance: number = offset;
 
         for (let parentIndex = 0; parentIndex < ratio.d; parentIndex++) {
-            sequence_loop:
             for (let childIndex = 0; childIndex <= maxValue; childIndex++) {
                 const distance = offsetDistance + (childIndex * this.faceWidth);
                 if (distance > ((parentIndex + 1) * parentPolygon.faceWidth)) {
@@ -238,7 +239,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
                     const sequenceSum = sequence.reduce((sum, value) => { return sum + value}, 0);
                     offsetDistance = offset + (sequenceSum * this.faceWidth);
 
-                    break sequence_loop;
+                    break;
                 }
             }
         }
@@ -255,7 +256,42 @@ class Polygon extends EventEmitter implements PolygonInterface {
     }
 
     getDistanceFromOriginToContact(parentPolygon: PolygonInterface): number {
-        return 0;
+        const offsetRadians = this.getOffsetRadians(parentPolygon);
+
+        let distance = 0;
+
+        if(this.state.totalAngle < offsetRadians) {
+            return distance;
+        }
+
+        const sequence = this.getSequence(parentPolygon);
+        const ratio: math.Fraction = this.getRatio(parentPolygon);
+        const sequenceGroup: number = this.getSequenceGroup(parentPolygon);
+        const offsetGroupRadians: number = sequenceGroup * this.getSequenceGroupRadians(parentPolygon);
+
+        const relativeRadians: number = this.state.totalAngle - offsetRadians - offsetGroupRadians;
+
+        // Find the active parent face in the sequence
+        let parentActiveFace: number;
+        let childFacesRolled: number = 0;
+        for (parentActiveFace = 0; parentActiveFace < sequence.length; parentActiveFace++) {
+            childFacesRolled += sequence[parentActiveFace];
+            const radiansRolled = (childFacesRolled * this.getRadiansPerFace());
+            const CornerRadians = parentPolygon.getExternalAngle() * (parentActiveFace + 1);
+
+            if ((relativeRadians - (radiansRolled + CornerRadians)) < 0) {
+                break;
+            }
+        }
+
+        console.log('sequence: '+sequence);
+        console.log('sequenceGroup: '+sequenceGroup);
+        console.log('relativeRadians: '+relativeRadians);
+        console.log('offsetGroupRadians: '+offsetGroupRadians);
+        console.log('parentActiveFace: '+parentActiveFace);
+        console.log(' - - - -');
+
+        return distance;
     }
 
     getParentDistanceFromOriginToContact(parentPolygon: PolygonInterface): number {
