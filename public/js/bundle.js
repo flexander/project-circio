@@ -87980,21 +87980,22 @@ var Polygon = /** @class */ (function (_super) {
             }
         }
         var currentChildFace = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
-        console.log('----> %c' + currentChildFace + ' : ' + Math.round(this.state.totalAngle / this.getStepRadians()) + '%c <----', 'font-weight: bold; color: red;', 'font-weight: normal; color: inherit;');
+        var valueStyle = 'font-weight: bold; color: cyan; background: black;';
+        console.log('----> %c' + currentChildFace + ' : ' + Math.round(this.state.totalAngle / this.getStepRadians()) + '%c <----', 'font-weight: bold; color: red; background: black;', 'font-weight: normal; color: inherit;');
         console.log('\\/\\/\\/\\/\\/\\/\\/');
-        console.log('stepRadians: ' + this.getStepRadians());
-        console.log('sequence: ' + sequence);
+        console.log('stepRadians: %c' + this.getStepRadians(), valueStyle);
+        console.log('sequence: %c' + sequence, valueStyle);
         console.log('- - - - - - -');
-        console.log('totalAngle: ' + this.state.totalAngle);
-        console.log('sequenceGroup: ' + sequenceGroup);
-        console.log('radiansRelativeToGroup: ' + radiansRelativeToGroup);
-        console.log('offsetGroupRadians: ' + offsetGroupRadians);
-        console.log('parentActiveFace: ' + parentActiveFace);
+        console.log('totalAngle:  %c' + this.state.totalAngle, valueStyle);
+        console.log('sequenceGroup:  %c' + sequenceGroup, valueStyle);
+        console.log('radiansRelativeToGroup:  %c' + radiansRelativeToGroup, valueStyle);
+        console.log('offsetGroupRadians:  %c' + offsetGroupRadians, valueStyle);
+        console.log('parentActiveFace:  %c' + parentActiveFace, valueStyle);
         console.log('- - - - - - -');
-        console.log('childRolls: ' + childRolls);
-        console.log('childRollsSum: ' + childRollsSum);
-        console.log('radiansRelativeToPaf: ' + radiansRelativeToPaf);
-        console.log('childActiveFace: ' + childActiveFace);
+        console.log('childRolls:  %c' + childRolls, valueStyle);
+        console.log('childRollsSum:  %c' + childRollsSum, valueStyle);
+        console.log('radiansRelativeToPaf:  %c' + radiansRelativeToPaf, valueStyle);
+        console.log('childActiveFace:  %c' + childActiveFace, valueStyle);
         console.log('/\\/\\/\\/\\/\\/\\/\\');
         return distance;
     };
