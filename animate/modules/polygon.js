@@ -200,28 +200,52 @@ var Polygon = /** @class */ (function (_super) {
         if (this.state.totalAngle < offsetRadians) {
             return distance;
         }
+        // Find the active group
         var sequence = this.getSequence(parentPolygon);
         var ratio = this.getRatio(parentPolygon);
         var sequenceGroup = this.getSequenceGroup(parentPolygon);
         var offsetGroupRadians = sequenceGroup * this.getSequenceGroupRadians(parentPolygon);
-        var relativeRadians = this.state.totalAngle - offsetRadians - offsetGroupRadians;
-        // Find the active parent face in the sequence
+        var radiansRelativeToGroup = this.state.totalAngle - (offsetRadians + offsetGroupRadians);
+        // Find the active parent face (relative to the group) in the sequence
         var parentActiveFace;
         var childFacesRolled = 0;
         for (parentActiveFace = 0; parentActiveFace < sequence.length; parentActiveFace++) {
             childFacesRolled += sequence[parentActiveFace];
             var radiansRolled = (childFacesRolled * this.getRadiansPerFace());
-            var CornerRadians = parentPolygon.getExternalAngle() * (parentActiveFace + 1);
-            if ((relativeRadians - (radiansRolled + CornerRadians)) < 0) {
+            var cornerRads_1 = parentPolygon.getExternalAngle() * (parentActiveFace + 1);
+            if ((radiansRelativeToGroup - (radiansRolled + cornerRads_1)) < 0) {
                 break;
             }
         }
+        //Find the active child face (relative to the PAF) in the sequence
+        var childRolls = sequence.slice(0, parentActiveFace);
+        var childRollsSum = childRolls.reduce(function (sum, value) { return sum + value; }, 0);
+        var childRollsRads = childRollsSum * this.getRadiansPerFace();
+        var cornerRads = parentPolygon.getExternalAngle() * parentActiveFace;
+        var radiansRelativeToPaf = radiansRelativeToGroup - (childRollsRads + cornerRads);
+        var childActiveFace;
+        for (childActiveFace = 0; childActiveFace <= sequence[parentActiveFace]; childActiveFace++) {
+            if ((radiansRelativeToGroup - ((childActiveFace + 1) * this.getRadiansPerFace())) < 0) {
+                break;
+            }
+        }
+        var currentChildFace = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
+        console.log('----> %c' + currentChildFace + ' : ' + Math.round(this.state.totalAngle / this.getStepRadians()) + '%c <----', 'font-weight: bold; color: red;', 'font-weight: normal; color: inherit;');
+        console.log('\\/\\/\\/\\/\\/\\/\\/');
+        console.log('stepRadians: ' + this.getStepRadians());
         console.log('sequence: ' + sequence);
+        console.log('- - - - - - -');
+        console.log('totalAngle: ' + this.state.totalAngle);
         console.log('sequenceGroup: ' + sequenceGroup);
-        console.log('relativeRadians: ' + relativeRadians);
+        console.log('radiansRelativeToGroup: ' + radiansRelativeToGroup);
         console.log('offsetGroupRadians: ' + offsetGroupRadians);
         console.log('parentActiveFace: ' + parentActiveFace);
-        console.log(' - - - -');
+        console.log('- - - - - - -');
+        console.log('childRolls: ' + childRolls);
+        console.log('childRollsSum: ' + childRollsSum);
+        console.log('radiansRelativeToPaf: ' + radiansRelativeToPaf);
+        console.log('childActiveFace: ' + childActiveFace);
+        console.log('/\\/\\/\\/\\/\\/\\/\\');
         return distance;
     };
     Polygon.prototype.getParentDistanceFromOriginToContact = function (parentPolygon) {
