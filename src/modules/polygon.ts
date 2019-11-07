@@ -317,6 +317,14 @@ class Polygon extends EventEmitter implements PolygonInterface {
             }
         }
 
+        // If on corner, distance is multiple of PF
+        let onCorner = false;
+        if ((sequence[parentActiveFace] * this.getRadiansPerFace()) - radiansRelativeToPaf) {
+            onCorner = true;
+        }
+
+        // If not on corner, distance is multiple of CF
+
         const distance: number = 0;
 
         const currentChildFace: number = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
@@ -343,6 +351,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
             console.log('parentActiveFace:  %c' + parentActiveFace, stateStyle);
         console.log('- - - - - - -');
             //console.log('childRolls:  %c' + childRolls, stateStyle);
+            console.log('onCorner:  %c' + onCorner, stateStyle);
             console.log('childRollsSum:  %c' + childRollsSum, stateStyle);
             //console.log('radiansRelativeToPaf:  %c' + radiansRelativeToPaf, stateStyle);
             console.log('childActiveFace:  %c' + childActiveFace, stateStyle);

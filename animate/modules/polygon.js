@@ -247,6 +247,12 @@ var Polygon = /** @class */ (function (_super) {
                 break;
             }
         }
+        // If on corner, distance is multiple of PF
+        var onCorner = false;
+        if ((sequence[parentActiveFace] * this.getRadiansPerFace()) - radiansRelativeToPaf) {
+            onCorner = true;
+        }
+        // If not on corner, distance is multiple of CF
         var distance = 0;
         var currentChildFace = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
         var fixedStyle = 'font-weight: bold; color: cyan; background: black;';
@@ -267,6 +273,7 @@ var Polygon = /** @class */ (function (_super) {
         console.log('parentActiveFace:  %c' + parentActiveFace, stateStyle);
         console.log('- - - - - - -');
         //console.log('childRolls:  %c' + childRolls, stateStyle);
+        console.log('onCorner:  %c' + onCorner, stateStyle);
         console.log('childRollsSum:  %c' + childRollsSum, stateStyle);
         //console.log('radiansRelativeToPaf:  %c' + radiansRelativeToPaf, stateStyle);
         console.log('childActiveFace:  %c' + childActiveFace, stateStyle);
