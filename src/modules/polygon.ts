@@ -238,8 +238,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return cornerRadians + faceRadians;
     }
 
-    getSequenceGroup(parentPolygon: PolygonInterface): number {
-        return math.floor(this.state.totalAngle / this.getSequenceGroupRadians(parentPolygon));
+    getSequenceGroup(parentPolygon: PolygonInterface, totalAngle: number): number {
+        return math.floor(totalAngle / this.getSequenceGroupRadians(parentPolygon));
     }
 
     getSequence(parentPolygon: PolygonInterface): number[] {
@@ -275,18 +275,25 @@ class Polygon extends EventEmitter implements PolygonInterface {
     }
 
     getDistanceFromOriginToContact(parentPolygon: PolygonInterface): number {
+        // Offsets
         const offsetRadians = this.getOffsetRadians(parentPolygon);
+        const offsetDistance = this.getOffsetDistance();
+
+        // Sequence details
         const sequence = this.getSequence(parentPolygon);
         const ratio: math.Fraction = this.getRatio(parentPolygon);
+
+        // Total angle relative to offset
         const totalAngle = this.state.totalAngle - offsetRadians;
 
-        // Normalise position
+        // Process offset
         if (totalAngle < 0) {
+            console.log('%c' + this.state.totalAngle + ' : ' + offsetRadians, 'font-weight: bold; color: red; background: black;');
             return 0;
         }
 
         // Find the active group
-        const sequenceGroup: number = this.getSequenceGroup(parentPolygon);
+        const sequenceGroup: number = this.getSequenceGroup(parentPolygon, totalAngle);
         const offsetGroupRadians: number = sequenceGroup * this.getSequenceGroupRadians(parentPolygon);
         const radiansRelativeToGroup: number = totalAngle - (offsetGroupRadians);
 
@@ -303,13 +310,12 @@ class Polygon extends EventEmitter implements PolygonInterface {
             }
         }
 
-        //Find the active child face (relative to the PAF) in the sequence
+        //Find the active child face (relative to the Paf) in the sequence
         const childRolls: number[] = sequence.slice(0, parentActiveFace);
         const childRollsSum: number = childRolls.reduce((sum, value) => { return sum + value}, 0);
         const childRollsRads: number = childRollsSum * this.getRadiansPerFace();
         const cornerRads: number = parentPolygon.getExternalAngle() * parentActiveFace;
         const radiansRelativeToPaf: number = radiansRelativeToGroup - (childRollsRads + cornerRads);
-
         let childActiveFace: number;
         for (childActiveFace = 0; childActiveFace <= sequence[parentActiveFace]; childActiveFace++) {
             if ((radiansRelativeToPaf - ((childActiveFace + 1) * this.getRadiansPerFace())) < 0) {
@@ -317,34 +323,38 @@ class Polygon extends EventEmitter implements PolygonInterface {
             }
         }
 
-        // If on corner, distance is multiple of PF
-        let onCorner = false;
-        if ((sequence[parentActiveFace] * this.getRadiansPerFace()) - radiansRelativeToPaf) {
-            onCorner = true;
+        // Detect when child is on parent corner
+        const currentChildFace: number = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
+        const radiansInPaf: number = (sequence[parentActiveFace] * this.getRadiansPerFace());
+        const onCorner: boolean = radiansInPaf <= radiansRelativeToPaf;
+
+        // Calculate distance from origin
+        let distanceFromOrigin: number = (currentChildFace * this.faceWidth) + offsetDistance;
+        if(onCorner === true) {
+            distanceFromOrigin = (parentActiveFace + 1) * parentPolygon.faceWidth;
         }
 
-        // If not on corner, distance is multiple of CF
+        // Get the distance from the start of the Paf
+        let distanceFromPafStart: number = distanceFromOrigin % parentPolygon.faceWidth;
 
-        const distance: number = 0;
+        const fixedStyle = 'font-weight: bold; color: cyan; background: black; padding: 2px;';
+        const stateStyle = 'font-weight: bold; color: orange; background: black; padding: 2px;';
 
-        const currentChildFace: number = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
-        const fixedStyle = 'font-weight: bold; color: cyan; background: black;';
-        const stateStyle = 'font-weight: bold; color: orange; background: black;';
-
-        console.log('----> %c' + currentChildFace + ' : ' + Math.round(totalAngle/this.getStepRadians()) + '%c <----',
-            'font-weight: bold; color: red; background: black;',
-            'font-weight: normal; color: inherit;'
-        );
-        console.log('---------------');
-            console.log('C faces: %c' + this.faces, fixedStyle);
-            console.log('P faces: %c' + parentPolygon.faces, fixedStyle);
+        console.log('-----------------');
+            console.log('----> %c' + currentChildFace + ' : ' + Math.round(totalAngle/this.getStepRadians()) + '%c <----',
+                'font-weight: bold; color: red; background: black;',
+                'font-weight: normal; color: inherit;'
+            );
+        console.log('-----------------');
+            console.log('C / P faces: %c' + this.faces + ' / ' + parentPolygon.faces, fixedStyle);
+            console.log('steps per face: %c' + this.steps / this.faces, fixedStyle);
             console.log('sequence: %c' + sequence, fixedStyle);
             //console.log('radiansPerFace: %c' + this.getRadiansPerFace(), fixedStyle);
             //console.log('stepRadians: %c' + this.getStepRadians(), fixedStyle);
             //console.log('offset: %c' + offsetRadians, fixedStyle);
 
         console.log('- - - - - - -');
-            console.log('totalAngle:  %c' + totalAngle, stateStyle);
+            //console.log('totalAngle:  %c' + totalAngle, stateStyle);
             console.log('sequenceGroup:  %c' + sequenceGroup, stateStyle);
             //console.log('radiansRelativeToGroup:  %c' + radiansRelativeToGroup, stateStyle);
             //console.log('offsetGroupRadians:  %c' + offsetGroupRadians, stateStyle);
@@ -352,12 +362,13 @@ class Polygon extends EventEmitter implements PolygonInterface {
         console.log('- - - - - - -');
             //console.log('childRolls:  %c' + childRolls, stateStyle);
             console.log('onCorner:  %c' + onCorner, stateStyle);
-            console.log('childRollsSum:  %c' + childRollsSum, stateStyle);
+            //console.log('childRollsSum:  %c' + childRollsSum, stateStyle);
             //console.log('radiansRelativeToPaf:  %c' + radiansRelativeToPaf, stateStyle);
             console.log('childActiveFace:  %c' + childActiveFace, stateStyle);
-        console.log('---------------');
+            console.log('distanceFromOrigin:  %c' + distanceFromOrigin, stateStyle);
+            console.log('distanceFromPafStart:  %c' + distanceFromPafStart, stateStyle);
 
-        return distance;
+        return distanceFromPafStart;
     }
 
     getParentDistanceFromOriginToContact(parentPolygon: PolygonInterface): number {

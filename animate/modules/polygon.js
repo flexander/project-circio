@@ -184,8 +184,8 @@ var Polygon = /** @class */ (function (_super) {
         var faceRadians = this.getRadiansPerFace() * childFacesInGroup;
         return cornerRadians + faceRadians;
     };
-    Polygon.prototype.getSequenceGroup = function (parentPolygon) {
-        return math.floor(this.state.totalAngle / this.getSequenceGroupRadians(parentPolygon));
+    Polygon.prototype.getSequenceGroup = function (parentPolygon, totalAngle) {
+        return math.floor(totalAngle / this.getSequenceGroupRadians(parentPolygon));
     };
     Polygon.prototype.getSequence = function (parentPolygon) {
         var ratio = this.getRatio(parentPolygon);
@@ -212,16 +212,21 @@ var Polygon = /** @class */ (function (_super) {
         return cornersPassed;
     };
     Polygon.prototype.getDistanceFromOriginToContact = function (parentPolygon) {
+        // Offsets
         var offsetRadians = this.getOffsetRadians(parentPolygon);
+        var offsetDistance = this.getOffsetDistance();
+        // Sequence details
         var sequence = this.getSequence(parentPolygon);
         var ratio = this.getRatio(parentPolygon);
+        // Total angle relative to offset
         var totalAngle = this.state.totalAngle - offsetRadians;
-        // Normalise position
+        // Process offset
         if (totalAngle < 0) {
+            console.log('%c' + this.state.totalAngle + ' : ' + offsetRadians, 'font-weight: bold; color: red; background: black;');
             return 0;
         }
         // Find the active group
-        var sequenceGroup = this.getSequenceGroup(parentPolygon);
+        var sequenceGroup = this.getSequenceGroup(parentPolygon, totalAngle);
         var offsetGroupRadians = sequenceGroup * this.getSequenceGroupRadians(parentPolygon);
         var radiansRelativeToGroup = totalAngle - (offsetGroupRadians);
         // Find the active parent face (relative to the group) in the sequence
@@ -235,7 +240,7 @@ var Polygon = /** @class */ (function (_super) {
                 break;
             }
         }
-        //Find the active child face (relative to the PAF) in the sequence
+        //Find the active child face (relative to the Paf) in the sequence
         var childRolls = sequence.slice(0, parentActiveFace);
         var childRollsSum = childRolls.reduce(function (sum, value) { return sum + value; }, 0);
         var childRollsRads = childRollsSum * this.getRadiansPerFace();
@@ -247,26 +252,30 @@ var Polygon = /** @class */ (function (_super) {
                 break;
             }
         }
-        // If on corner, distance is multiple of PF
-        var onCorner = false;
-        if ((sequence[parentActiveFace] * this.getRadiansPerFace()) - radiansRelativeToPaf) {
-            onCorner = true;
-        }
-        // If not on corner, distance is multiple of CF
-        var distance = 0;
+        // Detect when child is on parent corner
         var currentChildFace = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
-        var fixedStyle = 'font-weight: bold; color: cyan; background: black;';
-        var stateStyle = 'font-weight: bold; color: orange; background: black;';
+        var radiansInPaf = (sequence[parentActiveFace] * this.getRadiansPerFace());
+        var onCorner = radiansInPaf <= radiansRelativeToPaf;
+        // Calculate distance from origin
+        var distanceFromOrigin = (currentChildFace * this.faceWidth) + offsetDistance;
+        if (onCorner === true) {
+            distanceFromOrigin = (parentActiveFace + 1) * parentPolygon.faceWidth;
+        }
+        // Get the distance from the start of the Paf
+        var distanceFromPafStart = distanceFromOrigin % parentPolygon.faceWidth;
+        var fixedStyle = 'font-weight: bold; color: cyan; background: black; padding: 2px;';
+        var stateStyle = 'font-weight: bold; color: orange; background: black; padding: 2px;';
+        console.log('-----------------');
         console.log('----> %c' + currentChildFace + ' : ' + Math.round(totalAngle / this.getStepRadians()) + '%c <----', 'font-weight: bold; color: red; background: black;', 'font-weight: normal; color: inherit;');
-        console.log('---------------');
-        console.log('C faces: %c' + this.faces, fixedStyle);
-        console.log('P faces: %c' + parentPolygon.faces, fixedStyle);
+        console.log('-----------------');
+        console.log('C / P faces: %c' + this.faces + ' / ' + parentPolygon.faces, fixedStyle);
+        console.log('steps per face: %c' + this.steps / this.faces, fixedStyle);
         console.log('sequence: %c' + sequence, fixedStyle);
         //console.log('radiansPerFace: %c' + this.getRadiansPerFace(), fixedStyle);
         //console.log('stepRadians: %c' + this.getStepRadians(), fixedStyle);
         //console.log('offset: %c' + offsetRadians, fixedStyle);
         console.log('- - - - - - -');
-        console.log('totalAngle:  %c' + totalAngle, stateStyle);
+        //console.log('totalAngle:  %c' + totalAngle, stateStyle);
         console.log('sequenceGroup:  %c' + sequenceGroup, stateStyle);
         //console.log('radiansRelativeToGroup:  %c' + radiansRelativeToGroup, stateStyle);
         //console.log('offsetGroupRadians:  %c' + offsetGroupRadians, stateStyle);
@@ -274,11 +283,12 @@ var Polygon = /** @class */ (function (_super) {
         console.log('- - - - - - -');
         //console.log('childRolls:  %c' + childRolls, stateStyle);
         console.log('onCorner:  %c' + onCorner, stateStyle);
-        console.log('childRollsSum:  %c' + childRollsSum, stateStyle);
+        //console.log('childRollsSum:  %c' + childRollsSum, stateStyle);
         //console.log('radiansRelativeToPaf:  %c' + radiansRelativeToPaf, stateStyle);
         console.log('childActiveFace:  %c' + childActiveFace, stateStyle);
-        console.log('---------------');
-        return distance;
+        console.log('distanceFromOrigin:  %c' + distanceFromOrigin, stateStyle);
+        console.log('distanceFromPafStart:  %c' + distanceFromPafStart, stateStyle);
+        return distanceFromPafStart;
     };
     Polygon.prototype.getParentDistanceFromOriginToContact = function (parentPolygon) {
         return 0;
