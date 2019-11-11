@@ -54,18 +54,20 @@ class Polygon extends EventEmitter implements PolygonInterface {
             parentCentreX = parentPolygon.state.centre.x;
             parentCentreY = parentPolygon.state.centre.y;
 
-            this.getDistanceFromOriginToContact(parentPolygon);
+            const distanceFromOrigin:number = this.getDistanceFromOriginToContact(parentPolygon);
+            const distanceFromPafStart: number = distanceFromOrigin % parentPolygon.faceWidth;
+            const parentActiveFace: number = Math.floor(distanceFromOrigin / parentPolygon.faceWidth);
 
             // calculate parent centre contact point
             const parentSAS = this.getValuesFromSAS(
-                parentPolygon.getRadius(),                                  // side b
-                (parentPolygon.getOuterAngle()/2),                          // angle A
-                this.getDistanceFromParentCornerToContact(parentPolygon)    // side c
+                parentPolygon.getRadius(),                      // side b
+                (parentPolygon.getOuterAngle()/2),              // angle A
+                distanceFromPafStart                            // side c
             );
 
             const parentCentreToContactPoint = parentSAS.a;
             const angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
-            const angleRelativeToParent = 0; //this.getCornersPassed(parentPolygon) * parentPolygon.getInnerAngle();
+            const angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
             const contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
             const contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
 
@@ -331,34 +333,37 @@ class Polygon extends EventEmitter implements PolygonInterface {
         // Calculate distance from origin
         let distanceFromOrigin: number = (currentChildFace * this.faceWidth) + offsetDistance;
         if(onCorner === true) {
-            distanceFromOrigin = (parentActiveFace + 1) * parentPolygon.faceWidth;
+            distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
         }
 
+        /*
         // Get the distance from the start of the Paf
-        let distanceFromPafStart: number = distanceFromOrigin % parentPolygon.faceWidth;
+        const distanceFromPafStart: number = distanceFromOrigin % parentPolygon.faceWidth;
+        const PafFromOriginDistance: number = Math.floor(distanceFromOrigin / parentPolygon.faceWidth);
 
         const fixedStyle = 'font-weight: bold; color: cyan; background: black; padding: 2px;';
         const stateStyle = 'font-weight: bold; color: orange; background: black; padding: 2px;';
-
         console.log('-----------------');
             console.log('----> %c' + currentChildFace + ' : ' + Math.round(totalAngle/this.getStepRadians()) + '%c <----',
                 'font-weight: bold; color: red; background: black;',
                 'font-weight: normal; color: inherit;'
             );
-        console.log('-----------------');
+        console.groupCollapsed()
             console.log('C / P faces: %c' + this.faces + ' / ' + parentPolygon.faces, fixedStyle);
             console.log('steps per face: %c' + this.steps / this.faces, fixedStyle);
             console.log('sequence: %c' + sequence, fixedStyle);
             //console.log('radiansPerFace: %c' + this.getRadiansPerFace(), fixedStyle);
             //console.log('stepRadians: %c' + this.getStepRadians(), fixedStyle);
             //console.log('offset: %c' + offsetRadians, fixedStyle);
-
-        console.log('- - - - - - -');
+        console.groupEnd();
             //console.log('totalAngle:  %c' + totalAngle, stateStyle);
             console.log('sequenceGroup:  %c' + sequenceGroup, stateStyle);
             //console.log('radiansRelativeToGroup:  %c' + radiansRelativeToGroup, stateStyle);
             //console.log('offsetGroupRadians:  %c' + offsetGroupRadians, stateStyle);
             console.log('parentActiveFace:  %c' + parentActiveFace, stateStyle);
+            console.log('PafFromOriginDistance:  %c' + PafFromOriginDistance, stateStyle);
+            console.log('radiansInPaf: %c' + radiansInPaf, fixedStyle);
+            console.log('radiansRelativeToPaf: %c' + radiansRelativeToPaf, fixedStyle);
         console.log('- - - - - - -');
             //console.log('childRolls:  %c' + childRolls, stateStyle);
             console.log('onCorner:  %c' + onCorner, stateStyle);
@@ -367,8 +372,9 @@ class Polygon extends EventEmitter implements PolygonInterface {
             console.log('childActiveFace:  %c' + childActiveFace, stateStyle);
             console.log('distanceFromOrigin:  %c' + distanceFromOrigin, stateStyle);
             console.log('distanceFromPafStart:  %c' + distanceFromPafStart, stateStyle);
+        */
 
-        return distanceFromPafStart;
+        return distanceFromOrigin;
     }
 
     getParentDistanceFromOriginToContact(parentPolygon: PolygonInterface): number {

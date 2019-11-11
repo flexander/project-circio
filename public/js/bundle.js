@@ -87790,15 +87790,17 @@ var Polygon = /** @class */ (function (_super) {
             this.parent = parentPolygon;
             parentCentreX = parentPolygon.state.centre.x;
             parentCentreY = parentPolygon.state.centre.y;
-            this.getDistanceFromOriginToContact(parentPolygon);
+            var distanceFromOrigin = this.getDistanceFromOriginToContact(parentPolygon);
+            var distanceFromPafStart = distanceFromOrigin % parentPolygon.faceWidth;
+            var parentActiveFace = Math.floor(distanceFromOrigin / parentPolygon.faceWidth);
             // calculate parent centre contact point
             var parentSAS = this.getValuesFromSAS(parentPolygon.getRadius(), // side b
             (parentPolygon.getOuterAngle() / 2), // angle A
-            this.getDistanceFromParentCornerToContact(parentPolygon) // side c
+            distanceFromPafStart // side c
             );
             var parentCentreToContactPoint = parentSAS.a;
             var angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
-            var angleRelativeToParent = 0; //this.getCornersPassed(parentPolygon) * parentPolygon.getInnerAngle();
+            var angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
             var contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
             var contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
             // calculate child centre contact point
@@ -88009,36 +88011,46 @@ var Polygon = /** @class */ (function (_super) {
         // Calculate distance from origin
         var distanceFromOrigin = (currentChildFace * this.faceWidth) + offsetDistance;
         if (onCorner === true) {
-            distanceFromOrigin = (parentActiveFace + 1) * parentPolygon.faceWidth;
+            distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
         }
+        /*
         // Get the distance from the start of the Paf
-        var distanceFromPafStart = distanceFromOrigin % parentPolygon.faceWidth;
-        var fixedStyle = 'font-weight: bold; color: cyan; background: black; padding: 2px;';
-        var stateStyle = 'font-weight: bold; color: orange; background: black; padding: 2px;';
+        const distanceFromPafStart: number = distanceFromOrigin % parentPolygon.faceWidth;
+        const PafFromOriginDistance: number = Math.floor(distanceFromOrigin / parentPolygon.faceWidth);
+
+        const fixedStyle = 'font-weight: bold; color: cyan; background: black; padding: 2px;';
+        const stateStyle = 'font-weight: bold; color: orange; background: black; padding: 2px;';
         console.log('-----------------');
-        console.log('----> %c' + currentChildFace + ' : ' + Math.round(totalAngle / this.getStepRadians()) + '%c <----', 'font-weight: bold; color: red; background: black;', 'font-weight: normal; color: inherit;');
-        console.log('-----------------');
-        console.log('C / P faces: %c' + this.faces + ' / ' + parentPolygon.faces, fixedStyle);
-        console.log('steps per face: %c' + this.steps / this.faces, fixedStyle);
-        console.log('sequence: %c' + sequence, fixedStyle);
-        //console.log('radiansPerFace: %c' + this.getRadiansPerFace(), fixedStyle);
-        //console.log('stepRadians: %c' + this.getStepRadians(), fixedStyle);
-        //console.log('offset: %c' + offsetRadians, fixedStyle);
+            console.log('----> %c' + currentChildFace + ' : ' + Math.round(totalAngle/this.getStepRadians()) + '%c <----',
+                'font-weight: bold; color: red; background: black;',
+                'font-weight: normal; color: inherit;'
+            );
+        console.groupCollapsed()
+            console.log('C / P faces: %c' + this.faces + ' / ' + parentPolygon.faces, fixedStyle);
+            console.log('steps per face: %c' + this.steps / this.faces, fixedStyle);
+            console.log('sequence: %c' + sequence, fixedStyle);
+            //console.log('radiansPerFace: %c' + this.getRadiansPerFace(), fixedStyle);
+            //console.log('stepRadians: %c' + this.getStepRadians(), fixedStyle);
+            //console.log('offset: %c' + offsetRadians, fixedStyle);
+        console.groupEnd();
+            //console.log('totalAngle:  %c' + totalAngle, stateStyle);
+            console.log('sequenceGroup:  %c' + sequenceGroup, stateStyle);
+            //console.log('radiansRelativeToGroup:  %c' + radiansRelativeToGroup, stateStyle);
+            //console.log('offsetGroupRadians:  %c' + offsetGroupRadians, stateStyle);
+            console.log('parentActiveFace:  %c' + parentActiveFace, stateStyle);
+            console.log('PafFromOriginDistance:  %c' + PafFromOriginDistance, stateStyle);
+            console.log('radiansInPaf: %c' + radiansInPaf, fixedStyle);
+            console.log('radiansRelativeToPaf: %c' + radiansRelativeToPaf, fixedStyle);
         console.log('- - - - - - -');
-        //console.log('totalAngle:  %c' + totalAngle, stateStyle);
-        console.log('sequenceGroup:  %c' + sequenceGroup, stateStyle);
-        //console.log('radiansRelativeToGroup:  %c' + radiansRelativeToGroup, stateStyle);
-        //console.log('offsetGroupRadians:  %c' + offsetGroupRadians, stateStyle);
-        console.log('parentActiveFace:  %c' + parentActiveFace, stateStyle);
-        console.log('- - - - - - -');
-        //console.log('childRolls:  %c' + childRolls, stateStyle);
-        console.log('onCorner:  %c' + onCorner, stateStyle);
-        //console.log('childRollsSum:  %c' + childRollsSum, stateStyle);
-        //console.log('radiansRelativeToPaf:  %c' + radiansRelativeToPaf, stateStyle);
-        console.log('childActiveFace:  %c' + childActiveFace, stateStyle);
-        console.log('distanceFromOrigin:  %c' + distanceFromOrigin, stateStyle);
-        console.log('distanceFromPafStart:  %c' + distanceFromPafStart, stateStyle);
-        return distanceFromPafStart;
+            //console.log('childRolls:  %c' + childRolls, stateStyle);
+            console.log('onCorner:  %c' + onCorner, stateStyle);
+            //console.log('childRollsSum:  %c' + childRollsSum, stateStyle);
+            //console.log('radiansRelativeToPaf:  %c' + radiansRelativeToPaf, stateStyle);
+            console.log('childActiveFace:  %c' + childActiveFace, stateStyle);
+            console.log('distanceFromOrigin:  %c' + distanceFromOrigin, stateStyle);
+            console.log('distanceFromPafStart:  %c' + distanceFromPafStart, stateStyle);
+        */
+        return distanceFromOrigin;
     };
     Polygon.prototype.getParentDistanceFromOriginToContact = function (parentPolygon) {
         return 0;
@@ -88367,7 +88379,7 @@ var BlueprintStore = /** @class */ (function () {
         poly0.faces = 4;
         poly0.faceWidth = 200;
         var poly1 = new polygon_1.Polygon();
-        poly1.steps = 20;
+        poly1.steps = 4;
         poly1.outside = true;
         poly1.fixed = true;
         poly1.clockwise = true;
