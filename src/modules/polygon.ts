@@ -95,7 +95,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 childCentreToContactPoint                   // side c
             );
             radiusRelative = relativeSAS.a;
-            arcToParentRadians = (parentActiveFace * parentPolygon.getInnerAngle()) + relativeSAS.C;
+            // TODO: test
+            arcToParentRadians = angleFromOrigin + relativeSAS.C;
             arcToParentRadians = (this.config.clockwise === true) ? -(arcToParentRadians) : arcToParentRadians;
 
             this.state.contactPoint.x = contactPointX;
