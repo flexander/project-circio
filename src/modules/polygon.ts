@@ -72,10 +72,11 @@ class Polygon extends EventEmitter implements PolygonInterface {
             const contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
 
             // calculate child centre contact point
+            const distanceFromChildCornerToContact = this.faceWidth - (distanceFromOrigin % this.faceWidth);
             const childSAS = this.getValuesFromSAS(
-                this.getRadius(),                                                   // side b
-                (this.getOuterAngle()/2),                                           // angle A
-                Math.abs(this.getDistanceFromChildCornerToContact(parentPolygon))   // side c
+                this.getRadius(),                                   // side b
+                (this.getOuterAngle()/2),                           // angle A
+                distanceFromChildCornerToContact                    // side c
             );
 
             const childCentreToContactPoint = childSAS.a;
@@ -83,8 +84,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
             const parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
 
             const relativeAngle = (
-                // TODO: this calc might be wrong
-                //(((this.state.totalAngle + this.getOffsetRadians(parentPolygon)) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle())) % this.getRadiansPerFace()) +
+                this.getRemainingRadians(parentPolygon) +
                 childSAS.B +
                 parentSASB
             );
@@ -95,7 +95,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 childCentreToContactPoint                   // side c
             );
             radiusRelative = relativeSAS.a;
-            arcToParentRadians = (this.config.clockwise === true) ? -(relativeSAS.C) : relativeSAS.C;
+            arcToParentRadians = (parentActiveFace * parentPolygon.getInnerAngle()) + relativeSAS.C;
+            arcToParentRadians = (this.config.clockwise === true) ? -(arcToParentRadians) : arcToParentRadians;
 
             this.state.contactPoint.x = contactPointX;
             this.state.contactPoint.y = contactPointY;
@@ -276,6 +277,71 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return cornersPassed;
     }
 
+    getRemainingRadians(parentPolygon: PolygonInterface): number {
+        // Offsets
+        const offsetRadians = this.getOffsetRadians(parentPolygon);
+        const offsetDistance = this.getOffsetDistance();
+
+        // Sequence details
+        const sequence = this.getSequence(parentPolygon);
+        const ratio: math.Fraction = this.getRatio(parentPolygon);
+
+        // Total angle relative to offset
+        const totalAngle = this.state.totalAngle - offsetRadians;
+
+        // Process offset
+        if (totalAngle < 0) {
+            console.log('%c' + this.state.totalAngle + ' : ' + offsetRadians, 'font-weight: bold; color: red; background: black;');
+            return 0;
+        }
+
+        // Find the active group
+        const sequenceGroup: number = this.getSequenceGroup(parentPolygon, totalAngle);
+        const offsetGroupRadians: number = sequenceGroup * this.getSequenceGroupRadians(parentPolygon);
+        const radiansRelativeToGroup: number = totalAngle - (offsetGroupRadians);
+
+        // Find the active parent face (relative to the group) in the sequence
+        let parentActiveFace: number;
+        let childFacesRolled: number = 0;
+        for (parentActiveFace = 0; parentActiveFace < sequence.length; parentActiveFace++) {
+            childFacesRolled += sequence[parentActiveFace];
+            const radiansRolled: number = (childFacesRolled * this.getRadiansPerFace());
+            const cornerRads: number = parentPolygon.getExternalAngle() * (parentActiveFace + 1);
+
+            if ((radiansRelativeToGroup - (radiansRolled + cornerRads)) < 0) {
+                break;
+            }
+        }
+
+        //Find the active child face (relative to the Paf) in the sequence
+        const childRolls: number[] = sequence.slice(0, parentActiveFace);
+        const childRollsSum: number = childRolls.reduce((sum, value) => {
+            return sum + value
+        }, 0);
+        const childRollsRads: number = childRollsSum * this.getRadiansPerFace();
+        const cornerRads: number = parentPolygon.getExternalAngle() * parentActiveFace;
+        const radiansRelativeToPaf: number = radiansRelativeToGroup - (childRollsRads + cornerRads);
+        let childActiveFace: number;
+        for (childActiveFace = 0; childActiveFace <= sequence[parentActiveFace]; childActiveFace++) {
+            if ((radiansRelativeToPaf - ((childActiveFace + 1) * this.getRadiansPerFace())) < 0) {
+                break;
+            }
+        }
+
+        // Detect when child is on parent corner
+        const currentChildFace: number = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
+        const radiansInPaf: number = (sequence[parentActiveFace] * this.getRadiansPerFace());
+        const onCorner: boolean = radiansInPaf <= radiansRelativeToPaf;
+
+        // Calculate distance from origin
+        let distanceFromOrigin: number = (currentChildFace * this.faceWidth) + offsetDistance;
+        if (onCorner === true) {
+            distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
+        }
+
+        return radiansRelativeToPaf % this.getRadiansPerFace();
+    }
+
     getDistanceFromOriginToContact(parentPolygon: PolygonInterface): number {
         // Offsets
         const offsetRadians = this.getOffsetRadians(parentPolygon);
@@ -336,6 +402,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
             distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
         }
 
+        const remainingRadians: number = radiansRelativeToPaf % this.getRadiansPerFace();
+
         /*
         // Get the distance from the start of the Paf
         const distanceFromPafStart: number = distanceFromOrigin % parentPolygon.faceWidth;
@@ -384,10 +452,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
     getDistanceFromParentCornerToContact(parentPolygon: PolygonInterface): number {
         const cornersPassed = this.getCornersPassed(parentPolygon);
 
-        return 0;
-    }
-
-    getDistanceFromChildCornerToContact(parentPolygon: PolygonInterface): number {
         return 0;
     }
 

@@ -54,24 +54,24 @@ var Polygon = /** @class */ (function (_super) {
             var contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
             var contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
             // calculate child centre contact point
+            var distanceFromChildCornerToContact = this.faceWidth - (distanceFromOrigin % this.faceWidth);
             var childSAS = this.getValuesFromSAS(this.getRadius(), // side b
             (this.getOuterAngle() / 2), // angle A
-            Math.abs(this.getDistanceFromChildCornerToContact(parentPolygon)) // side c
+            distanceFromChildCornerToContact // side c
             );
             var childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
             var parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
-            var relativeAngle = (
-            // TODO: this calc might be wrong
-            //(((this.state.totalAngle + this.getOffsetRadians(parentPolygon)) - (this.getCornersPassed(parentPolygon) * parentPolygon.getExternalAngle())) % this.getRadiansPerFace()) +
-            childSAS.B +
+            var relativeAngle = (this.getRemainingRadians(parentPolygon) +
+                childSAS.B +
                 parentSASB);
             var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
             relativeAngle, // angle A
             childCentreToContactPoint // side c
             );
             radiusRelative = relativeSAS.a;
-            arcToParentRadians = (this.config.clockwise === true) ? -(relativeSAS.C) : relativeSAS.C;
+            arcToParentRadians = (parentActiveFace * parentPolygon.getInnerAngle()) + relativeSAS.C;
+            arcToParentRadians = (this.config.clockwise === true) ? -(arcToParentRadians) : arcToParentRadians;
             this.state.contactPoint.x = contactPointX;
             this.state.contactPoint.y = contactPointY;
         }
@@ -213,7 +213,7 @@ var Polygon = /** @class */ (function (_super) {
         var sequence = this.getSequence(parentPolygon);
         return cornersPassed;
     };
-    Polygon.prototype.getDistanceFromOriginToContact = function (parentPolygon) {
+    Polygon.prototype.getRemainingRadians = function (parentPolygon) {
         // Offsets
         var offsetRadians = this.getOffsetRadians(parentPolygon);
         var offsetDistance = this.getOffsetDistance();
@@ -244,6 +244,60 @@ var Polygon = /** @class */ (function (_super) {
         }
         //Find the active child face (relative to the Paf) in the sequence
         var childRolls = sequence.slice(0, parentActiveFace);
+        var childRollsSum = childRolls.reduce(function (sum, value) {
+            return sum + value;
+        }, 0);
+        var childRollsRads = childRollsSum * this.getRadiansPerFace();
+        var cornerRads = parentPolygon.getExternalAngle() * parentActiveFace;
+        var radiansRelativeToPaf = radiansRelativeToGroup - (childRollsRads + cornerRads);
+        var childActiveFace;
+        for (childActiveFace = 0; childActiveFace <= sequence[parentActiveFace]; childActiveFace++) {
+            if ((radiansRelativeToPaf - ((childActiveFace + 1) * this.getRadiansPerFace())) < 0) {
+                break;
+            }
+        }
+        // Detect when child is on parent corner
+        var currentChildFace = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
+        var radiansInPaf = (sequence[parentActiveFace] * this.getRadiansPerFace());
+        var onCorner = radiansInPaf <= radiansRelativeToPaf;
+        // Calculate distance from origin
+        var distanceFromOrigin = (currentChildFace * this.faceWidth) + offsetDistance;
+        if (onCorner === true) {
+            distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
+        }
+        return radiansRelativeToPaf % this.getRadiansPerFace();
+    };
+    Polygon.prototype.getDistanceFromOriginToContact = function (parentPolygon) {
+        // Offsets
+        var offsetRadians = this.getOffsetRadians(parentPolygon);
+        var offsetDistance = this.getOffsetDistance();
+        // Sequence details
+        var sequence = this.getSequence(parentPolygon);
+        var ratio = this.getRatio(parentPolygon);
+        // Total angle relative to offset
+        var totalAngle = this.state.totalAngle - offsetRadians;
+        // Process offset
+        if (totalAngle < 0) {
+            console.log('%c' + this.state.totalAngle + ' : ' + offsetRadians, 'font-weight: bold; color: red; background: black;');
+            return 0;
+        }
+        // Find the active group
+        var sequenceGroup = this.getSequenceGroup(parentPolygon, totalAngle);
+        var offsetGroupRadians = sequenceGroup * this.getSequenceGroupRadians(parentPolygon);
+        var radiansRelativeToGroup = totalAngle - (offsetGroupRadians);
+        // Find the active parent face (relative to the group) in the sequence
+        var parentActiveFace;
+        var childFacesRolled = 0;
+        for (parentActiveFace = 0; parentActiveFace < sequence.length; parentActiveFace++) {
+            childFacesRolled += sequence[parentActiveFace];
+            var radiansRolled = (childFacesRolled * this.getRadiansPerFace());
+            var cornerRads_2 = parentPolygon.getExternalAngle() * (parentActiveFace + 1);
+            if ((radiansRelativeToGroup - (radiansRolled + cornerRads_2)) < 0) {
+                break;
+            }
+        }
+        //Find the active child face (relative to the Paf) in the sequence
+        var childRolls = sequence.slice(0, parentActiveFace);
         var childRollsSum = childRolls.reduce(function (sum, value) { return sum + value; }, 0);
         var childRollsRads = childRollsSum * this.getRadiansPerFace();
         var cornerRads = parentPolygon.getExternalAngle() * parentActiveFace;
@@ -263,6 +317,7 @@ var Polygon = /** @class */ (function (_super) {
         if (onCorner === true) {
             distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
         }
+        var remainingRadians = radiansRelativeToPaf % this.getRadiansPerFace();
         /*
         // Get the distance from the start of the Paf
         const distanceFromPafStart: number = distanceFromOrigin % parentPolygon.faceWidth;
@@ -307,9 +362,6 @@ var Polygon = /** @class */ (function (_super) {
     };
     Polygon.prototype.getDistanceFromParentCornerToContact = function (parentPolygon) {
         var cornersPassed = this.getCornersPassed(parentPolygon);
-        return 0;
-    };
-    Polygon.prototype.getDistanceFromChildCornerToContact = function (parentPolygon) {
         return 0;
     };
     // Calculate values of a triangle where we know two sides and the angle between them
