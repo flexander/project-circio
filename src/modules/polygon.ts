@@ -66,10 +66,10 @@ class Polygon extends EventEmitter implements PolygonInterface {
             );
 
             const parentCentreToContactPoint = parentSAS.a;
-            const angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
             const angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
-            const contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
-            const contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
+            const contactPointAngle: number = parentSAS.C + angleRelativeToParent;
+            const contactPointX = (parentCentreToContactPoint * Math.cos(-(contactPointAngle))) + parentCentreX;
+            const contactPointY = (parentCentreToContactPoint * Math.sin(-(contactPointAngle))) + parentCentreY;
 
             // calculate child centre contact point
             const distanceFromChildCornerToContact = this.faceWidth - (distanceFromOrigin % this.faceWidth);
@@ -94,20 +94,21 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 relativeAngle,                              // angle A
                 childCentreToContactPoint                   // side c
             );
+
             radiusRelative = relativeSAS.a;
-            // TODO: test
-            arcToParentRadians = angleFromOrigin + relativeSAS.C;
-            arcToParentRadians = (this.config.clockwise === true) ? -(arcToParentRadians) : arcToParentRadians;
+            arcToParentRadians = contactPointAngle + relativeSAS.C;
+            arcToParentRadians = (this.config.clockwise === false) ? -(arcToParentRadians) : arcToParentRadians;
 
             this.state.contactPoint.x = contactPointX;
             this.state.contactPoint.y = contactPointY;
         }
-        this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
-        this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
+        const centreRads = parentRadians + arcToParentRadians;
+        this.state.centre.x = parentCentreX + (Math.cos((centreRads)) * radiusRelative);
+        this.state.centre.y = parentCentreY + (Math.sin((centreRads)) * radiusRelative);
 
         // New x1 & y1 to reflect change in radians
-        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.getRadius());
-        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.getRadius());
+        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians - this.state.totalAngle) * this.getRadius());
+        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians - this.state.totalAngle) * this.getRadius());
     }
     public calculateAngle(): void {
         this.state.previousState.totalAngle = this.state.totalAngle;
@@ -280,20 +281,19 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
     getRemainingRadians(parentPolygon: PolygonInterface): number {
         // Offsets
-        const offsetRadians = this.getOffsetRadians(parentPolygon);
-        const offsetDistance = this.getOffsetDistance();
+        const offsetRadians: number = this.getOffsetRadians(parentPolygon);
+        const offsetDistance: number = this.getOffsetDistance();
 
         // Sequence details
         const sequence = this.getSequence(parentPolygon);
         const ratio: math.Fraction = this.getRatio(parentPolygon);
 
         // Total angle relative to offset
-        const totalAngle = this.state.totalAngle - offsetRadians;
+        const totalAngle: number = this.state.totalAngle - offsetRadians;
 
         // Process offset
         if (totalAngle < 0) {
-            console.log('%c' + this.state.totalAngle + ' : ' + offsetRadians, 'font-weight: bold; color: red; background: black;');
-            return 0;
+            return offsetRadians + this.state.totalAngle;
         }
 
         // Find the active group
@@ -357,7 +357,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
         // Process offset
         if (totalAngle < 0) {
-            console.log('%c' + this.state.totalAngle + ' : ' + offsetRadians, 'font-weight: bold; color: red; background: black;');
             return 0;
         }
 

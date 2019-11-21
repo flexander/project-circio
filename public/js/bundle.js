@@ -87799,10 +87799,10 @@ var Polygon = /** @class */ (function (_super) {
             distanceFromPafStart // side c
             );
             var parentCentreToContactPoint = parentSAS.a;
-            var angleFromOrigin = parentPolygon.state.totalAngle + parentSAS.C;
             var angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
-            var contactPointX = (parentCentreToContactPoint * Math.cos(angleFromOrigin + angleRelativeToParent)) + parentCentreX;
-            var contactPointY = (parentCentreToContactPoint * Math.sin(angleFromOrigin + angleRelativeToParent)) + parentCentreY;
+            var contactPointAngle = parentSAS.C + angleRelativeToParent;
+            var contactPointX = (parentCentreToContactPoint * Math.cos(-(contactPointAngle))) + parentCentreX;
+            var contactPointY = (parentCentreToContactPoint * Math.sin(-(contactPointAngle))) + parentCentreY;
             // calculate child centre contact point
             var distanceFromChildCornerToContact = this.faceWidth - (distanceFromOrigin % this.faceWidth);
             var childSAS = this.getValuesFromSAS(this.getRadius(), // side b
@@ -87820,17 +87820,17 @@ var Polygon = /** @class */ (function (_super) {
             childCentreToContactPoint // side c
             );
             radiusRelative = relativeSAS.a;
-            // TODO: test
-            arcToParentRadians = angleFromOrigin + relativeSAS.C;
-            arcToParentRadians = (this.config.clockwise === true) ? -(arcToParentRadians) : arcToParentRadians;
+            arcToParentRadians = contactPointAngle + relativeSAS.C;
+            arcToParentRadians = (this.config.clockwise === false) ? -(arcToParentRadians) : arcToParentRadians;
             this.state.contactPoint.x = contactPointX;
             this.state.contactPoint.y = contactPointY;
         }
-        this.state.centre.x = parentCentreX + (Math.cos(parentRadians + arcToParentRadians) * radiusRelative);
-        this.state.centre.y = parentCentreY + (Math.sin(parentRadians + arcToParentRadians) * radiusRelative);
+        var centreRads = parentRadians + arcToParentRadians;
+        this.state.centre.x = parentCentreX + (Math.cos((centreRads)) * radiusRelative);
+        this.state.centre.y = parentCentreY + (Math.sin((centreRads)) * radiusRelative);
         // New x1 & y1 to reflect change in radians
-        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians + this.state.totalAngle) * this.getRadius());
-        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians + this.state.totalAngle) * this.getRadius());
+        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians - this.state.totalAngle) * this.getRadius());
+        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians - this.state.totalAngle) * this.getRadius());
     };
     Polygon.prototype.calculateAngle = function () {
         this.state.previousState.totalAngle = this.state.totalAngle;
@@ -87975,8 +87975,7 @@ var Polygon = /** @class */ (function (_super) {
         var totalAngle = this.state.totalAngle - offsetRadians;
         // Process offset
         if (totalAngle < 0) {
-            console.log('%c' + this.state.totalAngle + ' : ' + offsetRadians, 'font-weight: bold; color: red; background: black;');
-            return 0;
+            return offsetRadians + this.state.totalAngle;
         }
         // Find the active group
         var sequenceGroup = this.getSequenceGroup(parentPolygon, totalAngle);
@@ -88029,7 +88028,6 @@ var Polygon = /** @class */ (function (_super) {
         var totalAngle = this.state.totalAngle - offsetRadians;
         // Process offset
         if (totalAngle < 0) {
-            console.log('%c' + this.state.totalAngle + ' : ' + offsetRadians, 'font-weight: bold; color: red; background: black;');
             return 0;
         }
         // Find the active group
