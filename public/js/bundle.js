@@ -87801,10 +87801,11 @@ var Polygon = /** @class */ (function (_super) {
             var parentCentreToContactPoint = parentSAS.a;
             var angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
             var contactPointAngle = parentSAS.C + angleRelativeToParent;
-            var contactPointX = (parentCentreToContactPoint * Math.cos(-(contactPointAngle))) + parentCentreX;
-            var contactPointY = (parentCentreToContactPoint * Math.sin(-(contactPointAngle))) + parentCentreY;
+            //contactPointAngle = (this.config.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
+            var contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle)) + parentCentreX;
+            var contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle)) + parentCentreY;
             // calculate child centre contact point
-            var distanceFromChildCornerToContact = this.faceWidth - (distanceFromOrigin % this.faceWidth);
+            var distanceFromChildCornerToContact = (distanceFromOrigin % this.faceWidth);
             var childSAS = this.getValuesFromSAS(this.getRadius(), // side b
             (this.getOuterAngle() / 2), // angle A
             distanceFromChildCornerToContact // side c
@@ -87812,7 +87813,8 @@ var Polygon = /** @class */ (function (_super) {
             var childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
             var parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
-            var relativeAngle = (this.getRemainingRadians(parentPolygon) +
+            // TODO: sign based on direction
+            var relativeAngle = -(this.getRemainingRadians(parentPolygon) +
                 childSAS.B +
                 parentSASB);
             var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
@@ -87820,17 +87822,17 @@ var Polygon = /** @class */ (function (_super) {
             childCentreToContactPoint // side c
             );
             radiusRelative = relativeSAS.a;
+            //contactPointAngle = (this.config.clockwise === true) ? -(contactPointAngle) : contactPointAngle;
             arcToParentRadians = contactPointAngle + relativeSAS.C;
-            arcToParentRadians = (this.config.clockwise === false) ? -(arcToParentRadians) : arcToParentRadians;
             this.state.contactPoint.x = contactPointX;
             this.state.contactPoint.y = contactPointY;
         }
         var centreRads = parentRadians + arcToParentRadians;
-        this.state.centre.x = parentCentreX + (Math.cos((centreRads)) * radiusRelative);
-        this.state.centre.y = parentCentreY + (Math.sin((centreRads)) * radiusRelative);
+        this.state.centre.x = parentCentreX + (Math.cos(centreRads) * radiusRelative);
+        this.state.centre.y = parentCentreY + (Math.sin(centreRads) * radiusRelative);
         // New x1 & y1 to reflect change in radians
-        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians - this.state.totalAngle) * this.getRadius());
-        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians - this.state.totalAngle) * this.getRadius());
+        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + this.state.totalAngle) * this.getRadius());
+        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + this.state.totalAngle) * this.getRadius());
     };
     Polygon.prototype.calculateAngle = function () {
         this.state.previousState.totalAngle = this.state.totalAngle;
@@ -88430,7 +88432,7 @@ var BlueprintStore = /** @class */ (function () {
         poly0.faces = 4;
         poly0.faceWidth = 200;
         var poly1 = new polygon_1.Polygon();
-        poly1.steps = 4;
+        poly1.steps = 400;
         poly1.outside = true;
         poly1.fixed = true;
         poly1.clockwise = true;

@@ -67,9 +67,10 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
             const parentCentreToContactPoint = parentSAS.a;
             const angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
-            const contactPointAngle: number = parentSAS.C + angleRelativeToParent;
-            const contactPointX = (parentCentreToContactPoint * Math.cos(-(contactPointAngle))) + parentCentreX;
-            const contactPointY = (parentCentreToContactPoint * Math.sin(-(contactPointAngle))) + parentCentreY;
+            let contactPointAngle: number = parentSAS.C + angleRelativeToParent;
+            //contactPointAngle = (this.config.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
+            const contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle)) + parentCentreX;
+            const contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle)) + parentCentreY;
 
             // calculate child centre contact point
             const distanceFromChildCornerToContact = this.faceWidth - (distanceFromOrigin % this.faceWidth);
@@ -83,7 +84,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
             // If parentSasC = 0 then the child is on a corner
             const parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
 
-            const relativeAngle = (
+            // TODO: sign based on direction
+            const relativeAngle = -(
                 this.getRemainingRadians(parentPolygon) +
                 childSAS.B +
                 parentSASB
@@ -96,19 +98,20 @@ class Polygon extends EventEmitter implements PolygonInterface {
             );
 
             radiusRelative = relativeSAS.a;
+            //contactPointAngle = (this.config.clockwise === true) ? -(contactPointAngle) : contactPointAngle;
             arcToParentRadians = contactPointAngle + relativeSAS.C;
-            arcToParentRadians = (this.config.clockwise === false) ? -(arcToParentRadians) : arcToParentRadians;
 
             this.state.contactPoint.x = contactPointX;
             this.state.contactPoint.y = contactPointY;
         }
         const centreRads = parentRadians + arcToParentRadians;
-        this.state.centre.x = parentCentreX + (Math.cos((centreRads)) * radiusRelative);
-        this.state.centre.y = parentCentreY + (Math.sin((centreRads)) * radiusRelative);
+
+        this.state.centre.x = parentCentreX + (Math.cos(centreRads) * radiusRelative);
+        this.state.centre.y = parentCentreY + (Math.sin(centreRads) * radiusRelative);
 
         // New x1 & y1 to reflect change in radians
-        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + arcToParentRadians - this.state.totalAngle) * this.getRadius());
-        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + arcToParentRadians - this.state.totalAngle) * this.getRadius());
+        this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + this.state.totalAngle) * this.getRadius());
+        this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + this.state.totalAngle) * this.getRadius());
     }
     public calculateAngle(): void {
         this.state.previousState.totalAngle = this.state.totalAngle;
