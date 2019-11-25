@@ -54,6 +54,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
             parentCentreX = parentPolygon.state.centre.x;
             parentCentreY = parentPolygon.state.centre.y;
 
+            const distanceOffset: number = this.getOffsetDistance();
             const distanceFromOrigin:number = this.getDistanceFromOriginToContact(parentPolygon);
             const distanceFromPafStart: number = distanceFromOrigin % parentPolygon.faceWidth;
             const parentActiveFace: number = Math.floor(distanceFromOrigin / parentPolygon.faceWidth);
@@ -73,7 +74,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
             const contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle)) + parentCentreY;
 
             // calculate child centre contact point
-            const distanceFromChildCornerToContact = this.faceWidth - (distanceFromOrigin % this.faceWidth);
+            const distanceFromChildCornerToContact = this.faceWidth - ((distanceFromOrigin + distanceOffset) % this.faceWidth);
             const childSAS = this.getValuesFromSAS(
                 this.getRadius(),                                   // side b
                 (this.getOuterAngle()/2),                           // angle A
@@ -90,6 +91,10 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 childSAS.B +
                 parentSASB
             );
+
+            console.log([this.getRemainingRadians(parentPolygon),
+                childSAS.B,
+                parentSASB]);
 
             const relativeSAS = this.getValuesFromSAS(
                 parentCentreToContactPoint,                 // side b
