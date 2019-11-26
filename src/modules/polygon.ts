@@ -70,16 +70,19 @@ class Polygon extends EventEmitter implements PolygonInterface {
             const angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
             let contactPointAngle: number = parentSAS.C + angleRelativeToParent;
             //contactPointAngle = (this.config.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
-            const contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle)) + parentCentreX;
-            const contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle)) + parentCentreY;
+            const contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.totalAngle)) + parentCentreX;
+            const contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle + parentPolygon.state.totalAngle)) + parentCentreY;
 
             // calculate child centre contact point
-            const distanceFromChildCornerToContact = this.faceWidth - ((distanceFromOrigin + distanceOffset) % this.faceWidth);
+            let distanceFromChildCornerToContact = ((distanceFromOrigin + distanceOffset) % this.faceWidth);
+            distanceFromChildCornerToContact = (parentSAS.C !== 0) ? this.faceWidth - distanceFromChildCornerToContact : distanceFromChildCornerToContact;
             const childSAS = this.getValuesFromSAS(
                 this.getRadius(),                                   // side b
                 (this.getOuterAngle()/2),                           // angle A
                 distanceFromChildCornerToContact                    // side c
             );
+            console.log(distanceFromChildCornerToContact);
+            console.log(childSAS);
 
             const childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
@@ -91,10 +94,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 childSAS.B +
                 parentSASB
             );
-
-            console.log([this.getRemainingRadians(parentPolygon),
-                childSAS.B,
-                parentSASB]);
 
             const relativeSAS = this.getValuesFromSAS(
                 parentCentreToContactPoint,                 // side b

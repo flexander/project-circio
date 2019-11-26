@@ -53,14 +53,17 @@ var Polygon = /** @class */ (function (_super) {
             var angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
             var contactPointAngle = parentSAS.C + angleRelativeToParent;
             //contactPointAngle = (this.config.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
-            var contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle)) + parentCentreX;
-            var contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle)) + parentCentreY;
+            var contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.totalAngle)) + parentCentreX;
+            var contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle + parentPolygon.state.totalAngle)) + parentCentreY;
             // calculate child centre contact point
-            var distanceFromChildCornerToContact = this.faceWidth - ((distanceFromOrigin + distanceOffset) % this.faceWidth);
+            var distanceFromChildCornerToContact = ((distanceFromOrigin + distanceOffset) % this.faceWidth);
+            distanceFromChildCornerToContact = (parentSAS.C !== 0) ? this.faceWidth - distanceFromChildCornerToContact : distanceFromChildCornerToContact;
             var childSAS = this.getValuesFromSAS(this.getRadius(), // side b
             (this.getOuterAngle() / 2), // angle A
             distanceFromChildCornerToContact // side c
             );
+            console.log(distanceFromChildCornerToContact);
+            console.log(childSAS);
             var childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
             var parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
@@ -68,9 +71,6 @@ var Polygon = /** @class */ (function (_super) {
             var relativeAngle = -(this.getRemainingRadians(parentPolygon) +
                 childSAS.B +
                 parentSASB);
-            console.log([this.getRemainingRadians(parentPolygon),
-                childSAS.B,
-                parentSASB]);
             var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
             relativeAngle, // angle A
             childCentreToContactPoint // side c
