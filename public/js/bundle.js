@@ -88016,10 +88016,9 @@ var Polygon = /** @class */ (function (_super) {
         var currentChildFace = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
         var radiansInPaf = (sequence[parentActiveFace] * this.getRadiansPerFace());
         var onCorner = radiansInPaf <= radiansRelativeToPaf;
-        // Calculate distance from origin
-        var distanceFromOrigin = (currentChildFace * this.faceWidth) + offsetDistance;
+        // Calculate radians since last complete turn
         if (onCorner === true) {
-            distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
+            return radiansRelativeToPaf - radiansInPaf;
         }
         return radiansRelativeToPaf % this.getRadiansPerFace();
     };
@@ -88433,7 +88432,7 @@ var BlueprintStore = /** @class */ (function () {
         poly0.clockwise = true;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
-        poly0.faces = 4;
+        poly0.faces = 5;
         poly0.faceWidth = 200;
         var poly1 = new polygon_1.Polygon();
         poly1.steps = 400;
@@ -88442,7 +88441,7 @@ var BlueprintStore = /** @class */ (function () {
         poly1.clockwise = true;
         poly1.stepMod = 0;
         poly1.startAngle = 0;
-        poly1.faces = 7;
+        poly1.faces = 4;
         poly1.faceWidth = 190;
         var poly2 = new polygon_1.Polygon();
         poly2.steps = 200;

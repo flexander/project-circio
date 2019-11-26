@@ -266,10 +266,9 @@ var Polygon = /** @class */ (function (_super) {
         var currentChildFace = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
         var radiansInPaf = (sequence[parentActiveFace] * this.getRadiansPerFace());
         var onCorner = radiansInPaf <= radiansRelativeToPaf;
-        // Calculate distance from origin
-        var distanceFromOrigin = (currentChildFace * this.faceWidth) + offsetDistance;
+        // Calculate radians since last complete turn
         if (onCorner === true) {
-            distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
+            return radiansRelativeToPaf - radiansInPaf;
         }
         return radiansRelativeToPaf % this.getRadiansPerFace();
     };
