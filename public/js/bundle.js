@@ -87817,14 +87817,19 @@ var Polygon = /** @class */ (function (_super) {
             var childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
             var parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
+            var childSASB = (childSAS.C !== 0) ? childSAS.B : (this.getOuterAngle() / 2);
             // TODO: sign based on direction
             var relativeAngle = -(this.getRemainingRadians(parentPolygon) +
-                childSAS.B +
+                childSASB +
                 parentSASB);
+            console.log([this.getRemainingRadians(parentPolygon),
+                childSASB,
+                parentSASB]);
             var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
             relativeAngle, // angle A
             childCentreToContactPoint // side c
             );
+            console.log(relativeSAS);
             radiusRelative = relativeSAS.a;
             //contactPointAngle = (this.config.clockwise === true) ? -(contactPointAngle) : contactPointAngle;
             arcToParentRadians = contactPointAngle + relativeSAS.C;
@@ -88442,7 +88447,7 @@ var BlueprintStore = /** @class */ (function () {
         poly1.stepMod = 0;
         poly1.startAngle = 0;
         poly1.faces = 4;
-        poly1.faceWidth = 190;
+        poly1.faceWidth = 150;
         var poly2 = new polygon_1.Polygon();
         poly2.steps = 200;
         poly2.outside = true;

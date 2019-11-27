@@ -87,19 +87,26 @@ class Polygon extends EventEmitter implements PolygonInterface {
             const childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
             const parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
+            const childSASB = (childSAS.C !== 0) ? childSAS.B : (this.getOuterAngle() / 2);
 
             // TODO: sign based on direction
             const relativeAngle = -(
                 this.getRemainingRadians(parentPolygon) +
-                childSAS.B +
+                childSASB +
                 parentSASB
             );
+
+            console.log([this.getRemainingRadians(parentPolygon) ,
+                childSASB,
+                parentSASB]);
 
             const relativeSAS = this.getValuesFromSAS(
                 parentCentreToContactPoint,                 // side b
                 relativeAngle,                              // angle A
                 childCentreToContactPoint                   // side c
             );
+
+            console.log(relativeSAS);
 
             radiusRelative = relativeSAS.a;
             //contactPointAngle = (this.config.clockwise === true) ? -(contactPointAngle) : contactPointAngle;
