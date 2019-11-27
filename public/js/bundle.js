@@ -87812,8 +87812,6 @@ var Polygon = /** @class */ (function (_super) {
             (this.getOuterAngle() / 2), // angle A
             distanceFromChildCornerToContact // side c
             );
-            console.log(distanceFromChildCornerToContact);
-            console.log(childSAS);
             var childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
             var parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
@@ -87822,14 +87820,15 @@ var Polygon = /** @class */ (function (_super) {
             var relativeAngle = -(this.getRemainingRadians(parentPolygon) +
                 childSASB +
                 parentSASB);
-            console.log([this.getRemainingRadians(parentPolygon),
+            console.log([
+                this.getRemainingRadians(parentPolygon),
                 childSASB,
-                parentSASB]);
+                parentSASB
+            ]);
             var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
             relativeAngle, // angle A
             childCentreToContactPoint // side c
             );
-            console.log(relativeSAS);
             radiusRelative = relativeSAS.a;
             //contactPointAngle = (this.config.clockwise === true) ? -(contactPointAngle) : contactPointAngle;
             arcToParentRadians = contactPointAngle + relativeSAS.C;
@@ -88020,10 +88019,12 @@ var Polygon = /** @class */ (function (_super) {
         // Detect when child is on parent corner
         var currentChildFace = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
         var radiansInPaf = (sequence[parentActiveFace] * this.getRadiansPerFace());
-        var onCorner = radiansInPaf <= radiansRelativeToPaf;
+        var distanceFromOrigin = this.getDistanceFromOriginToContact(parentPolygon);
+        var onParentCorner = radiansInPaf <= radiansRelativeToPaf;
+        var onChildCorner = ((parentActiveFace * parentPolygon.faceWidth) % this.faceWidth) === 0;
         // Calculate radians since last complete turn
-        if (onCorner === true) {
-            return radiansRelativeToPaf - radiansInPaf;
+        if (onParentCorner === true && onChildCorner === true) {
+            return (radiansRelativeToPaf % this.getRadiansPerFace()) + this.getRadiansPerFace();
         }
         return radiansRelativeToPaf % this.getRadiansPerFace();
     };
@@ -88438,7 +88439,7 @@ var BlueprintStore = /** @class */ (function () {
         poly0.stepMod = 0;
         poly0.startAngle = 0;
         poly0.faces = 5;
-        poly0.faceWidth = 200;
+        poly0.faceWidth = 150;
         var poly1 = new polygon_1.Polygon();
         poly1.steps = 400;
         poly1.outside = true;
@@ -88447,7 +88448,7 @@ var BlueprintStore = /** @class */ (function () {
         poly1.stepMod = 0;
         poly1.startAngle = 0;
         poly1.faces = 4;
-        poly1.faceWidth = 150;
+        poly1.faceWidth = 100;
         var poly2 = new polygon_1.Polygon();
         poly2.steps = 200;
         poly2.outside = true;
@@ -88456,17 +88457,17 @@ var BlueprintStore = /** @class */ (function () {
         poly2.stepMod = 0;
         poly2.startAngle = 0;
         poly2.faces = 3;
-        poly2.faceWidth = 100;
+        poly2.faceWidth = 75;
         var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
         circle1Brush.link = false;
         circle1Brush.offset = 0;
         circle1Brush.point = 0.5;
-        poly1.addBrush(circle1Brush);
+        poly2.addBrush(circle1Brush);
         circ.addShape(poly0);
         circ.addShape(poly1);
-        //circ.addShape(poly2);
+        circ.addShape(poly2);
         return circ;
     };
     return BlueprintStore;

@@ -81,8 +81,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 (this.getOuterAngle()/2),                           // angle A
                 distanceFromChildCornerToContact                    // side c
             );
-            console.log(distanceFromChildCornerToContact);
-            console.log(childSAS);
 
             const childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
@@ -95,18 +93,15 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 childSASB +
                 parentSASB
             );
-
-            console.log([this.getRemainingRadians(parentPolygon) ,
-                childSASB,
-                parentSASB]);
-
+console.log([
+    this.getRemainingRadians(parentPolygon),
+childSASB,
+parentSASB]);
             const relativeSAS = this.getValuesFromSAS(
                 parentCentreToContactPoint,                 // side b
                 relativeAngle,                              // angle A
                 childCentreToContactPoint                   // side c
             );
-
-            console.log(relativeSAS);
 
             radiusRelative = relativeSAS.a;
             //contactPointAngle = (this.config.clockwise === true) ? -(contactPointAngle) : contactPointAngle;
@@ -346,11 +341,13 @@ class Polygon extends EventEmitter implements PolygonInterface {
         // Detect when child is on parent corner
         const currentChildFace: number = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
         const radiansInPaf: number = (sequence[parentActiveFace] * this.getRadiansPerFace());
-        const onCorner: boolean = radiansInPaf <= radiansRelativeToPaf;
+        const distanceFromOrigin: number = this.getDistanceFromOriginToContact(parentPolygon);
+        const onParentCorner: boolean = radiansInPaf <= radiansRelativeToPaf;
+        const onChildCorner: boolean = ((parentActiveFace * parentPolygon.faceWidth) % this.faceWidth) === 0;
 
         // Calculate radians since last complete turn
-        if (onCorner === true) {
-            return radiansRelativeToPaf - radiansInPaf;
+        if (onParentCorner === true && onChildCorner === true) {
+            return (radiansRelativeToPaf % this.getRadiansPerFace()) + this.getRadiansPerFace();
         }
 
         return radiansRelativeToPaf % this.getRadiansPerFace();
