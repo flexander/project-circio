@@ -271,7 +271,8 @@ var Polygon = /** @class */ (function (_super) {
         var radiansInPaf = (sequence[parentActiveFace] * this.getRadiansPerFace());
         var distanceFromOrigin = this.getDistanceFromOriginToContact(parentPolygon);
         var onParentCorner = radiansInPaf <= radiansRelativeToPaf;
-        var onChildCorner = ((parentActiveFace * parentPolygon.faceWidth) % this.faceWidth) === 0;
+        var onChildCorner = ((distanceFromOrigin + offsetDistance) % this.faceWidth) === 0;
+        console.log([distanceFromOrigin, currentChildFace, parentActiveFace, onParentCorner, onChildCorner]);
         // Calculate radians since last complete turn
         if (onParentCorner === true && onChildCorner === true) {
             return (radiansRelativeToPaf % this.getRadiansPerFace()) + this.getRadiansPerFace();

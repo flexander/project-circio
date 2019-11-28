@@ -343,7 +343,9 @@ parentSASB]);
         const radiansInPaf: number = (sequence[parentActiveFace] * this.getRadiansPerFace());
         const distanceFromOrigin: number = this.getDistanceFromOriginToContact(parentPolygon);
         const onParentCorner: boolean = radiansInPaf <= radiansRelativeToPaf;
-        const onChildCorner: boolean = ((parentActiveFace * parentPolygon.faceWidth) % this.faceWidth) === 0;
+        const onChildCorner: boolean = ((distanceFromOrigin + offsetDistance) % this.faceWidth) === 0;
+
+        console.log([distanceFromOrigin, currentChildFace, parentActiveFace, onParentCorner, onChildCorner]);
 
         // Calculate radians since last complete turn
         if (onParentCorner === true && onChildCorner === true) {
