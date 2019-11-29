@@ -93,10 +93,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 childSASB +
                 parentSASB
             );
-console.log([
-    this.getRemainingRadians(parentPolygon),
-childSASB,
-parentSASB]);
+
             const relativeSAS = this.getValuesFromSAS(
                 parentCentreToContactPoint,                 // side b
                 relativeAngle,                              // angle A
@@ -332,7 +329,7 @@ parentSASB]);
         const cornerRads: number = parentPolygon.getExternalAngle() * parentActiveFace;
         const radiansRelativeToPaf: number = radiansRelativeToGroup - (childRollsRads + cornerRads);
         let childActiveFace: number;
-        for (childActiveFace = 0; childActiveFace <= sequence[parentActiveFace]; childActiveFace++) {
+        for (childActiveFace = 0; childActiveFace < sequence[parentActiveFace]; childActiveFace++) {
             if ((radiansRelativeToPaf - ((childActiveFace + 1) * this.getRadiansPerFace())) < 0) {
                 break;
             }
@@ -345,11 +342,11 @@ parentSASB]);
         const onParentCorner: boolean = radiansInPaf <= radiansRelativeToPaf;
         const onChildCorner: boolean = ((distanceFromOrigin + offsetDistance) % this.faceWidth) === 0;
 
-        console.log([distanceFromOrigin, currentChildFace, parentActiveFace, onParentCorner, onChildCorner]);
-
         // Calculate radians since last complete turn
         if (onParentCorner === true && onChildCorner === true) {
-            return (radiansRelativeToPaf % this.getRadiansPerFace()) + this.getRadiansPerFace();
+            return (radiansRelativeToPaf - radiansInPaf)  + this.getRadiansPerFace();
+        } else if (onParentCorner === true) {
+            return (radiansRelativeToPaf - radiansInPaf);
         }
 
         return radiansRelativeToPaf % this.getRadiansPerFace();
@@ -397,7 +394,7 @@ parentSASB]);
         const cornerRads: number = parentPolygon.getExternalAngle() * parentActiveFace;
         const radiansRelativeToPaf: number = radiansRelativeToGroup - (childRollsRads + cornerRads);
         let childActiveFace: number;
-        for (childActiveFace = 0; childActiveFace <= sequence[parentActiveFace]; childActiveFace++) {
+        for (childActiveFace = 0; childActiveFace < sequence[parentActiveFace]; childActiveFace++) {
             if ((radiansRelativeToPaf - ((childActiveFace + 1) * this.getRadiansPerFace())) < 0) {
                 break;
             }
@@ -407,7 +404,6 @@ parentSASB]);
         const currentChildFace: number = (ratio.n * sequenceGroup) + childRollsSum + childActiveFace;
         const radiansInPaf: number = (sequence[parentActiveFace] * this.getRadiansPerFace());
         const onCorner: boolean = radiansInPaf <= radiansRelativeToPaf;
-
         // Calculate distance from origin
         let distanceFromOrigin: number = (currentChildFace * this.faceWidth) + offsetDistance;
         if(onCorner === true) {

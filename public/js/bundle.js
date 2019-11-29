@@ -87820,11 +87820,6 @@ var Polygon = /** @class */ (function (_super) {
             var relativeAngle = -(this.getRemainingRadians(parentPolygon) +
                 childSASB +
                 parentSASB);
-            console.log([
-                this.getRemainingRadians(parentPolygon),
-                childSASB,
-                parentSASB
-            ]);
             var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
             relativeAngle, // angle A
             childCentreToContactPoint // side c
@@ -88011,7 +88006,7 @@ var Polygon = /** @class */ (function (_super) {
         var cornerRads = parentPolygon.getExternalAngle() * parentActiveFace;
         var radiansRelativeToPaf = radiansRelativeToGroup - (childRollsRads + cornerRads);
         var childActiveFace;
-        for (childActiveFace = 0; childActiveFace <= sequence[parentActiveFace]; childActiveFace++) {
+        for (childActiveFace = 0; childActiveFace < sequence[parentActiveFace]; childActiveFace++) {
             if ((radiansRelativeToPaf - ((childActiveFace + 1) * this.getRadiansPerFace())) < 0) {
                 break;
             }
@@ -88022,10 +88017,12 @@ var Polygon = /** @class */ (function (_super) {
         var distanceFromOrigin = this.getDistanceFromOriginToContact(parentPolygon);
         var onParentCorner = radiansInPaf <= radiansRelativeToPaf;
         var onChildCorner = ((distanceFromOrigin + offsetDistance) % this.faceWidth) === 0;
-        console.log([distanceFromOrigin, currentChildFace, parentActiveFace, onParentCorner, onChildCorner]);
         // Calculate radians since last complete turn
         if (onParentCorner === true && onChildCorner === true) {
-            return (radiansRelativeToPaf % this.getRadiansPerFace()) + this.getRadiansPerFace();
+            return (radiansRelativeToPaf - radiansInPaf) + this.getRadiansPerFace();
+        }
+        else if (onParentCorner === true) {
+            return (radiansRelativeToPaf - radiansInPaf);
         }
         return radiansRelativeToPaf % this.getRadiansPerFace();
     };
@@ -88064,7 +88061,7 @@ var Polygon = /** @class */ (function (_super) {
         var cornerRads = parentPolygon.getExternalAngle() * parentActiveFace;
         var radiansRelativeToPaf = radiansRelativeToGroup - (childRollsRads + cornerRads);
         var childActiveFace;
-        for (childActiveFace = 0; childActiveFace <= sequence[parentActiveFace]; childActiveFace++) {
+        for (childActiveFace = 0; childActiveFace < sequence[parentActiveFace]; childActiveFace++) {
             if ((radiansRelativeToPaf - ((childActiveFace + 1) * this.getRadiansPerFace())) < 0) {
                 break;
             }
@@ -88439,7 +88436,7 @@ var BlueprintStore = /** @class */ (function () {
         poly0.clockwise = true;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
-        poly0.faces = 4;
+        poly0.faces = 5;
         poly0.faceWidth = 150;
         var poly1 = new polygon_1.Polygon();
         poly1.steps = 400;
@@ -88448,8 +88445,8 @@ var BlueprintStore = /** @class */ (function () {
         poly1.clockwise = true;
         poly1.stepMod = 0;
         poly1.startAngle = 0;
-        poly1.faces = 5;
-        poly1.faceWidth = 100;
+        poly1.faces = 4;
+        poly1.faceWidth = 120;
         var poly2 = new polygon_1.Polygon();
         poly2.steps = 200;
         poly2.outside = true;
@@ -88465,10 +88462,10 @@ var BlueprintStore = /** @class */ (function () {
         circle1Brush.link = false;
         circle1Brush.offset = 0;
         circle1Brush.point = 0.5;
-        poly1.addBrush(circle1Brush);
+        poly2.addBrush(circle1Brush);
         circ.addShape(poly0);
         circ.addShape(poly1);
-        //circ.addShape(poly2);
+        circ.addShape(poly2);
         return circ;
     };
     return BlueprintStore;
