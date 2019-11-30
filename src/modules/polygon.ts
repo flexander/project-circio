@@ -344,9 +344,9 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
         // Calculate radians since last complete turn
         if (onParentCorner === true && onChildCorner === true) {
-            return (radiansRelativeToPaf % radiansInPaf)  + this.getRadiansPerFace();
+            return (radiansRelativeToPaf - radiansInPaf)  + this.getRadiansPerFace();
         } else if (onParentCorner === true) {
-            return (radiansRelativeToPaf % radiansInPaf);
+            return (radiansRelativeToPaf - radiansInPaf);
         }
 
         return radiansRelativeToPaf % this.getRadiansPerFace();

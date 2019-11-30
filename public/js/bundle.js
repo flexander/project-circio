@@ -88019,10 +88019,10 @@ var Polygon = /** @class */ (function (_super) {
         var onChildCorner = ((distanceFromOrigin + offsetDistance) % this.faceWidth) === 0;
         // Calculate radians since last complete turn
         if (onParentCorner === true && onChildCorner === true) {
-            return (radiansRelativeToPaf % radiansInPaf) + this.getRadiansPerFace();
+            return (radiansRelativeToPaf - radiansInPaf) + this.getRadiansPerFace();
         }
         else if (onParentCorner === true) {
-            return (radiansRelativeToPaf % radiansInPaf);
+            return (radiansRelativeToPaf - radiansInPaf);
         }
         return radiansRelativeToPaf % this.getRadiansPerFace();
     };
@@ -88436,8 +88436,8 @@ var BlueprintStore = /** @class */ (function () {
         poly0.clockwise = true;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
-        poly0.faces = 5;
-        poly0.faceWidth = 150;
+        poly0.faces = 3;
+        poly0.faceWidth = 200;
         var poly1 = new polygon_1.Polygon();
         poly1.steps = 400;
         poly1.outside = true;
@@ -88446,7 +88446,7 @@ var BlueprintStore = /** @class */ (function () {
         poly1.stepMod = 0;
         poly1.startAngle = 0;
         poly1.faces = 4;
-        poly1.faceWidth = 120;
+        poly1.faceWidth = 150;
         var poly2 = new polygon_1.Polygon();
         poly2.steps = 200;
         poly2.outside = true;
@@ -88454,7 +88454,7 @@ var BlueprintStore = /** @class */ (function () {
         poly2.clockwise = true;
         poly2.stepMod = 0;
         poly2.startAngle = 0;
-        poly2.faces = 3;
+        poly2.faces = 5;
         poly2.faceWidth = 75;
         var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';

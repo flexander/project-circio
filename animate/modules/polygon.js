@@ -269,10 +269,10 @@ var Polygon = /** @class */ (function (_super) {
         var onChildCorner = ((distanceFromOrigin + offsetDistance) % this.faceWidth) === 0;
         // Calculate radians since last complete turn
         if (onParentCorner === true && onChildCorner === true) {
-            return (radiansRelativeToPaf % radiansInPaf) + this.getRadiansPerFace();
+            return (radiansRelativeToPaf - radiansInPaf) + this.getRadiansPerFace();
         }
         else if (onParentCorner === true) {
-            return (radiansRelativeToPaf % radiansInPaf);
+            return (radiansRelativeToPaf - radiansInPaf);
         }
         return radiansRelativeToPaf % this.getRadiansPerFace();
     };
