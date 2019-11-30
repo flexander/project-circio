@@ -87817,7 +87817,7 @@ var Polygon = /** @class */ (function (_super) {
             var parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
             var childSASB = (childSAS.C !== 0) ? childSAS.B : (this.getOuterAngle() / 2);
             // TODO: sign based on direction
-            var relativeAngle = -(this.getRemainingRadians(parentPolygon) +
+            var relativeAngle = -(this.getRadiansInCurrentRoll(parentPolygon) +
                 childSASB +
                 parentSASB);
             var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
@@ -87969,7 +87969,7 @@ var Polygon = /** @class */ (function (_super) {
         var sequence = this.getSequence(parentPolygon);
         return cornersPassed;
     };
-    Polygon.prototype.getRemainingRadians = function (parentPolygon) {
+    Polygon.prototype.getRadiansInCurrentRoll = function (parentPolygon) {
         // Offsets
         var offsetRadians = this.getOffsetRadians(parentPolygon);
         var offsetDistance = this.getOffsetDistance();
@@ -88019,10 +88019,10 @@ var Polygon = /** @class */ (function (_super) {
         var onChildCorner = ((distanceFromOrigin + offsetDistance) % this.faceWidth) === 0;
         // Calculate radians since last complete turn
         if (onParentCorner === true && onChildCorner === true) {
-            return (radiansRelativeToPaf - radiansInPaf) + this.getRadiansPerFace();
+            return (radiansRelativeToPaf % radiansInPaf) + this.getRadiansPerFace();
         }
         else if (onParentCorner === true) {
-            return (radiansRelativeToPaf - radiansInPaf);
+            return (radiansRelativeToPaf % radiansInPaf);
         }
         return radiansRelativeToPaf % this.getRadiansPerFace();
     };

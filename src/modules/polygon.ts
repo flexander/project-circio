@@ -89,7 +89,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
             // TODO: sign based on direction
             const relativeAngle = -(
-                this.getRemainingRadians(parentPolygon) +
+                this.getRadiansInCurrentRoll(parentPolygon) +
                 childSASB +
                 parentSASB
             );
@@ -285,7 +285,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return cornersPassed;
     }
 
-    getRemainingRadians(parentPolygon: PolygonInterface): number {
+    getRadiansInCurrentRoll(parentPolygon: PolygonInterface): number {
         // Offsets
         const offsetRadians: number = this.getOffsetRadians(parentPolygon);
         const offsetDistance: number = this.getOffsetDistance();
@@ -344,9 +344,9 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
         // Calculate radians since last complete turn
         if (onParentCorner === true && onChildCorner === true) {
-            return (radiansRelativeToPaf - radiansInPaf)  + this.getRadiansPerFace();
+            return (radiansRelativeToPaf % radiansInPaf)  + this.getRadiansPerFace();
         } else if (onParentCorner === true) {
-            return (radiansRelativeToPaf - radiansInPaf);
+            return (radiansRelativeToPaf % radiansInPaf);
         }
 
         return radiansRelativeToPaf % this.getRadiansPerFace();
