@@ -32,7 +32,7 @@ var Polygon = /** @class */ (function (_super) {
     Polygon.prototype.calculatePosition = function (parentPolygon) {
         this.savePreviousState();
         var arcToParentRadians = 0;
-        var parentRadians = (parentPolygon !== null && this.fixed === true) ? parentPolygon.state.totalAngle : 0;
+        var parentRadians = (parentPolygon !== null && this.fixed === true) ? parentPolygon.state.getAngle() : 0;
         var radiusRelative = 0;
         var parentCentreX = this.state.centre.x;
         var parentCentreY = this.state.centre.y;
@@ -53,8 +53,8 @@ var Polygon = /** @class */ (function (_super) {
             var angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
             var contactPointAngle = parentSAS.C + angleRelativeToParent;
             //contactPointAngle = (this.config.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
-            var contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.totalAngle)) + parentCentreX;
-            var contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle + parentPolygon.state.totalAngle)) + parentCentreY;
+            var contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreX;
+            var contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreY;
             // calculate child centre contact point
             var distanceFromChildCornerToContact = ((distanceFromOrigin + distanceOffset) % this.faceWidth);
             distanceFromChildCornerToContact = (parentSAS.C !== 0) ? this.faceWidth - distanceFromChildCornerToContact : distanceFromChildCornerToContact;

@@ -44,7 +44,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
         this.savePreviousState();
 
         let arcToParentRadians = 0;
-        let parentRadians = (parentPolygon !== null && this.fixed === true) ? parentPolygon.state.totalAngle: 0;
+        let parentRadians = (parentPolygon !== null && this.fixed === true) ? parentPolygon.state.getAngle(): 0;
         let radiusRelative = 0;
         let parentCentreX = this.state.centre.x;
         let parentCentreY = this.state.centre.y;
@@ -70,8 +70,8 @@ class Polygon extends EventEmitter implements PolygonInterface {
             const angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
             let contactPointAngle: number = parentSAS.C + angleRelativeToParent;
             //contactPointAngle = (this.config.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
-            const contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.totalAngle)) + parentCentreX;
-            const contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle + parentPolygon.state.totalAngle)) + parentCentreY;
+            const contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreX;
+            const contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreY;
 
             // calculate child centre contact point
             let distanceFromChildCornerToContact = ((distanceFromOrigin + distanceOffset) % this.faceWidth);
