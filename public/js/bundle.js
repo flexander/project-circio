@@ -85821,6 +85821,7 @@ engine.addImportCallback(function (circ) {
 blueprintStorage.get('twoPolygons')
     .then(function (circ) {
     engine.import(circ);
+    engine.stepInterval = 60;
     engine.play();
 });
 
@@ -88073,7 +88074,7 @@ var Polygon = /** @class */ (function (_super) {
         // Calculate distance from origin
         var distanceFromOrigin = (currentChildFace * this.faceWidth) + offsetDistance;
         if (onCorner === true) {
-            distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
+            distanceFromOrigin = ((ratio.d * sequenceGroup) + (parentActiveFace + 1)) * parentPolygon.faceWidth;
         }
         var remainingRadians = radiansRelativeToPaf % this.getRadiansPerFace();
         /*
@@ -88430,14 +88431,14 @@ var BlueprintStore = /** @class */ (function () {
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
         var poly0 = new polygon_1.Polygon();
-        poly0.steps = 200;
+        poly0.steps = 0;
         poly0.outside = true;
         poly0.fixed = true;
         poly0.clockwise = false;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
-        poly0.faces = 3;
-        poly0.faceWidth = 250;
+        poly0.faces = 1000;
+        poly0.faceWidth = 0.5;
         var poly1 = new polygon_1.Polygon();
         poly1.steps = 150;
         poly1.outside = true;
@@ -88445,8 +88446,8 @@ var BlueprintStore = /** @class */ (function () {
         poly1.clockwise = true;
         poly1.stepMod = 0;
         poly1.startAngle = 0;
-        poly1.faces = 1000;
-        poly1.faceWidth = 0.5;
+        poly1.faces = 3;
+        poly1.faceWidth = 100;
         var poly2 = new polygon_1.Polygon();
         poly2.steps = 100;
         poly2.outside = true;
@@ -88454,7 +88455,7 @@ var BlueprintStore = /** @class */ (function () {
         poly2.clockwise = true;
         poly2.stepMod = 0;
         poly2.startAngle = 0;
-        poly2.faces = 500;
+        poly2.faces = 1500;
         poly2.faceWidth = 0.5;
         var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';

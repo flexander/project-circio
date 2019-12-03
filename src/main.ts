@@ -120,5 +120,6 @@ engine.addImportCallback((circ: CircInterface) => {
 blueprintStorage.get('twoPolygons')
     .then((circ: CircInterface) => {
         engine.import(circ);
+        engine.stepInterval = 60;
         engine.play();
     });

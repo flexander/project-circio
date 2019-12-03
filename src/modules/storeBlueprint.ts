@@ -193,14 +193,14 @@ export class BlueprintStore implements CircStoreInterface {
         circ.backgroundFill = '#1b5eec';
 
         const poly0 = new Polygon();
-        poly0.steps = 200;
+        poly0.steps = 0;
         poly0.outside = true;
         poly0.fixed = true;
         poly0.clockwise = false;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
-        poly0.faces = 3;
-        poly0.faceWidth = 250;
+        poly0.faces = 1000;
+        poly0.faceWidth = 0.5;
 
         const poly1 = new Polygon();
         poly1.steps = 150;
@@ -209,8 +209,8 @@ export class BlueprintStore implements CircStoreInterface {
         poly1.clockwise = true;
         poly1.stepMod = 0;
         poly1.startAngle = 0;
-        poly1.faces = 1000;
-        poly1.faceWidth = 0.5;
+        poly1.faces = 3;
+        poly1.faceWidth = 100;
 
         const poly2 = new Polygon();
         poly2.steps = 100;
@@ -219,7 +219,7 @@ export class BlueprintStore implements CircStoreInterface {
         poly2.clockwise = true;
         poly2.stepMod = 0;
         poly2.startAngle = 0;
-        poly2.faces = 500;
+        poly2.faces = 1500;
         poly2.faceWidth = 0.5;
 
         const circle1Brush = new Brush();

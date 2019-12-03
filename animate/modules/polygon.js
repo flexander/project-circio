@@ -323,7 +323,7 @@ var Polygon = /** @class */ (function (_super) {
         // Calculate distance from origin
         var distanceFromOrigin = (currentChildFace * this.faceWidth) + offsetDistance;
         if (onCorner === true) {
-            distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
+            distanceFromOrigin = ((ratio.d * sequenceGroup) + (parentActiveFace + 1)) * parentPolygon.faceWidth;
         }
         var remainingRadians = radiansRelativeToPaf % this.getRadiansPerFace();
         /*

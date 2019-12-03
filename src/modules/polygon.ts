@@ -406,9 +406,11 @@ class Polygon extends EventEmitter implements PolygonInterface {
         const onCorner: boolean = radiansInPaf <= radiansRelativeToPaf;
         // Calculate distance from origin
         let distanceFromOrigin: number = (currentChildFace * this.faceWidth) + offsetDistance;
+
         if(onCorner === true) {
-            distanceFromOrigin = Math.floor(distanceFromOrigin / parentPolygon.faceWidth) * parentPolygon.faceWidth;
+            distanceFromOrigin = ((ratio.d * sequenceGroup) + (parentActiveFace + 1)) * parentPolygon.faceWidth;
         }
+
 
         const remainingRadians: number = radiansRelativeToPaf % this.getRadiansPerFace();
 
