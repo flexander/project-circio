@@ -85821,7 +85821,6 @@ engine.addImportCallback(function (circ) {
 blueprintStorage.get('twoPolygons')
     .then(function (circ) {
     engine.import(circ);
-    engine.stepInterval = 60;
     engine.play();
 });
 
@@ -87768,6 +87767,7 @@ require("../structure");
 var structure_1 = require("../structure");
 var math = require("mathjs");
 var circle_1 = require("./circle");
+var events_1 = require("./events");
 var cloneDeep = require('lodash.clonedeep');
 var Polygon = /** @class */ (function (_super) {
     __extends(Polygon, _super);
@@ -87803,9 +87803,6 @@ var Polygon = /** @class */ (function (_super) {
             var parentCentreToContactPoint = parentSAS.a;
             var angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
             var contactPointAngle = parentSAS.C + angleRelativeToParent;
-            //contactPointAngle = (this.config.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
-            var contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreX;
-            var contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreY;
             // calculate child centre contact point
             var distanceFromChildCornerToContact = ((distanceFromOrigin + distanceOffset) % this.faceWidth);
             distanceFromChildCornerToContact = (parentSAS.C !== 0) ? this.faceWidth - distanceFromChildCornerToContact : distanceFromChildCornerToContact;
@@ -87818,15 +87815,20 @@ var Polygon = /** @class */ (function (_super) {
             var parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
             var childSASB = (childSAS.C !== 0) ? childSAS.B : (this.getOuterAngle() / 2);
             // TODO: sign based on direction
-            var relativeAngle = -(this.getRadiansInCurrentRoll(parentPolygon) +
+            var relativeAngle = (this.getRadiansInCurrentRoll(parentPolygon) +
                 childSASB +
                 parentSASB);
+            if (this.clockwise === true) {
+                relativeAngle *= -1;
+            }
             var relativeSAS = this.getValuesFromSAS(parentCentreToContactPoint, // side b
             relativeAngle, // angle A
             childCentreToContactPoint // side c
             );
             radiusRelative = relativeSAS.a;
-            //contactPointAngle = (this.config.clockwise === true) ? -(contactPointAngle) : contactPointAngle;
+            contactPointAngle = (this.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
+            var contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreX;
+            var contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreY;
             arcToParentRadians = contactPointAngle + relativeSAS.C;
             this.state.contactPoint.x = contactPointX;
             this.state.contactPoint.y = contactPointY;
@@ -87917,17 +87919,6 @@ var Polygon = /** @class */ (function (_super) {
         }
         return offsetAngle;
     };
-    /**
-     * Returns the angle the shape has "already rolled" based
-     * on its start position on the parent.
-     *
-     * @param parentPolygon
-     */
-    Polygon.prototype.getInitialRadians = function (parentPolygon) {
-        // The angle between the active parent face and active child face
-        var offsetAngle = this.getOffsetRadians(parentPolygon);
-        return this.getExternalAngle() - offsetAngle;
-    };
     Polygon.prototype.getOffsetDistance = function () {
         var offset = this.faceWidth;
         if (this.faces % 2 !== 0) {
@@ -87978,10 +87969,10 @@ var Polygon = /** @class */ (function (_super) {
         var sequence = this.getSequence(parentPolygon);
         var ratio = this.getRatio(parentPolygon);
         // Total angle relative to offset
-        var totalAngle = this.state.totalAngle - offsetRadians;
+        var totalAngle = Math.abs(this.state.totalAngle) - offsetRadians;
         // Process offset
         if (totalAngle < 0) {
-            return offsetRadians + this.state.totalAngle;
+            return offsetRadians + Math.abs(this.state.totalAngle);
         }
         // Find the active group
         var sequenceGroup = this.getSequenceGroup(parentPolygon, totalAngle);
@@ -88035,7 +88026,7 @@ var Polygon = /** @class */ (function (_super) {
         var sequence = this.getSequence(parentPolygon);
         var ratio = this.getRatio(parentPolygon);
         // Total angle relative to offset
-        var totalAngle = this.state.totalAngle - offsetRadians;
+        var totalAngle = Math.abs(this.state.totalAngle) - offsetRadians;
         // Process offset
         if (totalAngle < 0) {
             return 0;
@@ -88149,6 +88140,17 @@ var Polygon = /** @class */ (function (_super) {
         polygonSas.C = angleC;
         return polygonSas;
     };
+    Object.defineProperty(Polygon.prototype, "clockwise", {
+        get: function () {
+            return this.config.clockwise;
+        },
+        set: function (clockwise) {
+            this.config.clockwise = clockwise;
+            this.dispatchEvent(new events_1.AttributeChangedEvent('clockwise', this.clockwise));
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Polygon;
 }(structure_1.EventEmitter));
 exports.Polygon = Polygon;
@@ -88217,7 +88219,7 @@ var PolygonConfig = /** @class */ (function (_super) {
     return PolygonConfig;
 }(PolygonConfigDefault));
 
-},{"../structure":916,"./circle":894,"lodash.clonedeep":6,"mathjs":886}],911:[function(require,module,exports){
+},{"../structure":916,"./circle":894,"./events":907,"lodash.clonedeep":6,"mathjs":886}],911:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = require("./circle");
@@ -88431,42 +88433,52 @@ var BlueprintStore = /** @class */ (function () {
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
         var poly0 = new polygon_1.Polygon();
-        poly0.steps = 0;
+        poly0.steps = 1000;
         poly0.outside = true;
         poly0.fixed = true;
         poly0.clockwise = false;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
-        poly0.faces = 1000;
+        poly0.faces = 250;
         poly0.faceWidth = 0.5;
         var poly1 = new polygon_1.Polygon();
-        poly1.steps = 150;
+        poly1.steps = 500;
         poly1.outside = true;
         poly1.fixed = true;
         poly1.clockwise = true;
         poly1.stepMod = 0;
         poly1.startAngle = 0;
         poly1.faces = 3;
-        poly1.faceWidth = 100;
+        poly1.faceWidth = 125;
         var poly2 = new polygon_1.Polygon();
-        poly2.steps = 100;
+        poly2.steps = 750;
         poly2.outside = true;
         poly2.fixed = true;
-        poly2.clockwise = true;
+        poly2.clockwise = false;
         poly2.stepMod = 0;
         poly2.startAngle = 0;
-        poly2.faces = 1500;
+        poly2.faces = 750;
         poly2.faceWidth = 0.5;
+        var poly3 = new polygon_1.Polygon();
+        poly3.steps = 450;
+        poly3.outside = true;
+        poly3.fixed = true;
+        poly3.clockwise = true;
+        poly3.stepMod = 0;
+        poly3.startAngle = 0;
+        poly3.faces = 3;
+        poly3.faceWidth = 75;
         var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
-        circle1Brush.link = true;
+        circle1Brush.link = false;
         circle1Brush.offset = 0;
         circle1Brush.point = 0.5;
-        poly2.addBrush(circle1Brush);
+        poly3.addBrush(circle1Brush);
         circ.addShape(poly0);
         circ.addShape(poly1);
         circ.addShape(poly2);
+        circ.addShape(poly3);
         return circ;
     };
     return BlueprintStore;

@@ -193,46 +193,57 @@ export class BlueprintStore implements CircStoreInterface {
         circ.backgroundFill = '#1b5eec';
 
         const poly0 = new Polygon();
-        poly0.steps = 0;
+        poly0.steps = 1000;
         poly0.outside = true;
         poly0.fixed = true;
         poly0.clockwise = false;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
-        poly0.faces = 1000;
+        poly0.faces = 250;
         poly0.faceWidth = 0.5;
 
         const poly1 = new Polygon();
-        poly1.steps = 150;
+        poly1.steps = 500;
         poly1.outside = true;
         poly1.fixed = true;
         poly1.clockwise = true;
         poly1.stepMod = 0;
         poly1.startAngle = 0;
         poly1.faces = 3;
-        poly1.faceWidth = 100;
+        poly1.faceWidth = 125;
 
         const poly2 = new Polygon();
-        poly2.steps = 100;
+        poly2.steps = 750;
         poly2.outside = true;
         poly2.fixed = true;
-        poly2.clockwise = true;
+        poly2.clockwise = false;
         poly2.stepMod = 0;
         poly2.startAngle = 0;
-        poly2.faces = 1500;
+        poly2.faces = 750;
         poly2.faceWidth = 0.5;
+
+        const poly3 = new Polygon();
+        poly3.steps = 450;
+        poly3.outside = true;
+        poly3.fixed = true;
+        poly3.clockwise = true;
+        poly3.stepMod = 0;
+        poly3.startAngle = 0;
+        poly3.faces = 3;
+        poly3.faceWidth = 75;
 
         const circle1Brush = new Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
-        circle1Brush.link = true;
+        circle1Brush.link = false;
         circle1Brush.offset = 0;
         circle1Brush.point = 0.5;
 
-        poly2.addBrush(circle1Brush);
+        poly3.addBrush(circle1Brush);
         circ.addShape(poly0);
         circ.addShape(poly1);
         circ.addShape(poly2);
+        circ.addShape(poly3);
 
         return circ;
     }

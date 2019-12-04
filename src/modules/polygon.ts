@@ -11,12 +11,12 @@ import {
 } from "../structure";
 import * as math from 'mathjs';
 import {CircleConfig, CircleConfigDefault} from "./circle";
+import {AttributeChangedEvent} from "./events";
 
 const cloneDeep = require('lodash.clonedeep');
 
 class Polygon extends EventEmitter implements PolygonInterface {
     brushes: BrushInterface[] = [];
-    clockwise: boolean;
     fixed: boolean;
     id: number;
     outside: boolean;
@@ -69,9 +69,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
             const parentCentreToContactPoint = parentSAS.a;
             const angleRelativeToParent = parentActiveFace * parentPolygon.getInnerAngle();
             let contactPointAngle: number = parentSAS.C + angleRelativeToParent;
-            //contactPointAngle = (this.config.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
-            const contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreX;
-            const contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreY;
 
             // calculate child centre contact point
             let distanceFromChildCornerToContact = ((distanceFromOrigin + distanceOffset) % this.faceWidth);
@@ -88,11 +85,15 @@ class Polygon extends EventEmitter implements PolygonInterface {
             const childSASB = (childSAS.C !== 0) ? childSAS.B : (this.getOuterAngle() / 2);
 
             // TODO: sign based on direction
-            const relativeAngle = -(
+            let relativeAngle = (
                 this.getRadiansInCurrentRoll(parentPolygon) +
                 childSASB +
                 parentSASB
             );
+
+            if(this.clockwise === true) {
+                relativeAngle *= -1;
+            }
 
             const relativeSAS = this.getValuesFromSAS(
                 parentCentreToContactPoint,                 // side b
@@ -101,7 +102,10 @@ class Polygon extends EventEmitter implements PolygonInterface {
             );
 
             radiusRelative = relativeSAS.a;
-            //contactPointAngle = (this.config.clockwise === true) ? -(contactPointAngle) : contactPointAngle;
+            contactPointAngle = (this.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
+            const contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreX;
+            const contactPointY = (parentCentreToContactPoint * Math.sin(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreY;
+
             arcToParentRadians = contactPointAngle + relativeSAS.C;
 
             this.state.contactPoint.x = contactPointX;
@@ -214,19 +218,6 @@ class Polygon extends EventEmitter implements PolygonInterface {
         return offsetAngle;
     }
 
-    /**
-     * Returns the angle the shape has "already rolled" based
-     * on its start position on the parent.
-     *
-     * @param parentPolygon
-     */
-    getInitialRadians(parentPolygon: PolygonInterface): number {
-        // The angle between the active parent face and active child face
-        let offsetAngle: number = this.getOffsetRadians(parentPolygon);
-
-        return this.getExternalAngle() - offsetAngle;
-    }
-
     getOffsetDistance(): number {
         let offset: number = this.faceWidth;
 
@@ -295,11 +286,11 @@ class Polygon extends EventEmitter implements PolygonInterface {
         const ratio: math.Fraction = this.getRatio(parentPolygon);
 
         // Total angle relative to offset
-        const totalAngle: number = this.state.totalAngle - offsetRadians;
+        const totalAngle: number = Math.abs(this.state.totalAngle) - offsetRadians;
 
         // Process offset
         if (totalAngle < 0) {
-            return offsetRadians + this.state.totalAngle;
+            return offsetRadians + Math.abs(this.state.totalAngle);
         }
 
         // Find the active group
@@ -362,7 +353,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
         const ratio: math.Fraction = this.getRatio(parentPolygon);
 
         // Total angle relative to offset
-        const totalAngle = this.state.totalAngle - offsetRadians;
+        const totalAngle = Math.abs(this.state.totalAngle) - offsetRadians;
 
         // Process offset
         if (totalAngle < 0) {
@@ -495,6 +486,15 @@ class Polygon extends EventEmitter implements PolygonInterface {
         polygonSas.C = angleC;
 
         return polygonSas;
+    }
+
+    get clockwise(): boolean {
+        return this.config.clockwise;
+    }
+
+    set clockwise(clockwise: boolean) {
+        this.config.clockwise = clockwise;
+        this.dispatchEvent(new AttributeChangedEvent('clockwise', this.clockwise));
     }
 }
 
