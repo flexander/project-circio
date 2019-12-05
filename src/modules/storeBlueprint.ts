@@ -9,8 +9,8 @@ export class BlueprintStore implements CircStoreInterface {
         'twoCircles': this.makeTwoCircles,
         'threeCircles': this.makeThreeCircles,
         'fourCircles': this.makeFourCircles,
-        'twoSquares': this.makeTwoSquares,
-        'twoPolygons': this.makeTwoPolygons,
+        'polygons': this.makePolygons,
+        'polygonsB': this.makePolygonsB,
     };
 
     public name: string = 'Blueprints';
@@ -146,60 +146,20 @@ export class BlueprintStore implements CircStoreInterface {
         return circ;
     }
 
-    protected makeTwoSquares(): CircInterface {
-        const circ = new Circ();
-        circ.width = 1080;
-        circ.height = 1080;
-        circ.backgroundFill = '#1b5eec';
-
-        const square0 = new Polygon();
-        square0.steps = 1000;
-        square0.outside = true;
-        square0.fixed = true;
-        square0.clockwise = false;
-        square0.stepMod = 0;
-        square0.startAngle = 0;
-        square0.faces = 4;
-        square0.faceWidth = 200;
-
-        const square1 = new Polygon();
-        square1.steps = 1000;
-        square1.outside = true;
-        square1.fixed = true;
-        square1.clockwise = false;
-        square1.stepMod = 0;
-        square1.startAngle = 0;
-        square1.faces = 4;
-        square1.faceWidth = 75;
-
-        const circle1Brush = new Brush();
-        circle1Brush.color = '#FFFFFF';
-        circle1Brush.degrees = 0;
-        circle1Brush.link = false;
-        circle1Brush.offset = 0;
-        circle1Brush.point = 0.5;
-
-        square0.addBrush(circle1Brush);
-        circ.addShape(square0);
-        circ.addShape(square1);
-
-        return circ;
-    }
-
-    protected makeTwoPolygons(): CircInterface {
+    protected makePolygons(): CircInterface {
         const circ = new Circ();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
 
         const poly0 = new Polygon();
-        poly0.steps = 1000;
+        poly0.steps = 500;
         poly0.outside = true;
         poly0.fixed = true;
         poly0.clockwise = false;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
-        poly0.faces = 250;
+        poly0.faces = 300;
         poly0.faceWidth = 0.5;
 
         const poly1 = new Polygon();
@@ -210,27 +170,27 @@ export class BlueprintStore implements CircStoreInterface {
         poly1.stepMod = 0;
         poly1.startAngle = 0;
         poly1.faces = 3;
-        poly1.faceWidth = 125;
+        poly1.faceWidth = 100;
 
         const poly2 = new Polygon();
-        poly2.steps = 750;
+        poly2.steps = 500;
         poly2.outside = true;
         poly2.fixed = true;
         poly2.clockwise = false;
         poly2.stepMod = 0;
         poly2.startAngle = 0;
-        poly2.faces = 750;
+        poly2.faces = 600;
         poly2.faceWidth = 0.5;
 
         const poly3 = new Polygon();
-        poly3.steps = 450;
+        poly3.steps = 500;
         poly3.outside = true;
         poly3.fixed = true;
         poly3.clockwise = true;
         poly3.stepMod = 0;
         poly3.startAngle = 0;
-        poly3.faces = 3;
-        poly3.faceWidth = 75;
+        poly3.faces = 6;
+        poly3.faceWidth = 100;
 
         const circle1Brush = new Brush();
         circle1Brush.color = '#FFFFFF';
@@ -244,6 +204,84 @@ export class BlueprintStore implements CircStoreInterface {
         circ.addShape(poly1);
         circ.addShape(poly2);
         circ.addShape(poly3);
+
+        return circ;
+    }
+
+    protected makePolygonsB(): CircInterface {
+        const circ = new Circ();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#000000';
+
+        const poly0 = new Polygon();
+        poly0.steps = 2000;
+        poly0.outside = true;
+        poly0.fixed = true;
+        poly0.clockwise = false;
+        poly0.stepMod = 0;
+        poly0.startAngle = 0;
+        poly0.faces = 4;
+        poly0.faceWidth = 150;
+
+        const poly1 = new Polygon();
+        poly1.steps = 750;
+        poly1.outside = true;
+        poly1.fixed = true;
+        poly1.clockwise = true;
+        poly1.stepMod = 0;
+        poly1.startAngle = 0;
+        poly1.faces = 4;
+        poly1.faceWidth = 75;
+
+        const poly2 = new Polygon();
+        poly2.steps = 500;
+        poly2.outside = true;
+        poly2.fixed = true;
+        poly2.clockwise = false;
+        poly2.stepMod = 0;
+        poly2.startAngle = 0;
+        poly2.faces = 4;
+        poly2.faceWidth = 50;
+
+        const poly3 = new Polygon();
+        poly3.steps = 500;
+        poly3.outside = true;
+        poly3.fixed = true;
+        poly3.clockwise = true;
+        poly3.stepMod = 0;
+        poly3.startAngle = 0;
+        poly3.faces = 4;
+        poly3.faceWidth = 100;
+
+        const brush0 = new Brush();
+        brush0.color = '#93ff3c';
+        brush0.degrees = 0;
+        brush0.link = false;
+        brush0.offset = 0;
+        brush0.point = 0.5;
+
+        const brush1 = new Brush();
+        brush1.color = '#ff74ee';
+        brush1.degrees = 0;
+        brush1.link = false;
+        brush1.offset = 0;
+        brush1.point = 0.5;
+
+        const brush2 = new Brush();
+        brush2.color = '#FFFFFF';
+        brush2.degrees = 0;
+        brush2.link = false;
+        brush2.offset = 0;
+        brush2.point = 0.5;
+
+        //poly1.addBrush(brush0);
+        poly2.addBrush(brush1);
+        //poly3.addBrush(brush2);
+        circ.addShape(poly0);
+        circ.addShape(poly1);
+        circ.addShape(poly2);
+        //circ.addShape(poly3);
 
         return circ;
     }

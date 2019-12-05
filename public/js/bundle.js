@@ -85818,7 +85818,7 @@ engine.addImportCallback(function (circ) {
         resizeDebounce = setTimeout(function (_) { return transformCanvas(circ); }, 50);
     });
 });
-blueprintStorage.get('twoPolygons')
+blueprintStorage.get('polygonsB')
     .then(function (circ) {
     engine.import(circ);
     engine.play();
@@ -88288,8 +88288,8 @@ var BlueprintStore = /** @class */ (function () {
             'twoCircles': this.makeTwoCircles,
             'threeCircles': this.makeThreeCircles,
             'fourCircles': this.makeFourCircles,
-            'twoSquares': this.makeTwoSquares,
-            'twoPolygons': this.makeTwoPolygons,
+            'polygons': this.makePolygons,
+            'polygonsB': this.makePolygonsB,
         };
         this.name = 'Blueprints';
     }
@@ -88393,53 +88393,19 @@ var BlueprintStore = /** @class */ (function () {
         circ.addShape(circle3);
         return circ;
     };
-    BlueprintStore.prototype.makeTwoSquares = function () {
-        var circ = new circ_1.Circ();
-        circ.width = 1080;
-        circ.height = 1080;
-        circ.backgroundFill = '#1b5eec';
-        var square0 = new polygon_1.Polygon();
-        square0.steps = 1000;
-        square0.outside = true;
-        square0.fixed = true;
-        square0.clockwise = false;
-        square0.stepMod = 0;
-        square0.startAngle = 0;
-        square0.faces = 4;
-        square0.faceWidth = 200;
-        var square1 = new polygon_1.Polygon();
-        square1.steps = 1000;
-        square1.outside = true;
-        square1.fixed = true;
-        square1.clockwise = false;
-        square1.stepMod = 0;
-        square1.startAngle = 0;
-        square1.faces = 4;
-        square1.faceWidth = 75;
-        var circle1Brush = new brushes_1.Brush();
-        circle1Brush.color = '#FFFFFF';
-        circle1Brush.degrees = 0;
-        circle1Brush.link = false;
-        circle1Brush.offset = 0;
-        circle1Brush.point = 0.5;
-        square0.addBrush(circle1Brush);
-        circ.addShape(square0);
-        circ.addShape(square1);
-        return circ;
-    };
-    BlueprintStore.prototype.makeTwoPolygons = function () {
+    BlueprintStore.prototype.makePolygons = function () {
         var circ = new circ_1.Circ();
         circ.width = 1080;
         circ.height = 1080;
         circ.backgroundFill = '#1b5eec';
         var poly0 = new polygon_1.Polygon();
-        poly0.steps = 1000;
+        poly0.steps = 500;
         poly0.outside = true;
         poly0.fixed = true;
         poly0.clockwise = false;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
-        poly0.faces = 250;
+        poly0.faces = 300;
         poly0.faceWidth = 0.5;
         var poly1 = new polygon_1.Polygon();
         poly1.steps = 500;
@@ -88449,25 +88415,25 @@ var BlueprintStore = /** @class */ (function () {
         poly1.stepMod = 0;
         poly1.startAngle = 0;
         poly1.faces = 3;
-        poly1.faceWidth = 125;
+        poly1.faceWidth = 100;
         var poly2 = new polygon_1.Polygon();
-        poly2.steps = 750;
+        poly2.steps = 500;
         poly2.outside = true;
         poly2.fixed = true;
         poly2.clockwise = false;
         poly2.stepMod = 0;
         poly2.startAngle = 0;
-        poly2.faces = 750;
+        poly2.faces = 600;
         poly2.faceWidth = 0.5;
         var poly3 = new polygon_1.Polygon();
-        poly3.steps = 450;
+        poly3.steps = 500;
         poly3.outside = true;
         poly3.fixed = true;
         poly3.clockwise = true;
         poly3.stepMod = 0;
         poly3.startAngle = 0;
-        poly3.faces = 3;
-        poly3.faceWidth = 75;
+        poly3.faces = 6;
+        poly3.faceWidth = 100;
         var circle1Brush = new brushes_1.Brush();
         circle1Brush.color = '#FFFFFF';
         circle1Brush.degrees = 0;
@@ -88479,6 +88445,74 @@ var BlueprintStore = /** @class */ (function () {
         circ.addShape(poly1);
         circ.addShape(poly2);
         circ.addShape(poly3);
+        return circ;
+    };
+    BlueprintStore.prototype.makePolygonsB = function () {
+        var circ = new circ_1.Circ();
+        circ.width = 1080;
+        circ.height = 1080;
+        circ.backgroundFill = '#000000';
+        var poly0 = new polygon_1.Polygon();
+        poly0.steps = 2000;
+        poly0.outside = true;
+        poly0.fixed = true;
+        poly0.clockwise = false;
+        poly0.stepMod = 0;
+        poly0.startAngle = 0;
+        poly0.faces = 4;
+        poly0.faceWidth = 150;
+        var poly1 = new polygon_1.Polygon();
+        poly1.steps = 750;
+        poly1.outside = true;
+        poly1.fixed = true;
+        poly1.clockwise = true;
+        poly1.stepMod = 0;
+        poly1.startAngle = 0;
+        poly1.faces = 4;
+        poly1.faceWidth = 75;
+        var poly2 = new polygon_1.Polygon();
+        poly2.steps = 500;
+        poly2.outside = true;
+        poly2.fixed = true;
+        poly2.clockwise = false;
+        poly2.stepMod = 0;
+        poly2.startAngle = 0;
+        poly2.faces = 4;
+        poly2.faceWidth = 50;
+        var poly3 = new polygon_1.Polygon();
+        poly3.steps = 500;
+        poly3.outside = true;
+        poly3.fixed = true;
+        poly3.clockwise = true;
+        poly3.stepMod = 0;
+        poly3.startAngle = 0;
+        poly3.faces = 4;
+        poly3.faceWidth = 100;
+        var brush0 = new brushes_1.Brush();
+        brush0.color = '#93ff3c';
+        brush0.degrees = 0;
+        brush0.link = false;
+        brush0.offset = 0;
+        brush0.point = 0.5;
+        var brush1 = new brushes_1.Brush();
+        brush1.color = '#ff74ee';
+        brush1.degrees = 0;
+        brush1.link = false;
+        brush1.offset = 0;
+        brush1.point = 0.5;
+        var brush2 = new brushes_1.Brush();
+        brush2.color = '#FFFFFF';
+        brush2.degrees = 0;
+        brush2.link = false;
+        brush2.offset = 0;
+        brush2.point = 0.5;
+        //poly1.addBrush(brush0);
+        poly2.addBrush(brush1);
+        //poly3.addBrush(brush2);
+        circ.addShape(poly0);
+        circ.addShape(poly1);
+        circ.addShape(poly2);
+        //circ.addShape(poly3);
         return circ;
     };
     return BlueprintStore;

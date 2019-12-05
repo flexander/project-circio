@@ -117,7 +117,7 @@ engine.addImportCallback((circ: CircInterface) => {
     });
 });
 
-blueprintStorage.get('twoPolygons')
+blueprintStorage.get('polygonsB')
     .then((circ: CircInterface) => {
         engine.import(circ);
         engine.play();
