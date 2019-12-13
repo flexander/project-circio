@@ -55,16 +55,30 @@ var Polygon = /** @class */ (function (_super) {
             var contactPointAngle = parentSAS.C + angleRelativeToParent;
             // calculate child centre contact point
             var distanceFromChildCornerToContact = ((distanceFromOrigin + distanceOffset) % this.faceWidth);
-            distanceFromChildCornerToContact = (parentSAS.C !== 0) ? this.faceWidth - distanceFromChildCornerToContact : distanceFromChildCornerToContact;
+            // If not on parent corner
+            if (!(parentSAS.C === 0 && parentSAS.c === 0)) {
+                distanceFromChildCornerToContact = this.faceWidth - distanceFromChildCornerToContact;
+            }
             var childSAS = this.getValuesFromSAS(this.getRadius(), // side b
             (this.getOuterAngle() / 2), // angle A
             distanceFromChildCornerToContact // side c
             );
             var childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
-            var parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
-            var childSASB = (childSAS.C !== 0) ? childSAS.B : (this.getOuterAngle() / 2);
-            // TODO: sign based on direction
+            var parentSASB = void 0;
+            if (parentSAS.C === 0 && parentSAS.c === 0) {
+                parentSASB = parentPolygon.getOuterAngle() / 2;
+            }
+            else {
+                parentSASB = parentSAS.B;
+            }
+            var childSASB = void 0;
+            if (childSAS.C === 0 && childSAS.c === 0) {
+                childSASB = this.getOuterAngle() / 2;
+            }
+            else {
+                childSASB = childSAS.B;
+            }
             var relativeAngle = (this.getRadiansInCurrentRoll(parentPolygon) +
                 childSASB +
                 parentSASB);
@@ -277,8 +291,10 @@ var Polygon = /** @class */ (function (_super) {
         var ratio = this.getRatio(parentPolygon);
         // Total angle relative to offset
         var totalAngle = Math.abs(this.state.totalAngle) - offsetRadians;
+        this.onCorner = false;
         // Process offset
         if (totalAngle < 0) {
+            this.onCorner = true;
             return 0;
         }
         // Find the active group
@@ -316,6 +332,7 @@ var Polygon = /** @class */ (function (_super) {
         var distanceFromOrigin = (currentChildFace * this.faceWidth) + offsetDistance;
         if (onCorner === true) {
             distanceFromOrigin = ((ratio.d * sequenceGroup) + (parentActiveFace + 1)) * parentPolygon.faceWidth;
+            this.onCorner = true;
         }
         var remainingRadians = radiansRelativeToPaf % this.getRadiansPerFace();
         /*
@@ -371,7 +388,13 @@ var Polygon = /** @class */ (function (_super) {
         var angleC; // C
         // a^2 = b^2 + c^2 − 2bc cosA
         sideA = Math.sqrt(Math.pow(sideB, 2) + Math.pow(sideC, 2) - (2 * sideB * sideC * Math.cos(angleA)));
-        var smallAngle = Math.asin((Math.sin(angleA) * Math.min(sideB, sideC)) / sideA);
+        var smallAngle;
+        if (sideA === 0) {
+            smallAngle = Math.PI / 2;
+        }
+        else {
+            smallAngle = Math.asin((Math.sin(angleA) * Math.min(sideB, sideC)) / sideA);
+        }
         var largeAngle = Math.PI - smallAngle - angleA;
         if (sideB < sideC) {
             angleB = smallAngle;

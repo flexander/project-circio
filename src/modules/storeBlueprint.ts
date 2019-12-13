@@ -215,24 +215,24 @@ export class BlueprintStore implements CircStoreInterface {
         circ.backgroundFill = '#000000';
 
         const poly0 = new Polygon();
-        poly0.steps = 2000;
+        poly0.steps = 0;
         poly0.outside = true;
         poly0.fixed = true;
         poly0.clockwise = false;
         poly0.stepMod = 0;
         poly0.startAngle = 0;
-        poly0.faces = 4;
-        poly0.faceWidth = 150;
+        poly0.faces = 500;
+        poly0.faceWidth = 0.5;
 
         const poly1 = new Polygon();
-        poly1.steps = 750;
+        poly1.steps = 500;
         poly1.outside = true;
         poly1.fixed = true;
         poly1.clockwise = true;
         poly1.stepMod = 0;
         poly1.startAngle = 0;
-        poly1.faces = 4;
-        poly1.faceWidth = 75;
+        poly1.faces = 2;
+        poly1.faceWidth = 200;
 
         const poly2 = new Polygon();
         poly2.steps = 500;
@@ -241,8 +241,8 @@ export class BlueprintStore implements CircStoreInterface {
         poly2.clockwise = false;
         poly2.stepMod = 0;
         poly2.startAngle = 0;
-        poly2.faces = 4;
-        poly2.faceWidth = 50;
+        poly2.faces = 2;
+        poly2.faceWidth = 200;
 
         const poly3 = new Polygon();
         poly3.steps = 500;
@@ -251,8 +251,8 @@ export class BlueprintStore implements CircStoreInterface {
         poly3.clockwise = true;
         poly3.stepMod = 0;
         poly3.startAngle = 0;
-        poly3.faces = 4;
-        poly3.faceWidth = 100;
+        poly3.faces = 500;
+        poly3.faceWidth = 0.5;
 
         const brush0 = new Brush();
         brush0.color = '#93ff3c';
@@ -276,12 +276,12 @@ export class BlueprintStore implements CircStoreInterface {
         brush2.point = 0.5;
 
         //poly1.addBrush(brush0);
-        poly2.addBrush(brush1);
-        //poly3.addBrush(brush2);
+        //poly1.addBrush(brush1);
+        poly3.addBrush(brush2);
         circ.addShape(poly0);
         circ.addShape(poly1);
         circ.addShape(poly2);
-        //circ.addShape(poly3);
+        circ.addShape(poly3);
 
         return circ;
     }

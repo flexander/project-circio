@@ -30,6 +30,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
     faceWidth: number;
     modified: boolean;
     parent?: PolygonInterface;
+    onCorner: boolean;
     protected config: PolygonConfig = new PolygonConfig();
 
     constructor() {
@@ -72,7 +73,12 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
             // calculate child centre contact point
             let distanceFromChildCornerToContact = ((distanceFromOrigin + distanceOffset) % this.faceWidth);
-            distanceFromChildCornerToContact = (parentSAS.C !== 0) ? this.faceWidth - distanceFromChildCornerToContact : distanceFromChildCornerToContact;
+
+            // If not on parent corner
+            if (!(parentSAS.C === 0 && parentSAS.c === 0)) {
+                distanceFromChildCornerToContact = this.faceWidth - distanceFromChildCornerToContact;
+            }
+
             const childSAS = this.getValuesFromSAS(
                 this.getRadius(),                                   // side b
                 (this.getOuterAngle()/2),                           // angle A
@@ -81,10 +87,19 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
             const childCentreToContactPoint = childSAS.a;
             // If parentSasC = 0 then the child is on a corner
-            const parentSASB = (parentSAS.C !== 0) ? parentSAS.B : (parentPolygon.getOuterAngle() / 2);
-            const childSASB = (childSAS.C !== 0) ? childSAS.B : (this.getOuterAngle() / 2);
+            let parentSASB: number;
+            if (parentSAS.C === 0 && parentSAS.c === 0) {
+                parentSASB = parentPolygon.getOuterAngle() / 2;
+            } else {
+                parentSASB = parentSAS.B;
+            }
+            let childSASB: number;
+            if (childSAS.C === 0 && childSAS.c === 0) {
+                childSASB = this.getOuterAngle() / 2;
+            } else {
+                childSASB = childSAS.B;
+            }
 
-            // TODO: sign based on direction
             let relativeAngle = (
                 this.getRadiansInCurrentRoll(parentPolygon) +
                 childSASB +
@@ -120,6 +135,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
         this.state.drawPoint.x = this.state.centre.x + (Math.cos(parentRadians + this.state.totalAngle) * this.getRadius());
         this.state.drawPoint.y = this.state.centre.y + (Math.sin(parentRadians + this.state.totalAngle) * this.getRadius());
     }
+
     public calculateAngle(): void {
         this.state.previousState.totalAngle = this.state.totalAngle;
         if (this.clockwise === true) {
@@ -354,9 +370,11 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
         // Total angle relative to offset
         const totalAngle = Math.abs(this.state.totalAngle) - offsetRadians;
+        this.onCorner = false;
 
         // Process offset
         if (totalAngle < 0) {
+            this.onCorner = true;
             return 0;
         }
 
@@ -400,6 +418,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
 
         if(onCorner === true) {
             distanceFromOrigin = ((ratio.d * sequenceGroup) + (parentActiveFace + 1)) * parentPolygon.faceWidth;
+            this.onCorner = true;
         }
 
 
@@ -466,7 +485,13 @@ class Polygon extends EventEmitter implements PolygonInterface {
         // a^2 = b^2 + c^2 − 2bc cosA
         sideA = Math.sqrt(Math.pow(sideB, 2) + Math.pow(sideC, 2) - (2 * sideB * sideC * Math.cos(angleA)));
 
-        const smallAngle: number = Math.asin( (Math.sin(angleA)*Math.min(sideB, sideC)) / sideA );
+        let smallAngle: number;
+        if (sideA === 0) {
+            smallAngle = Math.PI / 2;
+        } else {
+            smallAngle = Math.asin( (Math.sin(angleA)*Math.min(sideB, sideC)) / sideA );
+        }
+
         const largeAngle: number = Math.PI - smallAngle - angleA;
 
         if (sideB < sideC) {
