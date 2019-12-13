@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var circle_1 = require("./circle");
+var polygon_1 = require("./polygon");
 var GuidePainter = /** @class */ (function () {
     function GuidePainter(canvasContext) {
         this.visible = true;
@@ -29,8 +31,13 @@ var GuidePainter = /** @class */ (function () {
         this.centerCanvas();
         this.clear();
         this.guideColor = '#' + this.generateContrastingColor(circ.backgroundFill);
-        circ.getShapes().forEach(function (circle) {
-            _this.drawCircle(circle);
+        circ.getShapes().forEach(function (shape) {
+            if (shape instanceof circle_1.Circle) {
+                _this.drawCircle(shape);
+            }
+            else if (shape instanceof polygon_1.Polygon) {
+                _this.drawPolygon(shape);
+            }
         });
     };
     GuidePainter.prototype.generateContrastingColor = function (color) {
@@ -61,6 +68,34 @@ var GuidePainter = /** @class */ (function () {
         this.canvasContext.stroke();
         this.drawRotationIndicator(circle);
         circle.getBrushes().forEach(function (brush) { return _this.drawBrushPoint(circle, brush); });
+    };
+    GuidePainter.prototype.drawPolygon = function (polygon) {
+        this.canvasContext.strokeStyle = this.guideColor;
+        this.canvasContext.beginPath();
+        this.canvasContext.moveTo(polygon.state.centre.x + polygon.getRadius() * Math.cos(polygon.state.getAngle()), polygon.state.centre.y + polygon.getRadius() * Math.sin(polygon.state.getAngle()));
+        for (var i = 1; i <= polygon.faces; i += 1) {
+            this.canvasContext.lineTo(polygon.state.centre.x + polygon.getRadius() * Math.cos((polygon.state.getAngle()) + (i * 2 * Math.PI / polygon.faces)), polygon.state.centre.y + polygon.getRadius() * Math.sin((polygon.state.getAngle()) + (i * 2 * Math.PI / polygon.faces)));
+        }
+        this.canvasContext.stroke();
+        this.drawPoint(polygon.state.contactPoint);
+        this.drawPoint(polygon.state.centre);
+        this.drawPoint(polygon.state.drawPoint, '#33ff11');
+        this.drawPointToPoint(polygon.state.centre, polygon.state.contactPoint);
+        if (typeof polygon.parent !== "undefined") {
+            this.drawPointToPoint(polygon.parent.state.centre, polygon.state.contactPoint);
+            this.drawPointToPoint(polygon.parent.state.centre, polygon.state.centre);
+        }
+    };
+    GuidePainter.prototype.drawPoint = function (point, colour) {
+        this.canvasContext.beginPath();
+        this.canvasContext.fillStyle = colour ? colour : this.guideColor;
+        this.canvasContext.arc(point.x, point.y, Math.max(4), 0, 2 * Math.PI);
+        this.canvasContext.fill();
+    };
+    GuidePainter.prototype.drawPointToPoint = function (pointA, pointB) {
+        this.canvasContext.moveTo(pointA.x, pointA.y);
+        this.canvasContext.lineTo(pointB.x, pointB.y);
+        this.canvasContext.stroke();
     };
     GuidePainter.prototype.drawRotationIndicator = function (circle) {
         this.canvasContext.fillStyle = this.guideColor;

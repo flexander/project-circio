@@ -14,7 +14,9 @@ class Circle extends EventEmitter implements CircleInterface {
     id: number;
     protected brushes: BrushInterface[] = [];
     state: ShapeStateInterface = new CircleState();
-    protected config: CircleConfigInterface = new CircleConfig();
+    protected config: CircleConfig = new CircleConfig();
+    faces: number;
+    faceWidth: number;
 
     constructor() {
         super();
@@ -133,47 +135,47 @@ class Circle extends EventEmitter implements CircleInterface {
     public getBrushes(): BrushInterface[] {
         return this.brushes;
     }
-    
+
     get steps(): number {
         return this.config.steps;
     }
-    
+
     set steps(steps: number) {
         this.config.steps = steps;
         this.dispatchEvent(new AttributeChangedEvent('steps', this.steps));
     }
-    
+
     get outside(): boolean {
         return this.config.outside;
     }
-    
+
     set outside(outside: boolean) {
         this.config.outside = outside;
         this.dispatchEvent(new AttributeChangedEvent('outside', this.outside));
     }
-    
+
     get fixed(): boolean {
         return this.config.fixed;
     }
-    
+
     set fixed(fixed: boolean) {
         this.config.fixed = fixed;
         this.dispatchEvent(new AttributeChangedEvent('fixed', this.fixed));
     }
-    
+
     get clockwise(): boolean {
         return this.config.clockwise;
     }
-    
+
     set clockwise(clockwise: boolean) {
         this.config.clockwise = clockwise;
         this.dispatchEvent(new AttributeChangedEvent('clockwise', this.clockwise));
     }
-    
+
     get isRoot(): boolean {
         return this.config.isRoot;
     }
-    
+
     set isRoot(isRoot: boolean) {
         this.config.isRoot = isRoot;
         this.dispatchEvent(new AttributeChangedEvent('isRoot', this.isRoot));
@@ -226,6 +228,8 @@ class CircleConfigDefault implements CircleConfigInterface {
     isRoot: boolean = false;
     modified: boolean;
     radius: number = 100;
+    faceWidth: number;
+    faces: number;
 
     constructor() {
         if (new.target === CircleConfigDefault) {
@@ -240,6 +244,7 @@ class CircleConfig extends CircleConfigDefault implements CircleConfigInterface 
 class CircleState implements ShapeStateInterface {
     centre: PositionInterface = new CircleCenterPosition();
     drawPoint: PositionInterface = new CircleDrawPosition();
+    contactPoint: PositionInterface = new CircleDrawPosition();
     initialState: ShapeStateInterface = Object.create(this);
     previousState: ShapeStateInterface = null;
     totalAngle: number = 0;

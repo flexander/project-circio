@@ -247,6 +247,7 @@ var CircleState = /** @class */ (function () {
     function CircleState() {
         this.centre = new CircleCenterPosition();
         this.drawPoint = new CircleDrawPosition();
+        this.contactPoint = new CircleDrawPosition();
         this.initialState = Object.create(this);
         this.previousState = null;
         this.totalAngle = 0;

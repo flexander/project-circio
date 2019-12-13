@@ -126,8 +126,8 @@ engine.addImportCallback((circ: CircInterface) => {
     });
 });
 
-storageRandom.get()
+blueprintStorage.get('polygonsB')
     .then((circ: CircInterface) => {
         engine.import(circ);
-        engine.stepFast(circ.stepsToComplete);
+        engine.play();
     });

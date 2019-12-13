@@ -46,12 +46,15 @@ interface ShapeConfigInterface extends ModifiableInterface {
     stepMod: number;
     startAngle: number;
     isRoot: boolean;
+    faces: number;
+    faceWidth: number;
 }
 
 interface ShapeStateInterface {
     totalAngle: number;
     centre: PositionInterface;
     drawPoint: PositionInterface;
+    contactPoint: PositionInterface;
     initialState: ShapeStateInterface;
     previousState: ShapeStateInterface;
 
@@ -63,6 +66,29 @@ interface CircleInterface extends ShapeInterface, CircleConfigInterface, EventEm
 
 interface CircleConfigInterface extends ShapeConfigInterface {
     radius: number;
+}
+
+interface PolygonInterface extends ShapeInterface, EventEmitterInterface {
+    faces: number;
+    faceWidth: number;
+    parent?: PolygonInterface;
+
+    getRadius(): number;
+    getInnerAngle(): number;
+    getOuterAngle(): number;
+    getExternalAngle(): number;
+}
+
+interface PolygonConfigInterface extends ShapeConfigInterface {
+}
+
+interface PolygonSasInterface {
+    a: number,
+    b: number,
+    c: number,
+    A: number,
+    B: number,
+    C: number,
 }
 
 interface BrushInterface extends EventEmitterInterface, BrushConfigInterface {
@@ -272,6 +298,7 @@ export {
     ShapeStateInterface,
     ShapeConfigInterface,
     CircleInterface,
+    PolygonInterface,
     CircleConfigInterface,
     BrushInterface,
     BrushConfigInterface,
@@ -297,6 +324,8 @@ export {
     EventEmitterInterface,
     EventInterface,
     AttributeChangedEventInterface,
+    PolygonSasInterface,
+    PolygonConfigInterface,
 }
 
 
