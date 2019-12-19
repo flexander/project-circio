@@ -2,6 +2,14 @@ import {Circle, CircleCenterPosition, CircleConfig, CircleDrawPosition, CircleSt
 import {CircInterface, SerializerInterface} from "../structure";
 import {Circ, CircConfig} from "./circ";
 import {Brush, BrushConfig} from "./brushes";
+import {
+    Polygon,
+    PolygonCenterPosition,
+    PolygonConfig,
+    PolygonContactPosition,
+    PolygonDrawPosition,
+    PolygonState
+} from "./polygon";
 
 export default class Serializer implements SerializerInterface {
     protected classes = {
@@ -12,6 +20,12 @@ export default class Serializer implements SerializerInterface {
         CircleDrawPosition,
         CircleState,
         CircleConfig,
+        Polygon,
+        PolygonCenterPosition,
+        PolygonContactPosition,
+        PolygonDrawPosition,
+        PolygonState,
+        PolygonConfig,
         Brush,
         BrushConfig,
     };

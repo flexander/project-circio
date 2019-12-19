@@ -89353,6 +89353,7 @@ var PolygonContactPosition = /** @class */ (function () {
     }
     return PolygonContactPosition;
 }());
+exports.PolygonContactPosition = PolygonContactPosition;
 var PolygonSas = /** @class */ (function () {
     function PolygonSas() {
     }
@@ -89381,6 +89382,7 @@ var PolygonConfig = /** @class */ (function (_super) {
     }
     return PolygonConfig;
 }(PolygonConfigDefault));
+exports.PolygonConfig = PolygonConfig;
 
 },{"../structure":928,"./circle":903,"./events":918,"lodash.clonedeep":7,"mathjs":887}],922:[function(require,module,exports){
 "use strict";
@@ -89506,6 +89508,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = require("./circle");
 var circ_1 = require("./circ");
 var brushes_1 = require("./brushes");
+var polygon_1 = require("./polygon");
 var Serializer = /** @class */ (function () {
     function Serializer() {
         this.classes = {
@@ -89516,6 +89519,12 @@ var Serializer = /** @class */ (function () {
             CircleDrawPosition: circle_1.CircleDrawPosition,
             CircleState: circle_1.CircleState,
             CircleConfig: circle_1.CircleConfig,
+            Polygon: polygon_1.Polygon,
+            PolygonCenterPosition: polygon_1.PolygonCenterPosition,
+            PolygonContactPosition: polygon_1.PolygonContactPosition,
+            PolygonDrawPosition: polygon_1.PolygonDrawPosition,
+            PolygonState: polygon_1.PolygonState,
+            PolygonConfig: polygon_1.PolygonConfig,
             Brush: brushes_1.Brush,
             BrushConfig: brushes_1.BrushConfig,
         };
@@ -89556,7 +89565,7 @@ var Serializer = /** @class */ (function () {
 }());
 exports.default = Serializer;
 
-},{"./brushes":901,"./circ":902,"./circle":903}],924:[function(require,module,exports){
+},{"./brushes":901,"./circ":902,"./circle":903,"./polygon":921}],924:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circ_1 = require("./circ");
