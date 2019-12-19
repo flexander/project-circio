@@ -86788,7 +86788,7 @@ blueprintStorage.get('polygonsB')
     engine.play();
 });
 
-},{"./modules/backgroundPainter":900,"./modules/controls/circ":906,"./modules/controls/engine":907,"./modules/controls/guidePainter":908,"./modules/controls/mode":909,"./modules/controls/painter":910,"./modules/controls/panel":911,"./modules/controls/random":912,"./modules/controls/storage":915,"./modules/engine":916,"./modules/guidePainter":918,"./modules/painter":919,"./modules/storeBlueprint":923,"./modules/storeCloud":924,"./modules/storeLocal":925,"./modules/storeRandom":926}],900:[function(require,module,exports){
+},{"./modules/backgroundPainter":900,"./modules/controls/circ":906,"./modules/controls/engine":907,"./modules/controls/guidePainter":908,"./modules/controls/mode":909,"./modules/controls/painter":910,"./modules/controls/panel":911,"./modules/controls/random":912,"./modules/controls/storage":916,"./modules/engine":917,"./modules/guidePainter":919,"./modules/painter":920,"./modules/storeBlueprint":924,"./modules/storeCloud":925,"./modules/storeLocal":926,"./modules/storeRandom":927}],900:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundPainter = /** @class */ (function () {
@@ -86959,7 +86959,7 @@ var BrushConfig = /** @class */ (function (_super) {
 }(BrushConfigDefault));
 exports.BrushConfig = BrushConfig;
 
-},{"../structure":927,"./events":917}],902:[function(require,module,exports){
+},{"../structure":928,"./events":918}],902:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -87119,7 +87119,7 @@ var CircConfig = /** @class */ (function () {
 }());
 exports.CircConfig = CircConfig;
 
-},{"../structure":927,"./events":917}],903:[function(require,module,exports){
+},{"../structure":928,"./events":918}],903:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -87397,7 +87397,7 @@ var CircleDrawPosition = /** @class */ (function () {
 }());
 exports.CircleDrawPosition = CircleDrawPosition;
 
-},{"../structure":927,"./events":917,"lodash.clonedeep":7}],904:[function(require,module,exports){
+},{"../structure":928,"./events":918,"lodash.clonedeep":7}],904:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BackgroundControl = /** @class */ (function () {
@@ -87510,6 +87510,8 @@ var circle_2 = require("./shapes/circle");
 var mode_1 = require("./mode");
 var brushes_1 = require("../brushes");
 var shape_1 = require("./shape");
+var polygon_1 = require("../polygon");
+var polygon_2 = require("./shapes/polygon");
 var CircControl = /** @class */ (function () {
     function CircControl(circ, mode) {
         var _this = this;
@@ -87523,6 +87525,9 @@ var CircControl = /** @class */ (function () {
             var shapeControl;
             if (shape instanceof circle_1.Circle) {
                 shapeControl = new circle_2.default(shape, _this.mode);
+            }
+            else if (shape instanceof polygon_1.Polygon) {
+                shapeControl = new polygon_2.default(shape, _this.mode);
             }
             else {
                 shapeControl = new shape_1.default(shape, _this.mode);
@@ -87566,7 +87571,7 @@ var CircControl = /** @class */ (function () {
 }());
 exports.default = CircControl;
 
-},{"../brushes":901,"../circle":903,"./background":904,"./mode":909,"./panel":911,"./shape":913,"./shapes/circle":914}],907:[function(require,module,exports){
+},{"../brushes":901,"../circle":903,"../polygon":921,"./background":904,"./mode":909,"./panel":911,"./shape":913,"./shapes/circle":914,"./shapes/polygon":915}],907:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var mode_1 = require("./mode");
@@ -87757,7 +87762,7 @@ var EngineControl = /** @class */ (function () {
 }());
 exports.default = EngineControl;
 
-},{"../randomiser":921,"../storeRandom":926,"./mode":909}],908:[function(require,module,exports){
+},{"../randomiser":922,"../storeRandom":927,"./mode":909}],908:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var GuidePainterControl = /** @class */ (function () {
@@ -87904,7 +87909,7 @@ var ControlModeEvent = /** @class */ (function () {
 }());
 exports.ControlModeEvent = ControlModeEvent;
 
-},{"../../structure":927}],910:[function(require,module,exports){
+},{"../../structure":928}],910:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var PainterControl = /** @class */ (function () {
@@ -88037,7 +88042,7 @@ var RandomControl = /** @class */ (function () {
 }());
 exports.default = RandomControl;
 
-},{"../randomiser":921,"../storeRandom":926,"./mode":909}],913:[function(require,module,exports){
+},{"../randomiser":922,"../storeRandom":927,"./mode":909}],913:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var brush_1 = require("./brush");
@@ -88212,6 +88217,66 @@ exports.default = CircleControl;
 
 },{"../mode":909,"../shape":913}],915:[function(require,module,exports){
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var shape_1 = require("../shape");
+var mode_1 = require("../mode");
+var PolygonControl = /** @class */ (function (_super) {
+    __extends(PolygonControl, _super);
+    function PolygonControl(shape, mode) {
+        if (mode === void 0) { mode = mode_1.ControlModes.MODE_DEFAULT; }
+        return _super.call(this, shape, mode) || this;
+    }
+    PolygonControl.prototype.getControlFragments = function () {
+        var documentFragments = _super.prototype.getControlFragments.call(this);
+        documentFragments.unshift(this.makeFacesFragment());
+        documentFragments.unshift(this.makeFaceWidthFragment());
+        return documentFragments;
+    };
+    PolygonControl.prototype.makeFaceWidthFragment = function () {
+        var _this = this;
+        var html = "\n            <div class=\"control\">\n                <label>face width</label>\n                <input type=\"number\" name=\"radius\" min=\"1\" class=\"input\" value=\"" + this.shape.faceWidth + "\">\n            </div>";
+        var fragment = document.createRange().createContextualFragment(html);
+        var input = fragment.querySelector('input');
+        input.addEventListener('input', function (e) {
+            _this.shape.faceWidth = parseInt(e.target.value);
+        });
+        this.shape.addEventListener('change.faceWidth', function (value) {
+            input.value = value;
+        });
+        return fragment;
+    };
+    PolygonControl.prototype.makeFacesFragment = function () {
+        var _this = this;
+        var html = "\n            <div class=\"control\">\n                <label>faces</label>\n                <input type=\"number\" name=\"radius\" min=\"1\" class=\"input\" value=\"" + this.shape.faces + "\">\n            </div>";
+        var fragment = document.createRange().createContextualFragment(html);
+        var input = fragment.querySelector('input');
+        input.addEventListener('input', function (e) {
+            _this.shape.faces = parseInt(e.target.value);
+        });
+        this.shape.addEventListener('change.faces', function (value) {
+            input.value = value;
+        });
+        return fragment;
+    };
+    return PolygonControl;
+}(shape_1.default));
+exports.default = PolygonControl;
+
+},{"../mode":909,"../shape":913}],916:[function(require,module,exports){
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var painter_1 = require("../painter");
 var backgroundPainter_1 = require("../backgroundPainter");
@@ -88328,7 +88393,7 @@ var StorageControl = /** @class */ (function () {
 }());
 exports.default = StorageControl;
 
-},{"../backgroundPainter":900,"../engine":916,"../painter":919}],916:[function(require,module,exports){
+},{"../backgroundPainter":900,"../engine":917,"../painter":920}],917:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -88598,7 +88663,7 @@ var EngineStepJumpEnd = /** @class */ (function () {
 }());
 exports.EngineStepJumpEnd = EngineStepJumpEnd;
 
-},{"../structure":927,"./events":917}],917:[function(require,module,exports){
+},{"../structure":928,"./events":918}],918:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AttributeChangedEvent = /** @class */ (function () {
@@ -88642,7 +88707,7 @@ var ShapeDeleteEvent = /** @class */ (function () {
 }());
 exports.ShapeDeleteEvent = ShapeDeleteEvent;
 
-},{}],918:[function(require,module,exports){
+},{}],919:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = require("./circle");
@@ -88765,7 +88830,7 @@ var GuidePainter = /** @class */ (function () {
 }());
 exports.default = GuidePainter;
 
-},{"./circle":903,"./polygon":920}],919:[function(require,module,exports){
+},{"./circle":903,"./polygon":921}],920:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Painter = /** @class */ (function () {
@@ -88822,7 +88887,7 @@ var Painter = /** @class */ (function () {
 }());
 exports.default = Painter;
 
-},{}],920:[function(require,module,exports){
+},{}],921:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -89317,7 +89382,7 @@ var PolygonConfig = /** @class */ (function (_super) {
     return PolygonConfig;
 }(PolygonConfigDefault));
 
-},{"../structure":927,"./circle":903,"./events":917,"lodash.clonedeep":7,"mathjs":887}],921:[function(require,module,exports){
+},{"../structure":928,"./circle":903,"./events":918,"lodash.clonedeep":7,"mathjs":887}],922:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circ_1 = require("./circ");
@@ -89435,7 +89500,7 @@ var threeCircleConfigGenerators = [
 ];
 exports.threeCircleConfigGenerators = threeCircleConfigGenerators;
 
-},{"./brushes":901,"./circ":902,"./circle":903,"seedrandom":889}],922:[function(require,module,exports){
+},{"./brushes":901,"./circ":902,"./circle":903,"seedrandom":889}],923:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = require("./circle");
@@ -89491,7 +89556,7 @@ var Serializer = /** @class */ (function () {
 }());
 exports.default = Serializer;
 
-},{"./brushes":901,"./circ":902,"./circle":903}],923:[function(require,module,exports){
+},{"./brushes":901,"./circ":902,"./circle":903}],924:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var circ_1 = require("./circ");
@@ -89735,7 +89800,7 @@ var BlueprintStore = /** @class */ (function () {
 }());
 exports.BlueprintStore = BlueprintStore;
 
-},{"./brushes":901,"./circ":902,"./circle":903,"./polygon":920}],924:[function(require,module,exports){
+},{"./brushes":901,"./circ":902,"./circle":903,"./polygon":921}],925:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -89838,7 +89903,7 @@ var CloudStorage = /** @class */ (function () {
 }());
 exports.default = CloudStorage;
 
-},{"./serializer":922}],925:[function(require,module,exports){
+},{"./serializer":923}],926:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var serializer_1 = require("./serializer");
@@ -89899,7 +89964,7 @@ var LocalStorage = /** @class */ (function () {
 }());
 exports.default = LocalStorage;
 
-},{"./serializer":922}],926:[function(require,module,exports){
+},{"./serializer":923}],927:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -89988,7 +90053,7 @@ var StoreRandom = /** @class */ (function () {
 }());
 exports.StoreRandom = StoreRandom;
 
-},{"./serializer":922}],927:[function(require,module,exports){
+},{"./serializer":923}],928:[function(require,module,exports){
 "use strict";
 /** Data **/
 Object.defineProperty(exports, "__esModule", { value: true });
