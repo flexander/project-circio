@@ -463,6 +463,7 @@ var PolygonContactPosition = /** @class */ (function () {
     }
     return PolygonContactPosition;
 }());
+exports.PolygonContactPosition = PolygonContactPosition;
 var PolygonSas = /** @class */ (function () {
     function PolygonSas() {
     }
@@ -491,3 +492,4 @@ var PolygonConfig = /** @class */ (function (_super) {
     }
     return PolygonConfig;
 }(PolygonConfigDefault));
+exports.PolygonConfig = PolygonConfig;

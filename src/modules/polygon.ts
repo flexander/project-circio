@@ -588,6 +588,8 @@ class PolygonConfig extends PolygonConfigDefault implements PolygonConfigInterfa
 export {
     Polygon,
     PolygonState,
+    PolygonConfig,
+    PolygonContactPosition,
     PolygonCenterPosition,
     PolygonDrawPosition,
 }
