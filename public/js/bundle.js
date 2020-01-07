@@ -88247,11 +88247,11 @@ var PolygonControl = /** @class */ (function (_super) {
     };
     PolygonControl.prototype.makeFaceWidthFragment = function () {
         var _this = this;
-        var html = "\n            <div class=\"control\">\n                <label>face width</label>\n                <input type=\"number\" name=\"radius\" min=\"1\" class=\"input\" value=\"" + this.shape.faceWidth + "\">\n            </div>";
+        var html = "\n            <div class=\"control\">\n                <label>face width</label>\n                <input type=\"number\" name=\"radius\" min=\"0.5\" step=\"0.5\" class=\"input\" value=\"" + this.shape.faceWidth + "\">\n            </div>";
         var fragment = document.createRange().createContextualFragment(html);
         var input = fragment.querySelector('input');
         input.addEventListener('input', function (e) {
-            _this.shape.faceWidth = parseInt(e.target.value);
+            _this.shape.faceWidth = parseFloat(e.target.value);
         });
         this.shape.addEventListener('change.faceWidth', function (value) {
             input.value = value;
@@ -88972,6 +88972,9 @@ var Polygon = /** @class */ (function (_super) {
             var relativeAngle = (this.getRadiansInCurrentRoll(parentPolygon) +
                 childSASB +
                 parentSASB);
+            // console.log([this.getRadiansInCurrentRoll(parentPolygon),
+            // childSASB,
+            // parentSASB]);
             if (this.clockwise === true) {
                 relativeAngle *= -1;
             }
@@ -88979,6 +88982,7 @@ var Polygon = /** @class */ (function (_super) {
             relativeAngle, // angle A
             childCentreToContactPoint // side c
             );
+            //console.log(relativeSAS);
             radiusRelative = relativeSAS.a;
             contactPointAngle = (this.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
             var contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreX;

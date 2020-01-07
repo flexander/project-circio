@@ -105,7 +105,9 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 childSASB +
                 parentSASB
             );
-
+// console.log([this.getRadiansInCurrentRoll(parentPolygon),
+// childSASB,
+// parentSASB]);
             if(this.clockwise === true) {
                 relativeAngle *= -1;
             }
@@ -115,7 +117,7 @@ class Polygon extends EventEmitter implements PolygonInterface {
                 relativeAngle,                              // angle A
                 childCentreToContactPoint                   // side c
             );
-
+//console.log(relativeSAS);
             radiusRelative = relativeSAS.a;
             contactPointAngle = (this.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
             const contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreX;

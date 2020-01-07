@@ -21,14 +21,14 @@ export default class PolygonControl extends ShapeControl {
         const html = `
             <div class="control">
                 <label>face width</label>
-                <input type="number" name="radius" min="1" class="input" value="${this.shape.faceWidth}">
+                <input type="number" name="radius" min="0.5" step="0.5" class="input" value="${this.shape.faceWidth}">
             </div>`;
 
         const fragment = document.createRange().createContextualFragment(html);
         const input = fragment.querySelector('input');
 
         input.addEventListener('input', e => {
-            this.shape.faceWidth = parseInt((e.target as HTMLInputElement).value);
+            this.shape.faceWidth = parseFloat((e.target as HTMLInputElement).value);
         });
 
         this.shape.addEventListener('change.faceWidth', (value) => {
