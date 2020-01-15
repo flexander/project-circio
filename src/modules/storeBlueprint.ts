@@ -232,17 +232,17 @@ export class BlueprintStore implements CircStoreInterface {
         poly1.stepMod = 0;
         poly1.startAngle = 0;
         poly1.faces = 2;
-        poly1.faceWidth = 200;
+        poly1.faceWidth = 50;
 
         const poly2 = new Polygon();
         poly2.steps = 500;
         poly2.outside = true;
         poly2.fixed = true;
-        poly2.clockwise = false;
+        poly2.clockwise = true;
         poly2.stepMod = 0;
         poly2.startAngle = 0;
         poly2.faces = 2;
-        poly2.faceWidth = 200;
+        poly2.faceWidth = 50;
 
         const poly3 = new Polygon();
         poly3.steps = 500;
@@ -251,8 +251,38 @@ export class BlueprintStore implements CircStoreInterface {
         poly3.clockwise = true;
         poly3.stepMod = 0;
         poly3.startAngle = 0;
-        poly3.faces = 500;
-        poly3.faceWidth = 0.5;
+        poly3.faces = 2;
+        poly3.faceWidth = 50;
+
+        const poly4 = new Polygon();
+        poly4.steps = 500;
+        poly4.outside = true;
+        poly4.fixed = true;
+        poly4.clockwise = true;
+        poly4.stepMod = 0;
+        poly4.startAngle = 0;
+        poly4.faces = 2;
+        poly4.faceWidth = 50;
+
+        const poly5 = new Polygon();
+        poly5.steps = 500;
+        poly5.outside = true;
+        poly5.fixed = true;
+        poly5.clockwise = true;
+        poly5.stepMod = 0;
+        poly5.startAngle = 0;
+        poly5.faces = 2;
+        poly5.faceWidth = 50;
+
+        const poly6 = new Polygon();
+        poly6.steps = 500;
+        poly6.outside = true;
+        poly6.fixed = true;
+        poly6.clockwise = true;
+        poly6.stepMod = 0;
+        poly6.startAngle = 0;
+        poly6.faces = 2;
+        poly6.faceWidth = 50;
 
         const brush0 = new Brush();
         brush0.color = '#93ff3c';
@@ -261,27 +291,14 @@ export class BlueprintStore implements CircStoreInterface {
         brush0.offset = 0;
         brush0.point = 0.5;
 
-        const brush1 = new Brush();
-        brush1.color = '#ff74ee';
-        brush1.degrees = 0;
-        brush1.link = false;
-        brush1.offset = 0;
-        brush1.point = 0.5;
-
-        const brush2 = new Brush();
-        brush2.color = '#FFFFFF';
-        brush2.degrees = 0;
-        brush2.link = false;
-        brush2.offset = 0;
-        brush2.point = 0.5;
-
-        //poly1.addBrush(brush0);
-        //poly1.addBrush(brush1);
-        poly3.addBrush(brush2);
         circ.addShape(poly0);
         circ.addShape(poly1);
         circ.addShape(poly2);
         circ.addShape(poly3);
+        circ.addShape(poly4);
+        circ.addShape(poly5);
+        circ.addShape(poly6);
+        circ.getEndShape().addBrush(brush0);
 
         return circ;
     }
