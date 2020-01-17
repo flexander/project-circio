@@ -1,13 +1,25 @@
 #!/bin/bash
+FULL_PATH=$(realpath $0)
+DIR_PATH=$(dirname $FULL_PATH)
 
 echo 'enter a project name'
-
 read NAME
 
-echo 'enter the number of steps to complete a frame'
-
+echo 'enter the number of steps to complete the image'
 read STEPS
 
-node animate.js --name=$NAME --start=0 --end=320 --steps=$STEPS &
-node animate.js --name=$NAME --start=321 --end=520 --steps=$STEPS &
-node animate.js --name=$NAME --start=521 --end=720 --steps=$STEPS &
+echo 'enter the number of required frames'
+read FRAMES
+
+BATCH=$(($FRAMES/3))
+
+mkdir -p "$DIR_PATH/output/$NAME"
+
+trap 'kill %1; kill %2' SIGINT
+
+node $DIR_PATH/animate.js --name=$NAME --action=$ACTION --start=0 --end=$BATCH --steps=$STEPS &
+node $DIR_PATH/animate.js --name=$NAME --action=$ACTION --start=$(($BATCH+1)) --end=$((2*$BATCH)) --steps=$STEPS &
+node $DIR_PATH/animate.js --name=$NAME --action=$ACTION --start=$((2*$BATCH+1))  --end=$FRAMES --steps=$STEPS &
+wait
+
+# ffmpeg -start_number 0 -i frame-%010d.png -qscale 1 -vcodec mpeg4 video.avi

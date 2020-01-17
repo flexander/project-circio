@@ -62,7 +62,7 @@ var dir = __dirname + '/output/' + name;
 if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
 }
-cloudStorage.get('Angry Bird')
+cloudStorage.get('Angry Bird 2')
     .then(function (circ) {
     return __awaiter(this, void 0, void 0, function () {
         var f, fileName;

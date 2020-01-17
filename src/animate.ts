@@ -33,7 +33,7 @@ if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
 }
 
-cloudStorage.get('Angry Bird')
+cloudStorage.get('Angry Bird 2')
     .then(async function (circ: CircInterface)  {
         engine.import(circ);
 
