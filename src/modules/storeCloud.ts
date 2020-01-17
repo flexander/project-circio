@@ -1,5 +1,6 @@
 import {CircInterface, CircStoreInterface} from "../structure";
 import Serializer from "./serializer";
+import fetch from 'cross-fetch';
 
 export default class CloudStorage implements CircStoreInterface {
     protected serializer = new Serializer();

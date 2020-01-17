@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var serializer_1 = require("./serializer");
+var cross_fetch_1 = require("cross-fetch");
 var CloudStorage = /** @class */ (function () {
     function CloudStorage() {
         this.serializer = new serializer_1.default();
@@ -48,7 +49,7 @@ var CloudStorage = /** @class */ (function () {
             var response, circJsonString;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=getByName&name=' + encodeURIComponent(name))];
+                    case 0: return [4 /*yield*/, cross_fetch_1.default(this.apiUrl + '?action=getByName&name=' + encodeURIComponent(name))];
                     case 1:
                         response = _a.sent();
                         return [4 /*yield*/, response.text()];
@@ -64,7 +65,7 @@ var CloudStorage = /** @class */ (function () {
             var response, circJsonString;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=getByIndex&index=' + encodeURIComponent(index))];
+                    case 0: return [4 /*yield*/, cross_fetch_1.default(this.apiUrl + '?action=getByIndex&index=' + encodeURIComponent(index))];
                     case 1:
                         response = _a.sent();
                         return [4 /*yield*/, response.text()];
@@ -78,7 +79,7 @@ var CloudStorage = /** @class */ (function () {
     CloudStorage.prototype.list = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            fetch(_this.apiUrl + '?action=list')
+            cross_fetch_1.default(_this.apiUrl + '?action=list')
                 .then(function (response) {
                 response.json()
                     .then(function (circJsonStrings) {
@@ -92,7 +93,7 @@ var CloudStorage = /** @class */ (function () {
     };
     CloudStorage.prototype.store = function (name, circ) {
         var circJson = this.serializer.serialize(circ);
-        fetch(this.apiUrl, { method: 'POST', body: circJson });
+        cross_fetch_1.default(this.apiUrl, { method: 'POST', body: circJson });
     };
     CloudStorage.prototype.delete = function (name) {
     };

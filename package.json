@@ -10,6 +10,7 @@
   "dependencies": {
     "@types/mathjs": "^6.0.2",
     "canvas": "^2.6.0",
+    "cross-fetch": "^3.0.4",
     "express": "^4.17.1",
     "gulp-typescript": "^5.0.1",
     "lodash.clonedeep": "^4.5.0",
