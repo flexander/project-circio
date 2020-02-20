@@ -33,22 +33,18 @@ if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
 }
 
-cloudStorage.get('Angry Bird 2')
+cloudStorage.get('petalbox')
     .then(async function (circ: CircInterface)  {
         engine.import(circ);
 
+        const originalOffset = circ.getEndShape().getBrushes()[0].offset;
+
         for (let f = startFrame; f <= endFrame; f++) {
             console.log(f + ' of ' + endFrame);
+
             engine.reset();
             backgroundPainter.draw(circ);
-
-            //circ.getShapes()[5].getBrushes()[0].degrees = f;
-
-            if(f <= (2 * offset)) {
-                circ.getShapes()[5].getBrushes()[0].offset = (-1 * offset) + f;
-            } else {
-                circ.getShapes()[5].getBrushes()[0].offset = offset - (f - (2 * offset));
-            }
+            circ.getEndShape().getBrushes()[0].offset = originalOffset + (offset * Math.sin(f / offset));
 
             let fileName = name + '/frame-'+ f.toString().padStart(10 , '0') +'.png';
             await draw(fileName, engine);

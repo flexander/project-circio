@@ -62,14 +62,15 @@ var dir = __dirname + '/output/' + name;
 if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
 }
-cloudStorage.get('Angry Bird 2')
+cloudStorage.get('petalbox')
     .then(function (circ) {
     return __awaiter(this, void 0, void 0, function () {
-        var f, fileName;
+        var originalOffset, f, fileName;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     engine.import(circ);
+                    originalOffset = circ.getEndShape().getBrushes()[0].offset;
                     f = startFrame;
                     _a.label = 1;
                 case 1:
@@ -77,13 +78,7 @@ cloudStorage.get('Angry Bird 2')
                     console.log(f + ' of ' + endFrame);
                     engine.reset();
                     backgroundPainter.draw(circ);
-                    //circ.getShapes()[5].getBrushes()[0].degrees = f;
-                    if (f <= (2 * offset)) {
-                        circ.getShapes()[5].getBrushes()[0].offset = (-1 * offset) + f;
-                    }
-                    else {
-                        circ.getShapes()[5].getBrushes()[0].offset = offset - (f - (2 * offset));
-                    }
+                    circ.getEndShape().getBrushes()[0].offset = originalOffset + (offset * Math.sin(f / offset));
                     fileName = name + '/frame-' + f.toString().padStart(10, '0') + '.png';
                     return [4 /*yield*/, draw(fileName, engine)];
                 case 2:
