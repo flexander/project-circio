@@ -82,9 +82,6 @@ var Polygon = /** @class */ (function (_super) {
             var relativeAngle = (this.getRadiansInCurrentRoll(parentPolygon) +
                 childSASB +
                 parentSASB);
-            // console.log([this.getRadiansInCurrentRoll(parentPolygon),
-            // childSASB,
-            // parentSASB]);
             if (this.clockwise === true) {
                 relativeAngle *= -1;
             }
@@ -92,7 +89,6 @@ var Polygon = /** @class */ (function (_super) {
             relativeAngle, // angle A
             childCentreToContactPoint // side c
             );
-            //console.log(relativeSAS);
             radiusRelative = relativeSAS.a;
             contactPointAngle = (this.clockwise === false) ? -(contactPointAngle) : contactPointAngle;
             var contactPointX = (parentCentreToContactPoint * Math.cos(contactPointAngle + parentPolygon.state.getAngle())) + parentCentreX;
