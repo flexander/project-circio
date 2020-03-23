@@ -1,42 +1,38 @@
-'use strict';
+var gulp = require('gulp');
+var buffer = require('vinyl-buffer');
+var source = require('vinyl-source-stream');
+var browserify = require('browserify');
+var tsify = require('tsify');
+const sass = require('gulp-sass');
+const ts = require('gulp-typescript');
+const tsProject = ts.createProject('./tsconfig.json');
 
-let babelify   = require('babelify'),
-    browserify = require('browserify'),
-    buffer     = require('vinyl-buffer'),
-    gulp       = require('gulp'),
-    rename     = require('gulp-rename'),
-    source     = require('vinyl-source-stream'),
-    sass       = require('gulp-sass');
-
-let config = {
-    js: {
-        src: './scripts/index.js',
-        outputDir: './public/js/',
-        outputFile: 'index.js'
-    },
-    css: {
-        src: './styles/index.scss',
-        outputDir: './public/css/',
-        outputFile: 'index.css'
-    }
-};
-
-function scripts () {
-    return browserify(config.js.src)
-        .transform(babelify, { presets : ["@babel/preset-env"] })
+gulp.task('build:ts-browser', function () {
+    return browserify()
+        .add('./src/main.ts')
+        .plugin(tsify)
         .bundle()
-        .pipe(source(config.js.src))
+        .on('error', function (error) { console.error(error.toString()); })
+        .pipe(source('bundle.js'))
         .pipe(buffer())
-        .pipe(rename(config.js.outputFile))
-        .pipe(gulp.dest(config.js.outputDir));
-}
+        .pipe(gulp.dest('./public/js'));
+});
 
-function styles () {
-    return gulp.src(config.css.src)
-        .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest(config.css.outputDir));
-}
+gulp.task('build:ts-cli', function () {
+    return tsProject.src()
+        .on('error', function (error) { console.error(error.toString()); })
+        .pipe(tsProject())
+        .js.pipe(gulp.dest('animate'));
+});
 
-exports.scripts = scripts;
-exports.styles = styles;
-exports.default = gulp.series(scripts, styles);
+gulp.task('build:scss', () => {
+    return gulp.src('./styles/*.scss')
+        .pipe(sass())
+        .on('error', function (error) { console.error(error.toString()); })
+        .pipe(gulp.dest('./public/css/'));
+});
+
+gulp.task('default', function() {
+    gulp.watch(['src/*.ts', 'src/**/*.ts'], gulp.parallel(['build:ts-browser','build:ts-cli']));
+    gulp.watch(['styles/*.scss'], gulp.series('build:scss'));
+});
