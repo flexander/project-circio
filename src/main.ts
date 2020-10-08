@@ -14,9 +14,10 @@ import LocalStorage from "./modules/storeLocal";
 import {ControlModes, ModeControl} from "./modules/controls/mode";
 import {Engine} from "./modules/engine";
 import {StoreRandom} from "./modules/storeRandom";
+import RandomControl from "./modules/controls/random";
 
 const canvasArea = <HTMLElement>document.querySelector('#circio .painter');
-const backgroundCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#background-canvas');
+const backgroundCanvasElement = <HTMLCanvasElement>document.querySelector('#background-canvas');
 const mainCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#main-canvas');
 const guideCanvasElement = <HTMLCanvasElement>canvasArea.querySelector('#guide-canvas');
 const blueprintStorage = new BlueprintStore();
@@ -25,6 +26,7 @@ const storageLocal = new LocalStorage();
 const storageBlueprint = new BlueprintStore();
 const storageRandom = new StoreRandom();
 let controlMode = window.localStorage.getItem('config.controlMode') || ControlModes.MODE_DEFAULT;
+let resizeDebounce;
 
 const renderControls = (circ: CircInterface) => {
     const controlPanel = new ControlPanel('Engine');
@@ -34,24 +36,32 @@ const renderControls = (circ: CircInterface) => {
     const painterControl = new PainterControl(painter);
     const storageControl = new StorageControl([storageCloud, storageLocal, storageBlueprint,storageRandom], engine);
     const modeControl = new ModeControl(controlMode);
+    const randomControl = new RandomControl(engine,controlMode);
 
     controlPanel.addControl(guidePainterControl);
     controlPanel.addControl(engineControl);
     engineControl.addCircControl(circControl);
 
     const quickControls = new ControlPanel();
-    quickControls.addControls(guidePainterControl.getQuickControls());
-    quickControls.addControls(engineControl.getQuickControls());
     quickControls.addControls(painterControl.getQuickControls());
-    quickControls.addControls(painterControl.getQuickControls());
-    quickControls.addControls(storageControl.getQuickControls());
     quickControls.addControls(modeControl.getQuickControls());
+    quickControls.addControls(storageControl.getQuickControls());
+    quickControls.addControls(randomControl.getQuickControls());
+
+    const engineControls = new ControlPanel();
+    engineControls.addControls(guidePainterControl.getQuickControls());
+    engineControls.addControls(engineControl.getQuickControls());
+
 
     const controlActionsEl = document.querySelector('.controls-container .actions');
     const controlsEl = document.querySelector('.controls-container .controls');
+    const quickControlsEl = document.querySelector('.quick-controls');
 
     controlActionsEl.innerHTML = null;
     controlsEl.innerHTML = null;
+    quickControlsEl.innerHTML = null;
+
+    quickControlsEl.appendChild(engineControls.render());
 
     controlActionsEl.appendChild(quickControls.render());
     controlsEl.appendChild(controlPanel.render());
@@ -78,12 +88,16 @@ const initialiseEventListeners = (circ: CircInterface) => {
 };
 
 const transformCanvas = (circ: CircInterface) => {
+    const scaleFactor = Math.min(window.innerHeight,window.innerWidth-300) / Math.min(circ.height,circ.width);
+    canvasArea.style.transform = 'scale(' + Math.min(scaleFactor, 1) + ')';
+
     if (circ.width !== parseInt(canvasArea.style.width, 10) || circ.height !== parseInt(canvasArea.style.height, 10)) {
-        console.log(circ.height, circ.width);
-        canvasArea.style.transformOrigin = '0 0'; //scale f2rom top left
-        canvasArea.style.transform = 'scale(' + window.innerHeight / circ.height + ')';
+        canvasArea.style.transformOrigin = `${circ.width/2} ${circ.height/2}`;
         canvasArea.style.width = circ.width + 'px';
         canvasArea.style.height = circ.height + 'px';
+        canvasArea.style.position = `absolute`;
+        canvasArea.style.left = `calc(50% - ${circ.width/2}px - (300px / 2) )`;
+        canvasArea.style.top = `calc(50% - ${circ.height/2}px)`;
 
         canvasArea.querySelectorAll('canvas').forEach(c => {
             c.setAttribute('height', '' + circ.height);
@@ -105,9 +119,15 @@ engine.addImportCallback(renderControls);
 engine.addImportCallback(initialiseEventListeners);
 engine.addImportCallback(transformCanvas);
 engine.addImportCallback((circ: CircInterface) => {backgroundPainter.draw(circ)});
-engine.play();
+engine.addImportCallback((circ: CircInterface) => {
+    window.addEventListener('resize', e => {
+        clearTimeout(resizeDebounce);
+        resizeDebounce = setTimeout(_ => transformCanvas(circ), 50);
+    });
+});
 
-blueprintStorage.get('twoCircles')
+blueprintStorage.get('polygonsB')
     .then((circ: CircInterface) => {
         engine.import(circ);
+        engine.play();
     });

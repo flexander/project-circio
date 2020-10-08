@@ -3,7 +3,7 @@ import Serializer from "./serializer";
 
 export default class CloudStorage implements CircStoreInterface {
     protected serializer = new Serializer();
-    protected apiUrl = 'https://circio.mountainofcode.co.uk';
+    protected apiUrl = 'https://circio.mountainofcode.co.uk/cloud/';
     public name: string = 'Cloud';
 
     public async get(name: string): Promise<CircInterface> {

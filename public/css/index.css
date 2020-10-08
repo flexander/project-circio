@@ -10,9 +10,10 @@ body {
   right: 0;
   top: 0;
   height: 100vh;
-  overflow-y: auto; }
+  overflow-y: auto;
+  background-color: #FFFFFF; }
   .controls-container .controls {
-    padding-top: 60px; }
+    padding-top: 25px; }
   .controls-container .actions {
     position: fixed; }
 
@@ -61,3 +62,14 @@ body {
         left: 0;
         width: 100%;
         text-align: center; }
+
+.quick-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 25px;
+  left: 10px;
+  right: 300px; }
+  .quick-controls .control-group {
+    border: none; }

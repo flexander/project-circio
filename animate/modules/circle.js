@@ -28,6 +28,11 @@ var Circle = /** @class */ (function (_super) {
         _this.saveInitialState();
         return _this;
     }
+    Circle.fromConfig = function (config) {
+        var circle = new Circle();
+        circle.config = config;
+        return circle;
+    };
     Circle.prototype.calculatePosition = function (parentCircle) {
         this.savePreviousState();
         var arc = this.getArc();
@@ -193,6 +198,9 @@ var Circle = /** @class */ (function (_super) {
             return this.config.radius;
         },
         set: function (radius) {
+            if (isNaN(radius) || radius <= 0) {
+                throw new Error("Radius must be a positive, non-zero integer");
+            }
             this.config.radius = radius;
             this.dispatchEvent(new events_1.AttributeChangedEvent('radius', this.radius));
         },
@@ -209,16 +217,37 @@ var Circle = /** @class */ (function (_super) {
     return Circle;
 }(structure_1.EventEmitter));
 exports.Circle = Circle;
-var CircleConfig = /** @class */ (function () {
+var CircleConfigDefault = /** @class */ (function () {
+    function CircleConfigDefault() {
+        var _newTarget = this.constructor;
+        this.steps = 500;
+        this.outside = true;
+        this.fixed = true;
+        this.clockwise = true;
+        this.stepMod = 0;
+        this.startAngle = 0;
+        this.isRoot = false;
+        this.radius = 100;
+        if (_newTarget === CircleConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+    return CircleConfigDefault;
+}());
+exports.CircleConfigDefault = CircleConfigDefault;
+var CircleConfig = /** @class */ (function (_super) {
+    __extends(CircleConfig, _super);
     function CircleConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return CircleConfig;
-}());
+}(CircleConfigDefault));
 exports.CircleConfig = CircleConfig;
 var CircleState = /** @class */ (function () {
     function CircleState() {
         this.centre = new CircleCenterPosition();
         this.drawPoint = new CircleDrawPosition();
+        this.contactPoint = new CircleDrawPosition();
         this.initialState = Object.create(this);
         this.previousState = null;
         this.totalAngle = 0;

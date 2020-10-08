@@ -38,6 +38,10 @@ class Circ extends EventEmitter implements CircInterface {
         return this.shapes;
     }
 
+    getEndShape(): ShapeInterface {
+        return this.getShapes()[this.getShapes().length-1];
+    }
+
     get name(): string {
         return this.config['name'];
     }
@@ -79,41 +83,43 @@ class Circ extends EventEmitter implements CircInterface {
     }
 
     get stepsToComplete(): number {
-        if (this.getShapes().length !== 3) {
-            throw 'currently only works for 3 shape circs'
-        }
+        const stepsToCompletion = [];
 
-        if (this.getShapes()[0].steps !== 0) {
-            throw 'currently only works for motionless root shape'
-        }
-
-        const pr = (this.getShapes()[0] as CircleInterface).radius;
-        const cr = (this.getShapes()[1] as CircleInterface).radius;
-        const ccr = (this.getShapes()[2] as CircleInterface).radius;
-
-        const ps = this.getShapes()[0].steps;
-        const cs = this.getShapes()[1].steps;
-        const ccs = this.getShapes()[2].steps;
-
-        const prCrRatio = pr / cr;
-        const CrCcrRatio = cr / ccr;
-        let multiple = null;
-
-        for (let i = 1; i < 20; i++) {
-            if ((prCrRatio * i) % 1 === 0 && (CrCcrRatio * i) % 1 === 0) {
-                multiple = i;
-                break;
-            }
-        }
-
-        if (multiple == null) {
+        // This currently doesn't work if stepmod is used
+        if (this.getShapes().some((shape: ShapeInterface): boolean => shape.stepMod > 0)) {
             return Infinity;
         }
 
-        const childStepsToComplete = cs*prCrRatio*multiple;
-        const childchildStepsToComplete = ccs*CrCcrRatio*multiple;
+        stepsToCompletion.push(this.getShapes()[0].steps);
 
-        return this.lcm(childStepsToComplete,childchildStepsToComplete);
+        for(let shapeIndex=1;shapeIndex<this.getShapes().length;shapeIndex++) {
+            const lastShape = (this.getShapes()[shapeIndex-1] as CircleInterface);
+            const shape = (this.getShapes()[shapeIndex] as CircleInterface);
+
+            const radiusRatio = (lastShape.radius/shape.radius);
+            let multiple = null;
+
+            for (let i = 1; i < 20; i++) {
+                if ((radiusRatio * i) % 1 === 0) {
+                    multiple = i;
+                    break;
+                }
+            }
+
+            if (multiple === null) {
+                return Infinity;
+            }
+
+            stepsToCompletion.push(shape.steps*radiusRatio*multiple);
+        }
+
+        return this.lcmMany(stepsToCompletion.map((steps: number): number => Math.max(1,steps)));
+    }
+
+    protected lcmMany(array: number[]): number {
+        return array.reduce((result: number, number: number): number => {
+            return this.lcm(result, number);
+        },1);
     }
 
     protected lcm(x, y) {

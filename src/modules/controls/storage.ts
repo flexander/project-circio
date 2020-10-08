@@ -98,7 +98,11 @@ export default class StorageControl implements ControlInterface, QuickControlInt
                             });
 
                             tile.querySelector('.circ').addEventListener('mouseenter', e => {
-                                previewEngine.play()
+                                const stepsLeftToRun = Math.min(1000000, circ.stepsToComplete-previewEngine.state.totalStepsRun);
+
+                                if (stepsLeftToRun > 0) {
+                                    previewEngine.stepFast(stepsLeftToRun);
+                                }
                             });
 
                             tile.querySelector('.circ').addEventListener('mouseleave', e => {

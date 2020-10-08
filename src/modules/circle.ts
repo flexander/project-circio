@@ -14,7 +14,9 @@ class Circle extends EventEmitter implements CircleInterface {
     id: number;
     protected brushes: BrushInterface[] = [];
     state: ShapeStateInterface = new CircleState();
-    protected config: CircleConfigInterface = new CircleConfig();
+    protected config: CircleConfig = new CircleConfig();
+    faces: number;
+    faceWidth: number;
 
     constructor() {
         super();
@@ -22,6 +24,13 @@ class Circle extends EventEmitter implements CircleInterface {
         this.id = Math.floor(Math.random()*100000);
 
         this.saveInitialState();
+    }
+
+    static fromConfig(config: CircleConfig): Circle {
+        const circle = new Circle();
+        circle.config = config;
+
+        return circle;
     }
 
     calculatePosition(parentCircle: CircleInterface|null): void {
@@ -126,47 +135,47 @@ class Circle extends EventEmitter implements CircleInterface {
     public getBrushes(): BrushInterface[] {
         return this.brushes;
     }
-    
+
     get steps(): number {
         return this.config.steps;
     }
-    
+
     set steps(steps: number) {
         this.config.steps = steps;
         this.dispatchEvent(new AttributeChangedEvent('steps', this.steps));
     }
-    
+
     get outside(): boolean {
         return this.config.outside;
     }
-    
+
     set outside(outside: boolean) {
         this.config.outside = outside;
         this.dispatchEvent(new AttributeChangedEvent('outside', this.outside));
     }
-    
+
     get fixed(): boolean {
         return this.config.fixed;
     }
-    
+
     set fixed(fixed: boolean) {
         this.config.fixed = fixed;
         this.dispatchEvent(new AttributeChangedEvent('fixed', this.fixed));
     }
-    
+
     get clockwise(): boolean {
         return this.config.clockwise;
     }
-    
+
     set clockwise(clockwise: boolean) {
         this.config.clockwise = clockwise;
         this.dispatchEvent(new AttributeChangedEvent('clockwise', this.clockwise));
     }
-    
+
     get isRoot(): boolean {
         return this.config.isRoot;
     }
-    
+
     set isRoot(isRoot: boolean) {
         this.config.isRoot = isRoot;
         this.dispatchEvent(new AttributeChangedEvent('isRoot', this.isRoot));
@@ -195,6 +204,11 @@ class Circle extends EventEmitter implements CircleInterface {
     }
 
     set radius(radius: number) {
+
+        if (isNaN(radius) || radius <= 0) {
+            throw new Error(`Radius must be a positive, non-zero integer`);
+        }
+
         this.config.radius = radius;
         this.dispatchEvent(new AttributeChangedEvent('radius', this.radius));
     }
@@ -204,21 +218,33 @@ class Circle extends EventEmitter implements CircleInterface {
     }
 }
 
-class CircleConfig implements CircleConfigInterface {
-    steps: number;
-    outside: boolean;
-    fixed: boolean;
-    clockwise: boolean;
-    stepMod: number;
-    startAngle: number;
-    isRoot: boolean;
+class CircleConfigDefault implements CircleConfigInterface {
+    steps: number = 500;
+    outside: boolean = true;
+    fixed: boolean = true;
+    clockwise: boolean = true;
+    stepMod: number = 0;
+    startAngle: number = 0;
+    isRoot: boolean = false;
     modified: boolean;
-    radius: number;
+    radius: number = 100;
+    faceWidth: number;
+    faces: number;
+
+    constructor() {
+        if (new.target === CircleConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+}
+
+class CircleConfig extends CircleConfigDefault implements CircleConfigInterface {
 }
 
 class CircleState implements ShapeStateInterface {
     centre: PositionInterface = new CircleCenterPosition();
     drawPoint: PositionInterface = new CircleDrawPosition();
+    contactPoint: PositionInterface = new CircleDrawPosition();
     initialState: ShapeStateInterface = Object.create(this);
     previousState: ShapeStateInterface = null;
     totalAngle: number = 0;
@@ -246,5 +272,6 @@ export {
     CircleState,
     CircleCenterPosition,
     CircleConfig,
+    CircleConfigDefault,
     CircleDrawPosition,
 }

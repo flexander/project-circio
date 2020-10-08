@@ -13,9 +13,10 @@ body {
     top: 0;
     height: 100vh;
     overflow-y: auto;
+    background-color: #FFFFFF;
 
     .controls {
-        padding-top: 60px;
+        padding-top: 25px;
     }
 
     .actions {
@@ -80,5 +81,18 @@ body {
                 text-align: center;
             }
         }
+    }
+}
+
+.quick-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 25px;
+    left: 10px;
+    right: 300px;
+    .control-group {
+        border: none;
     }
 }

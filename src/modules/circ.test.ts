@@ -1,5 +1,5 @@
-import { Circ } from './Circ';
-import { Circle } from './Circle';
+import { Circ } from './circ';
+import { Circle } from './circle';
 import { ShapeAddEvent, ShapeDeleteEvent, AttributeChangedEvent } from './events';
 
 describe('Circ', () => {
@@ -238,19 +238,104 @@ describe('Circ', () => {
             circ = new Circ();
         });
 
-        it('should throw an error if the circ does not have exactly 3 shapes', () => {
-            circ.shapes = [shape];
-            expect(()=>{circ.stepsToComplete}).toThrowError('currently only works for 3 shape circs');
+        it('should not throw an error', () => {
+            circ.shapes = [motionlessShape, shape, shape];
+            expect(()=>{circ.stepsToComplete}).not.toThrowError();
         });
 
-        it('should throw an error if not on a motionless root shape', () => {
-            circ.shapes = [shape, shape, shape];
-            expect(()=>{circ.stepsToComplete}).toThrowError('currently only works for motionless root shape');
+        it('should return infinity for Circs that don\'t end quick enough', () => {
+            const shape1 = new Circle();
+            shape1.radius = 150;
+            shape1.steps = 0;
+            const shape2 = new Circle();
+            shape2.radius = 201;
+            shape2.steps = 523;
+            const shape3 = new Circle();
+            shape3.radius = 233;
+            shape3.steps = 911;
+
+            circ.addShape(shape1);
+            circ.addShape(shape2);
+            circ.addShape(shape3);
+
+            expect(circ.stepsToComplete).toBe(Infinity);
         });
+
 
         it('should not throw an error if the circ has exactly 3 shapes and a motionlessShape root shape', () => {
             circ.shapes = [motionlessShape, shape, shape];
             expect(()=>{circ.stepsToComplete}).not.toThrowError();
+
+        it('should calculate steps correctly for 3 shapes', () => {
+            const shape1 = new Circle();
+            shape1.radius = 150;
+            shape1.steps = 0;
+            const shape2 = new Circle();
+            shape2.radius = 105;
+            shape2.steps = 1098;
+            const shape3 = new Circle();
+            shape3.radius = 245;
+            shape3.steps = 915;
+
+            circ.addShape(shape1);
+            circ.addShape(shape2);
+            circ.addShape(shape3);
+
+            expect(circ.stepsToComplete).toBe(10980);
+        });
+
+        it('should calculate steps correctly for 2 shapes', () => {
+            const shape1 = new Circle();
+            shape1.radius = 150;
+            shape1.steps = 0;
+            const shape2 = new Circle();
+            shape2.radius = 120;
+            shape2.steps = 400;
+
+            circ.addShape(shape1);
+            circ.addShape(shape2);
+
+            expect(circ.stepsToComplete).toBe(2000);
+        });
+
+        it('should calculate steps correctly for 4 shapes', () => {
+            const shape1 = new Circle();
+            shape1.radius = 150;
+            shape1.steps = 0;
+            const shape2 = new Circle();
+            shape2.radius = 70;
+            shape2.steps = 228;
+            const shape3 = new Circle();
+            shape3.radius = 112;
+            shape3.steps = 76;
+            const shape4 = new Circle();
+            shape4.radius = 196;
+            shape4.steps = 57;
+
+            circ.addShape(shape1);
+            circ.addShape(shape2);
+            circ.addShape(shape3);
+            circ.addShape(shape4);
+
+            expect(circ.stepsToComplete).toBe(3420);
+        });
+
+        it('should calculate steps correctly with moving roots', () => {
+            const shape1 = new Circle();
+            shape1.radius = 150;
+            shape1.steps = 756;
+            const shape2 = new Circle();
+            shape2.radius = 60;
+            shape2.steps = 504;
+            const shape3 = new Circle();
+            shape3.radius = 240;
+            shape3.steps = 567;
+
+            circ.addShape(shape1);
+            circ.addShape(shape2);
+            circ.addShape(shape3);
+
+            expect(circ.stepsToComplete).toBe(22680);
         });
 
         it('return infinity if no multiple is found', () => {

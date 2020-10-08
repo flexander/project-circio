@@ -46,14 +46,16 @@ var Engine = /** @class */ (function (_super) {
     };
     Engine.prototype.pause = function () {
         this.stepsToRun = 0;
+        this.stopStepJumping();
     };
     Engine.prototype.play = function (count) {
         this.stepsToRun = typeof count === 'number' ? count : Infinity;
     };
     Engine.prototype.isPlaying = function () {
-        return this.stepsToRun > 0;
+        return this.stepsToRun > 0 || this.state.stepJumps.length > 0;
     };
     Engine.prototype.reset = function () {
+        this.stopStepJumping();
         if (typeof this.circ !== "undefined") {
             this.circ.getShapes().forEach(function (shape) { return shape.reset(); });
         }
@@ -62,12 +64,22 @@ var Engine = /** @class */ (function (_super) {
         // Run a single step to correctly position and render the shapes
         this.step();
     };
+    Engine.prototype.stopStepJumping = function () {
+        if (this.state.stepJumps.length === 0) {
+            return;
+        }
+        this.state.stepJumpTimers.forEach(function (timeId) {
+            clearTimeout(timeId);
+        });
+        this.state.stepJumpTimers = [];
+        this.state.stepJumps = [];
+        this.dispatchEvent(new EngineStepJumpEnd());
+    };
     Engine.prototype.stepFast = function (count) {
         var _this = this;
         if (this.state.stepJumps.length > 0) {
             throw "Step jump in progress";
         }
-        this.dispatchEvent(new EngineStepJumpStart());
         var thenContinue = this.stepsToRun;
         this.pause();
         var stepGroup = 100;
@@ -78,6 +90,7 @@ var Engine = /** @class */ (function (_super) {
             this.state.stepJumps.push(this.stepJump(stepsToRun));
             stepsRun += stepsToRun;
         }
+        this.dispatchEvent(new EngineStepJumpStart());
         return Promise.all(this.state.stepJumps)
             .then(function (_) {
             _this.dispatchEvent(new EngineStepJumpEnd());
@@ -88,16 +101,20 @@ var Engine = /** @class */ (function (_super) {
     Engine.prototype.stepJump = function (number) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            setTimeout(function (_) {
+            var id = setTimeout(function (_) {
                 for (var step = 0; step < number; step++) {
                     _this.step();
                 }
                 resolve();
             }, 0);
+            _this.state.stepJumpTimers.push(id);
         });
     };
     Engine.prototype.calculateShapes = function () {
         var _this = this;
+        if (typeof this.circ === "undefined") {
+            return;
+        }
         var parentShape = null;
         this.circ.getShapes().forEach(function (shape) {
             shape.calculatePosition(parentShape);
@@ -173,18 +190,31 @@ var Engine = /** @class */ (function (_super) {
     return Engine;
 }(structure_1.EventEmitter));
 exports.Engine = Engine;
-var EngineConfig = /** @class */ (function () {
-    function EngineConfig() {
+var EngineConfigDefault = /** @class */ (function () {
+    function EngineConfigDefault() {
+        var _newTarget = this.constructor;
         this.stepInterval = 1;
         this.stepsToRun = 0;
+        if (_newTarget === EngineConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+    return EngineConfigDefault;
+}());
+exports.EngineConfigDefault = EngineConfigDefault;
+var EngineConfig = /** @class */ (function (_super) {
+    __extends(EngineConfig, _super);
+    function EngineConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return EngineConfig;
-}());
+}(EngineConfigDefault));
 exports.EngineConfig = EngineConfig;
 var EngineState = /** @class */ (function () {
     function EngineState() {
         this.totalStepsRun = 0;
         this.stepJumps = [];
+        this.stepJumpTimers = [];
     }
     return EngineState;
 }());

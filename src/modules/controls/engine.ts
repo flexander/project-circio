@@ -6,7 +6,8 @@ import {
     QuickControlInterface
 } from "../../structure";
 import {ControlModes} from "./mode";
-import {Randomiser} from "../randomiser";
+import {StoreRandom} from "../storeRandom";
+import {Randomiser, threeCircleConfigGenerators} from "../randomiser";
 
 export default class EngineControl implements EngineControlInterface, QuickControlInterface {
     protected circControl: CircControlInterface;
@@ -88,20 +89,8 @@ export default class EngineControl implements EngineControlInterface, QuickContr
             }
         });
 
-        this.engine.addEventListener('pause', (value) => {
+        this.engine.addEventListeners(['pause','play','stepJump.start','stepJump.end'], (value) => {
             button.innerText = this.getPlayButtonLabel();
-        });
-
-        this.engine.addEventListener('play', (value) => {
-            button.innerText = this.getPlayButtonLabel();
-        });
-
-        this.engine.addEventListener('stepJump.start', _ => {
-            button.setAttribute('disabled', 'disabled');
-        });
-
-        this.engine.addEventListener('stepJump.end', _ => {
-            button.removeAttribute('disabled');
         });
 
         return playFragment;
@@ -114,9 +103,9 @@ export default class EngineControl implements EngineControlInterface, QuickContr
         const button = randomFragment.querySelector('button');
 
         button.addEventListener('click', e => {
-            const randomiser = new Randomiser();
+            const randomStore = new StoreRandom();
 
-            randomiser.make()
+            randomStore.get()
                 .then((circ: CircInterface) => {
                     this.engine.pause();
                     this.engine.import(circ);
@@ -142,7 +131,7 @@ export default class EngineControl implements EngineControlInterface, QuickContr
 
             const randomiser = new Randomiser(textAreaValue);
 
-            randomiser.make()
+            randomiser.make(threeCircleConfigGenerators)
                 .then((circ: CircInterface) => {
                     this.engine.pause();
                     this.engine.import(circ);
@@ -236,16 +225,16 @@ export default class EngineControl implements EngineControlInterface, QuickContr
                     return self.makeResetFragment();
                 }
             },
-            new class implements ControlInterface {
-                render(): DocumentFragment {
-                    return self.makeRandomFragment();
-                }
-            },
-            new class implements ControlInterface {
-                render(): DocumentFragment {
-                    return self.makeSeededRandomFragment();
-                }
-            },
+            // new class implements ControlInterface {
+            //     render(): DocumentFragment {
+            //         return self.makeRandomFragment();
+            //     }
+            // },
+            // new class implements ControlInterface {
+            //     render(): DocumentFragment {
+            //         return self.makeSeededRandomFragment();
+            //     }
+            // },
         ];
     }
 

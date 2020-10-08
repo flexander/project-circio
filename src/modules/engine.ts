@@ -1,4 +1,5 @@
 import {
+    BrushConfigInterface,
     CircInterface,
     EngineConfigInterface,
     EngineInterface,
@@ -46,6 +47,7 @@ class Engine extends EventEmitter implements EngineInterface {
 
     public pause(): void {
         this.stepsToRun = 0;
+        this.stopStepJumping();
     }
 
     public play(count?: number|null): void {
@@ -53,10 +55,12 @@ class Engine extends EventEmitter implements EngineInterface {
     }
 
     public isPlaying(): boolean {
-        return this.stepsToRun > 0;
+        return this.stepsToRun > 0 ||  this.state.stepJumps.length > 0;
     }
 
     public reset(): void {
+        this.stopStepJumping();
+
         if (typeof this.circ !== "undefined") {
             this.circ.getShapes().forEach(shape => shape.reset());
         }
@@ -69,12 +73,24 @@ class Engine extends EventEmitter implements EngineInterface {
         this.step();
     }
 
+    protected stopStepJumping(): void {
+        if (this.state.stepJumps.length === 0) {
+            return;
+        }
+
+        this.state.stepJumpTimers.forEach((timeId: NodeJS.Timeout) => {
+            clearTimeout(timeId);
+        });
+
+        this.state.stepJumpTimers = [];
+        this.state.stepJumps = [];
+        this.dispatchEvent(new EngineStepJumpEnd());
+    }
+
     public stepFast(count: number): Promise<void> {
         if (this.state.stepJumps.length > 0) {
             throw `Step jump in progress`;
         }
-
-        this.dispatchEvent(new EngineStepJumpStart());
 
         const thenContinue = this.stepsToRun;
         this.pause();
@@ -91,6 +107,8 @@ class Engine extends EventEmitter implements EngineInterface {
             stepsRun += stepsToRun;
         }
 
+        this.dispatchEvent(new EngineStepJumpStart());
+
         return Promise.all(this.state.stepJumps)
             .then(_ => {
                 this.dispatchEvent(new EngineStepJumpEnd());
@@ -101,16 +119,22 @@ class Engine extends EventEmitter implements EngineInterface {
 
     protected stepJump(number: number): Promise<void> {
         return new Promise<void>((resolve, reject): void => {
-            setTimeout(_ => {
+            const id = setTimeout(_ => {
                 for (let step = 0; step<number; step++) {
                     this.step()
                 }
                 resolve();
             }, 0);
+
+            this.state.stepJumpTimers.push(id);
         });
     }
 
     protected calculateShapes(): void {
+        if (typeof this.circ === "undefined") {
+            return;
+        }
+
         let parentShape: ShapeInterface|null = null;
         this.circ.getShapes().forEach(
             shape =>  {
@@ -191,14 +215,25 @@ class Engine extends EventEmitter implements EngineInterface {
     }
 }
 
-class EngineConfig implements EngineConfigInterface {
+class EngineConfigDefault implements EngineConfigInterface {
     stepInterval: number = 1;
     stepsToRun: number = 0;
+
+    constructor() {
+        if (new.target === EngineConfigDefault) {
+            Object.freeze(this);
+        }
+    }
+
+}
+
+class EngineConfig extends EngineConfigDefault implements EngineConfigInterface {
 }
 
 class EngineState implements EngineStateInterface {
     totalStepsRun: number = 0;
     stepJumps: Promise<void>[] = [];
+    stepJumpTimers: NodeJS.Timeout[] = [];
 }
 
 class EnginePauseEvent implements EventInterface {
@@ -244,6 +279,7 @@ class EngineStepJumpEnd implements EventInterface {
 export {
     Engine,
     EngineConfig,
+    EngineConfigDefault,
     EnginePlayEvent,
     EnginePauseEvent,
     EngineStepJumpStart,

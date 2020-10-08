@@ -36,52 +36,44 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var serializer_1 = require("./serializer");
-var StoreRandom = /** @class */ (function () {
-    function StoreRandom() {
-        this.serializer = new serializer_1.default();
-        this.name = 'Randomiser';
-        this.apiUrl = 'https://circio.mountainofcode.co.uk/random/';
-    }
-    StoreRandom.prototype.get = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var response, circJsonString, circ;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch(this.apiUrl + '?action=get')];
-                    case 1:
-                        response = _a.sent();
-                        return [4 /*yield*/, response.text()];
-                    case 2:
-                        circJsonString = _a.sent();
-                        circ = this.serializer.unserialize(circJsonString);
-                        circ.name = 'Random';
-                        return [2 /*return*/, circ];
-                }
-            });
+var randomiser_1 = require("./modules/randomiser");
+var serializer_1 = require("./modules/serializer");
+var fs = require("fs");
+var outputFile = process.argv[2];
+if (outputFile == null) {
+    console.error('A file path must be specified');
+    process.exit(1);
+}
+var randomiser = new randomiser_1.Randomiser();
+var serialiser = new serializer_1.default();
+var rootCircle = new randomiser_1.CircleConfigGenerator();
+rootCircle.radiusGenerator = new randomiser_1.NumberGenerator(150, 250);
+rootCircle.stepGenerator = new randomiser_1.NumberGenerator(0, 0);
+var shapeConfigGenerators = [
+    rootCircle,
+    new randomiser_1.CircleConfigGenerator,
+    new randomiser_1.CircleConfigGenerator,
+];
+function makeManyRandom() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!true) return [3 /*break*/, 2];
+                    return [4 /*yield*/, randomiser.make(shapeConfigGenerators)
+                            .then(function (circ) {
+                            console.log(circ.stepsToComplete + ' step Circ found');
+                            var circJsonString = (fs.existsSync(outputFile) === true) ? fs.readFileSync(outputFile) : '[]';
+                            var circs = JSON.parse(circJsonString.toString());
+                            circs.push(serialiser.serialize(circ));
+                            fs.writeFileSync(outputFile, JSON.stringify(circs, null, 2));
+                        })];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 0];
+                case 2: return [2 /*return*/];
+            }
         });
-    };
-    StoreRandom.prototype.getIndex = function () {
-        return this.get();
-    };
-    StoreRandom.prototype.list = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var circs = Promise.all([
-                _this.get(),
-                _this.get(),
-                _this.get(),
-                _this.get(),
-            ]);
-            resolve(circs);
-        });
-    };
-    StoreRandom.prototype.delete = function (name) {
-        throw new Error("Random Circs can't be deleted.");
-    };
-    StoreRandom.prototype.store = function (name, circ) {
-        throw new Error("Random Circs can't be stored.");
-    };
-    return StoreRandom;
-}());
-exports.StoreRandom = StoreRandom;
+    });
+}
+makeManyRandom();
