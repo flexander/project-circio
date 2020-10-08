@@ -226,9 +226,7 @@ describe('Circ', () => {
     });
 
     describe('get stepsToComplete', () => {
-        let circ;
-        let shape;
-        let motionlessShape;
+        let circ, shape, motionlessShape;
         beforeEach(() => {
             circ = new Circ();
             shape = new Circle();
@@ -238,7 +236,6 @@ describe('Circ', () => {
 
         beforeEach(() => {
             circ = new Circ();
-            circ.dispatchEvent = jest.fn();
         });
 
         it('should not throw an error', () => {
@@ -263,6 +260,11 @@ describe('Circ', () => {
 
             expect(circ.stepsToComplete).toBe(Infinity);
         });
+
+
+        it('should not throw an error if the circ has exactly 3 shapes and a motionlessShape root shape', () => {
+            circ.shapes = [motionlessShape, shape, shape];
+            expect(()=>{circ.stepsToComplete}).not.toThrowError();
 
         it('should calculate steps correctly for 3 shapes', () => {
             const shape1 = new Circle();
@@ -334,6 +336,28 @@ describe('Circ', () => {
             circ.addShape(shape3);
 
             expect(circ.stepsToComplete).toBe(22680);
+        });
+
+        it('return infinity if no multiple is found', () => {
+            circ.shapes = [motionlessShape, shape, shape];
+            expect(circ.stepsToComplete).toBe(Infinity);
+        });
+
+        // Should this throw an error instead of returning NaN?
+        it('return NaN if a child shape has missing steps', () => {
+            motionlessShape.config.radius = 10;
+            shape.config.radius = 10;
+            shape.config.steps = undefined;
+            circ.shapes = [motionlessShape, shape, shape];
+            expect(circ.stepsToComplete).toBe(NaN);
+        });
+
+        it('return the correct result for a given radius/step combination', () => {
+            motionlessShape.config.radius = 10;
+            shape.config.radius = 10;
+            shape.config.steps = 10;
+            circ.shapes = [motionlessShape, shape, shape];
+            expect(circ.stepsToComplete).toBe(10);
         });
     });
 });
